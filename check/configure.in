@@ -23,7 +23,7 @@ fi
 CK_LYX_LINUXDOC([have_lyx="yes"],[have_lyx="no"])
 AC_CHECK_PROG(have_sgmltools,sgml2html,yes)
 if test x"$have_sgmltools" != "xyes" -o x"$have_lyx" != "xyes" ; then
-	AC_MSG_WARN([couldn't find sgml2html, not building docs])
+	AC_MSG_WARN([required tools not found, not building docs])
 fi
 AM_CONDITIONAL(MAKE_DOC, test x"$have_lyx" = "xyes" -a x"$have_sgmltools" = "xyes" )
 dnl Checks for libraries.

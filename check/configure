@@ -1227,7 +1227,7 @@ else
 fi
 
 if test x"$have_sgmltools" != "xyes" -o x"$have_lyx" != "xyes" ; then
-	echo "configure: warning: couldn't find sgml2html, not building docs" 1>&2
+	echo "configure: warning: required tools not found, not building docs" 1>&2
 fi
 
 
