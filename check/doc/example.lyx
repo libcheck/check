@@ -111,9 +111,9 @@ That third reason is the one that turns people into unit testing addicts.
 ation, and having the unit tests reassure you at each step of that change
  that all is well.
  It is like the difference between exploring the wilderness with and without
- a good map and compass: without the proper gear, you are more likely to<<<<<<<
- example.lyx proceed cautiously and stick to the marked trails; with it,
- you can take the most direct path to where you want to go.
+ a good map and compass: without the proper gear, you are more likely to
+ proceed cautiously and stick to the marked trails; with it, you can take
+ the most direct path to where you want to go.
 \layout Standard
 
 Look at the Check homepage for the latest information on Check: 
