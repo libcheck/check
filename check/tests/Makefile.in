@@ -75,7 +75,7 @@ noinst_PROGRAMS =  	check_check 	check_list 	check_stress 	check_check_msg 	chec
 
 EXTRA_DIST = test_output.sh
 
-check_check_log_SOURCES =  	check_log.c
+check_check_log_SOURCES =  	check_check_log.c
 
 
 check_check_SOURCES =  	check_check.h check_check_sub.c check_check_master.c check_check_main.c
@@ -124,7 +124,7 @@ check_check_msg_OBJECTS =  check_check_msg.o
 check_check_msg_LDADD = $(LDADD)
 check_check_msg_DEPENDENCIES =  ../src/libcheck.a
 check_check_msg_LDFLAGS = 
-check_check_log_OBJECTS =  check_log.o
+check_check_log_OBJECTS =  check_check_log.o
 check_check_log_LDADD = $(LDADD)
 check_check_log_DEPENDENCIES =  ../src/libcheck.a
 check_check_log_LDFLAGS = 
@@ -143,9 +143,10 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-DEP_FILES =  .deps/check_check_main.P .deps/check_check_master.P \
-.deps/check_check_msg.P .deps/check_check_sub.P .deps/check_list.P \
-.deps/check_log.P .deps/check_stress.P .deps/ex_output.P
+DEP_FILES =  .deps/check_check_log.P .deps/check_check_main.P \
+.deps/check_check_master.P .deps/check_check_msg.P \
+.deps/check_check_sub.P .deps/check_list.P .deps/check_stress.P \
+.deps/ex_output.P
 SOURCES = $(check_check_SOURCES) $(check_list_SOURCES) $(check_stress_SOURCES) $(check_check_msg_SOURCES) $(check_check_log_SOURCES) $(ex_output_SOURCES)
 OBJECTS = $(check_check_OBJECTS) $(check_list_OBJECTS) $(check_stress_OBJECTS) $(check_check_msg_OBJECTS) $(check_check_log_OBJECTS) $(ex_output_OBJECTS)
 

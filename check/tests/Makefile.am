@@ -16,7 +16,7 @@ noinst_PROGRAMS=\
 EXTRA_DIST=test_output.sh
 
 check_check_log_SOURCES=\
-	check_log.c
+	check_check_log.c
 
 check_check_SOURCES= \
 	check_check.h check_check_sub.c check_check_master.c check_check_main.c
