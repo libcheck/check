@@ -1,3 +1,10 @@
+Wed Jul 30, 2001:
+Released Check 0.7.1
+
+Reorganized printing and logging functions to allow for a less
+primitive logging function. Logging is now documented in the tutorial
+documentation.
+
 Wed Jul 11, 2001:
 Released Check 0.7.0
 

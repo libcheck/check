@@ -60,7 +60,7 @@ void run_tests (int printmode)
 
   sr = srunner_create(make_s1_suite());
   srunner_add_suite(sr, make_s2_suite());
-  srunner_set_log(sr, "test_logfile");
+  srunner_set_log(sr, "test.log");
   srunner_run_all(sr, printmode);
 }
 

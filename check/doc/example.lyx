@@ -950,6 +950,61 @@ srunner_add_suite(sr, make_msg_suite());
 srunner_add_suite(sr, make_log_suite()); 
 \layout Subsection
 
+Test Logging
+\layout Standard
+
+Check supports operation to log the results of a test run.
+ To use test logging, use the srunner_set_log function with the name of
+ the log file you wish to create:
+\layout Code
+
+SRunner *sr;
+\layout Code
+
+sr = srunner_create(make_s1_suite());
+\layout Code
+
+srunner_add_suite(sr, make_s2_suite());
+\layout Code
+
+srunner_set_log(sr, "test.log");
+\layout Code
+
+srunner_run_all(sr, CRNORMAL);
+\layout Standard
+
+Check will write the results of the run to test.log.
+ The printmode argument to srunner_run_all does not apply to test logging;
+ the log will contain a result entry, organized by suite, for every test
+ run .
+ Here is an example of test log output:
+\layout Code
+
+Running suite S1 
+\layout Code
+
+ex_log_output.c:7:P:Core: Test passed
+\layout Code
+
+ex_log_output.c:13:F:Core: Failure
+\layout Code
+
+ex_log_output.c:17:E:Core: (after this point) Early exit with return value
+ 1
+\layout Code
+
+Running suite S2 
+\layout Code
+
+ex_log_output.c:25:P:Core: Test passed
+\layout Code
+
+Results for all suites run:
+\layout Code
+
+50%: Checks: 4, Failures: 1, Errors: 1
+\layout Subsection
+
 Conclusion
 \layout Standard
 

@@ -13,7 +13,7 @@ Results for all suites run:
 test_log_output ( ) {
     
     ./ex_log_output "${1}" > /dev/null
-    actual=`cat test_logfile`
+    actual=`cat test.log`
     if [ x"${expected}" != x"${actual}" ]; then
 	echo "Problem with ex_log_output ${3}";
 	echo "Expected:";

@@ -32,4 +32,4 @@ ex_log_output_SOURCES=\
 INCLUDES= -I$(srcdir)/../src
 LDADD= ../src/libcheck.a
 
-CLEANFILES=*.*~ *.log
+CLEANFILES=*.*~ *.log test_logfile

@@ -90,7 +90,7 @@ ex_log_output_SOURCES =  	ex_log_output.c
 INCLUDES = -I$(srcdir)/../src
 LDADD = ../src/libcheck.a
 
-CLEANFILES = *.*~ *.log
+CLEANFILES = *.*~ *.log test_logfile
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
