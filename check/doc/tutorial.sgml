@@ -76,7 +76,7 @@ The author knows of the following additional unit testing frameworks for C:
     <varlistentry>
     <term>
 GNU&nbsp;Autounit
-</term><listitem><para>Much along the same lines as Check, including forking to run unit tests in a separate address space (in fact, the author of Check stole the idea from GNU Autounit). GNU Autounit uses GLib extensively, which means that linking and such need special options, but this may not be a big problem to you, especially if you are already using GTK or GLib. See <ulink url="http://www.recursism.com/projects/autounit/">http://www.recursism.com/projects/autounit/</ulink>.
+</term><listitem><para>Much along the same lines as Check, including forking to run unit tests in a separate address space (in fact, the author of Check stole the idea from GNU Autounit). GNU Autounit uses GLib extensively, which means that linking and such need special options, but this may not be a big problem to you, especially if you are already using GTK or GLib. See <ulink url="http://www.recursism.com/s2004/zp/products/gnu+autounit">http://www.recursism.com/s2004/zp/products/gnu+autounit</ulink>.
     </para>
 
    </listitem>
