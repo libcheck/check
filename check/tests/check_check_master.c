@@ -11,17 +11,60 @@ TestResult **tr_all_array;
 
 #define MAXSTR 100
 
+typedef struct {
+  const char *tcname;
+  int line_nos;
+  int failure_type;
+  const char *msg;
+} master_test_t;
+
+static master_test_t master_tests[] = {
+  { "Simple Tests",   8, CK_FAILURE, "Failure expected" },
+  { "Simple Tests",  14, CK_ERROR,   "Early exit with return value 1" },
+  { "Simple Tests",  -1, CK_PASS,    "Passed" },
+  { "Simple Tests",  -1, CK_FAILURE, "This test should fail" },
+  { "Simple Tests",  -1, CK_PASS,    "Passed" },
+  { "Simple Tests",  -1, CK_FAILURE, "This test should fail" },
+  { "Simple Tests",  -1, CK_FAILURE, "Assertion '2 == 3' failed" },
+  { "Simple Tests",  -1, CK_FAILURE, "Assertion '4 == 5' failed" },
+  { "Simple Tests",  -1, CK_FAILURE, "Assertion '2 != 3' failed" },
+  { "Simple Tests",  -1, CK_FAILURE, "Assertion '4 != 5' failed" },
+  { "Simple Tests",  -1, CK_FAILURE, "3 != 4" },
+  { "Simple Tests",  -1, CK_FAILURE, "5 != 6" },
+  { "Simple Tests",  -1, CK_FAILURE, "7 == 7" },
+  { "Simple Tests",  -1, CK_FAILURE, "Failed" },
+  { "Signal Tests",  -1, CK_ERROR,   "Received signal 11" },
+  { "Signal Tests",  -1, CK_PASS,    "Passed" },
+  { "Signal Tests", 101, CK_ERROR,   "Error: Received signal 11, expected 8" },
+  { "Signal Tests",  -1, CK_FAILURE, "Early exit with return value 0" },
+  { "Signal Tests",  -1, CK_FAILURE, "Early exit with return value 1" },
+  { "Signal Tests",  -1, CK_ERROR,   "Received signal 8" },
+  { "Signal Tests",  -1, CK_ERROR,   "Received signal 8" },
+  { "Limit Tests",   -1, CK_ERROR,   "Early exit with return value 1" },
+  { "Limit Tests",   -1, CK_FAILURE, "Completed properly" },
+  { "Limit Tests",   -1, CK_FAILURE, "Completed properly" },
+  { "Core",          -1, CK_FAILURE, "We failed" }
+};
+
 
 START_TEST(test_check_nfailures)
 {
-  fail_unless (sub_nfailed == 19,
+  int i;
+  int failed = 0;
+  
+  for (i = 0; i < sizeof master_tests /sizeof master_tests[0]; i++) {
+    if (master_tests[i].failure_type != CK_PASS) {
+      failed++;
+    }
+  }
+  fail_unless (sub_nfailed == failed,
                "Unexpected number of failures received, %d.", sub_nfailed);
 }
 END_TEST
 
 START_TEST(test_check_ntests_run)
 {
-  fail_unless (sub_ntests == 21,
+  fail_unless (sub_ntests == (sizeof master_tests /sizeof master_tests[0]),
                "Unexpected number of tests run, %d.", sub_ntests);
 }
 END_TEST
@@ -29,37 +72,23 @@ END_TEST
 START_TEST(test_check_failure_msgs)
 {
   int i;
-  const char *msgar[] = {
-    "Failure expected",
-    "Early exit with return value 1",
-    /*    "Test passed", */
-    "This test should fail",
-    /*    "Test passed", */
-    "This test should fail",
-    "Assertion '2 == 3' failed",
-    "Assertion '4 == 5' failed",
-    "Assertion '2 != 3' failed",
-    "Assertion '4 != 5' failed",
-    "3 != 4",
-    "5 != 6",
-    "7 == 7",
-    "Failed",
-    "Received signal 11",
-    "Received signal 8",
-    "Received signal 8",
-    "Early exit with return value 1",
-    "Completed properly",
-    "Completed properly",
-    "We failed"};
+  int passed = 0;
+  const char *got_msg;
+  const char *expected_msg;
 
-  for (i = 0; i < sub_nfailed; i++) {
-    const char *msg;   
-    msg = tr_msg(tr_fail_array[i]);
-    if (strcmp (msg, msgar[i]) != 0) {
-      char *emsg = malloc (MAXSTR);
-      snprintf (emsg, MAXSTR,"Expected %s, got %s", msgar[i], msg);
-      fail (emsg);
-      free (emsg);
+  for (i = 0; i < sub_ntests; i++) {
+    if (master_tests[i].failure_type == CK_PASS) {
+      passed++;
+      continue;
+    }
+
+    got_msg = tr_msg(tr_fail_array[i - passed]);
+    expected_msg = master_tests[i].msg;
+    if (strcmp(got_msg, expected_msg) != 0) {
+      char *emsg = malloc(MAXSTR);
+      snprintf(emsg, MAXSTR,"Expected %s, got %s", expected_msg, got_msg);
+      fail(emsg);
+      free(emsg);
     }
   }
 }
@@ -68,35 +97,22 @@ END_TEST
 START_TEST(test_check_failure_lnos)
 {
   int i;
-  int lnos[] = {
-    8,
-    14,
-    -1,
-    -1,
-    -1,
-    -1,
-    -1,
-    -1,
-    -1,
-    -1,
-    -1,
-    -1,
-    -1,
-    -1,
-    -1,
-    -1,
-    -1,
-    -1,
-    -1};
+  int line_no;
+  int passed = 0;
   
-  for (i = 0; i < sub_nfailed; i++) {
+  for (i = 0; i < sub_ntests; i++) {
+    if (master_tests[i].failure_type == CK_PASS) {
+      passed++;
+      continue;
+    }
 
-    if (lnos[i] > 0 && tr_lno(tr_fail_array[i]) != lnos[i]) {
-      char *emsg = malloc (MAXSTR);
-      snprintf (emsg, MAXSTR, "Expected lno %d, got %d",
-		lnos[i], tr_lno(tr_fail_array[i]));
-      fail (emsg);
-      free (emsg);
+    line_no = master_tests[i].line_nos;
+    if (line_no > 0 && tr_lno(tr_fail_array[i - passed]) != line_no) {
+      char *emsg = malloc(MAXSTR);
+      snprintf(emsg, MAXSTR, "Expected lno %d, got %d",
+               line_no, tr_lno(tr_fail_array[i - passed]));
+      fail(emsg);
+      free(emsg);
     }    
   }
 }
@@ -105,30 +121,16 @@ END_TEST
 START_TEST(test_check_failure_ftypes)
 {
   int i;
-  int ftypes[] = {
-    CK_FAILURE,
-    CK_ERROR,
-    CK_FAILURE,
-    CK_FAILURE,
-    CK_FAILURE,
-    CK_FAILURE,
-    CK_FAILURE,
-    CK_FAILURE,
-    CK_FAILURE,
-    CK_FAILURE,
-    CK_FAILURE,
-    CK_FAILURE,
-    CK_ERROR,
-    CK_ERROR,
-    CK_ERROR,
-    CK_ERROR,
-    CK_FAILURE,
-    CK_FAILURE,
-    CK_FAILURE};
+  int passed = 0;
   
-  for (i = 0; i < sub_nfailed; i++) {
-    fail_unless (ftypes[i] == tr_rtype(tr_fail_array[i]),
-		 "Failure type wrong");
+  for (i = 0; i < sub_ntests; i++) {
+    if (master_tests[i].failure_type == CK_PASS) {
+      passed++;
+      continue;
+    }
+    fail_unless(master_tests[i].failure_type ==
+                tr_rtype(tr_fail_array[i - passed]),
+                "Failure type wrong");
   }
 }
 END_TEST
@@ -137,47 +139,25 @@ START_TEST(test_check_failure_lfiles)
 {
   int i;
   for (i = 0; i < sub_nfailed; i++) {
-
-    fail_unless (strstr(tr_lfile(tr_fail_array[i]), "check_check_sub.c") != 0,
-		 "Bad file name");
+    fail_unless(strstr(tr_lfile(tr_fail_array[i]), "check_check_sub.c") != 0,
+                "Bad file name");
   }
 }
 END_TEST
 
-START_TEST(test_check_failure_tcnames)
+START_TEST(test_check_tcnames)
 {
   int i;
-  const char *tcnamearr[] = {
-    "Simple Tests",
-    "Simple Tests",
-    "Simple Tests",
-    "Simple Tests",
-    "Simple Tests",
-    "Simple Tests",
-    "Simple Tests",
-    "Simple Tests",
-    "Simple Tests",
-    "Simple Tests",
-    "Simple Tests",
-    "Simple Tests",
-    "Simple Tests",
-    "Simple Tests",
-    "Signal Tests",
-    "Signal Tests",
-    "Signal Tests",
-    "Limit Tests",
-    "Limit Tests",
-    "Limit Tests",
-    "Core"};
   
-  for (i = 0; i < sub_nfailed; i++) {
+  for (i = 0; i < sub_ntests; i++) {
     const char *tcname;   
     tcname = tr_tcname(tr_all_array[i]);
-    if (strcmp (tcname, tcnamearr[i]) != 0) {
+    if (strcmp(tcname, master_tests[i].tcname) != 0) {
       char *emsg = malloc (MAXSTR);
-      snprintf (emsg, MAXSTR,"Expected %s, got %s", tcnamearr[i], tcname);
-      fail (emsg);
-      free (emsg);
+      snprintf(emsg, MAXSTR,"Expected %s, got %s",
+               master_tests[i].tcname, tcname);
+      fail(emsg);
+      free(emsg);
     }
   }
 }
@@ -187,37 +167,15 @@ END_TEST
 START_TEST(test_check_all_msgs)
 {
   int i;
-  const char *msgar[] = {
-    "Failure expected",
-    "Early exit with return value 1",
-    "Passed",
-    "This test should fail",
-    "Passed",
-    "This test should fail",
-    "Assertion '2 == 3' failed",
-    "Assertion '4 == 5' failed",
-    "Assertion '2 != 3' failed",
-    "Assertion '4 != 5' failed",
-    "3 != 4",
-    "5 != 6",
-    "7 == 7",
-    "Failed",
-    "Received signal 11",
-    "Received signal 8",
-    "Received signal 8",
-    "Early exit with return value 1",
-    "Completed properly",
-    "Completed properly",
-    "We failed"};
 
   for (i = 0; i < sub_ntests; i++) {
     const char *msg;   
     msg = tr_msg(tr_all_array[i]);
-    if (strcmp (msg, msgar[i]) != 0) {
+    if (strcmp(msg, master_tests[i].msg) != 0) {
       char *emsg = malloc (MAXSTR);
-      snprintf (emsg, MAXSTR,"Expected %s, got %s", msgar[i], msg);
-      fail (emsg);
-      free (emsg);
+      snprintf(emsg, MAXSTR,"Expected %s, got %s", master_tests[i].msg, msg);
+      fail(emsg);
+      free(emsg);
     }
   }
 }
@@ -226,38 +184,15 @@ END_TEST
 START_TEST(test_check_all_ftypes)
 {
   int i;
-  int ftypes[] = {
-    CK_FAILURE,
-    CK_ERROR,
-    CK_PASS,
-    CK_FAILURE,
-    CK_PASS,
-    CK_FAILURE,
-    CK_FAILURE,
-    CK_FAILURE,
-    CK_FAILURE,
-    CK_FAILURE,
-    CK_FAILURE,
-    CK_FAILURE,
-    CK_FAILURE,    
-    CK_FAILURE,
-    CK_ERROR,
-    CK_ERROR,
-    CK_ERROR,
-    CK_ERROR,
-    CK_FAILURE,
-    CK_FAILURE,
-    CK_FAILURE};
-  
   for (i = 0; i < sub_ntests; i++) {
-    fail_unless (ftypes[i] == tr_rtype(tr_all_array[i]),
-		 "Failure type wrong");
+    fail_unless(master_tests[i].failure_type == tr_rtype(tr_all_array[i]),
+		"Failure type wrong");
   }
 }
 END_TEST
 
 int test_fixture_val = 0;
-static void test_fixture_setup (void)
+static void test_fixture_setup(void)
 {
   test_fixture_val = 1;
 }
@@ -300,7 +235,7 @@ Suite *make_master_suite (void)
   tcase_add_test (tc_core, test_check_failure_ftypes);
   tcase_add_test (tc_core, test_check_failure_lnos);
   tcase_add_test (tc_core, test_check_failure_lfiles);
-  tcase_add_test (tc_core, test_check_failure_tcnames);
+  tcase_add_test (tc_core, test_check_tcnames);
   tcase_add_test (tc_core, test_check_all_msgs);
   tcase_add_test (tc_core, test_check_all_ftypes);
   tcase_add_unchecked_fixture(tc_fixture, test_fixture_setup,
