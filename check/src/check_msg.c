@@ -261,7 +261,7 @@ static void setup_pipe (Pipe *p)
   fcntl (p->sendfd, F_SETFL, O_NONBLOCK);
 }
 
-void setup_messaging_with_key (MsgKey *key)
+static void setup_messaging_with_key (MsgKey *key)
 {
   PipeEntry *pe;
 
@@ -287,7 +287,7 @@ void setup_messaging_with_key (MsgKey *key)
     eprintf ("Only one nesting of suite runs supported", __FILE__, __LINE__);
 }
 
-void teardown_messaging_with_key (MsgKey *key)
+static void teardown_messaging_with_key (MsgKey *key)
 {
   PipeEntry *pe = get_pe_by_key (key);
 
