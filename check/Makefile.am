@@ -9,7 +9,7 @@ doc_DATA = ChangeLog ChangeLogOld NEWS README COPYING
 
 SUBDIRS=src tests doc rpm debian
 
-EXTRA_DIST= ChangeLogOld
+EXTRA_DIST= ChangeLogOld autogen.sh
 
 CLEANFILES=*~\
 	${PACKAGE}-${VERSION}*.gz\
@@ -18,3 +18,4 @@ CLEANFILES=*~\
 
 rpm: dist
 	(cd rpm && ${MAKE} ${AM_MAKEFLAGS} rpm)
+
