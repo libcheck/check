@@ -23,8 +23,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
+
+#ifdef HAVE_STDINT_H
 #include <stdint.h>
+#endif
 
 #include "check.h"
 #include "check_error.h"

@@ -4,7 +4,7 @@ dnl
 
 AC_DEFUN([AM_PATH_CHECK],
 [
-  AC_ARG_WITH(check,
+  AC_ARG_WITH([check],
   [  --with-check=PATH       prefix where check is installed [default=auto]])
  
   min_check_version=ifelse([$1], ,0.8.2,$1)
