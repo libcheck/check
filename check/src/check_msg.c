@@ -158,13 +158,13 @@ static TestResult *construct_test_result (RcvMsg *rmsg, int waserror)
   if (rmsg == NULL)
     return NULL;
 
-  tr = emalloc (sizeof (TestResult));
+  tr = tr_create();
 
   if (rmsg->msg != NULL || waserror) {
-    tr->ctx = rmsg->lastctx;
+    tr->ctx = (cur_fork_status () == CK_FORK) ? rmsg->lastctx : rmsg->failctx;
     tr->msg = rmsg->msg;
     rmsg->msg = NULL;
-    tr_set_loc_by_ctx (tr, rmsg->lastctx, rmsg);
+    tr_set_loc_by_ctx (tr, tr->ctx, rmsg);
   } else if (rmsg->lastctx == CK_CTX_SETUP) {
     tr->ctx = CK_CTX_SETUP;
     tr->msg = NULL;
@@ -175,8 +175,7 @@ static TestResult *construct_test_result (RcvMsg *rmsg, int waserror)
     tr_set_loc_by_ctx (tr, CK_CTX_TEST, rmsg);
   }
 
-  return tr;  
-  
+  return tr;
 }
 
 void setup_messaging (void)
