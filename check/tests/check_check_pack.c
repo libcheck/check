@@ -209,7 +209,7 @@ START_TEST(test_ppack)
   ppack(filedes[1],CK_MSG_LOC, &lmsg);
   ppack(filedes[1],CK_MSG_FAIL, &fmsg);
   close(filedes[1]);
-  rmsg = new_punpack(filedes[0]);
+  rmsg = punpack(filedes[0]);
 
   fail_unless (rmsg != NULL,
 	       "Return value from ppack should always be malloc'ed");
@@ -244,7 +244,7 @@ START_TEST(test_ppack_noctx)
   ppack(filedes[1],CK_MSG_LOC, &lmsg);
   ppack(filedes[1],CK_MSG_FAIL, &fmsg);
   close(filedes[1]);
-  rmsg = new_punpack(filedes[0]);
+  rmsg = punpack(filedes[0]);
 
   fail_unless (rmsg == NULL,
 	       "Result should be NULL with no CTX");
@@ -264,7 +264,7 @@ START_TEST(test_ppack_onlyctx)
   pipe(filedes);
   ppack(filedes[1],CK_MSG_CTX, &cmsg);
   close(filedes[1]);
-  rmsg = new_punpack(filedes[0]);
+  rmsg = punpack(filedes[0]);
 
   fail_unless (rmsg->msg == NULL,
 	       "Result message should be NULL with only CTX");
@@ -297,7 +297,7 @@ START_TEST(test_ppack_multictx)
   cmsg.ctx = CK_CTX_TEARDOWN;
   ppack(filedes[1],CK_MSG_CTX, &cmsg);
   close(filedes[1]);
-  rmsg = new_punpack(filedes[0]);
+  rmsg = punpack(filedes[0]);
 
   fail_unless (rmsg->test_line == 5,
 	       "Test loc not being preserved on CTX change");
@@ -323,7 +323,7 @@ START_TEST(test_ppack_nofail)
   ppack(filedes[1],CK_MSG_CTX, &cmsg);
   ppack(filedes[1],CK_MSG_LOC, &lmsg);
   close(filedes[1]);
-  rmsg = new_punpack(filedes[0]);
+  rmsg = punpack(filedes[0]);
 
   fail_unless (rmsg->msg == NULL,
 	       "Failure result should be NULL with no failure message");
@@ -353,7 +353,7 @@ START_TEST(test_ppack_big)
   ppack(filedes[1],CK_MSG_LOC, &lmsg);
   ppack(filedes[1],CK_MSG_FAIL, &fmsg);
   close(filedes[1]);
-  rmsg = new_punpack(filedes[0]);
+  rmsg = punpack(filedes[0]);
 
   fail_unless (rmsg != NULL,
 	       "Return value from ppack should always be malloc'ed");

@@ -59,8 +59,7 @@ int pack (enum ck_msg_type type, char *buf, void *data);
 int upack (char *buf, void *data, enum ck_msg_type *type);
 
 void ppack (int fdes, enum ck_msg_type type, void *data);
-TestResult *punpack(int fdes);
-RcvMsg *new_punpack(int fdes);
+RcvMsg *punpack(int fdes);
 
 
 #endif /*CHECK_PACK_H */

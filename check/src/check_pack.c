@@ -46,7 +46,7 @@ static enum ck_msg_type upack_type (char **buf);
 static void pack_type (char **buf, enum ck_msg_type type);
 
 static int read_buf (int fdes, char **buf);
-static int get_result (char *buf, TestResult *tr);
+static int get_result (char *buf, RcvMsg *rmsg);
 static void rcvmsg_update_ctx(RcvMsg *rmsg, enum ck_result_ctx ctx);
 static void rcvmsg_update_loc(RcvMsg *rmsg, char *file, int line);
 static RcvMsg *rcvmsg_create(void);
@@ -261,42 +261,8 @@ static int read_buf (int fdes, char **buf)
   return nread;
 }    
 
-static int get_result (char *buf, TestResult *tr)
-{
-  enum ck_msg_type type;
-  void *data;
-  int n;
 
-  data = emalloc(CK_MAXMSGBUF);
-  
-  n = upack(buf,data,&type);
-  if (n == -1)
-    eprintf("Error in upack", __FILE__, __LINE__);
-  
-  if (type == CK_MSG_CTX) {
-    CtxMsg *cmsg = data;
-    if (tr->ctx != -1) {
-      tr_reset(tr);
-    }
-    tr->ctx = cmsg->ctx;
-  } else if (type == CK_MSG_LOC) {
-    LocMsg *lmsg = data;
-    tr->line = lmsg->line;
-    tr->file = emalloc(strlen(lmsg->file) + 1);
-    strcpy(tr->file, lmsg->file);
-  } else if (type == CK_MSG_FAIL) {      
-    FailMsg *fmsg = data;
-    tr->msg = emalloc (strlen(fmsg->msg) + 1);
-    strcpy(tr->msg, fmsg->msg);
-  } else
-    check_type(type, __FILE__, __LINE__);
-
-  free(data);
-  return n;
-  
-}
-
-static int new_get_result (char *buf, RcvMsg *rmsg)
+static int get_result (char *buf, RcvMsg *rmsg)
 {
   enum ck_msg_type type;
   void *data;
@@ -327,31 +293,6 @@ static int new_get_result (char *buf, RcvMsg *rmsg)
 }
 
 
-TestResult *punpack(int fdes)
-{
-  int nread, n;
-  char *buf;
-  char *obuf;
-  TestResult *tr;
-
-  nread = read_buf (fdes, &buf);
-  obuf = buf;
-  tr = tr_create();
-  
-  while (nread > 0) {
-    n = get_result(buf, tr);
-    nread -= n;
-    buf += n;
-  }
-
-  free(obuf);
-  if (tr->ctx == -1) {
-    free (tr);
-    tr = NULL;
-  }
-
-  return tr;
-}
 
 static void reset_rcv_test (RcvMsg *rmsg)
 {
@@ -400,7 +341,7 @@ static void rcvmsg_update_loc (RcvMsg *rmsg, char *file, int line)
   }
 }
   
-RcvMsg *new_punpack(int fdes)
+RcvMsg *punpack(int fdes)
 {
   int nread, n;
   char *buf;
@@ -412,7 +353,7 @@ RcvMsg *new_punpack(int fdes)
   rmsg = rcvmsg_create();
   
   while (nread > 0) {
-    n = new_get_result(buf, rmsg);
+    n = get_result(buf, rmsg);
     nread -= n;
     buf += n;
   }

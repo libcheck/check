@@ -102,7 +102,7 @@ TestResult *receive_test_result (int key, int waserror)
   if (p == NULL)
     eprintf("Couldn't find pipe with key %d",__FILE__, __LINE__, key);
   close(p->sendfd);
-  rmsg = new_punpack(p->recvfd);
+  rmsg = punpack(p->recvfd);
   close(p->recvfd);
   setup_pipe(p);
   return construct_test_result (rmsg, waserror);
