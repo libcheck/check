@@ -1,3 +1,21 @@
+2002-04-15 12:57  neo23
+
+	* NEWS, README: Made 0.8.2 Release.
+
+2002-04-14 18:59  neo23
+
+	* src/check_msg.c: Applied a patch from Arien that makes the pipe
+	nonblocking. This doesn't solve #482012 but makes it more obvious
+	what is going wrong if the pipe fills up.
+
+2002-04-12 12:50  neo23
+
+	* doc/tutorial.lyx: Use #include rather than #import (bug #484564).
+
+2002-04-12 12:34  neo23
+
+	* ChangeLog: Updated ChangeLog.
+
 2002-04-12 12:33  neo23
 
 	* AUTHORS, doc/tutorial.lyx: Document the fact that you can now use
