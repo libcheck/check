@@ -1,3 +1,44 @@
+2002-04-12 12:33  neo23
+
+	* AUTHORS, doc/tutorial.lyx: Document the fact that you can now use
+	NULL as msg argument for fail_unless().
+
+2002-04-12 11:54  neo23
+
+	* config.h.in, configure.in, src/Makefile.am, src/check.c,
+	src/check_impl.h, src/check_magic.h, src/check_msg.c,
+	src/check_pack.c, src/check_pack.h, src/check_run.c,
+	src/check_str.c, src/check_str.h, tests/Makefile.am,
+	tests/check_check_fixture.c, tests/check_check_master.c,
+	tests/check_check_msg.c, tests/check_check_pack.c: Removed
+	limitations on line number, message and buffer sizes (bug #478233)
+	by changing the way we send integers over the pipe. Instead of
+	strings, integers are now send as 4 bytes.  This allows the pack
+	routine to easily calculate the message size so that we can
+	allocate the needed buffer there.  Made a union out of the
+	different Msg structs to clean up the internal API. Also introduced
+	the internal function ck_strdup_printf(), a simple wrapper around
+	sprintf() that allocates enough space to hold the resulting string.
+
+2002-04-10 13:11  neo23
+
+	* AUTHORS, NEWS, configure.in, src/check.c, src/check.h.in,
+	src/check_error.c, src/check_error.h, src/check_impl.h,
+	src/check_log.c, src/check_msg.c, src/check_msg.h,
+	src/check_pack.c, src/check_run.c, src/check_str.c, src/list.c,
+	src/list.h, tests/check_check_fixture.c, tests/check_check_fork.c,
+	tests/check_check_master.c, tests/check_check_pack.c,
+	tests/check_list.c: Applied a slightly modified version of a patch
+	from Neil Spring <nspring@cs.washington.edu> that declares strings
+	as const where applicable. It also changes our CFLAGS to be much
+	stricter and removes the warnings introduced by -Wwrite-strings. 
+	This allows building other check tests with -Wwrite-strings without
+	heaping gobs of compiler warnings.
+
+2002-03-28 20:12  neo23
+
+	* ChangeLog: Updated ChangeLog.
+
 2002-03-28 19:37  neo23
 
 	* src/check.c, src/check.h.in, tests/check_check_master.c,
