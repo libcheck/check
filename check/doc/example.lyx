@@ -33,6 +33,15 @@ Arien Malec
 29 May, 2001
 \layout Standard
 
+Copyright (c) 2001 Arien Malec.
+ Permission is granted to copy, distribute and/or modify this document under
+ the terms of the GNU Free Documentation License, Version 1.1 or any later
+ version published by the Free Software Foundation; with no Invariant Sections,
+ with no Front-Cover Texts, and with no Back-Cover Texts.
+ A copy of the license is included in the section entitled "GNU Free Documentati
+on License".
+\layout Standard
+\pagebreak_top \pagebreak_bottom 
 
 \begin_inset LatexCommand \tableofcontents{}
 
@@ -94,7 +103,7 @@ By providing a documented level of correctness, they allow the developer
 
 \end_inset 
 
-) agressively.
+) aggressively.
 \layout Standard
 
 That third reason is the one that turns people into unit testing addicts.
@@ -102,12 +111,9 @@ That third reason is the one that turns people into unit testing addicts.
 ation, and having the unit tests reassure you at each step of that change
  that all is well.
  It is like the difference between exploring the wilderness with and without
- a good map and compass: without the proper gear, you are more likely to
- proceed cautiously and stick to the marked trails; with it, you can take
- the most direct path to where you want to go.
-\layout Section
-
-How to get Check
+ a good map and compass: without the proper gear, you are more likely to<<<<<<<
+ example.lyx proceed cautiously and stick to the marked trails; with it,
+ you can take the most direct path to where you want to go.
 \layout Standard
 
 Look at the Check homepage for the latest information on Check: 
@@ -116,6 +122,17 @@ Look at the Check homepage for the latest information on Check:
 \end_inset 
 
 
+\layout Standard
+
+The Check project page is at 
+\begin_inset LatexCommand \htmlurl[http://sourceforge.net/projects/check/]{http://sourceforge.net/projects/check/}
+
+\end_inset 
+
+
+\layout Section
+
+How to get Check
 \layout Subsection
 
 Anonymous CVS
@@ -192,6 +209,20 @@ make
 \end_inset 
 
  in the above.
+\layout Subsection
+
+Contributing
+\layout Standard
+
+The author welcomes any and all help with Check, whether through enhancement
+ requests, bug reports, patches, documentation, etc.
+ Please visit the Check project page at 
+\begin_inset LatexCommand \htmlurl[http://sourceforge.net/projects/check/]{http://sourceforge.net/projects/check/}
+
+\end_inset 
+
+.
+ Check is free software, licensed under the GPL.
 \layout Section
 
 Unit testing in C
@@ -218,8 +249,8 @@ The Check framework is also designed to play happily with common development
  environments for C programming.
  The author designed Check around Autoconf/Automake (thus the name Check
  -- make check is the idiom used for testing with Autoconf/Automake), and
- the test failure messages thrown up by Check use the comon idiom of filename:li
-nenumber:message used by gcc and family to report problems in source code.
+ the test failure messages thrown up by Check use the common idiom of filename:l
+inenumber:message used by gcc and family to report problems in source code.
  With (X)Emacs, the output of Check allows one to quickly navigate to the
  location of the unit test that failed; presumably that also works in VI
  and IDEs.
@@ -258,7 +289,7 @@ cUnit Also uses GLib, but does not fork to protect the address space of
 \layout Standard
 
 It is the author's considered opinion that forking or otherwise trapping
- and reporting signals is indespensible for unit testing (but it probably
+ and reporting signals is indispensable for unit testing (but it probably
  wouldn't be hard to add that to cUnit).
  Try 'em all out: adapt this tutorial to use all of the frameworks above,
  and use whichever you like.
@@ -440,9 +471,9 @@ fail_unless
 \begin_inset Quotes erd
 \end_inset 
 
- function (actually a macro) takes a first boolean argument, and an error
+ function (actually a macro) takes a first Boolean argument, and an error
  message to send if the condition is not true.
- If the boolean argument is too complicated to elegantly express within
+ If the Boolean argument is too complicated to elegantly express within
  
 \begin_inset Quotes eld
 \end_inset 
@@ -643,7 +674,7 @@ int main (void)
 }
 \layout Standard
 
-Most of the money_suite code should be self-explainatory.
+Most of the money_suite code should be self-explanatory.
  We are creating a suite, creating a test case, adding the test case to
  the suite, and adding the unit test we created above to the test case.
  Why separate this off into a separate function, rather than inlining it
@@ -652,16 +683,16 @@ Most of the money_suite code should be self-explainatory.
  stay relatively clean and simple.
 \layout Standard
 
-The code in main bears some explaination.
+The code in main bears some explanation.
  We are creating a suite runner object from the suite we created in money_suite.
  We then run the suite, using the CRNORMAL flag to specify that we should
- print a summary of the run, and list any failures that may have occured.
+ print a summary of the run, and list any failures that may have occurred.
  We could also have specified the CRSILENT flag to specify that no output
  should occur, and the CRMINIMAL flag to specify that only the run summary
  should be printed.
- We capture the number of failures that occured during the run, and use
+ We capture the number of failures that occurred during the run, and use
  that to decide how to return.
- The check target created byAutomake uses the return value to decide whether
+ The check target created by Automake uses the return value to decide whether
  the tests passed or failed.
  Let's rerun make check now: we get the following satisfying output:
 \layout Code
@@ -677,7 +708,7 @@ check_money.c:9:Core: Amount not set correctly on creation
 
 The first number in the summary line tells us that 0% of our tests passed,
  and the rest of the line tells us that there was one check, and one failure.
- The next line tells us exactly where that failure occured.
+ The next line tells us exactly where that failure occurred.
 \layout Standard
 
 Let's implement the money_amount function, so that it will pass its tests.
@@ -754,12 +785,6 @@ The reason our test failed so horribly is that we haven't implemented money_crea
 te to create any money.
  Go ahead and implement that, and money_currency, to make the unit tests
  pass.
-\layout Subsection
-
-Test fixtures
-\layout Standard
-
-We may want multiple tests to work with the same 
 \layout Subsection
 
 Running multiple cases
@@ -871,10 +896,108 @@ Limits,
 \end_inset 
 
  giving you additional information about where things broke.
+\layout Subsection
+
+Test fixtures
 \layout Standard
 
-All the rest is simply application of what has been learned in the tutorial
- through repetitions of 
+We may want multiple tests that all use the same Money.
+ In such cases, rather than setting up and tearing down objects for each
+ unit test, it may be convenient to add some setup that is constant across
+ all the tests in a test case.
+ In the extreme programming approach to unit tests, such setup is called
+ a test fixture, and we create one in Check as follows:
+\layout Enumerate
+
+Define the global variables, and functions to setup and teardown the globals.
+ The functions both take void and return void
+\begin_deeper 
+\layout Code
+
+Money *five_dollars; 
+\layout Code
+
+void setup (void) { 
+\layout Code
+
+  five_dollars = money_create(5, "USD"); 
+\layout Code
+
+}
+\layout Code
+
+\layout Code
+
+void teardown (void) 
+\layout Code
+
+{ 
+\layout Code
+
+  money_free (five_dollars); 
+\layout Code
+
+}
+\end_deeper 
+\layout Enumerate
+
+Add the setup and teardown functions to the test case with 
+\begin_inset Quotes eld
+\end_inset 
+
+tcase_set_fixture
+\begin_inset Quotes erd
+\end_inset 
+
+ (this belongs in the suite setup function 
+\begin_inset Quotes eld
+\end_inset 
+
+money_suite
+\begin_inset Quotes erd
+\end_inset 
+
+:
+\begin_deeper 
+\layout Code
+
+tcase_set_fixture (tc_core, setup, teardown);
+\end_deeper 
+\layout Enumerate
+
+We can now rewrite the first test we wrote as follows:
+\begin_deeper 
+\layout Code
+
+START_TEST(test_create) 
+\layout Code
+
+{ 
+\layout Code
+
+  fail_unless (money_amount(five_dollars) == 5, "Amount not set correctly
+ on creation"); 
+\layout Code
+
+  fail_unless (strcmp(money_currency(five_dollars),"USD") == 0, "Currency
+ not set correctly on creation"); 
+\layout Code
+
+} 
+\layout Code
+
+END_TEST
+\end_deeper 
+\layout Subsection
+
+Conclusion
+\layout Standard
+
+This tutorial has provided an introduction to all of the functionality available
+ in Check.
+ Hopefully, this is enough to get you started writing unit tests with Check.
+ All the rest is simply application of what has been learned in the tutorial
+ through multiple repetitions of 
 \begin_inset Quotes eld
 \end_inset 
 
@@ -883,4 +1006,398 @@ test a little, code a little.
 \end_inset 
 
 
+\layout Section
+
+GNU Free Documentation License 
+\layout Standard
+
+Version 1.1, March 2000
+\layout Standard
+
+Copyright (C) 2000 Free Software Foundation, Inc.
+ 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA Everyone is permitted
+ to copy and distribute verbatim copies of this license document, but changing
+ it is not allowed.
+\layout Standard
+
+0.
+ PREAMBLE
+\layout Standard
+
+The purpose of this License is to make a manual, textbook, or other written
+ document "free" in the sense of freedom: to assure everyone the effective
+ freedom to copy and redistribute it, with or without modifying it, either
+ commercially or noncommercially.
+ Secondarily, this License preserves for the author and publisher a way
+ to get credit for their work, while not being considered responsible for
+ modifications made by others.
+\layout Standard
+
+This License is a kind of "copyleft", which means that derivative works
+ of the document must themselves be free in the same sense.
+ It complements the GNU General Public License, which is a copyleft license
+ designed for free software.
+\layout Standard
+
+We have designed this License in order to use it for manuals for free software,
+ because free software needs free documentation: a free program should come
+ with manuals providing the same freedoms that the software does.
+ But this License is not limited to software manuals; it can be used for
+ any textual work, regardless of subject matter or whether it is published
+ as a printed book.
+ We recommend this License principally for works whose purpose is instruction
+ or reference.
+\layout Standard
+
+1.
+ APPLICABILITY AND DEFINITIONS
+\layout Standard
+
+This License applies to any manual or other work that contains a notice
+ placed by the copyright holder saying it can be distributed under the terms
+ of this License.
+ The "Document", below, refers to any such manual or work.
+ Any member of the public is a licensee, and is addressed as "you".
+\layout Standard
+
+A "Modified Version" of the Document means any work containing the Document
+ or a portion of it, either copied verbatim, or with modifications and/or
+ translated into another language.
+\layout Standard
+
+A "Secondary Section" is a named appendix or a front-matter section of the
+ Document that deals exclusively with the relationship of the publishers
+ or authors of the Document to the Document's overall subject (or to related
+ matters) and contains nothing that could fall directly within that overall
+ subject.
+ (For example, if the Document is in part a textbook of mathematics, a Secondary
+ Section may not explain any mathematics.) The relationship could be a matter
+ of historical connection with the subject or with related matters, or of
+ legal, commercial, philosophical, ethical or political position regarding
+ them.
+\layout Standard
+
+The "Invariant Sections" are certain Secondary Sections whose titles are
+ designated, as being those of Invariant Sections, in the notice that says
+ that the Document is released under this License.
+\layout Standard
+
+The "Cover Texts" are certain short passages of text that are listed, as
+ Front-Cover Texts or Back-Cover Texts, in the notice that says that the
+ Document is released under this License.
+\layout Standard
+
+A "Transparent" copy of the Document means a machine-readable copy, represented
+ in a format whose specification is available to the general public, whose
+ contents can be viewed and edited directly and straightforwardly with generic
+ text editors or (for images composed of pixels) generic paint programs
+ or (for drawings) some widely available drawing editor, and that is suitable
+ for input to text formatters or for automatic translation to a variety
+ of formats suitable for input to text formatters.
+ A copy made in an otherwise Transparent file format whose markup has been
+ designed to thwart or discourage subsequent modification by readers is
+ not Transparent.
+ A copy that is not "Transparent" is called "Opaque".
+\layout Standard
+
+Examples of suitable formats for Transparent copies include plain ASCII
+ without markup, Texinfo input format, LaTeX input format, SGML or XML using
+ a publicly available DTD, and standard-conforming simple HTML designed
+ for human modification.
+ Opaque formats include PostScript, PDF, proprietary formats that can be
+ read and edited only by proprietary word processors, SGML or XML for which
+ the DTD and/or processing tools are not generally available, and the machine-ge
+nerated HTML produced by some word processors for output purposes only.
+\layout Standard
+
+The "Title Page" means, for a printed book, the title page itself, plus
+ such following pages as are needed to hold, legibly, the material this
+ License requires to appear in the title page.
+ For works in formats which do not have any title page as such, "Title Page"
+ means the text near the most prominent appearance of the work's title,
+ preceding the beginning of the body of the text.
+\layout Standard
+
+2.
+ VERBATIM COPYING
+\layout Standard
+
+You may copy and distribute the Document in any medium, either commercially
+ or noncommercially, provided that this License, the copyright notices,
+ and the license notice saying this License applies to the Document are
+ reproduced in all copies, and that you add no other conditions whatsoever
+ to those of this License.
+ You may not use technical measures to obstruct or control the reading or
+ further copying of the copies you make or distribute.
+ However, you may accept compensation in exchange for copies.
+ If you distribute a large enough number of copies you must also follow
+ the conditions in section 3.
+\layout Standard
+
+You may also lend copies, under the same conditions stated above, and you
+ may publicly display copies.
+\layout Standard
+
+3.
+ COPYING IN QUANTITY
+\layout Standard
+
+If you publish printed copies of the Document numbering more than 100, and
+ the Document's license notice requires Cover Texts, you must enclose the
+ copies in covers that carry, clearly and legibly, all these Cover Texts:
+ Front-Cover Texts on the front cover, and Back-Cover Texts on the back
+ cover.
+ Both covers must also clearly and legibly identify you as the publisher
+ of these copies.
+ The front cover must present the full title with all words of the title
+ equally prominent and visible.
+ You may add other material on the covers in addition.
+ Copying with changes limited to the covers, as long as they preserve the
+ title of the Document and satisfy these conditions, can be treated as verbatim
+ copying in other respects.
+\layout Standard
+
+If the required texts for either cover are too voluminous to fit legibly,
+ you should put the first ones listed (as many as fit reasonably) on the
+ actual cover, and continue the rest onto adjacent pages.
+\layout Standard
+
+If you publish or distribute Opaque copies of the Document numbering more
+ than 100, you must either include a machine-readable Transparent copy along
+ with each Opaque copy, or state in or with each Opaque copy a publicly-accessib
+le computer-network location containing a complete Transparent copy of the
+ Document, free of added material, which the general network-using public
+ has access to download anonymously at no charge using public-standard network
+ protocols.
+ If you use the latter option, you must take reasonably prudent steps, when
+ you begin distribution of Opaque copies in quantity, to ensure that this
+ Transparent copy will remain thus accessible at the stated location until
+ at least one year after the last time you distribute an Opaque copy (directly
+ or through your agents or retailers) of that edition to the public.
+\layout Standard
+
+It is requested, but not required, that you contact the authors of the Document
+ well before redistributing any large number of copies, to give them a chance
+ to provide you with an updated version of the Document.
+\layout Standard
+
+4.
+ MODIFICATIONS
+\layout Standard
+
+You may copy and distribute a Modified Version of the Document under the
+ conditions of sections 2 and 3 above, provided that you release the Modified
+ Version under precisely this License, with the Modified Version filling
+ the role of the Document, thus licensing distribution and modification
+ of the Modified Version to whoever possesses a copy of it.
+ In addition, you must do these things in the Modified Version:
+\layout Standard
+
+A.
+ Use in the Title Page (and on the covers, if any) a title distinct from
+ that of the Document, and from those of previous versions (which should,
+ if there were any, be listed in the History section of the Document).
+ You may use the same title as a previous version if the original publisher
+ of that version gives permission.
+ B.
+ List on the Title Page, as authors, one or more persons or entities responsible
+ for authorship of the modifications in the Modified Version, together with
+ at least five of the principal authors of the Document (all of its principal
+ authors, if it has less than five).
+ C.
+ State on the Title page the name of the publisher of the Modified Version,
+ as the publisher.
+ D.
+ Preserve all the copyright notices of the Document.
+ E.
+ Add an appropriate copyright notice for your modifications adjacent to
+ the other copyright notices.
+ F.
+ Include, immediately after the copyright notices, a license notice giving
+ the public permission to use the Modified Version under the terms of this
+ License, in the form shown in the Addendum below.
+ G.
+ Preserve in that license notice the full lists of Invariant Sections and
+ required Cover Texts given in the Document's license notice.
+ H.
+ Include an unaltered copy of this License.
+ I.
+ Preserve the section entitled "History", and its title, and add to it an
+ item stating at least the title, year, new authors, and publisher of the
+ Modified Version as given on the Title Page.
+ If there is no section entitled "History" in the Document, create one stating
+ the title, year, authors, and publisher of the Document as given on its
+ Title Page, then add an item describing the Modified Version as stated
+ in the previous sentence.
+ J.
+ Preserve the network location, if any, given in the Document for public
+ access to a Transparent copy of the Document, and likewise the network
+ locations given in the Document for previous versions it was based on.
+ These may be placed in the "History" section.
+ You may omit a network location for a work that was published at least
+ four years before the Document itself, or if the original publisher of
+ the version it refers to gives permission.
+ K.
+ In any section entitled "Acknowledgements" or "Dedications", preserve the
+ section's title, and preserve in the section all the substance and tone
+ of each of the contributor acknowledgements and/or dedications given therein.
+ L.
+ Preserve all the Invariant Sections of the Document, unaltered in their
+ text and in their titles.
+ Section numbers or the equivalent are not considered part of the section
+ titles.
+ M.
+ Delete any section entitled "Endorsements".
+ Such a section may not be included in the Modified Version.
+ N.
+ Do not retitle any existing section as "Endorsements" or to conflict in
+ title with any Invariant Section.
+\layout Standard
+
+If the Modified Version includes new front-matter sections or appendices
+ that qualify as Secondary Sections and contain no material copied from
+ the Document, you may at your option designate some or all of these sections
+ as invariant.
+ To do this, add their titles to the list of Invariant Sections in the Modified
+ Version's license notice.
+ These titles must be distinct from any other section titles.
+\layout Standard
+
+You may add a section entitled "Endorsements", provided it contains nothing
+ but endorsements of your Modified Version by various parties--for example,
+ statements of peer review or that the text has been approved by an organization
+ as the authoritative definition of a standard.
+\layout Standard
+
+You may add a passage of up to five words as a Front-Cover Text, and a passage
+ of up to 25 words as a Back-Cover Text, to the end of the list of Cover
+ Texts in the Modified Version.
+ Only one passage of Front-Cover Text and one of Back-Cover Text may be
+ added by (or through arrangements made by) any one entity.
+ If the Document already includes a cover text for the same cover, previously
+ added by you or by arrangement made by the same entity you are acting on
+ behalf of, you may not add another; but you may replace the old one, on
+ explicit permission from the previous publisher that added the old one.
+\layout Standard
+
+The author(s) and publisher(s) of the Document do not by this License give
+ permission to use their names for publicity for or to assert or imply endorseme
+nt of any Modified Version.
+\layout Standard
+
+5.
+ COMBINING DOCUMENTS
+\layout Standard
+
+You may combine the Document with other documents released under this License,
+ under the terms defined in section 4 above for modified versions, provided
+ that you include in the combination all of the Invariant Sections of all
+ of the original documents, unmodified, and list them all as Invariant Sections
+ of your combined work in its license notice.
+\layout Standard
+
+The combined work need only contain one copy of this License, and multiple
+ identical Invariant Sections may be replaced with a single copy.
+ If there are multiple Invariant Sections with the same name but different
+ contents, make the title of each such section unique by adding at the end
+ of it, in parentheses, the name of the original author or publisher of
+ that section if known, or else a unique number.
+ Make the same adjustment to the section titles in the list of Invariant
+ Sections in the license notice of the combined work.
+\layout Standard
+
+In the combination, you must combine any sections entitled "History" in
+ the various original documents, forming one section entitled "History";
+ likewise combine any sections entitled "Acknowledgements", and any sections
+ entitled "Dedications".
+ You must delete all sections entitled "Endorsements."
+\layout Standard
+
+6.
+ COLLECTIONS OF DOCUMENTS
+\layout Standard
+
+You may make a collection consisting of the Document and other documents
+ released under this License, and replace the individual copies of this
+ License in the various documents with a single copy that is included in
+ the collection, provided that you follow the rules of this License for
+ verbatim copying of each of the documents in all other respects.
+\layout Standard
+
+You may extract a single document from such a collection, and distribute
+ it individually under this License, provided you insert a copy of this
+ License into the extracted document, and follow this License in all other
+ respects regarding verbatim copying of that document.
+\layout Standard
+
+7.
+ AGGREGATION WITH INDEPENDENT WORKS
+\layout Standard
+
+A compilation of the Document or its derivatives with other separate and
+ independent documents or works, in or on a volume of a storage or distribution
+ medium, does not as a whole count as a Modified Version of the Document,
+ provided no compilation copyright is claimed for the compilation.
+ Such a compilation is called an "aggregate", and this License does not
+ apply to the other self-contained works thus compiled with the Document,
+ on account of their being thus compiled, if they are not themselves derivative
+ works of the Document.
+\layout Standard
+
+If the Cover Text requirement of section 3 is applicable to these copies
+ of the Document, then if the Document is less than one quarter of the entire
+ aggregate, the Document's Cover Texts may be placed on covers that surround
+ only the Document within the aggregate.
+ Otherwise they must appear on covers around the whole aggregate.
+\layout Standard
+
+8.
+ TRANSLATION
+\layout Standard
+
+Translation is considered a kind of modification, so you may distribute
+ translations of the Document under the terms of section 4.
+ Replacing Invariant Sections with translations requires special permission
+ from their copyright holders, but you may include translations of some
+ or all Invariant Sections in addition to the original versions of these
+ Invariant Sections.
+ You may include a translation of this License provided that you also include
+ the original English version of this License.
+ In case of a disagreement between the translation and the original English
+ version of this License, the original English version will prevail.
+\layout Standard
+
+9.
+ TERMINATION
+\layout Standard
+
+You may not copy, modify, sublicense, or distribute the Document except
+ as expressly provided for under this License.
+ Any other attempt to copy, modify, sublicense or distribute the Document
+ is void, and will automatically terminate your rights under this License.
+ However, parties who have received copies, or rights, from you under this
+ License will not have their licenses terminated so long as such parties
+ remain in full compliance.
+\layout Standard
+
+10.
+ FUTURE REVISIONS OF THIS LICENSE
+\layout Standard
+
+The Free Software Foundation may publish new, revised versions of the GNU
+ Free Documentation License from time to time.
+ Such new versions will be similar in spirit to the present version, but
+ may differ in detail to address new problems or concerns.
+ See http://www.gnu.org/copyleft/.
+\layout Standard
+
+Each version of the License is given a distinguishing version number.
+ If the Document specifies that a particular numbered version of this License
+ "or any later version" applies to it, you have the option of following
+ the terms and conditions either of that specified version or of any later
+ version that has been published (not as a draft) by the Free Software Foundatio
+n.
+ If the Document does not specify a version number of this License, you
+ may choose any version ever published (not as a draft) by the Free Software
+ Foundation.
 \the_end
