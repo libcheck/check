@@ -87,6 +87,22 @@ START_TEST(test_null)
 }
 END_TEST
 
+START_TEST(test_2nd_suite)
+{
+  fail("We failed");
+}
+END_TEST
+
+Suite *make_sub2_suite(void)
+{
+  Suite *s = suite_create("Check Servant2");
+  TCase *tc = tcase_create("Core");
+  suite_add_tcase(s, tc);
+  tcase_add_test(tc, test_2nd_suite);
+
+  return s;
+}
+
 Suite *make_sub_suite(void)
 {
   Suite *s = suite_create("Check Servant");

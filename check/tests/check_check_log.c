@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <check.h>
-#include <check_log.h>
 
 
 START_TEST(test_set_log)

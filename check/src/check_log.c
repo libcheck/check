@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <check.h>
-#include <check_log.h>
 #include "list.h"
 #include "check_impl.h"
 

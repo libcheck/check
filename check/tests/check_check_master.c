@@ -8,13 +8,13 @@ TestResult **tr_all_array;
 
 START_TEST(test_check_nfailures)
 {
-  fail_unless (sub_nfailed == 8, "Unexpected number of failures received");
+  fail_unless (sub_nfailed == 9, "Unexpected number of failures received");
 }
 END_TEST
 
 START_TEST(test_check_ntests_run)
 {
-  fail_unless (sub_ntests == 9, "Unexpected number of tests run");
+  fail_unless (sub_ntests == 10, "Unexpected number of tests run");
 }
 END_TEST
 
@@ -30,7 +30,8 @@ START_TEST(test_check_failure_msgs)
     "Received signal 8",
     "Received signal 8",
     "Early exit with return value 1",
-    "Completed properly"};
+    "Completed properly",
+    "We failed"};
 
   for (i = 0; i < sub_nfailed; i++) {
     char *msg;   
@@ -84,6 +85,7 @@ START_TEST(test_check_failure_ftypes)
     CRERROR,
     CRERROR,
     CRERROR,
+    CRFAILURE,
     CRFAILURE};
   
   for (i = 0; i < sub_nfailed; i++) {
@@ -128,7 +130,8 @@ START_TEST(test_check_all_msgs)
     "Received signal 8",
     "Received signal 8",
     "Early exit with return value 1",
-    "Completed properly"};
+    "Completed properly",
+    "We failed"};
 
   for (i = 0; i < sub_ntests; i++) {
     char *msg;   
@@ -155,6 +158,7 @@ START_TEST(test_check_all_ftypes)
     CRERROR,
     CRERROR,
     CRERROR,
+    CRFAILURE,
     CRFAILURE};
   
   for (i = 0; i < sub_ntests; i++) {
@@ -228,6 +232,7 @@ void setup (void)
   char *msg;
   Suite *s = make_sub_suite();
   SRunner *sr = srunner_create(s);
+  srunner_add_suite(sr, make_sub2_suite());
   srunner_run_all(sr, CRSILENT);
   tr_fail_array = srunner_failures(sr);
   tr_all_array = srunner_results(sr);
