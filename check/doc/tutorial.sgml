@@ -1,0 +1,840 @@
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.1//EN">
+
+<book lang="en">
+  <bookinfo>
+    <title>Check Tutorial</title>
+    <author><firstname>Arien</firstname><surname>Malec</surname></author>
+    <date>24 May, 2002</date>
+    <copyright><year>2002</year><holder>Arien Malec</holder></copyright>
+    <legalnotice><para>Copyright (c) 2001-2002 Arien Malec. Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.1 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the section entitled &quot;GNU Free Documentation License&quot;.</para>
+    </legalnotice>
+  </bookinfo>
+
+  <toc></toc>
+
+  <chapter>
+   <title>
+Introduction
+  </title>
+  <para>
+Check is a unit testing framework for C. It was inspired by similar frameworks that currently exist for most programming languages; the most famous example being JUnit for Java (<ulink url="http://www.junit.org">www.junit.org</ulink>). There is a list of unit test frameworks for multiple languages at <ulink url="http://www.xprogramming.com/software.htm">www.xprogramming.com/software.htm</ulink>. Unit testing has a long history as part of formal quality assurance methodologies, but has recently been associated with the lightweight methodology called Extreme Programming. In that methodology, the characteristic practice involves interspersing unit test writing with coding (&ldquo;test a little, code a little&rdquo;). While the incremental unit test/code approach is indispensable to Extreme Programming, it is also applicable, and perhaps indispensable, outside of that methodology.
+  </para>
+  <para>
+The incremental test/code approach provides three main benefits to the developer:
+  </para>
+  <orderedlist>
+   <listitem>
+   <para>
+Because the unit tests use the interface to the unit being tested, they allow the developer to think about how the interface should be designed for usage early in the coding process.
+   </para>
+
+  </listitem>
+   <listitem>
+   <para>
+They help the developer think early about aberrant cases, and code accordingly.
+   </para>
+
+  </listitem>
+   <listitem>
+   <para>
+By providing a documented level of correctness, they allow the developer to refactor (see <ulink url="http://www.refactoring.com">www.refactoring.com</ulink>) aggressively.
+   </para>
+
+  </listitem>
+
+  </orderedlist>
+  <para>
+That third reason is the one that turns people into unit testing addicts. There is nothing so satisfying as doing a wholesale replacement of an implementation, and having the unit tests reassure you at each step of that change that all is well. It is like the difference between exploring the wilderness with and without a good map and compass: without the proper gear, you are more likely to proceed cautiously and stick to the marked trails; with it, you can take the most direct path to where you want to go.
+  </para>
+  <para>
+Look at the Check homepage for the latest information on Check: <ulink url="http://check.sourceforge.net">http://check.sourceforge.net</ulink>
+  </para>
+  <para>
+The Check project page is at <ulink url="http://sourceforge.net/projects/check/">http://sourceforge.net/projects/check/</ulink>
+  </para>
+
+  </chapter>
+
+  <chapter>
+   <title>
+Unit testing in C
+  </title>
+  <para>
+The approach to unit testing frameworks used for Check originated with Smalltalk, which is a late binding object-oriented language supporting reflection. Writing a framework for C requires solving some special problems that frameworks for Smalltalk, Java or Python don't have to face. In all of those language, the worst that a unit test can do is fail miserably, throwing an exception of some sort. In C, a unit test is just as likely to trash its address space as it is to fail to meet its test requirements, and if the test framework sits in the same address space, goodbye test framework. To solve this problem, Check uses to fork system call to create a new address space in which to run each unit test, and then uses message queues to send information on the testing process back to the test framework. That way, your unit test can do all sorts of nasty things with pointers, and throw a segmentation fault, and the test framework will happily note a unit test error, and chug along.
+  </para>
+  <para>
+The Check framework is also designed to play happily with common development environments for C programming. The author designed Check around Autoconf/Automake (thus the name Check -- make check is the idiom used for testing with Autoconf/Automake), and the test failure messages thrown up by Check use the common idiom of filename:linenumber:message used by gcc and family to report problems in source code. With (X)Emacs, the output of Check allows one to quickly navigate to the location of the unit test that failed; presumably that also works in VI and IDEs.
+  </para>
+   <section>
+    <title>
+Other unit testing frameworks for C
+   </title>
+   <para>
+The author knows of the following additional unit testing frameworks for C:
+   </para>
+   <variablelist>
+    <varlistentry>
+    <term>
+GNU&nbsp;Autounit
+</term><listitem><para>Much along the same lines as Check, including forking to run unit tests in a separate address space (in fact, the author of Check stole the idea from GNU Autounit). GNU Autounit uses GLib extensively, which means that linking and such need special options, but this may not be a big problem to you, especially if you are already using GTK or GLib. See <ulink url="http://www.recursism.com/projects/autounit/">http://www.recursism.com/projects/autounit/</ulink>.
+    </para>
+
+   </listitem>
+
+   </varlistentry>
+    <varlistentry>
+    <term>
+cUnit
+</term><listitem><para>Also uses GLib, but does not fork to protect the address space of unit tests. See <ulink url="http://people.codefactory.se/~spotty/cunit/">http://people.codefactory.se/~spotty/cunit/</ulink>.
+    </para>
+
+   </listitem>
+
+   </varlistentry>
+    <varlistentry>
+    <term>
+CUnit
+</term><listitem><para>Standard C, with plans for an Win32 GUI implementation. Does not currently fork or otherwise protect the address space of unit tests. In early development. See <ulink url="http://cunit.sourceforge.net">http://cunit.sourceforge.net</ulink>.
+    </para>
+
+   </listitem>
+
+   </varlistentry>
+
+   </variablelist>
+   <para>
+It is the author's considered opinion that forking or otherwise trapping and reporting signals is indispensable for unit testing (but it probably wouldn't be hard to add that to cUnit or CUnit). Try 'em all out: adapt this tutorial to use all of the frameworks above, and use whichever you like. Contribute, spread the word, and make one a standard. Languages such as Java and Python are fortunate to have standard unit test frameworks; it would be desirable that C have one as well.
+   </para>
+
+   </section>
+
+
+  </chapter>
+
+  <chapter>
+   <title>
+Tutorial: Basic unit testing
+  </title>
+  <para>
+This tutorial will use the JUnit Test Infected article (see <ulink url="http://members.pingnet.ch/gamma/junit.htm">Test Infected</ulink>) as a starting point. We will be creating a library to represent money, allowing conversions between different currency types. The development style will be &ldquo;test a little, code a little&rdquo; with unit test writing preceding coding. This constantly gives us insights into module usage, and also makes sure we are constantly thinking about how to test our code.
+  </para>
+   <section>
+    <title>
+How to write a test
+   </title>
+   <para>
+Test writing using Check is very simple. The file in which the checks are defined must include check.h as so:
+   </para>
+   <programlisting>
+#include &lt;check.h&gt;
+   </programlisting>
+   <para>
+The basic unit test looks as follows:
+   </para>
+   <programlisting>
+START_TEST(test_name)
+{
+  /* unit test code */
+}
+END_TEST
+   </programlisting>
+   <para>
+The START_TEST/END_TEST pair are macros that setup basic structures to permit testing. It is a mistake to leave off the END_TEST marker; doing so produces all sorts of strange errors when the check is compiled. 
+   </para>
+
+   </section>
+
+   <section>
+    <title>
+Setting up the money tests
+   </title>
+   <para>
+Since we are creating a library to handle money, we will first create a header money.h, and a file to contain our unit tests, check_money.c (there is a pun there, but no matter...). To manage everything we'll use Autoconf/Automake for this example. (One could do something similar with ordinary makefiles, but in the author's opinion, it is generally easier to use Autoconf/Automake than bare makefiles, and it provides built-in support for running tests). Here is the Makefile.am:
+   </para>
+   <programlisting>
+TESTS=check_money
+noinst_PROGRAMS=check_money
+check_money_SOURCES=  money.h money.c check_money.c
+check_money_INCLUDES= @CHECK_CFLAGS@
+check_money_LIBS= @CHECK_LIBS@
+   </programlisting>
+   <para>
+Special mumbojumbo to use in configure.in is:
+   </para>
+   <programlisting>
+AM_PATH_CHECK()
+   </programlisting>
+   <para>
+This will ensure that things link up properly with Check by defining the appropriate compiler and linker flags as CHECK_CFLAGS and CHECK_LIBS. It also makes sure that we can only compile in an environment that has Check. The money.h header should only contain the standard &num;ifndef MONEY_H stuff, money.c should be empty, and check_money.c should only contain an empty main function. Run this with make -k check, after going through the setups to get autoconf and friends working. If all goes well, make should report that our tests passed. No surprise, because there aren't any tests to fail.
+   </para>
+   <para>
+The AM_PATH_CHECK() macro is defined in the file check.m4 which is installed by Check. If you see warnings from automake or aclocal this most certainly means that you forgot to call aclocal or that aclocal can't find check.m4. AM_PATH_CHECK() has some optional parameters that you might find useful:
+   </para>
+   <programlisting>
+AM_PATH_CHECK([MINIMUM-VERSION,[ACTION-IF-FOUND[,ACTION-IF-NOT-FOUND]]])
+   </programlisting>
+
+   </section>
+
+   <section>
+    <title>
+Test a little, code a little
+   </title>
+   <para>
+The Test Infected article starts out with a Money class, and so will we. Of course, we can't do classes with C, but we don't really need to. The Test Infected approach to writing code says that we should write the unit test <emphasis>before</emphasis> we write the code, and in this, we will be even more dogmatic and doctrinaire than the authors of Test Infected (who clearly don't really get this stuff, only being some of the originators of the Patterns approach to software development and OO design).
+   </para>
+   <para>
+Here is our first unit test:
+   </para>
+   <programlisting>
+START_TEST(test_create) 
+{ 
+ Money *m; 
+ m = money_create (5, "USD");
+ fail_unless (money_amount (m) == 5, 
+              "Amount not set correctly on creation");
+ fail_unless (strcmp (money_currency (m), "USD") == 0, 
+              "Currency not set correctly on creation"); 
+ money_free (m); 
+}
+END_TEST
+   </programlisting>
+   <para>
+A unit test should just chug along and complete. If it exits early, or is signaled, it will fail with a generic error message. (Note: it is conceivable that you expect an early exit, or a signal. There is currently nothing in Check to specifically assert that we should expect either -- if that is valuable, it may be worth while adding to Check). If we want to get some information about what failed, we need to use the &ldquo;fail_unless&rdquo; function. The &ldquo;fail_unless&rdquo; function (actually a macro) takes a first Boolean argument, and an error message to send if the condition is not true. If the Boolean argument is too complicated to elegantly express within &ldquo;fail_unless&rdquo;, there is an alternate function &ldquo;fail&rdquo;, that unconditionally fails. The second test above can be rewritten as follows:
+   </para>
+   <programlisting>
+if (strcmp (money_currency (m), "USD") != 0) {
+  fail  ("Currency not set correctly on creation");
+}
+   </programlisting>
+   <para>
+For your convenience the &quot;fail_unless&quot; function also accepts NULL as the msg argument and substitutes a suitable message for you. So you could also write a test as follows:
+   </para>
+   <programlisting>
+fail_unless (money_amount (m) == 5, NULL);
+   </programlisting>
+   <para>
+This is equivalent to the line:
+   </para>
+   <programlisting>
+fail_unless (money_amount (m) == 5, "Assertion 'money_amount (m) == 5' failed");
+   </programlisting>
+   <para>
+When we try to compile and run the test suite now, we get a whole host of compilation errors. It may seem a bit strange to deliberately write code that won't compile, but notice what we are doing: in creating the unit test, we are also defining requirements for the money interface. Compilation errors are, in a way, unit test failures of their own, telling us that the implementation does not match the specification. If all we do is edit the sources so that the unit test compiles, we are actually making progress, guided by the unit tests, so that's what we will now do.
+   </para>
+   <para>
+We will add the following to our header money.h:
+   </para>
+   <programlisting>
+typedef struct Money Money;
+ 
+Money *money_create (int amount, char *currency); 
+int money_amount (Money *m); 
+char *money_currency (Money *m); 
+void money_free (Money *m);
+   </programlisting>
+   <para>
+and our code now compiles, but fails to link, since we haven't implemented any of the functions. Let's do that now, creating stubs for all of the functions:
+   </para>
+   <programlisting>
+#include &lt;stdlib.h&gt;
+#include "money.h"
+Money *money_create (int amount, char *currency) 
+{ 
+  return NULL; 
+}
+int money_amount (Money *m) 
+{ 
+  return 0; 
+}
+char *money_currency (Money *m) 
+{ 
+  return NULL; 
+}
+void money_free (Money *m) 
+{ 
+  return; 
+}
+   </programlisting>
+   <para>
+Now, everything compiles, and we still pass all our tests. How can that be??? Of course -- we haven't run any of our tests yet....
+   </para>
+
+   </section>
+
+   <section>
+    <title>
+Creating a suite
+   </title>
+   <para>
+To run unit tests with Check, we must create some test cases, aggregate them into a suite, and run them with a suite runner. That's a bit of overhead, but it is mostly one-off. Here's the code in check_money.c. Note that we include stdlib.h to get the definitions of EXIT_SUCCESS and EXIT_FAILURE.
+   </para>
+   <programlisting>
+#include &lt;stdlib.h&gt;
+#include &lt;check.h&gt;
+
+Suite *money_suite (void) 
+{ 
+  Suite *s = suite_create ("Money"); 
+  TCase *tc_core = tcase_create ("Core");
+ 
+  suite_add_tcase (s, tc_core);
+ 
+  tcase_add_test (tc_core, test_create); 
+  return s; 
+}
+ 
+int main (void) 
+{ 
+  int nf; 
+  Suite *s = money_suite (); 
+  SRunner *sr = srunner_create (s); 
+  srunner_run_all (sr, CK_NORMAL); 
+  nf = srunner_ntests_failed (sr); 
+  srunner_free (sr); 
+  return (nf == 0) ? EXIT_SUCCESS : EXIT_FAILURE; 
+}
+   </programlisting>
+   <para>
+Most of the money_suite code should be self-explanatory. We are creating a suite, creating a test case, adding the test case to the suite, and adding the unit test we created above to the test case. Why separate this off into a separate function, rather than inlining it in main? Because any new tests will get added in money_suite, but nothing will need to change in main for the rest of this example, so main will stay relatively clean and simple.
+   </para>
+   <para>
+Unit tests are internally defined as static functions. This means that the code to add unit tests to test cases must be in the same compilation unit as the unit tests themselves. This provides another reason to put the creation of the test suite in a separate function: you may later want to keep one source file per suite; defining a uniquely named suite creation function allows you later to define a header file giving prototypes for all the suite creation functions, and encapsulate the details of where and how unit tests are defined behind those functions. See the test program defined for Check itself for an example of this strategy.
+   </para>
+   <para>
+The code in main bears some explanation. We are creating a suite runner object from the suite we created in money_suite. We then run the suite, using the CK_NORMAL flag to specify that we should print a summary of the run, and list any failures that may have occurred. We capture the number of failures that occurred during the run, and use that to decide how to return. The check target created by Automake uses the return value to decide whether the tests passed or failed.
+   </para>
+
+   </section>
+
+   <section>
+    <title>
+SRunner output
+   </title>
+   <para>
+The function to run tests in an SRunner is defined as follows:
+   </para>
+   <programlisting>
+void srunner_run_all (SRunner *sr, enum print_output print_mode);
+   </programlisting>
+   <para>
+This function does two things:
+   </para>
+   <orderedlist>
+    <listitem>
+    <para>
+Runs all of the unit tests for all of the test cases defined for all of the suites in the SRunner, and collects the results in the SRunner
+    </para>
+
+   </listitem>
+    <listitem>
+    <para>
+Prints the results according to the print mode specified
+    </para>
+
+   </listitem>
+
+   </orderedlist>
+   <para>
+For SRunners that have already been run, there is also a separate printing function defined as follows:
+   </para>
+   <programlisting>
+void srunner_print (SRunner *sr, enum print_output print_mode);
+   </programlisting>
+   <para>
+The enumeration values defined in Check to control print output are as follows:
+   </para>
+   <variablelist>
+     <varlistentry>
+       <term>CK_SILENT</term>
+       <listitem><para>Specifies that no output is to be generated. If you use this flag, you either need to programmatically examine the SRunner object, print separately, or use test logging (described below: <link linkend="TestLogging">Test Logging</link>).
+       </para></listitem>
+     </varlistentry>
+
+     <varlistentry>
+       <term>CK_MINIMAL</term>
+       <listitem><para>Only a summary of the test run will be printed (number run, passed, failed, errors).
+       </para></listitem>
+     </varlistentry>
+
+     <varlistentry>
+     <term>CK_NORMAL</term>
+     <listitem><para>Prints the summary of the run, and prints one message per failed tests.
+     </para></listitem>
+     </varlistentry>
+
+     <varlistentry>
+       <term>CK_VERBOSE</term>
+       <listitem><para>Prints the summary, and one message per test (passed or failed)
+       </para></listitem>
+     </varlistentry>
+
+     <varlistentry>
+       <term>CK_ENV</term>
+       <listitem><para>Gets the print mode from the environment variable CK_VERBOSITY, which can have the values "silent", "minimal", "normal, "verbose". If the variable is not found or the value is not recognized, the print mode is set to CK_NORMAL.
+       </para></listitem>
+     </varlistentry>
+   </variablelist>
+
+   <para>
+With the CK_NORMAL flag specified, let's rerun make check now. We get the following satisfying output:
+   </para>
+   <programlisting>
+Running suite(s): Money 
+0%: Checks: 1, Failures: 1, Errors: 0 
+check_money.c:9:F:Core: Amount not set correctly on creation
+   </programlisting>
+   <para>
+The first number in the summary line tells us that 0&percnt; of our tests passed, and the rest of the line tells us that there was one check, and one failure. The next line tells us exactly where that failure occurred, what kind of failure it was (P for pass, F for failure, E for error).
+   </para>
+   <para>
+Let's implement the money_amount function, so that it will pass its tests. We first have to create a Money structure to hold the amount:
+   </para>
+   <programlisting>
+struct Money { 
+  int amount; 
+};
+   </programlisting>
+   <para>
+Then we will implement the money_amount function to return the correct amount:
+   </para>
+   <programlisting>
+int money_amount (Money *m) 
+{ 
+  return m->amount;
+}
+   </programlisting>
+   <para>
+We will now rerun make check and... What's this? The output is now as follows:
+   </para>
+   <programlisting>
+Running suite(s): Money 
+0%: Checks: 1, Failures: 0, Errors: 1 
+check_money.c:5:E:Core: (after this point) Received signal 11
+   </programlisting>
+   <para>
+What does this mean? Note that we now have an error, rather than a failure. This means that our unit test either exited early, or was signaled. Next note that the failure message says &ldquo;after this point&rdquo; This means that somewhere after the point noted (check_money.c, line 5) there was a problem: signal 11 (AKA segmentation fault). The last point reached is set on entry to the unit test, and after every call to fail_unless, fail, or the special function mark_point. E.g., if we wrote some test code as follows:
+   </para>
+   <programlisting>
+stuff_that_works ();
+mark_point ();
+stuff_that_dies ();
+   </programlisting>
+   <para>
+then the point returned will be that marked by mark_point.
+   </para>
+   <para>
+The reason our test failed so horribly is that we haven't implemented money_create to create any money. Go ahead and implement that, and money_currency, to make the unit tests pass.
+   </para>
+
+   </section>
+
+
+  </chapter>
+
+  <chapter>
+   <title>
+Advanced Features
+  </title>
+   <section>
+    <title>
+Running multiple cases
+   </title>
+   <para>
+What happens if we pass -1 as the amount in money_create? What should happen? Let's write a unit test. Since we are testing limits, we should also test what happens when we create money with amount 0:
+   </para>
+   <programlisting>
+START_TEST (test_neg_create) 
+{ 
+  Money *m = money_create (-1, "USD"); 
+  fail_unless (m == NULL, "NULL should be returned on attempt to create with a negative amount"); 
+} 
+END_TEST
+START_TEST (test_zero_create) 
+{ 
+  Money *m = money_create (0, "USD"); 
+  fail_unless (money_amount (m) == 0, "Zero is a valid amount of money"); 
+} 
+END_TEST
+   </programlisting>
+   <para>
+Let's put these in a separate test case, called &ldquo;Limits&rdquo; so that money_suite looks like so:
+   </para>
+   <programlisting>
+Suite *money_suite (void) { 
+  Suite *s = suite_create ("Money"); 
+  TCase *tc_core = tcase_create ("Core"); 
+  TCase *tc_limits = tcase_create ("Limits"); 
+  suite_add_tcase (s, tc_core); 
+  suite_add_tcase (s, tc_limits); 
+  tcase_add_test (tc_core, test_create); 
+  tcase_add_test (tc_limits, test_neg_create); 
+  tcase_add_test (tc_limits, test_zero_create); 
+  return s; 
+}
+   </programlisting>
+   <para>
+Now we can rerun our suite, and fix the problem(s). Note that errors in the Core test case will be reported as &ldquo;Core&rdquo; and errors in the Limits test case will be reported as &ldquo;Limits,&rdquo; giving you additional information about where things broke.
+   </para>
+
+   </section>
+
+   <section>
+    <title>
+No fork mode
+   </title>
+   <para>
+Check normally forks to create a separate address space. This allows a signal or early exit to be caught and reported, rather than taking down the entire test program, and is normally very useful. However, when you are trying to debug why the segmentation fault or other program error occurred, forking makes it difficult to use debugging tools. To define fork mode for an SRunner object, you can do one of the following:
+   </para>
+   <orderedlist>
+    <listitem>
+    <para>
+Define the CK_FORK environment variable to equal &ldquo;no&rdquo;.
+    </para>
+
+   </listitem>
+    <listitem>
+    <para>
+Explicitly define the fork status through the use of the following function:
+    </para>
+    <programlisting>
+void srunner_set_fork_status (SRunner *sr, enum fork_status fstat); 
+    </programlisting>
+
+   </listitem>
+
+   </orderedlist>
+   <para>
+The enum fork_status defines the following values: CK_FORK and CK_NOFORK.
+   </para>
+   <para>
+The explicit definition overrides the environment variable.
+   </para>
+
+   </section>
+
+   <section>
+    <title>
+Test fixtures
+   </title>
+   <para>
+We may want multiple tests that all use the same Money. In such cases, rather than setting up and tearing down objects for each unit test, it may be convenient to add some setup that is constant across all the tests in a test case. In the extreme programming approach to unit tests, such setup is called a test fixture.
+   </para>
+   <para>
+A fixture is created by defining a setup and/or a teardown function, and associating it with a test case. There are two kinds of test fixtures in Check: checked and unchecked fixtures. These are defined as follows:
+   </para>
+   <variablelist>
+    <varlistentry>
+    <term>
+Checked&nbsp;fixtures
+</term><listitem><para>are run inside the address space created by the fork to create the unit test. Before each unit test in a test case, the setup function is run, if defined. After each unit test, the teardown function is run, if defined. Because they run inside the forked address space, if checked fixtures signal or otherwise fail, they will be caught and reported by the SRunner.
+    </para>
+
+   </listitem>
+
+   </varlistentry>
+    <varlistentry>
+    <term>
+Unchecked&nbsp;fixtures
+</term><listitem><para>are run in the same address space as the test program. Therefore they may not signal or exit, but may use the fail functions. The unchecked setup, if defined, is run before the test case is started. The unchecked teardown, if defined, is run after the test case is done.
+    </para>
+
+   </listitem>
+
+   </varlistentry>
+
+   </variablelist>
+    <section>
+     <title>
+Test fixture examples
+    </title>
+    <para>
+We create a test fixture in Check as follows:
+    </para>
+    <orderedlist>
+     <listitem>
+     <para>
+Define the global variables, and functions to setup and teardown the globals. The functions both take void and return void
+     </para>
+     <programlisting>
+Money *five_dollars; 
+void setup (void) { 
+  five_dollars = money_create (5, "USD"); 
+}
+
+void teardown (void) 
+{ 
+  money_free (five_dollars); 
+}
+     </programlisting>
+
+    </listitem>
+     <listitem>
+     <para>
+Add the setup and teardown functions to the test case with &ldquo;tcase_add_checked_fixture&rdquo; (this belongs in the suite setup function &ldquo;money_suite&rdquo;:
+     </para>
+     <programlisting>
+tcase_add_checked_fixture (tc_core, setup, teardown);
+     </programlisting>
+
+    </listitem>
+     <listitem>
+     <para>
+We can now rewrite the first test we wrote as follows:
+     </para>
+     <programlisting>
+START_TEST(test_create) 
+{ 
+   fail_unless (money_amount (five_dollars) == 5,
+               "Amount not set correctly on creation"); 
+   fail_unless (strcmp (money_currency (five_dollars), "USD") == 0,
+                "Currency not set correctly on creation"); 
+} 
+END_TEST
+     </programlisting>
+
+    </listitem>
+
+    </orderedlist>
+
+    </section>
+
+    <section>
+     <title>
+Checked vs Unchecked fixtures
+    </title>
+    <para>
+Because checked fixtures run once per unit test, they should not be used for expensive setup. Because unchecked fixtures may take down the entire test program, they should only be used if they are known to be safe.
+    </para>
+    <para>
+Additionally, checked and uncheck fixtures may behave differently in CK_NOFORK mode. Because the fork creates a separate address space, in CK_FORK mode unit tests may abuse the objects created in an unchecked fixture with impunity, without affecting other unit tests in the same test case. However, in CK_NOFORK mode, all tests live in the same address space, and side effects in one test will affect the unchecked fixture for other tests. A checked fixture, however, will generally not be affected by unit test side effects, since the setup is run before each unit test. (There is an exception for side effects to the total environment in which the test program lives: e.g., if the setup function initializes a file that a unit test then changes, the combination of the teardown function and setup fuction must be able to restore the environment for the next unit test).
+    </para>
+    <para>
+If the setup function in a fixture fails, in either checked or unchecked fixtures, the unit tests for the test case, and the teardown function for the fixture will not be run. A fixture error will be created and reported to the SRunner.
+    </para>
+
+    </section>
+
+
+   </section>
+
+   <section>
+    <title>
+Multiple suites run through the same SRunner
+   </title>
+   <para>
+In a large program, it will be convenient to create multiple suites, each testing a module of the program. While one can create several test programs, each running one Suite, it may be convenient to create one main test program, and use it to run multiple suites. The Check test suite provides an example of how to do this. The main testing program is called check_check, and has a header file that declares suite creation functions for all the module tests:
+   </para>
+   <programlisting>
+Suite *make_sub_suite (void);
+Suite *make_sub2_suite (void);
+Suite *make_master_suite (void);
+Suite *make_list_suite (void);
+Suite *make_msg_suite (void);
+Suite *make_log_suite (void);
+   </programlisting>
+   <para>
+The function srunner_add_suite is used to add additional suites to an SRunner. Here is the code to setup and run the SRunner in the main function:
+   </para>
+   <programlisting>
+SRunner *sr;
+sr = srunner_create (make_master_suite ());
+srunner_add_suite (sr, make_list_suite ());
+srunner_add_suite (sr, make_msg_suite ());
+srunner_add_suite (sr, make_log_suite ()); 
+   </programlisting>
+
+   </section>
+
+   <section>
+    <title>
+Test Logging<anchor id="TestLogging">
+   </title>
+   <para>
+Check supports operation to log the results of a test run. To use test logging, use the srunner_set_log function with the name of the log file you wish to create:
+   </para>
+   <programlisting>
+SRunner *sr;
+sr = srunner_create (make_s1_suite ());
+srunner_add_suite (sr, make_s2_suite ());
+srunner_set_log (sr, "test.log");
+srunner_run_all (sr, CRNORMAL);
+   </programlisting>
+   <para>
+Check will write the results of the run to test.log. The printmode argument to srunner_run_all does not apply to test logging; the log will contain a result entry, organized by suite, for every test run . Here is an example of test log output:
+   </para>
+   <programlisting>
+Running suite S1 
+ex_log_output.c:7:P:Core: Test passed
+ex_log_output.c:13:F:Core: Failure
+ex_log_output.c:17:E:Core: (after this point) Early exit with return value 1
+Running suite S2 
+ex_log_output.c:25:P:Core: Test passed
+Results for all suites run:
+50%: Checks: 4, Failures: 1, Errors: 1
+   </programlisting>
+
+   </section>
+
+   <section>
+    <title>
+Conclusion
+   </title>
+   <para>
+This tutorial has provided an introduction to all of the functionality available in Check. Hopefully, this is enough to get you started writing unit tests with Check. All the rest is simply application of what has been learned in the tutorial through multiple repetitions of &ldquo;test a little, code a little.&rdquo;
+   </para>
+
+   </section>
+
+
+  </chapter>
+
+  <chapter>
+   <title>
+GNU Free Documentation License 
+  </title>
+  <para>
+Version 1.1, March 2000
+  </para>
+  <para>
+Copyright (C) 2000 Free Software Foundation, Inc. 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed.
+  </para>
+  <para>
+0. PREAMBLE
+  </para>
+  <para>
+The purpose of this License is to make a manual, textbook, or other written document &quot;free&quot; in the sense of freedom: to assure everyone the effective freedom to copy and redistribute it, with or without modifying it, either commercially or noncommercially. Secondarily, this License preserves for the author and publisher a way to get credit for their work, while not being considered responsible for modifications made by others.
+  </para>
+  <para>
+This License is a kind of &quot;copyleft&quot;, which means that derivative works of the document must themselves be free in the same sense. It complements the GNU General Public License, which is a copyleft license designed for free software.
+  </para>
+  <para>
+We have designed this License in order to use it for manuals for free software, because free software needs free documentation: a free program should come with manuals providing the same freedoms that the software does. But this License is not limited to software manuals; it can be used for any textual work, regardless of subject matter or whether it is published as a printed book. We recommend this License principally for works whose purpose is instruction or reference.
+  </para>
+  <para>
+1. APPLICABILITY AND DEFINITIONS
+  </para>
+  <para>
+This License applies to any manual or other work that contains a notice placed by the copyright holder saying it can be distributed under the terms of this License. The &quot;Document&quot;, below, refers to any such manual or work. Any member of the public is a licensee, and is addressed as &quot;you&quot;.
+  </para>
+  <para>
+A &quot;Modified Version&quot; of the Document means any work containing the Document or a portion of it, either copied verbatim, or with modifications and/or translated into another language.
+  </para>
+  <para>
+A &quot;Secondary Section&quot; is a named appendix or a front-matter section of the Document that deals exclusively with the relationship of the publishers or authors of the Document to the Document's overall subject (or to related matters) and contains nothing that could fall directly within that overall subject. (For example, if the Document is in part a textbook of mathematics, a Secondary Section may not explain any mathematics.) The relationship could be a matter of historical connection with the subject or with related matters, or of legal, commercial, philosophical, ethical or political position regarding them.
+  </para>
+  <para>
+The &quot;Invariant Sections&quot; are certain Secondary Sections whose titles are designated, as being those of Invariant Sections, in the notice that says that the Document is released under this License.
+  </para>
+  <para>
+The &quot;Cover Texts&quot; are certain short passages of text that are listed, as Front-Cover Texts or Back-Cover Texts, in the notice that says that the Document is released under this License.
+  </para>
+  <para>
+A &quot;Transparent&quot; copy of the Document means a machine-readable copy, represented in a format whose specification is available to the general public, whose contents can be viewed and edited directly and straightforwardly with generic text editors or (for images composed of pixels) generic paint programs or (for drawings) some widely available drawing editor, and that is suitable for input to text formatters or for automatic translation to a variety of formats suitable for input to text formatters. A copy made in an otherwise Transparent file format whose markup has been designed to thwart or discourage subsequent modification by readers is not Transparent. A copy that is not &quot;Transparent&quot; is called &quot;Opaque&quot;.
+  </para>
+  <para>
+Examples of suitable formats for Transparent copies include plain ASCII without markup, Texinfo input format, LaTeX input format, SGML or XML using a publicly available DTD, and standard-conforming simple HTML designed for human modification. Opaque formats include PostScript, PDF, proprietary formats that can be read and edited only by proprietary word processors, SGML or XML for which the DTD and/or processing tools are not generally available, and the machine-generated HTML produced by some word processors for output purposes only.
+  </para>
+  <para>
+The &quot;Title Page&quot; means, for a printed book, the title page itself, plus such following pages as are needed to hold, legibly, the material this License requires to appear in the title page. For works in formats which do not have any title page as such, &quot;Title Page&quot; means the text near the most prominent appearance of the work's title, preceding the beginning of the body of the text.
+  </para>
+  <para>
+2. VERBATIM COPYING
+  </para>
+  <para>
+You may copy and distribute the Document in any medium, either commercially or noncommercially, provided that this License, the copyright notices, and the license notice saying this License applies to the Document are reproduced in all copies, and that you add no other conditions whatsoever to those of this License. You may not use technical measures to obstruct or control the reading or further copying of the copies you make or distribute. However, you may accept compensation in exchange for copies. If you distribute a large enough number of copies you must also follow the conditions in section 3.
+  </para>
+  <para>
+You may also lend copies, under the same conditions stated above, and you may publicly display copies.
+  </para>
+  <para>
+3. COPYING IN QUANTITY
+  </para>
+  <para>
+If you publish printed copies of the Document numbering more than 100, and the Document's license notice requires Cover Texts, you must enclose the copies in covers that carry, clearly and legibly, all these Cover Texts: Front-Cover Texts on the front cover, and Back-Cover Texts on the back cover. Both covers must also clearly and legibly identify you as the publisher of these copies. The front cover must present the full title with all words of the title equally prominent and visible. You may add other material on the covers in addition. Copying with changes limited to the covers, as long as they preserve the title of the Document and satisfy these conditions, can be treated as verbatim copying in other respects.
+  </para>
+  <para>
+If the required texts for either cover are too voluminous to fit legibly, you should put the first ones listed (as many as fit reasonably) on the actual cover, and continue the rest onto adjacent pages.
+  </para>
+  <para>
+If you publish or distribute Opaque copies of the Document numbering more than 100, you must either include a machine-readable Transparent copy along with each Opaque copy, or state in or with each Opaque copy a publicly-accessible computer-network location containing a complete Transparent copy of the Document, free of added material, which the general network-using public has access to download anonymously at no charge using public-standard network protocols. If you use the latter option, you must take reasonably prudent steps, when you begin distribution of Opaque copies in quantity, to ensure that this Transparent copy will remain thus accessible at the stated location until at least one year after the last time you distribute an Opaque copy (directly or through your agents or retailers) of that edition to the public.
+  </para>
+  <para>
+It is requested, but not required, that you contact the authors of the Document well before redistributing any large number of copies, to give them a chance to provide you with an updated version of the Document.
+  </para>
+  <para>
+4. MODIFICATIONS
+  </para>
+  <para>
+You may copy and distribute a Modified Version of the Document under the conditions of sections 2 and 3 above, provided that you release the Modified Version under precisely this License, with the Modified Version filling the role of the Document, thus licensing distribution and modification of the Modified Version to whoever possesses a copy of it. In addition, you must do these things in the Modified Version:
+  </para>
+  <para>
+A. Use in the Title Page (and on the covers, if any) a title distinct from that of the Document, and from those of previous versions (which should, if there were any, be listed in the History section of the Document). You may use the same title as a previous version if the original publisher of that version gives permission. B. List on the Title Page, as authors, one or more persons or entities responsible for authorship of the modifications in the Modified Version, together with at least five of the principal authors of the Document (all of its principal authors, if it has less than five). C. State on the Title page the name of the publisher of the Modified Version, as the publisher. D. Preserve all the copyright notices of the Document. E. Add an appropriate copyright notice for your modifications adjacent to the other copyright notices. F. Include, immediately after the copyright notices, a license notice giving the public permission to use the Modified Version under the terms of this License, in the form shown in the Addendum below. G. Preserve in that license notice the full lists of Invariant Sections and required Cover Texts given in the Document's license notice. H. Include an unaltered copy of this License. I. Preserve the section entitled &quot;History&quot;, and its title, and add to it an item stating at least the title, year, new authors, and publisher of the Modified Version as given on the Title Page. If there is no section entitled &quot;History&quot; in the Document, create one stating the title, year, authors, and publisher of the Document as given on its Title Page, then add an item describing the Modified Version as stated in the previous sentence. J. Preserve the network location, if any, given in the Document for public access to a Transparent copy of the Document, and likewise the network locations given in the Document for previous versions it was based on. These may be placed in the &quot;History&quot; section. You may omit a network location for a work that was published at least four years before the Document itself, or if the original publisher of the version it refers to gives permission. K. In any section entitled &quot;Acknowledgements&quot; or &quot;Dedications&quot;, preserve the section's title, and preserve in the section all the substance and tone of each of the contributor acknowledgements and/or dedications given therein. L. Preserve all the Invariant Sections of the Document, unaltered in their text and in their titles. Section numbers or the equivalent are not considered part of the section titles. M. Delete any section entitled &quot;Endorsements&quot;. Such a section may not be included in the Modified Version. N. Do not retitle any existing section as &quot;Endorsements&quot; or to conflict in title with any Invariant Section.
+  </para>
+  <para>
+If the Modified Version includes new front-matter sections or appendices that qualify as Secondary Sections and contain no material copied from the Document, you may at your option designate some or all of these sections as invariant. To do this, add their titles to the list of Invariant Sections in the Modified Version's license notice. These titles must be distinct from any other section titles.
+  </para>
+  <para>
+You may add a section entitled &quot;Endorsements&quot;, provided it contains nothing but endorsements of your Modified Version by various parties--for example, statements of peer review or that the text has been approved by an organization as the authoritative definition of a standard.
+  </para>
+  <para>
+You may add a passage of up to five words as a Front-Cover Text, and a passage of up to 25 words as a Back-Cover Text, to the end of the list of Cover Texts in the Modified Version. Only one passage of Front-Cover Text and one of Back-Cover Text may be added by (or through arrangements made by) any one entity. If the Document already includes a cover text for the same cover, previously added by you or by arrangement made by the same entity you are acting on behalf of, you may not add another; but you may replace the old one, on explicit permission from the previous publisher that added the old one.
+  </para>
+  <para>
+The author(s) and publisher(s) of the Document do not by this License give permission to use their names for publicity for or to assert or imply endorsement of any Modified Version.
+  </para>
+  <para>
+5. COMBINING DOCUMENTS
+  </para>
+  <para>
+You may combine the Document with other documents released under this License, under the terms defined in section 4 above for modified versions, provided that you include in the combination all of the Invariant Sections of all of the original documents, unmodified, and list them all as Invariant Sections of your combined work in its license notice.
+  </para>
+  <para>
+The combined work need only contain one copy of this License, and multiple identical Invariant Sections may be replaced with a single copy. If there are multiple Invariant Sections with the same name but different contents, make the title of each such section unique by adding at the end of it, in parentheses, the name of the original author or publisher of that section if known, or else a unique number. Make the same adjustment to the section titles in the list of Invariant Sections in the license notice of the combined work.
+  </para>
+  <para>
+In the combination, you must combine any sections entitled &quot;History&quot; in the various original documents, forming one section entitled &quot;History&quot;; likewise combine any sections entitled &quot;Acknowledgements&quot;, and any sections entitled &quot;Dedications&quot;. You must delete all sections entitled &quot;Endorsements.&quot;
+  </para>
+  <para>
+6. COLLECTIONS OF DOCUMENTS
+  </para>
+  <para>
+You may make a collection consisting of the Document and other documents released under this License, and replace the individual copies of this License in the various documents with a single copy that is included in the collection, provided that you follow the rules of this License for verbatim copying of each of the documents in all other respects.
+  </para>
+  <para>
+You may extract a single document from such a collection, and distribute it individually under this License, provided you insert a copy of this License into the extracted document, and follow this License in all other respects regarding verbatim copying of that document.
+  </para>
+  <para>
+7. AGGREGATION WITH INDEPENDENT WORKS
+  </para>
+  <para>
+A compilation of the Document or its derivatives with other separate and independent documents or works, in or on a volume of a storage or distribution medium, does not as a whole count as a Modified Version of the Document, provided no compilation copyright is claimed for the compilation. Such a compilation is called an &quot;aggregate&quot;, and this License does not apply to the other self-contained works thus compiled with the Document, on account of their being thus compiled, if they are not themselves derivative works of the Document.
+  </para>
+  <para>
+If the Cover Text requirement of section 3 is applicable to these copies of the Document, then if the Document is less than one quarter of the entire aggregate, the Document's Cover Texts may be placed on covers that surround only the Document within the aggregate. Otherwise they must appear on covers around the whole aggregate.
+  </para>
+  <para>
+8. TRANSLATION
+  </para>
+  <para>
+Translation is considered a kind of modification, so you may distribute translations of the Document under the terms of section 4. Replacing Invariant Sections with translations requires special permission from their copyright holders, but you may include translations of some or all Invariant Sections in addition to the original versions of these Invariant Sections. You may include a translation of this License provided that you also include the original English version of this License. In case of a disagreement between the translation and the original English version of this License, the original English version will prevail.
+  </para>
+  <para>
+9. TERMINATION
+  </para>
+  <para>
+You may not copy, modify, sublicense, or distribute the Document except as expressly provided for under this License. Any other attempt to copy, modify, sublicense or distribute the Document is void, and will automatically terminate your rights under this License. However, parties who have received copies, or rights, from you under this License will not have their licenses terminated so long as such parties remain in full compliance.
+  </para>
+  <para>
+10. FUTURE REVISIONS OF THIS LICENSE
+  </para>
+  <para>
+The Free Software Foundation may publish new, revised versions of the GNU Free Documentation License from time to time. Such new versions will be similar in spirit to the present version, but may differ in detail to address new problems or concerns. See http://www.gnu.org/copyleft/.
+  </para>
+  <para>
+Each version of the License is given a distinguishing version number. If the Document specifies that a particular numbered version of this License &quot;or any later version&quot; applies to it, you have the option of following the terms and conditions either of that specified version or of any later version that has been published (not as a draft) by the Free Software Foundation. If the Document does not specify a version number of this License, you may choose any version ever published (not as a draft) by the Free Software Foundation.
+  </para>
+
+  </chapter>
+
+</book>
