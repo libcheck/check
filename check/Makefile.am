@@ -22,3 +22,5 @@ CLEANFILES=*~\
 rpm: dist
 	(cd rpm && ${MAKE} ${AM_MAKEFLAGS} rpm)
 
+debian: dist
+	dpkg-buildpackage -rfakeroot
