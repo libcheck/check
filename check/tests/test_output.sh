@@ -18,21 +18,21 @@ op1=`./ex_output CRMINIMAL`
 op2=`./ex_output CRNORMAL`
 op3=`./ex_output CRVERBOSE`
 
-if [ "$t0" != x"$op0" ]; then
-    echo "Problem with ex_output CRSILENT";
-    exit 1
-fi
-if [ "$t1" != x"$op1" ]; then
-    echo "Problem with ex_output CRMINIMAL";
-    exit 1
-fi
-if [ "$t2" != x"$op2" ]; then
-    echo "Problem with ex_output CRNORMAL";
-    exit 1
-fi
-if [ "$t3" != x"$op3" ]; then
-    echo "Problem with ex_output CRVERBOSE";
-    exit 1
-fi
 
+test_output ( ) {
+    if [ "${1}" != "${2}" ]; then
+	echo "Problem with ex_output ${3}";
+	echo "Expected:";
+	echo "${1}";
+	echo "Got:";
+	echo "${2}";
+	exit 1;
+    fi
+    
+}
+
+test_output "$t0" x"$op0" "CRSILENT";
+test_output "$t1" x"$op1" "CRMINIMAL";
+test_output "$t2" x"$op2" "CRNORMAL";
+test_output "$t3" x"$op3" "CRVERBOSE";
 exit 0

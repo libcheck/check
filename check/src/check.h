@@ -207,14 +207,20 @@ TestResult **srunner_failures (SRunner *sr);
 TestResult **srunner_results (SRunner *sr);
 /* Printing */
 
+/*! Print the results contained in an SRunner
+  \param sr SRunner for which results are printed
+  \param print_mode Specification of print verbosity, constrainted to enum #print_verbosity
+*/
+void srunner_print (SRunner *sr, int print_mode);
+
 /*! Print a summary report of %passed, #checks, failures */
-void srunner_print_summary (SRunner *sr);
+/* void srunner_print_summary (SRunner *sr); */
 
 /*! \brief Print a detailed report of test results
   \param sr SRunner for which results are printed
   \param print_mode Specification of print verbosity, constrainted to enum #print_verbosity
 */
-void srunner_print_results (SRunner *sr, int print_mode);
+/* void srunner_print_results (SRunner *sr, int print_mode); */
 
 /*! @} */
 

@@ -22,31 +22,13 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include "error.h"
 #include "list.h"
 #include "check.h"
 #include "check_impl.h"
 #include "check_msg.h"
 
-typedef struct TestStats {
-  int n_checked;
-  int n_failed;
-  int n_errors;
-} TestStats;
-
-struct SRunner {
-  Suite *s;
-  TestStats *stats;
-  List *resultlst;
-};
-
-struct TestResult {
-  int rtype;     /* Type of result */
-  char *file;    /* File where the test occured */
-  int line;      /* Line number where the test occurred */
-  char *tcname;  /* Test case that generated the result */
-  char *msg;     /* Failure message */
-};
 
 static int percent_passed (TestStats *t);
 static void srunner_run_tcase (SRunner *sr, TCase *tc);
@@ -57,7 +39,11 @@ static void receive_last_loc_info (int msqid, TestResult *tr);
 static void receive_failure_info (int msqid, int status, TestResult *tr);
 static List *srunner_resultlst (SRunner *sr);
 
-static void tr_print (TestResult *tr);
+static void srunner_printf (SRunner *sr, int target_mode,
+			    int print_mode, char *fmt, ...);
+static void srunner_print_summary (SRunner *sr, int print_mode);
+static void srunner_print_results (SRunner *sr, int print_mode);
+static void tr_print (SRunner *sr, TestResult *tr, int print_mode);
 static char *signal_msg (int sig);
 static char *exit_msg (int exitstatus);
 static int non_pass (int val);
@@ -70,6 +56,7 @@ SRunner *srunner_create (Suite *s)
   sr->stats = emalloc (sizeof(TestStats)); /* freed in srunner_free */
   sr->stats->n_checked = sr->stats->n_failed = sr->stats->n_errors = 0;
   sr->resultlst = list_create();
+  sr->log_fname = NULL;
   return sr;
 }
 
@@ -103,10 +90,8 @@ void srunner_run_all (SRunner *sr, int print_mode)
   if (print_mode < 0 || print_mode >= CRLAST)
     eprintf("Bad print_mode argument to srunner_run_all: %d", print_mode);
 
-  if (print_mode > CRSILENT) {
-    printf ("Running suite: %s\n", sr->s->name);
-    fflush (stdout);
-  }
+  srunner_printf (sr, CRMINIMAL, print_mode,
+		   "Running suite: %s\n", sr->s->name);
 
   tcl = sr->s->tclst;
   
@@ -114,9 +99,8 @@ void srunner_run_all (SRunner *sr, int print_mode)
     tc = list_val (tcl);
     srunner_run_tcase (sr, tc);
   }
-  if (print_mode >= CRMINIMAL)
-    srunner_print_summary (sr);
-  srunner_print_results (sr, print_mode);
+
+  srunner_print (sr, print_mode);
 }
 
 static void srunner_add_failure (SRunner *sr, TestResult *tr)
@@ -233,15 +217,38 @@ static TestResult *tfun_run (int msqid, char *tcname, TF *tfun)
 
 /* Printing */
 
-void srunner_print_summary (SRunner *sr)
+static void srunner_printf (SRunner *sr, int target_mode,
+			    int print_mode, char *fmt, ...)
+{
+  va_list args;
+
+  if (print_mode >= target_mode) {
+    fflush(stdout);
+
+    va_start(args, fmt);
+    vfprintf(stdout, fmt, args);
+    va_end(args);
+    fflush(stdout);
+  }
+}
+
+void srunner_print (SRunner *sr, int print_mode)
+{
+  srunner_print_summary (sr, print_mode);
+  srunner_print_results (sr, print_mode);
+}
+
+static void srunner_print_summary (SRunner *sr, int print_mode)
 {
   TestStats *ts = sr->stats;
-  printf ("%d%%: Checks: %d, Failures: %d, Errors: %d\n",
-	  percent_passed (ts), ts->n_checked, ts->n_failed, ts->n_errors);
+  srunner_printf (sr, CRMINIMAL, print_mode,
+		  "%d%%: Checks: %d, Failures: %d, Errors: %d\n",
+		  percent_passed (ts), ts->n_checked, ts->n_failed,
+		  ts->n_errors);
   return;
 }
 
-void srunner_print_results (SRunner *sr, int print_mode)
+static void srunner_print_results (SRunner *sr, int print_mode)
 {
   List *resultlst;
   if (print_mode < CRNORMAL)
@@ -251,13 +258,7 @@ void srunner_print_results (SRunner *sr, int print_mode)
   
   for (list_front(resultlst); !list_at_end(resultlst); list_advance(resultlst)) {
     TestResult *tr = list_val(resultlst);
-    if (tr_rtype(tr) == CRPASS)
-      if (print_mode >= CRVERBOSE) 
-	tr_print (tr);
-      else
-	;
-    else
-      tr_print (tr);
+    tr_print (sr, tr, print_mode);
   }
   return;
 }
@@ -358,13 +359,20 @@ static char *rtype_to_string (int rtype)
   }
 }
 
-static void tr_print (TestResult *tr)
+static void tr_print (SRunner *sr, TestResult *tr, int print_mode)
 {
   char *exact_msg;
   exact_msg = (tr->rtype == CRERROR) ? "(after this point) ": "";
-  printf ("%s:%d:%s:%s: %s%s\n", tr->file, tr->line,
-	  rtype_to_string(tr->rtype),  tr->tcname,
-	  exact_msg, tr->msg);
+  if (tr->rtype == CRPASS)
+    srunner_printf (sr, CRVERBOSE, print_mode,
+		    "%s:%d:%s:%s: %s%s\n", tr->file, tr->line,
+		    rtype_to_string(tr->rtype),  tr->tcname,
+		    exact_msg, tr->msg);
+  else
+    srunner_printf (sr, CRNORMAL, print_mode,
+		    "%s:%d:%s:%s: %s%s\n", tr->file, tr->line,
+		    rtype_to_string(tr->rtype),  tr->tcname,
+		    exact_msg, tr->msg);
 }
 
 static char *signal_msg (int signal)

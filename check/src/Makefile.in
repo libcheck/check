@@ -71,7 +71,7 @@ lib_LIBRARIES = libcheck.a
 
 include_HEADERS = check.h check_log.h
 
-libcheck_a_SOURCES =  	check.c check_run.c check.h check_impl.h 	check_msg.c check_msg.h 	chec_log.c check_log.h 	error.c error.h 	list.c list.h
+libcheck_a_SOURCES =  	check.c check_run.c check.h check_impl.h 	check_msg.c check_msg.h 	check_log.c check_log.h 	error.c error.h 	list.c list.h
 
 
 CLEANFILES = *.*~
@@ -86,8 +86,8 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libcheck_a_LIBADD = 
-libcheck_a_OBJECTS =  check.o check_run.o check_msg.o chec_log.o error.o \
-list.o
+libcheck_a_OBJECTS =  check.o check_run.o check_msg.o check_log.o \
+error.o list.o
 AR = ar
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -102,7 +102,7 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-DEP_FILES =  .deps/chec_log.P .deps/check.P .deps/check_msg.P \
+DEP_FILES =  .deps/check.P .deps/check_log.P .deps/check_msg.P \
 .deps/check_run.P .deps/error.P .deps/list.P
 SOURCES = $(libcheck_a_SOURCES)
 OBJECTS = $(libcheck_a_OBJECTS)

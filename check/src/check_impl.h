@@ -48,5 +48,26 @@ struct TCase {
   SFun teardown;
 };
 
+typedef struct TestStats {
+  int n_checked;
+  int n_failed;
+  int n_errors;
+} TestStats;
+
+struct TestResult {
+  int rtype;     /* Type of result */
+  char *file;    /* File where the test occured */
+  int line;      /* Line number where the test occurred */
+  char *tcname;  /* Test case that generated the result */
+  char *msg;     /* Failure message */
+};
+
+struct SRunner {
+  Suite *s;
+  TestStats *stats;
+  List *resultlst;
+  char *log_fname;
+};
+
 
 #endif /* CHECK_IMPL_H */

@@ -1,5 +1,5 @@
 #ifndef CHECK_LOG_H
-#define CHEKC_LOG_H
+#define CHECK_LOG_H
 
 /*
   Check: a unit test framework for C
@@ -23,7 +23,10 @@
 /*! \page check_log Check logging
  */
 
-/*! Set a log file to which to write during test running
+/*! Set a log file to which to write during test running.
+  Log file setting is an initialize only operation -- it should be done
+  immediatly after SRunner creation, and the log file can't be changed
+  after being set.
   \param sr The SRunner for which to enable logging
   \param fname The file name to which to write the log
  */
@@ -34,5 +37,11 @@ void srunner_set_log (SRunner *sr, char *fname);
   \return True if logging, False otherwise
 */
 int srunner_has_log (SRunner *sr);
+
+/*! Return the name of the log file, or NULL if none
+  \param sr The SRunner to query
+  \return The current log file, or NULL if not logging
+*/
+char *srunner_log_fname (SRunner *sr);
 
 #endif /*CHECK_LOG_H*/
