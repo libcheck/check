@@ -98,7 +98,8 @@ START_TEST(test_check_failure_msgs)
     expected_msg = master_tests[i].msg;
     if (strcmp(got_msg, expected_msg) != 0) {
       char *emsg = malloc(MAXSTR);
-      snprintf(emsg, MAXSTR,"Expected %s, got %s", expected_msg, got_msg);
+      snprintf(emsg, MAXSTR,"For test %d: Expected %s, got %s",
+               i, expected_msg, got_msg);
       fail(emsg);
       free(emsg);
     }
@@ -121,8 +122,8 @@ START_TEST(test_check_failure_lnos)
     line_no = master_tests[i].line_nos;
     if (line_no > 0 && tr_lno(tr_fail_array[i - passed]) != line_no) {
       char *emsg = malloc(MAXSTR);
-      snprintf(emsg, MAXSTR, "Expected lno %d, got %d",
-               line_no, tr_lno(tr_fail_array[i - passed]));
+      snprintf(emsg, MAXSTR, "For test %d: Expected lno %d, got %d",
+               i, line_no, tr_lno(tr_fail_array[i - passed]));
       fail(emsg);
       free(emsg);
     }    
@@ -142,7 +143,7 @@ START_TEST(test_check_failure_ftypes)
     }
     fail_unless(master_tests[i].failure_type ==
                 tr_rtype(tr_fail_array[i - passed]),
-                "Failure type wrong");
+                "Failure type wrong for test %d", i);
   }
 }
 END_TEST
@@ -152,7 +153,7 @@ START_TEST(test_check_failure_lfiles)
   int i;
   for (i = 0; i < sub_nfailed; i++) {
     fail_unless(strstr(tr_lfile(tr_fail_array[i]), "check_check_sub.c") != 0,
-                "Bad file name");
+                "Bad file name for test %d", i);
   }
 }
 END_TEST
@@ -166,8 +167,8 @@ START_TEST(test_check_tcnames)
     tcname = tr_tcname(tr_all_array[i]);
     if (strcmp(tcname, master_tests[i].tcname) != 0) {
       char *emsg = malloc (MAXSTR);
-      snprintf(emsg, MAXSTR,"Expected %s, got %s",
-               master_tests[i].tcname, tcname);
+      snprintf(emsg, MAXSTR,"For test %d: Expected %s, got %s",
+               i, master_tests[i].tcname, tcname);
       fail(emsg);
       free(emsg);
     }
@@ -185,7 +186,8 @@ START_TEST(test_check_all_msgs)
     msg = tr_msg(tr_all_array[i]);
     if (strcmp(msg, master_tests[i].msg) != 0) {
       char *emsg = malloc (MAXSTR);
-      snprintf(emsg, MAXSTR,"Expected %s, got %s", master_tests[i].msg, msg);
+      snprintf(emsg, MAXSTR,"For test %d: Expected %s, got %s",
+               i, master_tests[i].msg, msg);
       fail(emsg);
       free(emsg);
     }
@@ -198,7 +200,7 @@ START_TEST(test_check_all_ftypes)
   int i;
   for (i = 0; i < sub_ntests; i++) {
     fail_unless(master_tests[i].failure_type == tr_rtype(tr_all_array[i]),
-		"Failure type wrong");
+		"Failure type wrong for test %d", i);
   }
 }
 END_TEST
