@@ -30,7 +30,7 @@
 
 static void srunner_send_evt (SRunner *sr, void *obj, enum cl_event evt);
 
-void srunner_set_log (SRunner *sr, char *fname)
+void srunner_set_log (SRunner *sr, const char *fname)
 {
   if (sr->log_fname)
     return;
@@ -42,7 +42,7 @@ int srunner_has_log (SRunner *sr)
   return sr->log_fname != NULL;
 }
 
-char *srunner_log_fname (SRunner *sr)
+const char *srunner_log_fname (SRunner *sr)
 {
   return sr->log_fname;
 }

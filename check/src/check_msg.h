@@ -26,9 +26,9 @@ typedef struct MsgKey MsgKey;
 
 /* Functions implementing messaging during test runs */
 
-void send_failure_info (MsgKey *key, char *msg);
-void send_loc_info (MsgKey *key, char *file, int line);
-void send_ctx_info (MsgKey *key,enum ck_result_ctx ctx);
+void send_failure_info (MsgKey *key, const char *msg);
+void send_loc_info (MsgKey *key, const char *file, int line);
+void send_ctx_info (MsgKey *key, enum ck_result_ctx ctx);
 
 TestResult *receive_test_result (MsgKey *key, int waserror);
 

@@ -60,24 +60,24 @@ static TestResult *construct_test_result (RcvMsg *rmsg, int waserror);
 static void tr_set_loc_by_ctx (TestResult *tr, enum ck_result_ctx ctx,
 			       RcvMsg *rmsg);
 
-void send_failure_info (MsgKey *key, char *msg)
+void send_failure_info (MsgKey *key, const char *msg)
 {
   FailMsg fmsg;
   Pipe *p;
 
-  fmsg.msg = msg;
+  fmsg.msg = (char *) msg;
   p = get_pipe_by_key(key);
   if (p == NULL)
     eprintf("Couldn't find pipe with key %d",__FILE__, __LINE__, key);
   ppack(p->sendfd, CK_MSG_FAIL, &fmsg);
 }
 
-void send_loc_info (MsgKey *key, char * file, int line)
+void send_loc_info (MsgKey *key, const char * file, int line)
 {
   LocMsg lmsg;
   Pipe *p;
 
-  lmsg.file = file;
+  lmsg.file = (char *) file;
   lmsg.line = line;
   p = get_pipe_by_key(key);
   if (p == NULL)

@@ -26,7 +26,7 @@ END_TEST
 START_TEST(test_check_failure_msgs)
 {
   int i;
-  char *msgar[] = {
+  const char *msgar[] = {
     "Failure expected",
     "Early exit with return value 1",
     /*    "Test passed", */
@@ -40,7 +40,7 @@ START_TEST(test_check_failure_msgs)
     "We failed"};
 
   for (i = 0; i < sub_nfailed; i++) {
-    char *msg;   
+    const char *msg;   
     msg = tr_msg(tr_fail_array[i]);
     if (strcmp (msg, msgar[i]) != 0) {
       char *emsg = malloc (MAXSTR);
@@ -116,7 +116,7 @@ END_TEST
 START_TEST(test_check_failure_tcnames)
 {
   int i;
-  char *tcnamearr[] = {
+  const char *tcnamearr[] = {
     "Simple Tests",
     "Simple Tests",
     "Simple Tests",
@@ -130,7 +130,7 @@ START_TEST(test_check_failure_tcnames)
     "Core"};
   
   for (i = 0; i < sub_nfailed; i++) {
-    char *tcname;   
+    const char *tcname;   
     tcname = tr_tcname(tr_all_array[i]);
     if (strcmp (tcname, tcnamearr[i]) != 0) {
       char *emsg = malloc (MAXSTR);
@@ -146,7 +146,7 @@ END_TEST
 START_TEST(test_check_all_msgs)
 {
   int i;
-  char *msgar[] = {
+  const char *msgar[] = {
     "Failure expected",
     "Early exit with return value 1",
     "Passed",
@@ -160,7 +160,7 @@ START_TEST(test_check_all_msgs)
     "We failed"};
 
   for (i = 0; i < sub_ntests; i++) {
-    char *msg;   
+    const char *msg;   
     msg = tr_msg(tr_all_array[i]);
     if (strcmp (msg, msgar[i]) != 0) {
       char *emsg = malloc (MAXSTR);

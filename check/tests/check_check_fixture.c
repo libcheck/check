@@ -48,7 +48,7 @@ END_TEST
 START_TEST(test_print_counts)
 {
   char *srstat = sr_stat_str(fixture_sr);
-  char *exp = "0%: Checks: 0, Failures: 1, Errors: 0";
+  const char *exp = "0%: Checks: 0, Failures: 1, Errors: 0";
 
   fail_unless(strcmp(srstat, exp) == 0,
 	      "SRunner stat string incorrect with setup failure");
@@ -59,7 +59,7 @@ START_TEST(test_setup_failure_msg)
 {
   TestResult **tra;
   char *trm;
-  char *trmexp = "check_check_fixture.c:12:S:Core: Test failure in fixture";
+  const char *trmexp = "check_check_fixture.c:12:S:Core: Test failure in fixture";
 
   tra = srunner_failures(fixture_sr);
   trm = tr_str(tra[0]);

@@ -89,7 +89,7 @@ END_TEST
 
 START_TEST(test_env)
 {
-  putenv("CK_FORK=no");
+  putenv((char *) "CK_FORK=no");
   fail_unless(srunner_fork_status(fork_dummy_sr) == CK_NOFORK,
 	      "Fork status does not obey environment variable");
 }
@@ -97,7 +97,7 @@ END_TEST
 
 START_TEST(test_env_and_set)
 {
-  putenv("CK_FORK=no");
+  putenv((char *) "CK_FORK=no");
   srunner_set_fork_status(fork_dummy_sr, CK_FORK);  
   fail_unless(srunner_fork_status(fork_dummy_sr) == CK_FORK,
 	      "Explicit setting of fork status should override env");

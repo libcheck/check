@@ -26,7 +26,7 @@
 #include "check_error.h"
 
 
-void eprintf (char *fmt, char *file, int line, ...)
+void eprintf (const char *fmt, const char *file, int line, ...)
 {
   va_list args;
   fflush(stderr);

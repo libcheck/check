@@ -1,10 +1,12 @@
-Primary maintainer
-arien_malec@yahoo.com
+Original author:
+Arien Malec <arien_malec@yahoo.com>
 
-Check 0.8.0
+Current maintainer:
+Sven Neumann <sven@convergence.de>
 
 Patches:
 Bernhard Reiter (configure issues)
+Neil Spring (const fixes)
 
 Design suggestions:
 Fred Drake (checked fixture functions)

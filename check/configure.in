@@ -30,7 +30,7 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_RANLIB
 if test -n "$GCC"; then
-   CFLAGS="$CFLAGS -Wall -Wstrict-prototypes -Wmissing-prototypes"
+   CFLAGS="$CFLAGS -Wall -Wstrict-prototypes -Wmissing-prototypes -Wwrite-strings"
 fi
 CK_LYX_LINUXDOC([have_lyx="yes"],[have_lyx="no"])
 AC_CHECK_PROG(have_sgmltools,sgml2html,yes)

@@ -39,11 +39,11 @@ enum {
 
 typedef struct TF {
   TFun fn;
-  char *name;
+  const char *name;
 } TF;
 
 struct Suite {
-  char *name;
+  const char *name;
   List *tclst; /* List of test cases */
 };
 
@@ -54,7 +54,7 @@ typedef struct Fixture
 } Fixture;
 
 struct TCase {
-  char *name;
+  const char *name;
   List *tflst; /* list of test functions */
   List *unch_sflst;
   List *unch_tflst;
@@ -73,7 +73,7 @@ struct TestResult {
   enum ck_result_ctx ctx;     /* When the result occurred */
   char *file;    /* File where the test occured */
   int line;      /* Line number where the test occurred */
-  char *tcname;  /* Test case that generated the result */
+  const char *tcname;  /* Test case that generated the result */
   char *msg;     /* Failure message */
 };
 
@@ -102,7 +102,7 @@ struct SRunner {
   List *slst; /* List of Suite objects */
   TestStats *stats; /* Run statistics */
   List *resultlst; /* List of unit test results */
-  char *log_fname; /* name of log file */
+  const char *log_fname; /* name of log file */
   List *loglst; /* list of Log objects */
   enum fork_status fstat; /* controls if suites are forked or not
 			     NOTE: Don't use this value directly,

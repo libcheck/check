@@ -37,7 +37,7 @@ static void tcase_add_fixture (TCase *tc, SFun setup, SFun teardown,
 			       int ischecked);
 static void tr_init (TestResult *tr);
 
-Suite *suite_create (char *name)
+Suite *suite_create (const char *name)
 {
   Suite *s;
   s = emalloc (sizeof(Suite)); /* freed in suite_free */
@@ -61,7 +61,7 @@ void suite_free (Suite *s)
   free(s);
 }
 
-TCase *tcase_create (char *name)
+TCase *tcase_create (const char *name)
 {
   TCase *tc = emalloc (sizeof(TCase)); /*freed in tcase_free */
   if (name == NULL)
@@ -101,7 +101,7 @@ void suite_add_tcase (Suite *s, TCase *tc)
   list_add_end (s->tclst, tc);
 }
 
-void _tcase_add_test (TCase *tc, TFun fn, char *name)
+void _tcase_add_test (TCase *tc, TFun fn, const char *name)
 {
   TF * tf;
   if (tc == NULL || fn == NULL || name == NULL)
@@ -150,18 +150,18 @@ static void tcase_add_fixture (TCase *tc, SFun setup, SFun teardown,
   }
 }
 
-void tcase_fn_start (char *fname, char *file, int line)
+void tcase_fn_start (const char *fname, const char *file, int line)
 {
   send_ctx_info (get_send_key(),CK_CTX_TEST);
   send_loc_info (get_send_key(),file, line);
 }
 
-void _mark_point (char *file, int line)
+void _mark_point (const char *file, int line)
 {
   send_loc_info (get_send_key(), file, line);
 }
 
-void _fail_unless (int result, char *file, int line, char * msg)
+void _fail_unless (int result, const char *file, int line, const char * msg)
 {
   if (msg == NULL)
     eprintf ("_fail_unless() called with NULL msg",__FILE__,__LINE__);
@@ -284,11 +284,13 @@ static void tr_init (TestResult *tr)
   tr->ctx = -1;
   tr->line = -1;
   tr->rtype = -1;
-  tr->msg = tr->file = tr->tcname = NULL;
+  tr->msg = NULL;
+  tr->file = NULL;
+  tr->tcname = NULL;
 }
 
 
-char *tr_msg (TestResult *tr)
+const char *tr_msg (TestResult *tr)
 {
   return tr->msg;
 }
@@ -298,7 +300,7 @@ int tr_lno (TestResult *tr)
   return tr->line;
 }
 
-char *tr_lfile (TestResult *tr)
+const char *tr_lfile (TestResult *tr)
 {
   return tr->file;
 }
@@ -313,7 +315,7 @@ enum ck_result_ctx tr_ctx (TestResult *tr)
   return tr->ctx;
 }
 
-char *tr_tcname (TestResult *tr)
+const char *tr_tcname (TestResult *tr)
 {
   return tr->tcname;
 }

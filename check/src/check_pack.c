@@ -33,7 +33,7 @@
 
 static void pack_int (char **buf, int val);
 static int upack_int (char **buf);
-static void pack_str (char **buf, char *str);
+static void pack_str (char **buf, const char *str);
 static char *upack_str (char **buf);
 
 static void pack_ctx (char **buf, void *msg);
@@ -43,14 +43,14 @@ static void upack_ctx (char **buf, void *msg);
 static void upack_loc (char **buf, void *msg);
 static void upack_fail (char **buf, void *msg);
 
-static void check_type (int type, char *file, int line);
+static void check_type (int type, const char *file, int line);
 static enum ck_msg_type upack_type (char **buf);
 static void pack_type (char **buf, enum ck_msg_type type);
 
 static int read_buf (int fdes, char **buf);
 static int get_result (char *buf, RcvMsg *rmsg);
 static void rcvmsg_update_ctx(RcvMsg *rmsg, enum ck_result_ctx ctx);
-static void rcvmsg_update_loc(RcvMsg *rmsg, char *file, int line);
+static void rcvmsg_update_loc(RcvMsg *rmsg, const char *file, int line);
 static RcvMsg *rcvmsg_create(void);
 
 typedef void (*pfun) (char **, void *);
@@ -129,7 +129,7 @@ static int upack_int (char **buf)
   return val;
 }
 
-static void pack_str (char **buf, char *val)
+static void pack_str (char **buf, const char *val)
 {
   int strsz;
   int n;
@@ -221,7 +221,7 @@ static void upack_fail (char **buf, void *msg)
   fmsg->msg = upack_str(buf);
 }
 
-static void check_type (int type, char *file, int line)
+static void check_type (int type, const char *file, int line)
 {
   if (type >= CK_MSG_LAST)
     eprintf ("%s:%d:Bad message type arg", file, line);
@@ -332,7 +332,7 @@ static void rcvmsg_update_ctx(RcvMsg *rmsg, enum ck_result_ctx ctx)
   rmsg->lastctx = ctx;
 }
 
-static void rcvmsg_update_loc (RcvMsg *rmsg, char *file, int line)
+static void rcvmsg_update_loc (RcvMsg *rmsg, const char *file, int line)
 {
   int flen = strlen(file);
   

@@ -35,7 +35,7 @@ void list_front(List *lp);
 
 /* Add a value to the end of the list,
    positioning newly added value as current value */
-void list_add_end (List *lp, void *val);
+void list_add_end (List *lp, const void *val);
 
 /* Give the value of the current node */
 void *list_val (List * lp);

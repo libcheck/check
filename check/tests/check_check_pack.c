@@ -17,10 +17,11 @@ START_TEST(test_pack_fmsg)
 
   fmsg = emalloc (sizeof(FailMsg));
   buf = emalloc (CK_MAXMSGBUF);
-  fmsg->msg = "Hello, world!";
 
+  fmsg->msg = (char *) "Hello, world!";
   pack (CK_MSG_FAIL, buf, fmsg);
-  fmsg->msg = "";
+
+  fmsg->msg = (char *) "";
   upack (buf, fmsg, &type);
 
   fail_unless (type == CK_MSG_FAIL,
@@ -49,11 +50,11 @@ START_TEST(test_pack_loc)
 
   lmsg = emalloc (sizeof(LocMsg));
   buf = emalloc (CK_MAXMSGBUF);
-  lmsg->file = "abc123.c";
+  lmsg->file = (char *) "abc123.c";
   lmsg->line = 125;
 
   pack (CK_MSG_LOC, buf, lmsg);
-  lmsg->file = "";
+  lmsg->file = NULL;
   lmsg->line = 0;
   upack (buf, lmsg, &type);
 
@@ -161,9 +162,9 @@ START_TEST(test_pack_fail_limit)
   enum ck_msg_type type;
 
   buf = emalloc (CK_MAXMSGBUF);
-  fmsg.msg = "";
+  fmsg.msg = (char *) "";
   pack(CK_MSG_FAIL,buf,&fmsg);
-  fmsg.msg = "abc";
+  fmsg.msg = (char *) "abc";
   upack(buf,&fmsg,&type);
   fail_unless (strcmp(fmsg.msg, "") == 0, "Empty string not handled properly");
   free(fmsg.msg);
@@ -181,10 +182,10 @@ START_TEST(test_pack_loc_limit)
   enum ck_msg_type type;
 
   buf = emalloc (CK_MAXMSGBUF);
-  lmsg.file = "";
+  lmsg.file = (char *) "";
   lmsg.line = 0;
   pack(CK_MSG_LOC,buf,&lmsg);
-  lmsg.file = "abc";
+  lmsg.file = (char *) "abc";
   upack(buf,&lmsg,&type);
   fail_unless (strcmp(lmsg.file, "") == 0,
 	       "Empty string not handled properly");
@@ -204,9 +205,9 @@ START_TEST(test_ppack)
   RcvMsg *rmsg;
 
   cmsg.ctx = CK_CTX_TEST;
-  lmsg.file = "abc123.c";
+  lmsg.file = (char *) "abc123.c";
   lmsg.line = 10;
-  fmsg.msg = "oops";
+  fmsg.msg = (char *) "oops";
   pipe(filedes);
   ppack(filedes[1],CK_MSG_CTX, &cmsg);
   ppack(filedes[1],CK_MSG_LOC, &lmsg);
@@ -240,9 +241,9 @@ START_TEST(test_ppack_noctx)
   FailMsg fmsg;
   RcvMsg *rmsg;
 
-  lmsg.file = "abc123.c";
+  lmsg.file = (char *) "abc123.c";
   lmsg.line = 10;
-  fmsg.msg = "oops";
+  fmsg.msg = (char *) "oops";
   pipe(filedes);
   ppack(filedes[1],CK_MSG_LOC, &lmsg);
   ppack(filedes[1],CK_MSG_FAIL, &fmsg);
@@ -290,7 +291,7 @@ START_TEST(test_ppack_multictx)
 
   cmsg.ctx = CK_CTX_SETUP;
   lmsg.line = 5;
-  lmsg.file = "abc123.c";
+  lmsg.file = (char *) "abc123.c";
   pipe(filedes);
   ppack(filedes[1],CK_MSG_CTX, &cmsg);
   ppack(filedes[1],CK_MSG_LOC, &lmsg);
@@ -319,7 +320,7 @@ START_TEST(test_ppack_nofail)
   LocMsg lmsg;
   RcvMsg *rmsg;
 
-  lmsg.file = "abc123.c";
+  lmsg.file = (char *) "abc123.c";
   lmsg.line = 10;
   cmsg.ctx = CK_CTX_SETUP;
   pipe(filedes);

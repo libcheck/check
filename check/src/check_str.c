@@ -25,12 +25,12 @@
 #include "check_impl.h"
 #include "check_str.h"
 
-static char *tr_type_str (TestResult *tr);
+static const char *tr_type_str (TestResult *tr);
 static int percent_passed (TestStats *t);
 
 char *tr_str (TestResult *tr) 
 {
-  char *exact_msg;
+  const char *exact_msg;
   char *rstr;
   
   exact_msg = (tr->rtype == CK_ERROR) ? "(after this point) ": "";
@@ -59,9 +59,9 @@ char *sr_stat_str (SRunner *sr)
 }
 
 
-static char *tr_type_str (TestResult *tr)
+static const char *tr_type_str (TestResult *tr)
 {
-  char *str = NULL;
+  const char *str = NULL;
   if (tr->ctx == CK_CTX_TEST) {
     if (tr->rtype == CK_PASS)
       str = "P";

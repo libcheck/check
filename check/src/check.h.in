@@ -1,3 +1,4 @@
+/*-*- mode:C; -*- */
 /*
  * Check: a unit test framework for C
  * Copyright (C) 2001, 2002, Arien Malec
@@ -89,7 +90,7 @@ typedef struct Suite Suite;
  
 /* Creates a test suite with the given name
 */
-Suite *suite_create (char *name);
+Suite *suite_create (const char *name);
 
 /* Free a test suite (For the moment, this also frees all contained
   test cases) */
@@ -99,7 +100,7 @@ void suite_free (Suite *s);
 void suite_add_tcase (Suite *s, TCase *tc);
 
 /* Create a test case */
-TCase *tcase_create (char *name);
+TCase *tcase_create (const char *name);
 
 /* Free a test case
 
@@ -115,7 +116,7 @@ void tcase_free (TCase *tc);
 
 /* Add a test function to a test case
   (function version -- use this when the macro won't work */
-void _tcase_add_test (TCase *tc, TFun tf, char *fname);
+void _tcase_add_test (TCase *tc, TFun tf, const char *fname);
 
 /* Add unchecked fixture setup/teardown functions to a test case
 
@@ -150,7 +151,7 @@ void tcase_add_checked_fixture (TCase *tc, SFun setup, SFun teardown);
   
  
 /* Internal function to mark the start of a test function */
-void tcase_fn_start (char *fname, char *file, int line);
+void tcase_fn_start (const char *fname, const char *file, int line);
 
 /* Start a unit test with START_TEST(unit_name), end with END_TEST
    One must use braces within a START_/END_ pair to declare new variables */
@@ -169,7 +170,7 @@ static void __testname (void)\
  _fail_unless(expr,__FILE__,__LINE__, msg ? msg : "Assertion '"#expr"' failed")
 
 /* Non macro version of #fail_unless, with more complicated interface */
-void _fail_unless (int result, char *file, int line, char *msg);
+void _fail_unless (int result, const char *file, int line, const char *msg);
 
 /* Always fail */
 #define fail(msg) _fail_unless(0,__FILE__,__LINE__,msg)
@@ -180,7 +181,7 @@ void _fail_unless (int result, char *file, int line, char *msg);
 #define mark_point() _mark_point(__FILE__,__LINE__)
 
 /* Non macro version of #mark_point */
-void _mark_point (char *file, int line);
+void _mark_point (const char *file, int line);
 
 /* Result of a test */
 enum test_result {
@@ -218,13 +219,13 @@ int tr_rtype (TestResult *tr);
 /* Context in which the result occurred */ 
 enum ck_result_ctx tr_ctx (TestResult *tr); 
 /* Failure message */
-char *tr_msg (TestResult *tr);
+const char *tr_msg (TestResult *tr);
 /* Line number at which failure occured */
 int tr_lno (TestResult *tr);
 /* File name at which failure occured */
-char *tr_lfile (TestResult *tr);
+const char *tr_lfile (TestResult *tr);
 /* Test case in which unit test was run */
-char *tr_tcname (TestResult *tr);
+const char *tr_tcname (TestResult *tr);
 
 /* Creates an SRunner for the given suite */
 SRunner *srunner_create (Suite *s);
@@ -283,7 +284,7 @@ void srunner_print (SRunner *sr, enum print_output print_mode);
   done immediatly after SRunner creation, and the log file can't be
   changed after being set.
  */
-void srunner_set_log (SRunner *sr, char *fname);
+void srunner_set_log (SRunner *sr, const char *fname);
 
 /* Does the SRunner have a log file?
 */
@@ -291,7 +292,7 @@ int srunner_has_log (SRunner *sr);
 
 /* Return the name of the log file, or NULL if none
 */
-char *srunner_log_fname (SRunner *sr);
+const char *srunner_log_fname (SRunner *sr);
 
 /* Control forking */
 enum fork_status {

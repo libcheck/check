@@ -60,8 +60,8 @@ static void srunner_iterate_tcase_tfuns (SRunner *sr, TCase *tc);
 static void srunner_add_failure (SRunner *sr, TestResult *tf);
 static TestResult *tcase_run_tfun_fork (TCase *tc, TF *tf);
 static TestResult *tcase_run_tfun_nofork (TCase *tc, TF *tf);
-static TestResult *receive_result_info_fork (char *tcname, int status);
-static TestResult *receive_result_info_nofork (char *tcname);
+static TestResult *receive_result_info_fork (const char *tcname, int status);
+static TestResult *receive_result_info_nofork (const char *tcname);
 static void set_fork_info (TestResult *tr, int status);
 static void set_nofork_info (TestResult *tr);
 static char *signal_msg (int sig);
@@ -247,7 +247,7 @@ static void srunner_run_tcase (SRunner *sr, TCase *tc)
   }
 }
 
-static TestResult *receive_result_info_fork (char *tcname, int status)
+static TestResult *receive_result_info_fork (const char *tcname, int status)
 {
   TestResult *tr;
 
@@ -260,7 +260,7 @@ static TestResult *receive_result_info_fork (char *tcname, int status)
   return tr;
 }
 
-static TestResult *receive_result_info_nofork (char *tcname)
+static TestResult *receive_result_info_nofork (const char *tcname)
 {
   TestResult *tr;
 

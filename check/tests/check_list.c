@@ -35,7 +35,7 @@ END_TEST
 START_TEST(test_add_end)
 {
   List * lp = list_create();
-  char * tval = "abc";
+  const char * tval = "abc";
   
   list_add_end (lp, tval);
   
@@ -64,8 +64,8 @@ END_TEST
 START_TEST(test_add_end_and_next)
 {
   List *lp = list_create();
-  char *tval1 = "abc";
-  char *tval2 = "123";
+  const char *tval1 = "abc";
+  const char *tval2 = "123";
   
   list_add_end (lp, tval1);
   list_add_end (lp, tval2);
