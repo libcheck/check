@@ -26,6 +26,7 @@
 #include "check_msg.h"
 
 static int non_pass (int val);
+static Fixture *fixture_create (SFun fun, int ischecked);
 
 Suite *suite_create (char *name)
 {
@@ -59,7 +60,10 @@ TCase *tcase_create (char *name)
   else
     tc->name = name;
   tc->tflst = list_create();
-  tc->setup = tc->teardown = NULL;
+  tc->unch_sflst = list_create();
+  tc->ch_sflst = list_create();
+  tc->unch_tflst = list_create();
+  tc->ch_tflst = list_create();
 
   return tc;
 }
@@ -67,12 +71,17 @@ TCase *tcase_create (char *name)
 
 void tcase_free (TCase *tc)
 {
-  List *l;
-  l = tc->tflst;
-  for (list_front(l); !list_at_end(l); list_advance(l)) {
-    free (list_val(l));
-  }
+  list_apply (tc->tflst, free);
+  list_apply (tc->unch_sflst, free);
+  list_apply (tc->ch_sflst, free);
+  list_apply (tc->unch_tflst, free);
+  list_apply (tc->ch_tflst, free);
   list_free(tc->tflst);
+  list_free(tc->unch_sflst);
+  list_free(tc->ch_sflst);
+  list_free(tc->unch_tflst);
+  list_free(tc->ch_tflst);
+  
   free(tc);
 }
 
@@ -94,12 +103,33 @@ void _tcase_add_test (TCase *tc, TFun fn, char *name)
   list_add_end (tc->tflst, tf);
 }
 
-void tcase_set_fixture (TCase *tc, SFun setup, SFun teardown)
+static Fixture *fixture_create (SFun fun, int ischecked)
 {
-  tc->setup = setup;
-  tc->teardown = teardown;
+  Fixture *f;
+  f = emalloc (sizeof(Fixture));
+  f->fun = fun;
+  f->ischecked = ischecked;
+
+  return f;
 }
 
+  
+void tcase_add_fixture (TCase *tc, SFun setup, SFun teardown, int ischecked)
+{
+  if (setup) {
+    if (ischecked)
+      list_add_end (tc->ch_sflst, fixture_create(setup, ischecked));
+    else
+      list_add_end (tc->unch_sflst, fixture_create(setup, ischecked));
+  }
+
+  if (teardown) {
+    if (ischecked)
+      list_add_end (tc->ch_tflst, fixture_create(teardown, ischecked));
+    else
+      list_add_end (tc->unch_tflst, fixture_create(teardown, ischecked));  
+  }
+}
 
 void tcase_fn_start (char *fname, char *file, int line)
 {

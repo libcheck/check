@@ -44,7 +44,7 @@ static Suite *make_fork_sub_suite (void)
   tc = tcase_create("Core");
 
   suite_add_tcase (s, tc);
-  tcase_set_fixture(tc, fork_sub_setup,NULL);
+  tcase_add_fixture(tc, fork_sub_setup,NULL, 0);
   tcase_add_test(tc,test_inc);
   tcase_add_test(tc,test_nofork_sideeffects);
   tcase_add_test(tc,test_nofork_pid);

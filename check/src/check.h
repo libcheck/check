@@ -108,13 +108,19 @@ void _tcase_add_test (TCase *tc, TFun tf, char *fname);
 
 /* Add fixture setup/teardown functions to a test case
 
-   Note that setup/teardown functions are not run in a separate
+   If ischecked, fixture functions are run in the same address space
+   as the unit tests, once per unit test. If the tests are run
+   CK_NOFORK, they are still run before and after each unit test.
+
+   If not ischecked, fixture functions are run at the start and end of
+   the test case, and not before and after unit tests. Note that
+   unchecked setup/teardown functions are not run in a separate
    address space, like test functions, and so must not exit or signal
    (e.g., segfault)
 
 */
-void tcase_set_fixture(TCase *tc, SFun setup, SFun teardown);
-
+void tcase_add_fixture (TCase *tc, SFun setup, SFun teardown, int ischecked);
+ 
 /* Internal function to mark the start of a test function */
 void tcase_fn_start (char *fname, char *file, int line);
 

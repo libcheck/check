@@ -176,22 +176,44 @@ static void srunner_iterate_tcase_tfuns (SRunner *sr, TCase *tc)
 static int srunner_run_setup (SRunner *sr, TCase *tc, MsgSys *msgsys)
 {
   TestResult *tr;
+  List *l;
+  Fixture *f;
+  int rval = 1;
 
   set_fork_status(CK_NOFORK);
-  
-  if (tc->setup)
-    tc->setup();
 
-  tr = receive_result_info_setup (msgsys, tc->name);
+  l = tc->unch_sflst;
+  
+  for (list_front(l); !list_at_end(l); list_advance(l)) {
+    
+    f = list_val(l);
+    f->fun();
+
+    tr = receive_result_info_setup (msgsys, tc->name);
+
+    if (tr->rtype != CK_PASS) {
+      srunner_add_failure(sr, tr);
+      rval = 0;
+      break;
+    }
+  }
 
   set_fork_status(srunner_fork_status(sr));
-  if (tr->rtype == CK_PASS) {
-    return 1;
-  } else {
-    srunner_add_failure(sr, tr);
-    return 0;
-  }
+  return rval;
+}
+
+static void srunner_run_teardown (SRunner *sr, TCase *tc, MsgSys *msgsys)
+{
+  List *l;
+  Fixture *f;
   
+  l = tc->unch_tflst;
+  
+  for (list_front(l); !list_at_end(l); list_advance(l)) {
+    
+    f = list_val(l);
+    f->fun ();
+  }
 }
 
 static void srunner_run_tcase (SRunner *sr, TCase *tc)
@@ -204,8 +226,7 @@ static void srunner_run_tcase (SRunner *sr, TCase *tc)
   
     srunner_iterate_tcase_tfuns(sr,tc);
   
-    if (tc->teardown)
-      tc->teardown();
+    srunner_run_teardown (sr, tc, msgsys);
   }
   delete_msgsys();
 }

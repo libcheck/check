@@ -45,11 +45,19 @@ struct Suite {
   List *tclst; /* List of test cases */
 };
 
+typedef struct Fixture 
+{
+  int ischecked;
+  SFun fun;
+} Fixture;
+
 struct TCase {
   char *name;
   List *tflst; /* list of test functions */
-  SFun setup;
-  SFun teardown;
+  List *unch_sflst;
+  List *unch_tflst;
+  List *ch_sflst;
+  List *ch_tflst;
 };
 
 typedef struct TestStats {

@@ -45,7 +45,7 @@ void list_advance (List * lp);
 /* Free a list, but don't free values */
 void list_free (List * lp);
 
-/* Free a list, freeing values using a freeing function */
-/* void list_vfree (List * lp, void (*fp) (void *)); */
+void list_apply (List *lp, void (*fp) (void *));
+
 
 #endif /*LIST_H*/
