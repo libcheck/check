@@ -1,13 +1,10 @@
-Original author:
-Arien Malec <arien_malec@yahoo.com>
+Author:      Arien Malec <arien_malec@yahoo.com>
 
-Current maintainer:
-Sven Neumann <sven@convergence.de>
+Maintainer:  Sven Neumann <sven@convergence.de>
 
-Patches:
-Bernhard Reiter (configure issues)
-Neil Spring (const fixes)
+Patches:     Bernhard Reiter (configure issues)
+             Neil Spring (const fixes)
 
 Design suggestions:
-Fred Drake (checked fixture functions)
-Jim O'Leary (forkless mode)
+             Fred Drake (checked fixture functions)
+             Jim O'Leary (forkless mode)

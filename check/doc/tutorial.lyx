@@ -363,19 +363,19 @@ START_TEST(test_create)
  m = money_create (5, "USD");
 \layout Code
 
- fail_unless (money_amount(m) == 5, 
+ fail_unless (money_amount (m) == 5, 
 \layout Code
 
               "Amount not set correctly on creation");
 \layout Code
 
- fail_unless (strcmp(money_currency(m),"USD") == 0, 
+ fail_unless (strcmp (money_currency (m), "USD") == 0, 
 \layout Code
 
               "Currency not set correctly on creation"); 
 \layout Code
 
- money_free(m); 
+ money_free (m); 
 \layout Code
 
 }
@@ -430,13 +430,27 @@ fail
  The second test above can be rewritten as follows:
 \layout Code
 
-if (strcmp(money_currency(m), "USD") != 0) {
+if (strcmp (money_currency (m), "USD") != 0) {
 \layout Code
 
-  fail ("Currency not set correctly on creation");
+  fail  ("Currency not set correctly on creation");
 \layout Code
 
 }
+\layout Standard
+
+For your convenience the "fail_unless" function also accepts NULL as the
+ msg argument and substitutes a suitable message for you.
+ So you could also write a test as follows:
+\layout Code
+
+fail_unless (money_amount (m) == 5, NULL);
+\layout Standard
+
+This is equivalent to the line:
+\layout Code
+
+fail_unless (money_amount (m) == 5, "Assertion 'money_amount (m) == 5' failed");
 \layout Standard
 
 When we try to compile and run the test suite now, we get a whole host of
@@ -460,7 +474,7 @@ typedef struct Money Money;
  
 \layout Code
 
-Money *money_create(int amount, char *currency); 
+Money *money_create (int amount, char *currency); 
 \layout Code
 
 int money_amount (Money *m); 
@@ -469,7 +483,7 @@ int money_amount (Money *m);
 char *money_currency (Money *m); 
 \layout Code
 
-void money_free(Money *m);
+void money_free (Money *m);
 \layout Standard
 
 and our code now compiles, but fails to link, since we haven't implemented
@@ -483,7 +497,7 @@ and our code now compiles, but fails to link, since we haven't implemented
 #include "money.h"
 \layout Code
 
-Money *money_create(int amount, char *currency) 
+Money *money_create (int amount, char *currency) 
 \layout Code
 
 { 
@@ -519,7 +533,7 @@ char *money_currency (Money *m)
 }
 \layout Code
 
-void money_free(Money *m) 
+void money_free (Money *m) 
 \layout Code
 
 { 
@@ -550,10 +564,10 @@ Suite *money_suite (void)
 { 
 \layout Code
 
-  Suite *s = suite_create("Money"); 
+  Suite *s = suite_create ("Money"); 
 \layout Code
 
-  TCase *tc_core = tcase_create("Core");
+  TCase *tc_core = tcase_create ("Core");
 \layout Code
 
  
@@ -586,22 +600,22 @@ int main (void)
   int nf; 
 \layout Code
 
-  Suite *s = money_suite(); 
+  Suite *s = money_suite (); 
 \layout Code
 
-  SRunner *sr = srunner_create(s); 
+  SRunner *sr = srunner_create (s); 
 \layout Code
 
   srunner_run_all (sr, CK_NORMAL); 
 \layout Code
 
-  nf = srunner_ntests_failed(sr); 
+  nf = srunner_ntests_failed (sr); 
 \layout Code
 
-  srunner_free(sr); 
+  srunner_free (sr); 
 \layout Code
 
-  suite_free(s); 
+  suite_free (s); 
 \layout Code
 
   return (nf == 0) ? EXIT_SUCCESS : EXIT_FAILURE; 
@@ -768,13 +782,13 @@ after this point
  E.g., if we wrote some test code as follows:
 \layout Code
 
-stuff_that_works();
+stuff_that_works ();
 \layout Code
 
-mark_point();
+mark_point ();
 \layout Code
 
-stuff_that_dies();
+stuff_that_dies ();
 \layout Standard
 
 then the point returned will be that marked by mark_point.
@@ -798,13 +812,13 @@ What happens if we pass -1 as the amount in money_create? What should happen?
  money with amount 0:
 \layout Code
 
-START_TEST(test_neg_create) 
+START_TEST (test_neg_create) 
 \layout Code
 
 { 
 \layout Code
 
-  Money *m = money_create(-1, "USD"); 
+  Money *m = money_create (-1, "USD"); 
 \layout Code
 
   fail_unless (m == NULL, "NULL should be returned on attempt to create
@@ -817,16 +831,16 @@ START_TEST(test_neg_create)
 END_TEST
 \layout Code
 
-START_TEST(test_zero_create) 
+START_TEST (test_zero_create) 
 \layout Code
 
 { 
 \layout Code
 
-  Money *m = money_create(0, "USD"); 
+  Money *m = money_create (0, "USD"); 
 \layout Code
 
-  fail_unless (money_amount(m) == 0, "Zero is a valid amount of money");
+  fail_unless (money_amount (m) == 0, "Zero is a valid amount of money");
  
 \layout Code
 
@@ -850,13 +864,13 @@ Limits
 Suite *money_suite (void) { 
 \layout Code
 
-  Suite *s = suite_create("Money"); 
+  Suite *s = suite_create ("Money"); 
 \layout Code
 
-  TCase *tc_core = tcase_create("Core"); 
+  TCase *tc_core = tcase_create ("Core"); 
 \layout Code
 
-  TCase *tc_limits = tcase_create("Limits"); 
+  TCase *tc_limits = tcase_create ("Limits"); 
 \layout Code
 
   suite_add_tcase (s, tc_core); 
@@ -986,7 +1000,7 @@ Money *five_dollars;
 void setup (void) { 
 \layout Code
 
-  five_dollars = money_create(5, "USD"); 
+  five_dollars = money_create (5, "USD"); 
 \layout Code
 
 }
@@ -1041,13 +1055,13 @@ START_TEST(test_create)
 { 
 \layout Code
 
-   fail_unless (money_amount(five_dollars) == 5,
+   fail_unless (money_amount (five_dollars) == 5,
 \layout Code
 
                "Amount not set correctly on creation"); 
 \layout Code
 
-   fail_unless (strcmp(money_currency(five_dollars),"USD") == 0,
+   fail_unless (strcmp (money_currency (five_dollars), "USD") == 0,
 \layout Code
 
                 "Currency not set correctly on creation"); 
@@ -1104,22 +1118,22 @@ In a large program, it will be convenient to create multiple suites, each
  declares suite creation functions for all the module tests:
 \layout Code
 
-Suite *make_sub_suite(void);
+Suite *make_sub_suite (void);
 \layout Code
 
-Suite *make_sub2_suite(void);
+Suite *make_sub2_suite (void);
 \layout Code
 
-Suite *make_master_suite(void);
+Suite *make_master_suite (void);
 \layout Code
 
-Suite *make_list_suite(void);
+Suite *make_list_suite (void);
 \layout Code
 
-Suite *make_msg_suite(void);
+Suite *make_msg_suite (void);
 \layout Code
 
-Suite *make_log_suite(void);
+Suite *make_log_suite (void);
 \layout Standard
 
 The function srunner_add_suite is used to add additional suites to an SRunner.
@@ -1129,16 +1143,16 @@ The function srunner_add_suite is used to add additional suites to an SRunner.
 SRunner *sr;
 \layout Code
 
-sr = srunner_create (make_master_suite());
+sr = srunner_create (make_master_suite ());
 \layout Code
 
-srunner_add_suite(sr, make_list_suite());
+srunner_add_suite (sr, make_list_suite ());
 \layout Code
 
-srunner_add_suite(sr, make_msg_suite());
+srunner_add_suite (sr, make_msg_suite ());
 \layout Code
 
-srunner_add_suite(sr, make_log_suite()); 
+srunner_add_suite (sr, make_log_suite ()); 
 \layout Subsection
 
 
@@ -1157,16 +1171,16 @@ Check supports operation to log the results of a test run.
 SRunner *sr;
 \layout Code
 
-sr = srunner_create(make_s1_suite());
+sr = srunner_create (make_s1_suite ());
 \layout Code
 
-srunner_add_suite(sr, make_s2_suite());
+srunner_add_suite (sr, make_s2_suite ());
 \layout Code
 
-srunner_set_log(sr, "test.log");
+srunner_set_log (sr, "test.log");
 \layout Code
 
-srunner_run_all(sr, CRNORMAL);
+srunner_run_all (sr, CRNORMAL);
 \layout Standard
 
 Check will write the results of the run to test.log.
