@@ -9,7 +9,7 @@ Copyright: Arien Malec <arien_malec@yahoo.com>
 URL: http://check.sourceforge.net/
 Prefix: %{_prefix}
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
-Packager: Fredrik Hugosson <hugo303@sourceforge.net>
+Packager: Fredrik Hugosson <hugo303@users.sourceforge.net>
 
 %description
 Check is a unit test framework for C. It features a simple interface for defining unit tests, putting little in the way of the developer. Tests are run in a separate address space, so Check can catch both assertion failures and code errors that cause segmentation faults or other signals. The output from unit tests can be used within source code editors and IDEs.

@@ -1,7 +1,7 @@
 Source: check
 Section: devel
 Priority: optional
-Maintainer: Fredrik Hugosson <hugo303@sourceforge.net>
+Maintainer: Fredrik Hugosson <hugo303@users.sourceforge.net>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.5.2
 
