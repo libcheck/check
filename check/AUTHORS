@@ -1,1 +1,11 @@
+Primary maintainer
 arien_malec@yahoo.com
+
+Check 0.8.0
+
+Patches:
+Bernhard Reiter (configure issues)
+
+Design suggestions:
+Fred Drake (checked fixture functions)
+Jim O'Leary (forkless mode)
