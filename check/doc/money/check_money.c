@@ -58,7 +58,7 @@ int main (void)
   Suite *s = money_suite();
   SRunner *sr = srunner_create(s);
   srunner_run_all (sr, CRNORMAL);
-  nf = srunner_nfailures(sr);
+  nf = srunner_ntests_failed(sr);
   srunner_free(sr);
   suite_free(s);
   return (nf == 0) ? EXIT_SUCCESS : EXIT_FAILURE;

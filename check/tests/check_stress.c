@@ -34,9 +34,9 @@ void run (int num_iters)
   }
 
   srunner_run_all(sr, CRSILENT);
-  if (srunner_nfailed_tests (sr) != num_iters) {
+  if (srunner_ntests_failed (sr) != num_iters) {
     printf ("Error: expected %d failures, got %d\n",
-	    num_iters, srunner_nfailed_tests(sr));
+	    num_iters, srunner_ntests_failed(sr));
     return;
   }
 

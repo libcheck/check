@@ -100,5 +100,5 @@ int main (void)
   tcase_add_test (tc, test_free);
 
   srunner_run_all (sr, CRNORMAL);
-  return (srunner_nfailed_tests(sr) == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
+  return (srunner_ntests_failed(sr) == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

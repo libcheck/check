@@ -563,7 +563,7 @@ int main (void)
   srunner_run_all (sr, CRNORMAL); 
 \layout Code
 
-  nf = srunner_nfailures(sr); 
+  nf = srunner_ntests_failed(sr); 
 \layout Code
 
   srunner_free(sr); 

@@ -262,7 +262,7 @@ void srunner_print_results (SRunner *sr, int print_mode)
   return;
 }
 
-int srunner_nfailed_tests (SRunner *sr)
+int srunner_ntests_failed (SRunner *sr)
 {
   return sr->stats->n_failed + sr->stats->n_errors;
 }
@@ -277,7 +277,7 @@ TestResult **srunner_failures (SRunner *sr)
   int i = 0;
   TestResult **trarray;
   List *rlst;
-  trarray = malloc (sizeof(trarray[0]) * srunner_nfailed_tests(sr));
+  trarray = malloc (sizeof(trarray[0]) * srunner_ntests_failed (sr));
 
   rlst = srunner_resultlst (sr);
   for (list_front(rlst); !list_at_end(rlst); list_advance(rlst)) {
@@ -285,6 +285,21 @@ TestResult **srunner_failures (SRunner *sr)
     if (non_pass(tr->rtype))
       trarray[i++] = tr;
     
+  }
+  return trarray;
+}
+
+TestResult **srunner_results (SRunner *sr)
+{
+  int i = 0;
+  TestResult **trarray;
+  List *rlst;
+
+  trarray = malloc (sizeof(trarray[0]) * srunner_ntests_run (sr));
+
+  rlst = srunner_resultlst (sr);
+  for (list_front(rlst); !list_at_end(rlst); list_advance(rlst)) {
+    trarray[i++] = list_val(rlst);
   }
   return trarray;
 }

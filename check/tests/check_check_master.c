@@ -4,6 +4,7 @@
 
 
 TestResult **tr_fail_array;
+TestResult **tr_all_array;
 
 START_TEST(test_check_nfailures)
 {
@@ -114,6 +115,55 @@ START_TEST(test_check_failure_tcnames)
 }
 END_TEST
 
+
+START_TEST(test_check_all_msgs)
+{
+  int i;
+  char *msgar[] = {
+    "Failure expected",
+    "Early exit with return value 1",
+    "Test passed",
+    "This test should fail",
+    "Received signal 11",
+    "Received signal 8",
+    "Received signal 8",
+    "Early exit with return value 1",
+    "Completed properly"};
+
+  for (i = 0; i < sub_ntests; i++) {
+    char *msg;   
+    msg = tr_msg(tr_all_array[i]);
+    if (strcmp (msg, msgar[i]) != 0) {
+      char *emsg = malloc (CMAXMSG);
+      snprintf (emsg, CMAXMSG,"Expected %s, got %s", msgar[i], msg);
+      fail (emsg);
+      free (emsg);
+    }
+  }
+}
+END_TEST  
+
+START_TEST(test_check_all_ftypes)
+{
+  int i;
+  int ftypes[] = {
+    CRFAILURE,
+    CRERROR,
+    CRPASS,
+    CRFAILURE,
+    CRERROR,
+    CRERROR,
+    CRERROR,
+    CRERROR,
+    CRFAILURE};
+  
+  for (i = 0; i < sub_ntests; i++) {
+    fail_unless (ftypes[i] == tr_rtype(tr_all_array[i]),
+		 "Failure type wrong");
+  }
+}
+END_TEST
+
 int test_fixture_val = 0;
 void test_fixture_setup (void)
 {
@@ -154,9 +204,11 @@ Suite *main_make_suite (void)
   tcase_add_test (tc_core, test_check_nfailures);
   tcase_add_test (tc_core, test_check_ntests_run);
   tcase_add_test (tc_core, test_check_failure_msgs);
+  tcase_add_test (tc_core, test_check_failure_ftypes);
   tcase_add_test (tc_core, test_check_failure_lnos);
   tcase_add_test (tc_core, test_check_failure_lfiles);
-  tcase_add_test (tc_core, test_check_failure_ftypes);
+  tcase_add_test (tc_core, test_check_all_msgs);
+  tcase_add_test (tc_core, test_check_all_ftypes);
   tcase_set_fixture(tc_fixture, test_fixture_setup, test_fixture_teardown);
   /* add the test 3 times to make sure we adequately test
      preservation of fixture values across tests, regardless
@@ -178,7 +230,8 @@ void setup (void)
   SRunner *sr = srunner_create(s);
   srunner_run_all(sr, CRSILENT);
   tr_fail_array = srunner_failures(sr);
-  sub_nfailed = srunner_nfailed_tests(sr);
+  tr_all_array = srunner_results(sr);
+  sub_nfailed = srunner_ntests_failed(sr);
   sub_ntests = srunner_ntests_run(sr);
 }
 

@@ -17,7 +17,7 @@ int main (void)
   printf ("Ran %d tests in subordinate suite\n", sub_nfailed);
   srunner_run_all (sr, CRNORMAL);
   cleanup();
-  n = srunner_nfailed_tests(sr);
+  n = srunner_ntests_failed(sr);
   srunner_free(sr);
   suite_free(s);
   return (n == 0) ? EXIT_SUCCESS : EXIT_FAILURE;

@@ -150,17 +150,22 @@ void srunner_run_all (SRunner *sr, int print_mode);
 
 /*! Number of failed tests in a run suite
   Includes failures + errors */
-int srunner_nfailed_tests (SRunner *sr);
+int srunner_ntests_failed (SRunner *sr);
 
 /*! Total number of tests run in a run suite */
 int srunner_ntests_run (SRunner *sr);
 
-/*! Return an array of failures
-   Number of failures is equal to srunner_nfailures
+/*! Return an array of results for all failures
+   Number of failures is equal to srunner_nfailed_tests
    Memory is alloc'ed and must be freed, but individual
    TestResults must not */
 TestResult **srunner_failures (SRunner *sr);
 
+/*! Return an array of results for all run tests
+  Number of failrues is equal to srunner_ntests_run
+  Memory is alloc'ed and must be freed, but individual
+  TestResults must not */
+TestResult **srunner_results (SRunner *sr);
 /* Printing */
 
 /*! Print a summary report of %passed, #checks, failures */
