@@ -11,7 +11,7 @@ noinst_PROGRAMS = \
 	ex_xml_output	\
 	ex_log_output
 
-EXTRA_DIST = test_output.sh test_log_output.sh
+EXTRA_DIST = test_output.sh test_log_output.sh test_xml_output.sh
 
 check_check_SOURCES = \
 	check_check.h		\
