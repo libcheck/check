@@ -1,5 +1,9 @@
 2004-11-09 hugo303
 
+	* doc/tutorial.sgml: Documented signals handling and timeouts.
+
+2004-11-09 hugo303
+
 	* tests/check_check_master.c src/check.h.in:
 	Changed failure message for fail_if.
 

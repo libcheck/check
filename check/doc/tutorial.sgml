@@ -673,6 +673,36 @@ srunner_add_suite(sr, make_log_suite());</programlisting>
 
    </section>
 
+
+   <section>
+    <title>
+Testing signal handling
+   </title>
+   <para>
+To enable testing of signal handling, there is a function <function>tcase_add_test_raise_signal()</function> which is used instead of <function>tcase_add_test()</function>. This function takes an additional signal argument, specifying a signal that the test expects to receive. If no signal is received this is logged as a failure. If a different signal is received this is logged as an error.
+   </para>
+   <para> 
+The signal handling functionality only works in CK_FORK mode.
+   </para>
+   </section>
+
+
+   <section>
+    <title>
+Test timeouts
+   </title>
+   <para>
+To be certain that a test won't hang indefinitely, all tests are run with a timeout (default 3 seconds). If the test is not finished within that time, it is killed and logged as an error. The timeout for a specific test case (not an individual test) can be changed with the <function>tcase_set_timeout()</function> function. The default timeout used for all test cases can be changed with the environment variable CK_DEFAULT_TIMEOUT, of course this does not override a specifically set timeout.
+   </para>
+   <para>
+All timeout arguments are in seconds and a timeout of 0 seconds turns off the timeout functionality.
+   </para>
+   <para> 
+The timeout functionality is only available in CK_FORK mode.
+   </para>
+   </section>
+
+
    <section>
     <title>
 Test Logging<anchor id="TestLogging">
