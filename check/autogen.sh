@@ -79,6 +79,9 @@ for i in $autogen_dirs; do
         echo "Processing $i..."
 
         cd $i
+
+        aclocal $ACLOCAL_FLAGS
+
         # optionally feature autoheader
         if grep AM_CONFIG_HEADER configure.in >/dev/null ; then
                 (autoheader --version)  < /dev/null > /dev/null 2>&1 && autoheader
