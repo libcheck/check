@@ -241,22 +241,22 @@ static int read_buf (int fdes, char **buf)
   char *readloc;
   int n;
   int nread = 0;
-  int mul;
+  int size = 1;
+  int grow = 2;
   
-  *buf = emalloc(CK_MAXMSGBUF);
+  *buf = emalloc(size);
   readloc = *buf;
-  mul = 2;
   while (1) {
-    n = read(fdes,readloc,CK_MAXMSGBUF);
+    n = read(fdes,readloc,size - nread);
     if (n == 0)
       break;
     if (n == -1)
       eprintf("Error in read_buf:", __FILE__, __LINE__);
 
     nread += n;
-    *buf = erealloc(*buf,CK_MAXMSGBUF * mul);
-    mul++;
-    readloc += CK_MAXMSGBUF;
+    size *= grow;
+    *buf = erealloc(*buf,size);
+    readloc = *buf + nread;
   }
   return nread;
 }    
@@ -270,6 +270,8 @@ static int get_result (char *buf, TestResult *tr)
   data = emalloc(CK_MAXMSGBUF);
   
   n = upack(buf,data,&type);
+  if (n == -1)
+    eprintf("Error in upack", __FILE__, __LINE__);
   
   if (type == CK_MSG_CTX) {
     CtxMsg *cmsg = data;
@@ -303,6 +305,8 @@ static int new_get_result (char *buf, RcvMsg *rmsg)
   data = emalloc(CK_MAXMSGBUF);
   
   n = upack(buf,data,&type);
+  if (n == -1)
+    eprintf("Error in upack", __FILE__, __LINE__);
   
   if (type == CK_MSG_CTX) {
     CtxMsg *cmsg = data;

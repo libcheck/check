@@ -93,22 +93,7 @@ void send_ctx_info (int key,enum ck_result_ctx ctx)
   ppack(p->sendfd, CK_MSG_CTX, &cmsg);
 }
 
-TestResult *receive_test_result (int key)
-{
-  Pipe *p;
-  TestResult *tr;
-
-  p = get_pipe_by_key(key);
-  if (p == NULL)
-    eprintf("Couldn't find pipe with key %d",__FILE__, __LINE__, key);
-  close(p->sendfd);
-  tr = punpack(p->recvfd);
-  close(p->recvfd);
-  setup_pipe(p);
-  return tr;
-}
-
-TestResult *new_receive_test_result (int key, int waserror)
+TestResult *receive_test_result (int key, int waserror)
 {
   Pipe *p;
   RcvMsg *rmsg;
@@ -143,11 +128,7 @@ static TestResult *construct_test_result (RcvMsg *rmsg, int waserror)
     return NULL;
 
   tr = emalloc (sizeof(TestResult));
-  /*
-    a message with an error message (non null) is assigned to the lastctx
-    if waserror, then assign to the lastctx
-    otherwise assign to the lastctx if it is setup, and to test otherwise
-  */
+
   if (rmsg->msg != NULL || waserror) {
     tr->ctx = rmsg->lastctx;
     tr->msg = rmsg->msg;

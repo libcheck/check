@@ -65,6 +65,7 @@ static void set_nofork_info (TestResult *tr);
 static char *signal_msg (int sig);
 static char *pass_msg (void);
 static char *exit_msg (int exitstatus);
+static int waserror (int status);
 
 static void srunner_run_init (SRunner *sr, enum print_output print_mode)
 {
@@ -250,7 +251,7 @@ static TestResult *receive_result_info_fork (char *tcname, int status)
 {
   TestResult *tr;
 
-  tr = receive_test_result (get_recv_key());
+  tr = receive_test_result (get_recv_key(), waserror(status));
   if (tr == NULL)
     eprintf("Failed to receive test result", __FILE__, __LINE__);
   tr->tcname = tcname;
@@ -263,7 +264,7 @@ static TestResult *receive_result_info_nofork (char *tcname)
 {
   TestResult *tr;
 
-  tr = receive_test_result(get_recv_key());
+  tr = receive_test_result(get_recv_key(), 0);
   if (tr == NULL)
     eprintf("Failed to receive test result", __FILE__, __LINE__);
   tr->tcname = tcname;
@@ -370,3 +371,11 @@ void srunner_set_fork_status (SRunner *sr, enum fork_status fstat)
   sr->fstat = fstat;
 }
 
+static int waserror (int status)
+{
+  int was_sig = WIFSIGNALED(status);
+  int was_exit = WIFEXITED(status);
+  int exit_status = WEXITSTATUS(status);
+
+  return (was_sig || (was_exit && exit_status != 0));
+}

@@ -84,7 +84,6 @@ START_TEST(test_check_failure_ftypes)
   int ftypes[] = {
     CK_FAILURE,
     CK_ERROR,
-    /* CRPASS, */
     CK_FAILURE,
     CK_ERROR,
     CK_ERROR,

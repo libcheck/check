@@ -332,6 +332,44 @@ START_TEST(test_ppack_nofail)
 }
 END_TEST
 
+START_TEST(test_ppack_big)
+{
+  int filedes[2];
+  CtxMsg cmsg;
+  LocMsg lmsg;
+  FailMsg fmsg;
+  RcvMsg *rmsg;
+
+  cmsg.ctx = CK_CTX_TEST;
+  lmsg.file = emalloc(CK_MAXMSG);
+  memset(lmsg.file,'a',CK_MAXMSG - 1);
+  lmsg.file[CK_MAXMSG - 1] = '\0';
+  lmsg.line = 10;
+  fmsg.msg = emalloc(CK_MAXMSG);
+  memset(fmsg.msg,'a',CK_MAXMSG - 1);
+  fmsg.msg[CK_MAXMSG - 1] = '\0';
+  pipe(filedes);
+  ppack(filedes[1],CK_MSG_CTX, &cmsg);
+  ppack(filedes[1],CK_MSG_LOC, &lmsg);
+  ppack(filedes[1],CK_MSG_FAIL, &fmsg);
+  close(filedes[1]);
+  rmsg = new_punpack(filedes[0]);
+
+  fail_unless (rmsg != NULL,
+	       "Return value from ppack should always be malloc'ed");
+  fail_unless (rmsg->lastctx == CK_CTX_TEST,
+	       "CTX not set correctly in ppack");
+  fail_unless (rmsg->test_line == 10,
+	       "Test line not received correctly");
+  fail_unless (strcmp(rmsg->test_file,lmsg.file) == 0,
+	       "Test file not received correctly");
+  fail_unless (strcmp(rmsg->msg, fmsg.msg) == 0,
+	       "Failure message not received correctly");
+  
+  free(rmsg);
+}
+END_TEST
+
 Suite *make_pack_suite(void)
 {
 
@@ -357,6 +395,7 @@ Suite *make_pack_suite(void)
   tcase_add_test(tc_limit, test_pack_ctx_limit);
   tcase_add_test(tc_limit, test_pack_fail_limit);
   tcase_add_test(tc_limit, test_pack_loc_limit);
+  tcase_add_test(tc_limit, test_ppack_big);
 
   return s;
 }
