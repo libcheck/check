@@ -92,6 +92,29 @@ void tr_fprint (FILE *file, TestResult *tr, enum print_output print_mode)
   }
 }
 
+void tr_xmlprint (FILE *file, TestResult *tr, enum print_output print_mode)
+{
+  char result[10];
+
+  switch (tr->rtype) {
+  case CK_PASS:
+    strcpy(result, "success");
+    break;
+  case CK_FAILURE:
+    strcpy(result, "failure");
+    break;
+  case CK_ERROR:
+    strcpy(result, "error");
+    break;
+  }
+  fprintf(file, "    <test result=\"%s\">\n", result);
+  fprintf(file, "      <fn>%s:%d</fn>\n", tr->file, tr->line);
+  fprintf(file, "      <id>%s</id>\n", tr->tname);
+  fprintf(file, "      <description>%s</description>\n", tr->tcname);
+  fprintf(file, "      <message>%s</message>\n", tr->msg);
+  fprintf(file, "    </test>\n");
+}
+
 enum print_output get_env_printmode (void)
 {
   char *env = getenv ("CK_VERBOSITY");

@@ -78,6 +78,8 @@ TestResult *tr_create(void);
 void tr_reset(TestResult *tr);
 
 enum cl_event {
+  CLINITLOG_SR,
+  CLENDLOG_SR,
   CLSTART_SR,
   CLSTART_S,
   CLEND_SR,
@@ -100,6 +102,7 @@ struct SRunner {
   TestStats *stats; /* Run statistics */
   List *resultlst; /* List of unit test results */
   const char *log_fname; /* name of log file */
+  const char *xml_fname; /* name of xml output file */
   List *loglst; /* list of Log objects */
   enum fork_status fstat; /* controls if suites are forked or not
 			     NOTE: Don't use this value directly,

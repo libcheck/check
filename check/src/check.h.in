@@ -291,6 +291,24 @@ int srunner_has_log (SRunner *sr);
 */
 const char *srunner_log_fname (SRunner *sr);
 
+/* Set a xml file to which to write during test running.
+
+  XML file setting is an initialize only operation -- it should be
+  done immediatly after SRunner creation, and the XML file can't be
+  changed after being set.
+ */
+void srunner_set_xml (SRunner *sr, const char *fname);
+
+/* Does the SRunner have a log file?
+*/
+int srunner_has_xml (SRunner *sr);
+
+/* Return the name of the XML file, or NULL if none
+*/
+const char *srunner_xml_fname (SRunner *sr);
+
+
+
 /* Control forking */
 enum fork_status {
   CK_FORK,

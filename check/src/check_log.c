@@ -22,6 +22,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/time.h>
+#include <time.h>
 #include <check.h>
 
 #include "check_error.h"
@@ -48,6 +50,24 @@ int srunner_has_log (SRunner *sr)
 const char *srunner_log_fname (SRunner *sr)
 {
   return sr->log_fname;
+}
+
+
+void srunner_set_xml (SRunner *sr, const char *fname)
+{
+  if (sr->xml_fname)
+    return;
+  sr->xml_fname = fname;
+}
+
+int srunner_has_xml (SRunner *sr)
+{
+  return sr->xml_fname != NULL;
+}
+
+const char *srunner_xml_fname (SRunner *sr)
+{
+  return sr->xml_fname;
 }
 
 void srunner_register_lfun (SRunner *sr, FILE *lfile, int close,
@@ -116,6 +136,10 @@ void stdout_lfun (SRunner *sr, FILE *file, enum print_output printmode,
   }
 
   switch (evt) {
+  case CLINITLOG_SR:
+    break;
+  case CLENDLOG_SR:
+    break;
   case CLSTART_SR:
     if (printmode > CK_SILENT) {
       fprintf(file, "Running suite(s):");
@@ -153,6 +177,10 @@ void lfile_lfun (SRunner *sr, FILE *file, enum print_output printmode,
   Suite *s;
   
   switch (evt) {
+  case CLINITLOG_SR:
+    break;
+  case CLENDLOG_SR:
+    break;
   case CLSTART_SR:
     break;
   case CLSTART_S:
@@ -177,6 +205,61 @@ void lfile_lfun (SRunner *sr, FILE *file, enum print_output printmode,
   
 }
 
+void xml_lfun (SRunner *sr, FILE *file, enum print_output printmode,
+		  void *obj, enum cl_event evt)
+{
+  TestResult *tr;
+  Suite *s;
+  static struct tm *now = NULL;
+  static struct timeval inittv, endtv;
+  char *t;
+
+  if (now == NULL)
+  {
+    now = emalloc(sizeof(struct tm));
+    gettimeofday(&inittv, NULL);
+    localtime_r(&(inittv.tv_sec), now);
+  }
+
+  switch (evt) {
+  case CLINITLOG_SR:
+    fprintf(file, "<?xml version=\"1.0\"?>\n");
+    fprintf(file, "<testsuites xmlns=\"http://check.sourceforge.net/ns\">\n");
+    t = emalloc(sizeof("yyyy-mm-dd hh:mm:ss"));
+    strftime(t, sizeof("yyyy-mm-dd hh:mm:ss"), "%Y-%m-%d %H:%M:%S", now);
+    fprintf(file, "  <datetime>%s</datetime>\n", t);
+    break;
+  case CLENDLOG_SR:
+    gettimeofday(&endtv, NULL);
+    fprintf(file, "  <duration>%f</duration>\n",
+        (endtv.tv_sec + (float)(endtv.tv_usec)/1000000) - \
+        (inittv.tv_sec + (float)(inittv.tv_usec/1000000)));
+    fprintf(file, "</testsuites>\n");
+    break;
+  case CLSTART_SR:
+    break;
+  case CLSTART_S:
+    s = obj;
+    fprintf(file, "  <suite>\n");
+    fprintf(file, "    <title>%s</title>\n", s->name);
+    break;
+  case CLEND_SR:
+    break;
+  case CLEND_S:
+    fprintf(file, "  </suite>\n");
+    s = obj;
+    break;
+  case CLEND_T:
+    tr = obj;
+    tr_xmlprint(file, tr, CK_VERBOSE);
+    break;
+  default:
+    eprintf("Bad event type received in xml_lfun", __FILE__, __LINE__);
+  }
+
+}
+
+
 FILE *srunner_open_lfile (SRunner *sr)
 {
   FILE *f = NULL;
@@ -185,6 +268,18 @@ FILE *srunner_open_lfile (SRunner *sr)
     if (f == NULL)
       eprintf ("Could not open log file %s:", __FILE__, __LINE__,
 	       sr->log_fname);
+  }
+  return f;
+}
+
+FILE *srunner_open_xmlfile (SRunner *sr)
+{
+  FILE *f = NULL;
+  if (srunner_has_xml (sr)) {
+    f = fopen(sr->xml_fname, "w");
+    if (f == NULL)
+      eprintf ("Could not open xml file %s:", __FILE__, __LINE__,
+	       sr->xml_fname);
   }
   return f;
 }
@@ -198,12 +293,19 @@ void srunner_init_logging (SRunner *sr, enum print_output print_mode)
   if (f) {
     srunner_register_lfun (sr, f, 1, lfile_lfun, print_mode);
   }
+  f = srunner_open_xmlfile (sr);
+  if (f) {
+    srunner_register_lfun (sr, f, 2, xml_lfun, print_mode);
+  }
+  srunner_send_evt (sr, NULL, CLINITLOG_SR);
 }
 
 void srunner_end_logging (SRunner *sr)
 {
   List *l;
   int rval;
+
+  srunner_send_evt (sr, NULL, CLENDLOG_SR);
 
   l = sr->loglst;
   for (list_front(l); !list_at_end(l); list_advance(l)) {

@@ -199,6 +199,7 @@ SRunner *srunner_create (Suite *s)
   sr->stats->n_checked = sr->stats->n_failed = sr->stats->n_errors = 0;
   sr->resultlst = list_create();
   sr->log_fname = NULL;
+  sr->xml_fname = NULL;
   sr->loglst = NULL;
   sr->fstat = CK_FORK_UNSPECIFIED;
   return sr;

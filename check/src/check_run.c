@@ -113,6 +113,8 @@ static void srunner_iterate_suites (SRunner *sr,
       tc = list_val (tcl);
       srunner_run_tcase (sr, tc);
     }
+    
+    log_suite_end (sr, s);
   }
 }
 
