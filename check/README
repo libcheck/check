@@ -5,7 +5,7 @@ catch both assertion failures and code errors that cause segmentation
 faults or other signals. The output from unit tests can be used within
 source code editors and IDEs.
 
-See http://check.sourceforge.net for more information, including a
+See http://check.sourceforge.net/ for more information, including a
 tutorial.
 
 If you get Check out of CVS, you will need a working setup of automake

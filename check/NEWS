@@ -1,6 +1,17 @@
-Sat Mar 2, 2001: Released Check 0.8.1
+Mon Apr 15, 2002: Released Check 0.8.2
+
+Added version information to headers and library. Added an autoconf
+macro to easily integrate check into projects that use autoconf.
+
+Removed limitations on line number, message and buffer sizes.
+
+Declared constant string parameters as const.
+
+
+Sat Mar 2, 2002: Released Check 0.8.1
 
 Changed license to LGPL.
+
 Fixed bug in running checked setup in nofork mode.
 
 
