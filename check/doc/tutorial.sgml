@@ -126,18 +126,16 @@ How to write a test
 Test writing using Check is very simple. The file in which the checks are defined must include check.h as so:
    </para>
    <programlisting>
-#include &lt;check.h&gt;
-   </programlisting>
+#include &lt;check.h&gt;</programlisting>
    <para>
 The basic unit test looks as follows:
    </para>
    <programlisting>
-START_TEST(test_name)
+START_TEST (test_name)
 {
   /* unit test code */
 }
-END_TEST
-   </programlisting>
+END_TEST</programlisting>
    <para>
 The START_TEST/END_TEST pair are macros that setup basic structures to permit testing. It is a mistake to leave off the END_TEST marker; doing so produces all sorts of strange errors when the check is compiled. 
    </para>
@@ -156,8 +154,7 @@ TESTS=check_money
 noinst_PROGRAMS=check_money
 check_money_SOURCES=  money.h money.c check_money.c
 check_money_INCLUDES= @CHECK_CFLAGS@
-check_money_LIBS= @CHECK_LIBS@
-   </programlisting>
+check_money_LIBS= @CHECK_LIBS@</programlisting>
    <para>
 Special mumbo jumbo to use in configure.in is:
    </para>
@@ -166,8 +163,7 @@ AC_INIT()
 AM_INIT_AUTOMAKE()
 AC_PROG_CC
 AM_PATH_CHECK()
-AC_OUTPUT(Makefile)
-   </programlisting>
+AC_OUTPUT(Makefile)</programlisting>
    <para>
 This will ensure that things link up properly with Check by defining the appropriate compiler and linker flags as CHECK_CFLAGS and CHECK_LIBS. It also makes sure that we can only compile in an environment that has Check. The money.h header should only contain the standard &num;ifndef MONEY_H stuff, money.c should be empty, and check_money.c should only contain an empty main function. Run this with make -k check, after going through the setups to get autoconf and friends working. If all goes well, make should report that our tests passed. No surprise, because there aren't any tests to fail.
    </para>
@@ -175,8 +171,7 @@ This will ensure that things link up properly with Check by defining the appropr
 The AM_PATH_CHECK() macro is defined in the file check.m4 which is installed by Check. If you see warnings from automake or aclocal this most certainly means that you forgot to call aclocal or that aclocal can't find check.m4. AM_PATH_CHECK() has some optional parameters that you might find useful:
    </para>
    <programlisting>
-AM_PATH_CHECK([MINIMUM-VERSION,[ACTION-IF-FOUND[,ACTION-IF-NOT-FOUND]]])
-   </programlisting>
+AM_PATH_CHECK([MINIMUM-VERSION,[ACTION-IF-FOUND[,ACTION-IF-NOT-FOUND]]])</programlisting>
 
    <para>
 One way to run the autoconf/automake tools is shown below in a simple
@@ -193,8 +188,7 @@ else
 fi
 autoconf
 autoheader
-automake --add-missing
-   </programlisting>
+automake --add-missing</programlisting>
    <para>
 This shell script and the above configure.in were run on a Red Hat 9
 box with Autoconf version 2.13 and automake (GNU automake) 1.4-p6. As
@@ -213,38 +207,49 @@ The Test Infected article starts out with a Money class, and so will we. Of cour
 Here is our first unit test:
    </para>
    <programlisting>
-START_TEST(test_create) 
-{ 
- Money *m; 
- m = money_create (5, "USD");
- fail_unless (money_amount (m) == 5, 
-              "Amount not set correctly on creation");
- fail_unless (strcmp (money_currency (m), "USD") == 0, 
-              "Currency not set correctly on creation"); 
- money_free (m); 
+START_TEST (test_create)
+{
+ Money *m;
+ m = money_create(5, "USD");
+ fail_unless(money_amount(m) == 5,
+             "Amount not set correctly on creation");
+ fail_unless(strcmp(money_currency(m), "USD") == 0,
+             "Currency not set correctly on creation");
+ money_free(m);
 }
-END_TEST
-   </programlisting>
+END_TEST</programlisting>
    <para>
-A unit test should just chug along and complete. If it exits early, or is signaled, it will fail with a generic error message. (Note: it is conceivable that you expect an early exit, or a signal. There is currently nothing in Check to specifically assert that we should expect either -- if that is valuable, it may be worth while adding to Check). If we want to get some information about what failed, we need to use the &ldquo;fail_unless&rdquo; function. The &ldquo;fail_unless&rdquo; function (actually a macro) takes a first Boolean argument, and an error message to send if the condition is not true. If the Boolean argument is too complicated to elegantly express within &ldquo;fail_unless&rdquo;, there is an alternate function &ldquo;fail&rdquo;, that unconditionally fails. The second test above can be rewritten as follows:
+A unit test should just chug along and complete. If it exits early, or is signaled, it will fail with a generic error message. (Note: it is conceivable that you expect an early exit, or a signal. There is currently nothing in Check to specifically assert that we should expect either -- if that is valuable, it may be worth while adding to Check). If we want to get some information about what failed, we need to use the <function>fail_unless()</function> function. The function (actually a macro) takes a first Boolean argument, and an error message to send if the condition is not true.
+  </para>
+  <para>
+If the Boolean argument is too complicated to elegantly express within <function>fail_unless()</function>, there is an alternate function <function>fail()</function>, that unconditionally fails. The second test above can be rewritten as follows:
    </para>
    <programlisting>
-if (strcmp (money_currency (m), "USD") != 0) {
-  fail  ("Currency not set correctly on creation");
-}
-   </programlisting>
+if (strcmp(money_currency(m), "USD") != 0) {
+  fail("Currency not set correctly on creation");
+}</programlisting>
    <para>
-For your convenience the &quot;fail_unless&quot; function also accepts NULL as the msg argument and substitutes a suitable message for you. So you could also write a test as follows:
+There is also a <function>fail_if()</function> function, which is the inverse of <function>fail_unless()</function>, the above test then looks like:
    </para>
    <programlisting>
-fail_unless (money_amount (m) == 5, NULL);
-   </programlisting>
+fail_if(strcmp(money_currency(m), "USD") != 0,
+        "Currency not set correctly on creation");</programlisting>
+   <para>
+For your convenience all fail functions also accepts NULL as the msg argument and substitutes a suitable message for you. So you could also write a test as follows:
+   </para>
+   <programlisting>
+fail_unless(money_amount(m) == 5, NULL);</programlisting>
    <para>
 This is equivalent to the line:
    </para>
    <programlisting>
-fail_unless (money_amount (m) == 5, "Assertion 'money_amount (m) == 5' failed");
-   </programlisting>
+fail_unless(money_amount(m) == 5, "Assertion 'money_amount (m) == 5' failed");</programlisting>
+   <para>
+All fail functions also support varargs and accept printf-style format strings and arguments. This is especially useful while debugging. With printf-style formatting the message could look like this:
+   </para>
+   <programlisting>
+fail_unless(money_amount(m) == 5,
+            "Amount was %d, instead of 5", money_amount(m));</programlisting>
    <para>
 When we try to compile and run the test suite now, we get a whole host of compilation errors. It may seem a bit strange to deliberately write code that won't compile, but notice what we are doing: in creating the unit test, we are also defining requirements for the money interface. Compilation errors are, in a way, unit test failures of their own, telling us that the implementation does not match the specification. If all we do is edit the sources so that the unit test compiles, we are actually making progress, guided by the unit tests, so that's what we will now do.
    </para>
@@ -254,34 +259,32 @@ We will add the following to our header money.h:
    <programlisting>
 typedef struct Money Money;
  
-Money *money_create (int amount, char *currency); 
-int money_amount (Money *m); 
-char *money_currency (Money *m); 
-void money_free (Money *m);
-   </programlisting>
+Money *money_create(int amount, char *currency); 
+int money_amount(Money *m); 
+char *money_currency(Money *m); 
+void money_free(Money *m);</programlisting>
    <para>
 and our code now compiles, but fails to link, since we haven't implemented any of the functions. Let's do that now, creating stubs for all of the functions:
    </para>
    <programlisting>
 #include &lt;stdlib.h&gt;
 #include "money.h"
-Money *money_create (int amount, char *currency) 
+Money *money_create(int amount, char *currency) 
 { 
   return NULL; 
 }
-int money_amount (Money *m) 
+int money_amount(Money *m) 
 { 
   return 0; 
 }
-char *money_currency (Money *m) 
+char *money_currency(Money *m) 
 { 
   return NULL; 
 }
-void money_free (Money *m) 
+void money_free(Money *m) 
 { 
   return; 
-}
-   </programlisting>
+}</programlisting>
    <para>
 Now, everything compiles, and we still pass all our tests. How can that be??? Of course -- we haven't run any of our tests yet....
    </para>
@@ -302,36 +305,36 @@ To run unit tests with Check, we must create some test cases, aggregate them int
 
 START_TEST (test_create)
 {
-    Money *m;
-    m = money_create(5, "USD");
-    fail_unless(money_amount(m) == 5, "Amount not set correctly on creation");
-    fail_unless(strcmp(money_currency(m), "USD") == 0, "Currency not set correctly on creation");
-    money_free(m);
+  Money *m;
+  m = money_create(5, "USD");
+  fail_unless(money_amount(m) == 5, "Amount not set correctly on creation");
+  fail_unless(strcmp(money_currency(m), "USD") == 0,
+              "Currency not set correctly on creation");
+  money_free(m);
 }
 END_TEST
 
-Suite *money_suite (void) 
-{ 
-  Suite *s = suite_create ("Money"); 
-  TCase *tc_core = tcase_create ("Core");
- 
+Suite *money_suite(void)
+{
+  Suite *s = suite_create("Money");
+  TCase *tc_core = tcase_create("Core");
+
   suite_add_tcase (s, tc_core);
- 
-  tcase_add_test (tc_core, test_create); 
-  return s; 
+  tcase_add_test(tc_core, test_create);
+
+  return s;
 }
- 
-int main (void) 
-{ 
-  int nf; 
-  Suite *s = money_suite (); 
-  SRunner *sr = srunner_create (s); 
-  srunner_run_all (sr, CK_NORMAL); 
-  nf = srunner_ntests_failed (sr); 
-  srunner_free (sr); 
-  return (nf == 0) ? EXIT_SUCCESS : EXIT_FAILURE; 
-}
-   </programlisting>
+
+int main(void)
+{
+  int nf;
+  Suite *s = money_suite();
+  SRunner *sr = srunner_create(s);
+  srunner_run_all(sr, CK_NORMAL);
+  nf = srunner_ntests_failed(sr);
+  srunner_free(sr);
+  return (nf == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
+}</programlisting>
    <para>
 Most of the money_suite code should be self-explanatory. We are creating a suite, creating a test case, adding the test case to the suite, and adding the unit test we created above to the test case. Why separate this off into a separate function, rather than inlining it in main? Because any new tests will get added in money_suite, but nothing will need to change in main for the rest of this example, so main will stay relatively clean and simple.
    </para>
@@ -352,8 +355,7 @@ SRunner output
 The function to run tests in an SRunner is defined as follows:
    </para>
    <programlisting>
-void srunner_run_all (SRunner *sr, enum print_output print_mode);
-   </programlisting>
+void srunner_run_all(SRunner *sr, enum print_output print_mode);</programlisting>
    <para>
 This function does two things:
    </para>
@@ -376,8 +378,7 @@ Prints the results according to the print mode specified
 For SRunners that have already been run, there is also a separate printing function defined as follows:
    </para>
    <programlisting>
-void srunner_print (SRunner *sr, enum print_output print_mode);
-   </programlisting>
+void srunner_print(SRunner *sr, enum print_output print_mode);</programlisting>
    <para>
 The enumeration values defined in Check to control print output are as follows:
    </para>
@@ -419,8 +420,7 @@ With the CK_NORMAL flag specified, let's rerun make check now. We get the follow
    <programlisting>
 Running suite(s): Money 
 0%: Checks: 1, Failures: 1, Errors: 0 
-check_money.c:9:F:Core:test_create: Amount not set correctly on creation
-   </programlisting>
+check_money.c:9:F:Core:test_create: Amount not set correctly on creation</programlisting>
    <para>
 The first number in the summary line tells us that 0&percnt; of our tests passed, and the rest of the line tells us that there was one check, and one failure. The next line tells us exactly where that failure occurred, what kind of failure it was (P for pass, F for failure, E for error).
    </para>
@@ -430,33 +430,29 @@ Let's implement the money_amount function, so that it will pass its tests. We fi
    <programlisting>
 struct Money { 
   int amount; 
-};
-   </programlisting>
+};</programlisting>
    <para>
 Then we will implement the money_amount function to return the correct amount:
    </para>
    <programlisting>
-int money_amount (Money *m) 
+int money_amount(Money *m) 
 { 
   return m->amount;
-}
-   </programlisting>
+}</programlisting>
    <para>
 We will now rerun make check and... What's this? The output is now as follows:
    </para>
    <programlisting>
 Running suite(s): Money 
 0%: Checks: 1, Failures: 0, Errors: 1 
-check_money.c:5:E:Core:test_create: (after this point) Received signal 11
-   </programlisting>
+check_money.c:5:E:Core:test_create: (after this point) Received signal 11</programlisting>
    <para>
 What does this mean? Note that we now have an error, rather than a failure. This means that our unit test either exited early, or was signaled. Next note that the failure message says &ldquo;after this point&rdquo; This means that somewhere after the point noted (check_money.c, line 5) there was a problem: signal 11 (AKA segmentation fault). The last point reached is set on entry to the unit test, and after every call to fail_unless, fail, or the special function mark_point. E.g., if we wrote some test code as follows:
    </para>
    <programlisting>
-stuff_that_works ();
-mark_point ();
-stuff_that_dies ();
-   </programlisting>
+stuff_that_works();
+mark_point();
+stuff_that_dies();</programlisting>
    <para>
 then the point returned will be that marked by mark_point.
    </para>
@@ -481,35 +477,35 @@ Running multiple cases
 What happens if we pass -1 as the amount in money_create? What should happen? Let's write a unit test. Since we are testing limits, we should also test what happens when we create money with amount 0:
    </para>
    <programlisting>
-START_TEST (test_neg_create) 
-{ 
-  Money *m = money_create (-1, "USD"); 
-  fail_unless (m == NULL, "NULL should be returned on attempt to create with a negative amount"); 
-} 
+START_TEST (test_neg_create)
+{
+  Money *m = money_create(-1, "USD");
+  fail_unless(m == NULL,
+              "NULL should be returned on attempt to create with a negative amount");
+}
 END_TEST
-START_TEST (test_zero_create) 
-{ 
-  Money *m = money_create (0, "USD"); 
-  fail_unless (money_amount (m) == 0, "Zero is a valid amount of money"); 
-} 
-END_TEST
-   </programlisting>
+
+START_TEST (test_zero_create)
+{
+  Money *m = money_create(0, "USD");
+  fail_unless(money_amount(m) == 0, "Zero is a valid amount of money");
+}
+END_TEST</programlisting>
    <para>
 Let's put these in a separate test case, called &ldquo;Limits&rdquo; so that money_suite looks like so:
    </para>
    <programlisting>
-Suite *money_suite (void) { 
-  Suite *s = suite_create ("Money"); 
-  TCase *tc_core = tcase_create ("Core"); 
-  TCase *tc_limits = tcase_create ("Limits"); 
-  suite_add_tcase (s, tc_core); 
-  suite_add_tcase (s, tc_limits); 
-  tcase_add_test (tc_core, test_create); 
-  tcase_add_test (tc_limits, test_neg_create); 
-  tcase_add_test (tc_limits, test_zero_create); 
-  return s; 
-}
-   </programlisting>
+Suite *money_suite (void) {
+  Suite *s = suite_create("Money");
+  TCase *tc_core = tcase_create("Core");
+  TCase *tc_limits = tcase_create("Limits");
+  suite_add_tcase(s, tc_core);
+  suite_add_tcase(s, tc_limits);
+  tcase_add_test(tc_core, test_create);
+  tcase_add_test(tc_limits, test_neg_create);
+  tcase_add_test(tc_limits, test_zero_create);
+  return s;
+}</programlisting>
    <para>
 Now we can rerun our suite, and fix the problem(s). Note that errors in the Core test case will be reported as &ldquo;Core&rdquo; and errors in the Limits test case will be reported as &ldquo;Limits,&rdquo; giving you additional information about where things broke.
    </para>
@@ -535,8 +531,7 @@ Define the CK_FORK environment variable to equal &ldquo;no&rdquo;.
 Explicitly define the fork status through the use of the following function:
     </para>
     <programlisting>
-void srunner_set_fork_status (SRunner *sr, enum fork_status fstat); 
-    </programlisting>
+void srunner_set_fork_status(SRunner *sr, enum fork_status fstat);</programlisting>
 
    </listitem>
 
@@ -595,15 +590,14 @@ Define the global variables, and functions to setup and teardown the globals. Th
      </para>
      <programlisting>
 Money *five_dollars; 
-void setup (void) { 
-  five_dollars = money_create (5, "USD"); 
+void setup(void) { 
+  five_dollars = money_create(5, "USD");
 }
 
-void teardown (void) 
-{ 
-  money_free (five_dollars); 
-}
-     </programlisting>
+void teardown(void)
+{
+  money_free(five_dollars);
+}</programlisting>
 
     </listitem>
      <listitem>
@@ -611,8 +605,7 @@ void teardown (void)
 Add the setup and teardown functions to the test case with &ldquo;tcase_add_checked_fixture&rdquo; (this belongs in the suite setup function &ldquo;money_suite&rdquo;:
      </para>
      <programlisting>
-tcase_add_checked_fixture (tc_core, setup, teardown);
-     </programlisting>
+tcase_add_checked_fixture(tc_core, setup, teardown);</programlisting>
 
     </listitem>
      <listitem>
@@ -620,15 +613,14 @@ tcase_add_checked_fixture (tc_core, setup, teardown);
 We can now rewrite the first test we wrote as follows:
      </para>
      <programlisting>
-START_TEST(test_create) 
-{ 
-   fail_unless (money_amount (five_dollars) == 5,
-               "Amount not set correctly on creation"); 
-   fail_unless (strcmp (money_currency (five_dollars), "USD") == 0,
-                "Currency not set correctly on creation"); 
-} 
-END_TEST
-     </programlisting>
+START_TEST (test_create)
+{
+   fail_unless(money_amount(five_dollars) == 5,
+               "Amount not set correctly on creation");
+   fail_unless (strcmp(money_currency(five_dollars), "USD") == 0,
+                "Currency not set correctly on creation");
+}
+END_TEST</programlisting>
 
     </listitem>
 
@@ -663,23 +655,21 @@ Multiple suites run through the same SRunner
 In a large program, it will be convenient to create multiple suites, each testing a module of the program. While one can create several test programs, each running one Suite, it may be convenient to create one main test program, and use it to run multiple suites. The Check test suite provides an example of how to do this. The main testing program is called check_check, and has a header file that declares suite creation functions for all the module tests:
    </para>
    <programlisting>
-Suite *make_sub_suite (void);
-Suite *make_sub2_suite (void);
-Suite *make_master_suite (void);
-Suite *make_list_suite (void);
-Suite *make_msg_suite (void);
-Suite *make_log_suite (void);
-   </programlisting>
+Suite *make_sub_suite(void);
+Suite *make_sub2_suite(void);
+Suite *make_master_suite(void);
+Suite *make_list_suite(void);
+Suite *make_msg_suite(void);
+Suite *make_log_suite(void);</programlisting>
    <para>
 The function srunner_add_suite is used to add additional suites to an SRunner. Here is the code to setup and run the SRunner in the main function:
    </para>
    <programlisting>
 SRunner *sr;
-sr = srunner_create (make_master_suite ());
-srunner_add_suite (sr, make_list_suite ());
-srunner_add_suite (sr, make_msg_suite ());
-srunner_add_suite (sr, make_log_suite ()); 
-   </programlisting>
+sr = srunner_create(make_master_suite());
+srunner_add_suite(sr, make_list_suite());
+srunner_add_suite(sr, make_msg_suite());
+srunner_add_suite(sr, make_log_suite());</programlisting>
 
    </section>
 
@@ -692,25 +682,81 @@ Check supports operation to log the results of a test run. To use test logging, 
    </para>
    <programlisting>
 SRunner *sr;
-sr = srunner_create (make_s1_suite ());
-srunner_add_suite (sr, make_s2_suite ());
-srunner_set_log (sr, "test.log");
-srunner_run_all (sr, CRNORMAL);
-   </programlisting>
+sr = srunner_create(make_s1_suite());
+srunner_add_suite(sr, make_s2_suite());
+srunner_set_log(sr, "test.log");
+srunner_run_all(sr, CRNORMAL);</programlisting>
+
    <para>
-Check will write the results of the run to test.log. The printmode argument to srunner_run_all does not apply to test logging; the log will contain a result entry, organized by suite, for every test run . Here is an example of test log output:
+Check will write the results of the run to test.log. The printmode argument to srunner_run_all does not apply to test logging; the log will contain a result entry, organized by suite, for every test run. Here is an example of test log output:
    </para>
    <programlisting>
 Running suite S1 
-ex_log_output.c:7:P:Core:test_pass: Test passed
-ex_log_output.c:13:F:Core:test_fail: Failure
-ex_log_output.c:17:E:Core:test_exit: (after this point) Early exit with return value 1
+ex_log_output.c:8:P:Core:test_pass: Test passed
+ex_log_output.c:14:F:Core:test_fail: Failure
+ex_log_output.c:18:E:Core:test_exit: (after this point) Early exit with return value 1
 Running suite S2 
-ex_log_output.c:25:P:Core:test_pass2: Test passed
+ex_log_output.c:26:P:Core:test_pass2: Test passed
 Results for all suites run:
-50%: Checks: 4, Failures: 1, Errors: 1
-   </programlisting>
+50%: Checks: 4, Failures: 1, Errors: 1</programlisting>
 
+   <section>
+    <title>
+XML logging
+   </title>
+   <para>
+The log can also be written in XML. The following functions define the interface for XML logs:
+   </para>
+   <programlisting>
+void srunner_set_xml(SRunner *sr, const char *fname);
+int srunner_has_xml(SRunner *sr);
+const char *srunner_xml_fname(SRunner *sr);</programlisting>
+
+   <para>
+The only thing you need to do to get XML output is call <function>srunner_set_xml()</function> before the tests are run. Here is an example of the same log output as above but in XML:
+   </para>
+   <programlisting>
+&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;testsuites xmlns=&quot;http://check.sourceforge.net/ns&quot;&gt;
+  &lt;datetime&gt;2004-08-20 12:53:32&lt;/datetime&gt;
+  &lt;suite&gt;
+    &lt;title&gt;S1&lt;/title&gt;
+    &lt;test result=&quot;success&quot;&gt;
+      &lt;path&gt;.&lt;/path&gt;
+      &lt;fn&gt;ex_xml_output.c:8&lt;/fn&gt;
+      &lt;id&gt;test_pass&lt;/id&gt;
+      &lt;description&gt;Core&lt;/description&gt;
+      &lt;message&gt;Passed&lt;/message&gt;
+    &lt;/test&gt;
+    &lt;test result=&quot;failure&quot;&gt;
+      &lt;path&gt;.&lt;/path&gt;
+      &lt;fn&gt;ex_xml_output.c:14&lt;/fn&gt;
+      &lt;id&gt;test_fail&lt;/id&gt;
+      &lt;description&gt;Core&lt;/description&gt;
+      &lt;message&gt;Failure&lt;/message&gt;
+    &lt;/test&gt;
+    &lt;test result=&quot;error&quot;&gt;
+      &lt;path&gt;.&lt;/path&gt;
+      &lt;fn&gt;ex_xml_output.c:18&lt;/fn&gt;
+      &lt;id&gt;test_exit&lt;/id&gt;
+      &lt;description&gt;Core&lt;/description&gt;
+      &lt;message&gt;Early exit with return value 1&lt;/message&gt;
+    &lt;/test&gt;
+  &lt;/suite&gt;
+  &lt;suite&gt;
+    &lt;title&gt;S2&lt;/title&gt;
+    &lt;test result=&quot;success&quot;&gt;
+      &lt;path&gt;.&lt;/path&gt;
+      &lt;fn&gt;ex_xml_output.c:26&lt;/fn&gt;
+      &lt;id&gt;test_pass2&lt;/id&gt;
+      &lt;description&gt;Core&lt;/description&gt;
+      &lt;message&gt;Passed&lt;/message&gt;
+    &lt;/test&gt;
+  &lt;/suite&gt;
+  &lt;duration&gt;0.304875&lt;/duration&gt;
+&lt;/testsuites&gt;</programlisting>
+
+   </section>
    </section>
 
    <section>
