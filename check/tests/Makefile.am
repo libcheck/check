@@ -1,11 +1,16 @@
-TESTS=check_check check_list check_check_msg check_log test_output.sh
+TESTS=\
+	check_check\
+	check_list\
+	check_check_msg\
+	check_check_log\
+	test_output.sh
 
 noinst_PROGRAMS=\
 	check_check\
 	check_list\
 	check_stress\
 	check_check_msg\
-	check_log\
+	check__check_log\
 	ex_output
 
 EXTRA_DIST=test_output.sh

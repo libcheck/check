@@ -1,21 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <check.h>
+#include <check_log.h>
 
 
 START_TEST(test_set_log)
 {
-  FILE *logf = fopen ("test_log", "w");
   Suite *s = suite_create("Suite");
   SRunner *sr = srunner_create(s);
 
-  srunner_set_log (sr, logf);
+  srunner_set_log (sr, "test_log");
 
-  fail_unless (srunner_is_logging(sr), "SRunner not logging");
-  fail_unless (srunner_log_file(sr) == logf, "SRunner reporting wrong log file");
+  fail_unless (srunner_has_log (sr), "SRunner not logging");
 }
-END_TEST
-
+END_TEST  
 
 Suite *make_log_suite(void)
 {
