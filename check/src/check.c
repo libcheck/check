@@ -31,6 +31,10 @@
 #include "check_impl.h"
 #include "check_msg.h"
 
+#ifndef DEFAULT_TIMEOUT
+#define DEFAULT_TIMEOUT 3
+#endif
+
 int check_major_version = CHECK_MAJOR_VERSION;
 int check_minor_version = CHECK_MINOR_VERSION;
 int check_micro_version = CHECK_MICRO_VERSION;
@@ -70,11 +74,23 @@ static void suite_free (Suite *s)
 
 TCase *tcase_create (const char *name)
 {
+  char *env;
+  int timeout = DEFAULT_TIMEOUT;
   TCase *tc = emalloc (sizeof(TCase)); /*freed in tcase_free */
   if (name == NULL)
     tc->name = "";
   else
     tc->name = name;
+
+  env = getenv("CK_DEFAULT_TIMEOUT");
+  if (env != NULL) {
+    int tmp = atoi(env);
+    if (tmp >= 0) {
+      timeout = tmp;
+    }
+  }
+  
+  tc->timeout = timeout;
   tc->tflst = check_list_create();
   tc->unch_sflst = check_list_create();
   tc->ch_sflst = check_list_create();
@@ -157,6 +173,12 @@ static void tcase_add_fixture (TCase *tc, SFun setup, SFun teardown,
     else
       list_add_front (tc->unch_tflst, fixture_create(teardown, ischecked));  
   }
+}
+
+void tcase_set_timeout (TCase *tc, int timeout)
+{
+  if (timeout >= 0)
+    tc->timeout = timeout;
 }
 
 void tcase_fn_start (const char *fname, const char *file, int line)

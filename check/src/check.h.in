@@ -77,7 +77,6 @@ extern int check_micro_version;
    with tcase_free.  For the moment, test cases can only be run
    through a suite
 */
-  
 typedef struct TCase TCase; 
 
 /* type for a test function */
@@ -89,8 +88,7 @@ typedef void (*SFun) (void);
 /* Opaque type for a test suite */
 typedef struct Suite Suite;
  
-/* Creates a test suite with the given name
-*/
+/* Creates a test suite with the given name */
 Suite *suite_create (const char *name);
 
 /* Add a test case to a suite */
@@ -99,15 +97,16 @@ void suite_add_tcase (Suite *s, TCase *tc);
 /* Create a test case */
 TCase *tcase_create (const char *name);
 
-/* Add a test function to a test case
-  (macro version) */
+/* Add a test function to a test case (macro version) */
 #define tcase_add_test(tc,tf) tcase_add_test_raise_signal(tc,tf,0)
 
+/* Add a test function with signal handling to a test case (macro version) */
 #define tcase_add_test_raise_signal(tc,tf,signal) \
    _tcase_add_test((tc),(tf),"" # tf "",(signal))
 
 /* Add a test function to a test case
-  (function version -- use this when the macro won't work */
+  (function version -- use this when the macro won't work
+*/
 void _tcase_add_test (TCase *tc, TFun tf, const char *fname, int signal);
 
 /* Add unchecked fixture setup/teardown functions to a test case
@@ -137,17 +136,22 @@ void tcase_add_unchecked_fixture (TCase *tc, SFun setup, SFun teardown);
    However, since fixture functions are run before and after each unit
    test, they should not be expensive code.
 
-*/
- 
+*/ 
 void tcase_add_checked_fixture (TCase *tc, SFun setup, SFun teardown);
-  
+
+/* Set the timeout for all tests in a test case. A test that lasts longer
+   than the timeout (in seconds) will be killed and thus fail with an error.
+   The timeout can also be set globaly with the environment variable
+   CK_DEFAULT_TIMEOUT, the specific setting always takes precedence.
+*/
+void tcase_set_timeout (TCase *tc, int timeout);
  
 /* Internal function to mark the start of a test function */
 void tcase_fn_start (const char *fname, const char *file, int line);
 
 /* Start a unit test with START_TEST(unit_name), end with END_TEST
-   One must use braces within a START_/END_ pair to declare new variables */
-
+   One must use braces within a START_/END_ pair to declare new variables
+*/ 
 #define START_TEST(__testname)\
 static void __testname (void)\
 {\
@@ -155,7 +159,6 @@ static void __testname (void)\
 
 /* End a unit test */
 #define END_TEST }
-
 
 /* Fail the test case unless expr is true */
 #define fail_unless(expr, ...)\
@@ -175,8 +178,8 @@ void _fail_unless (int result, const char *file,
                    int line, const char *expr, ...);
 
 /* Mark the last point reached in a unit test
-   
-   (useful for tracking down where a segfault, etc. occurs) */
+   (useful for tracking down where a segfault, etc. occurs)
+*/
 #define mark_point() _mark_point(__FILE__,__LINE__)
 
 /* Non macro version of #mark_point */
@@ -200,7 +203,6 @@ enum print_output {
   CK_LAST
 };
 
-
 /* Holds state for a running of a test suite */
 typedef struct SRunner SRunner;
 
@@ -208,7 +210,6 @@ typedef struct SRunner SRunner;
 typedef struct TestResult TestResult;
 
 /* accessors for tr fields */
-
  enum ck_result_ctx {
   CK_CTX_SETUP,
   CK_CTX_TEST,
@@ -237,18 +238,17 @@ void srunner_add_suite (SRunner *sr, Suite *s);
 /* Frees an SRunner, all suites added to it and all contained test cases */
 void srunner_free (SRunner *sr);
 
+ 
 /* Test running */
 
-/* Runs an SRunner, printing results as specified (see enum
-   print_output)*/
+/* Runs an SRunner, printing results as specified (see enum print_output) */
 void srunner_run_all (SRunner *sr, enum print_output print_mode);
 
+ 
 /* Next functions are valid only after the suite has been
    completely run, of course */
 
-/* Number of failed tests in a run suite
-
-  Includes failures + errors */
+/* Number of failed tests in a run suite. Includes failures + errors */
 int srunner_ntests_failed (SRunner *sr);
 
 /* Total number of tests run in a run suite */
@@ -258,8 +258,8 @@ int srunner_ntests_run (SRunner *sr);
   
    Number of failures is equal to srunner_nfailed_tests.  Memory for
    the array is malloc'ed and must be freed, but individual TestResults
-   must not */
-
+   must not
+*/
 TestResult **srunner_failures (SRunner *sr);
 
 /* Return an array of results for all run tests
@@ -268,14 +268,14 @@ TestResult **srunner_failures (SRunner *sr);
    failures due to setup function failure.
 
    Memory is malloc'ed and must be freed, but individual TestResults
-   must not */
-  
+   must not
+*/  
 TestResult **srunner_results (SRunner *sr);
+
+ 
 /* Printing */
 
-/* Print the results contained in an SRunner
-*/
- 
+/* Print the results contained in an SRunner */
 void srunner_print (SRunner *sr, enum print_output print_mode);
   
   
@@ -284,15 +284,13 @@ void srunner_print (SRunner *sr, enum print_output print_mode);
   Log file setting is an initialize only operation -- it should be
   done immediatly after SRunner creation, and the log file can't be
   changed after being set.
- */
+*/
 void srunner_set_log (SRunner *sr, const char *fname);
 
-/* Does the SRunner have a log file?
-*/
+/* Does the SRunner have a log file? */
 int srunner_has_log (SRunner *sr);
 
-/* Return the name of the log file, or NULL if none
-*/
+/* Return the name of the log file, or NULL if none */
 const char *srunner_log_fname (SRunner *sr);
 
 /* Set a xml file to which to write during test running.
@@ -300,17 +298,14 @@ const char *srunner_log_fname (SRunner *sr);
   XML file setting is an initialize only operation -- it should be
   done immediatly after SRunner creation, and the XML file can't be
   changed after being set.
- */
+*/
 void srunner_set_xml (SRunner *sr, const char *fname);
 
-/* Does the SRunner have a log file?
-*/
+/* Does the SRunner have an XML log file? */
 int srunner_has_xml (SRunner *sr);
 
-/* Return the name of the XML file, or NULL if none
-*/
+/* Return the name of the XML file, or NULL if none */
 const char *srunner_xml_fname (SRunner *sr);
-
 
 
 /* Control forking */
@@ -319,7 +314,10 @@ enum fork_status {
   CK_NOFORK
 };
  
+/* Get the current fork status */
 enum fork_status srunner_fork_status (SRunner *sr);
+
+/* Set the current fork status */
 void srunner_set_fork_status (SRunner *sr, enum fork_status fstat); 
   
 #ifdef __cplusplus 

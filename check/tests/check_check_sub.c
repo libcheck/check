@@ -1,18 +1,21 @@
 #include <stdlib.h>
 #include <signal.h>
+#include <unistd.h>
 #include <check.h>
 #include "check_check.h"
 
+
+
 START_TEST(test_lno)
 {
-  fail("Failure expected"); /*line 8*/
+  fail("Failure expected"); /*line 11*/
 }
 END_TEST
 
 START_TEST(test_mark_lno)
 {
-  mark_point(); /*line 14*/
-  exit(1); /*should fail at line 14*/
+  mark_point(); /*line 17*/
+  exit(1); /*should fail at line 17*/
 }
 END_TEST
 
@@ -98,8 +101,8 @@ START_TEST(test_fail_empty)
 }
 END_TEST
 
-START_TEST(test_segv)
-{ /* line 101 */
+START_TEST(test_segv) /* line 104 */
+{
   raise (SIGSEGV);
 }
 END_TEST
@@ -125,6 +128,32 @@ START_TEST(test_mark_point)
   fail("Shouldn't reach here");
 }
 END_TEST
+
+START_TEST(test_eternal) /* line 132 */
+{
+  for (;;)
+    ;
+}
+END_TEST
+
+START_TEST(test_sleep2)
+{
+  sleep(2);
+}
+END_TEST
+
+START_TEST(test_sleep5) /* line 145 */
+{
+  sleep(5);
+}
+END_TEST
+
+START_TEST(test_sleep8) /* line 151 */
+{
+  sleep(8);
+}
+END_TEST
+
 
 START_TEST(test_early_exit)
 {
@@ -179,9 +208,15 @@ Suite *make_sub_suite(void)
   Suite *s = suite_create("Check Servant");
   TCase *tc_simple = tcase_create("Simple Tests");
   TCase *tc_signal = tcase_create("Signal Tests");
+  TCase *tc_timeout = tcase_create("Timeout Tests");
+  TCase *tc_timeout_ext = tcase_create("Extended Timeout Tests");
   TCase *tc_limit = tcase_create("Limit Tests");
   suite_add_tcase (s, tc_simple);
   suite_add_tcase (s, tc_signal);
+  suite_add_tcase (s, tc_timeout);
+  suite_add_tcase (s, tc_timeout_ext);
+  /* Add a second time to make sure tcase_set_timeout doesn't contaminate it. */
+  suite_add_tcase (s, tc_timeout);
   suite_add_tcase (s, tc_limit);
   tcase_add_test (tc_simple, test_lno);
   tcase_add_test (tc_simple, test_mark_lno);
@@ -204,6 +239,15 @@ Suite *make_sub_suite(void)
   tcase_add_test_raise_signal (tc_signal, test_fail, 8);  /* fail  */
   tcase_add_test (tc_signal, test_fpe);
   tcase_add_test (tc_signal, test_mark_point);
+  tcase_add_test (tc_timeout, test_eternal);
+  tcase_add_test (tc_timeout, test_sleep2);
+  tcase_add_test (tc_timeout, test_sleep5);
+  tcase_add_test (tc_timeout, test_sleep8);
+  tcase_set_timeout (tc_timeout_ext, 6);
+  tcase_add_test (tc_timeout_ext, test_eternal);
+  tcase_add_test (tc_timeout_ext, test_sleep2);
+  tcase_add_test (tc_timeout_ext, test_sleep5);
+  tcase_add_test (tc_timeout_ext, test_sleep8);
   tcase_add_test (tc_limit, test_early_exit);
   tcase_add_test (tc_limit, test_null);
   tcase_add_test (tc_limit, test_null_2);

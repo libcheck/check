@@ -52,6 +52,7 @@ typedef struct Fixture
 
 struct TCase {
   const char *name;
+  int timeout;
   List *tflst; /* list of test functions */
   List *unch_sflst;
   List *unch_tflst;

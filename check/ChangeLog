@@ -1,3 +1,10 @@
+2004-11-09 hugo303
+
+	* src/check.c, src/check.h.in, src/check_impl.h, src/check_run.c,
+	tests/check_check_master.c, tests/check_check_sub.c:
+	Added support for timeouts on tests, enabling detection of
+	eternal loops as errors.
+
 2004-11-08 hugo303
 
 	* src/check.c, src/check.h.in, src/check_impl.h, src/check_run.c,

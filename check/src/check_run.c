@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
+#include <signal.h>
 
 #include "check.h"
 #include "check_error.h"
@@ -78,6 +79,13 @@ static int waserror (int status, int expected_signal);
 
 #define MSG_LEN 100
 
+static pid_t current_test;
+
+static void sig_handler(int sig_nr)
+{
+  kill(current_test, SIGKILL);
+}
+
 static void srunner_run_init (SRunner *sr, enum print_output print_mode)
 {
   set_fork_status(srunner_fork_status(sr));
@@ -122,15 +130,22 @@ static void srunner_iterate_suites (SRunner *sr,
 
 void srunner_run_all (SRunner *sr, enum print_output print_mode)
 {
+  struct sigaction old_action;
+  struct sigaction new_action;
+  
   if (sr == NULL)
     return;
   if (print_mode < 0 || print_mode >= CK_LAST)
     eprintf("Bad print_mode argument to srunner_run_all: %d",
 	    __FILE__, __LINE__, print_mode);
-      
+  
+  memset(&new_action, 0, sizeof new_action);
+  new_action.sa_handler = sig_handler;
+  sigaction(SIGALRM, &new_action, &old_action);
   srunner_run_init (sr, print_mode);
   srunner_iterate_suites (sr, print_mode);
   srunner_run_end (sr, print_mode);
+  sigaction(SIGALRM, &old_action, NULL);
 }
 
 static void srunner_add_failure (SRunner *sr, TestResult *tr)
@@ -391,7 +406,13 @@ static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun)
     tcase_run_checked_teardown(tc);
     exit(EXIT_SUCCESS);
   }
-  (void) wait(&status);
+
+  current_test = pid;
+  alarm(tc->timeout);
+  do {
+    pid = wait(&status);
+  } while (pid == -1);
+
   return receive_result_info_fork(tc->name, tfun->name, status, tfun->signal);
 }
 
