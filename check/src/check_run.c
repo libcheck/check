@@ -50,11 +50,14 @@ static void srunner_run_end (SRunner *sr, enum print_output print_mode);
 static void srunner_iterate_suites (SRunner *sr,
 				    enum print_output print_mode);
 static void srunner_run_tcase (SRunner *sr, TCase *tc);
-static int srunner_run_setup (SRunner *sr, TCase *tc);
+static int srunner_run_unchecked_setup (SRunner *sr, TCase *tc);
+static void srunner_run_unchecked_teardown (SRunner *sr, TCase *tc);
+static void tcase_run_checked_setup (TCase *tc);
+static void tcase_run_checked_teardown (TCase *tc);
 static void srunner_iterate_tcase_tfuns (SRunner *sr, TCase *tc);
 static void srunner_add_failure (SRunner *sr, TestResult *tf);
-static TestResult *tfun_run_fork (char *tcname, TF *tf);
-static TestResult *tfun_run_nofork (char *tcname, TF *tf);
+static TestResult *tcase_run_tfun_fork (TCase *tc, TF *tf);
+static TestResult *tcase_run_tfun_nofork (TCase *tc, TF *tf);
 static TestResult *receive_result_info_fork (char *tcname, int status);
 static TestResult *receive_result_info_nofork (char *tcname);
 static void set_fork_info (TestResult *tr, int status);
@@ -142,10 +145,10 @@ static void srunner_iterate_tcase_tfuns (SRunner *sr, TCase *tc)
     tfun = list_val (tfl);
     switch (srunner_fork_status(sr)) {
     case CK_FORK:
-      tr = tfun_run_fork (tc->name, tfun);
+      tr = tcase_run_tfun_fork (tc, tfun);
       break;
     case CK_NOFORK:
-      tr = tfun_run_nofork (tc->name, tfun);
+      tr = tcase_run_tfun_nofork (tc, tfun);
       break;
     default:
       eprintf("Bad fork status in SRunner", __FILE__, __LINE__);
@@ -153,9 +156,9 @@ static void srunner_iterate_tcase_tfuns (SRunner *sr, TCase *tc)
     srunner_add_failure (sr, tr);
     log_test_end(sr, tr);
   }
-}
+}  
 
-static int srunner_run_setup (SRunner *sr, TCase *tc)
+static int srunner_run_unchecked_setup (SRunner *sr, TCase *tc)
 {
   TestResult *tr;
   List *l;
@@ -165,7 +168,7 @@ static int srunner_run_setup (SRunner *sr, TCase *tc)
   set_fork_status(CK_NOFORK);
 
   l = tc->unch_sflst;
-  
+
   for (list_front(l); !list_at_end(l); list_advance(l)) {
     
     f = list_val(l);
@@ -179,13 +182,43 @@ static int srunner_run_setup (SRunner *sr, TCase *tc)
       rval = 0;
       break;
     }
-  }
+  } 
 
   set_fork_status(srunner_fork_status(sr));
   return rval;
 }
 
-static void srunner_run_teardown (SRunner *sr, TCase *tc)
+static void tcase_run_checked_setup (TCase *tc)
+{
+  List *l;
+  Fixture *f;
+
+  l = tc->ch_sflst;
+  
+  send_ctx_info(get_send_key(),CK_CTX_SETUP);
+
+  for (list_front(l); !list_at_end(l); list_advance(l)) {
+    f = list_val(l);
+    f->fun();
+  }
+}
+
+static void tcase_run_checked_teardown (TCase *tc)
+{
+  List *l;
+  Fixture *f;
+
+  l = tc->ch_tflst;
+  
+  send_ctx_info(get_send_key(),CK_CTX_TEARDOWN);
+
+  for (list_front(l); !list_at_end(l); list_advance(l)) {
+    f = list_val(l);
+    f->fun();
+  }
+}
+
+static void srunner_run_unchecked_teardown (SRunner *sr, TCase *tc)
 {
   List *l;
   Fixture *f;
@@ -205,11 +238,11 @@ static void srunner_run_teardown (SRunner *sr, TCase *tc)
 static void srunner_run_tcase (SRunner *sr, TCase *tc)
 {
   
-  if (srunner_run_setup (sr,tc)) {  
+  if (srunner_run_unchecked_setup (sr,tc)) {  
   
     srunner_iterate_tcase_tfuns(sr,tc);
   
-    srunner_run_teardown (sr, tc);
+    srunner_run_unchecked_teardown (sr, tc);
   }
 }
 
@@ -271,14 +304,14 @@ static void set_nofork_info (TestResult *tr)
   }
 }
 
-static TestResult *tfun_run_nofork (char *tcname, TF *tfun)
+static TestResult *tcase_run_tfun_nofork (TCase *tc, TF *tfun)
 {
   tfun->fn();
-  return receive_result_info_nofork (tcname);
+  return receive_result_info_nofork (tc->name);
 }
 
   
-static TestResult *tfun_run_fork (char *tcname, TF *tfun)
+static TestResult *tcase_run_tfun_fork (TCase *tc, TF *tfun)
 {
   pid_t pid;
   int status = 0;
@@ -287,11 +320,13 @@ static TestResult *tfun_run_fork (char *tcname, TF *tfun)
   if (pid == -1)
      eprintf ("Unable to fork:",__FILE__,__LINE__);
   if (pid == 0) {
+    tcase_run_checked_setup(tc);
     tfun->fn();
+    /*tcase_run_checked_teardown(tc);*/
     _exit(EXIT_SUCCESS);
   }
   (void) wait(&status);
-  return receive_result_info_fork (tcname, status);
+  return receive_result_info_fork (tc->name, status);
 }
 
 static char *signal_msg (int signal)

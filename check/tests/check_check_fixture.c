@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <signal.h>
 #include <stdio.h>
 #include <check.h>
 #include "error.h"
@@ -58,7 +59,7 @@ START_TEST(test_setup_failure_msg)
 {
   TestResult **tra;
   char *trm;
-  char *trmexp = "check_check_fixture.c:11:S:Core: Test failure in fixture";
+  char *trmexp = "check_check_fixture.c:12:S:Core: Test failure in fixture";
 
   tra = srunner_failures(fixture_sr);
   trm = tr_str(tra[0]);
@@ -75,6 +76,166 @@ START_TEST(test_setup_failure_msg)
 }
 END_TEST
 
+
+int testval = 1;
+
+static void sub_ch_setup_norm (void)
+{
+  testval = 2;
+}
+
+static void sub_ch_teardown_norm(void)
+{
+  testval = 10;
+}
+
+START_TEST(test_sub_ch_setup_norm)
+{
+  if (testval == 1)
+    fail("Setup not run correctly");
+  else if (testval > 2)
+    fail("Test side-effects persist across runs");
+  testval++;
+}
+END_TEST
+
+START_TEST(test_ch_setup)
+{
+  TCase *tc;
+  Suite *s;
+  SRunner *sr;
+
+  s = suite_create("Fixture Norm Sub");
+  tc = tcase_create("Core");
+  sr = srunner_create(s);
+  suite_add_tcase(s, tc);
+  tcase_add_test(tc,test_sub_ch_setup_norm);
+  tcase_add_test(tc,test_sub_ch_setup_norm);
+  tcase_add_checked_fixture(tc,sub_ch_setup_norm,sub_ch_teardown_norm);
+  srunner_run_all(sr, CRSILENT);
+
+  fail_unless(srunner_ntests_failed(sr) == 0,
+	      "Checked setup not being run correctly");
+
+  suite_free(s);
+  srunner_free(sr);
+}
+END_TEST
+
+static void setup_sub_fail (void)
+{
+  fail("Failed setup");
+}
+
+static void teardown_sub_fail (void)
+{
+  fail("Failed teardown");
+}
+
+static void setup_sub_signal (void)
+{
+  mark_point();
+  raise(SIGFPE);
+}
+
+static void teardown_sub_signal(void)
+{
+  mark_point();
+  raise(SIGFPE);
+}
+
+START_TEST(test_sub_pass)
+{
+  ; /*pass*/
+}
+END_TEST
+
+START_TEST(test_ch_setup_fail)
+{
+  TCase *tc;
+  Suite *s;
+  SRunner *sr;
+  char *strstat;
+  char *trm;
+
+  s = suite_create("Setup Fail");
+  tc = tcase_create("Core");
+  suite_add_tcase(s, tc);
+  tcase_add_test(tc,test_sub_pass);
+  tcase_add_checked_fixture(tc,setup_sub_fail, NULL);
+  sr = srunner_create(s);
+  srunner_run_all(sr,CRSILENT);
+
+  fail_unless (srunner_ntests_failed(sr) == 1,
+	       "Failure counts not correct for checked setup failure");
+  fail_unless (srunner_ntests_run(sr) == 0,
+	       "Test run counts not correct for checked setup failure");
+
+  strstat= sr_stat_str(sr);
+
+  fail_unless(strcmp(strstat,
+		     "0%: Checks: 0, Failures: 1, Errors: 0") == 0,
+	      "SRunner stat string incorrect with checked setup failure");
+
+
+  trm = tr_str(srunner_failures(sr)[0]);
+
+  if (strcmp(trm,
+	     "check_check_fixture.c:127:S:Core: Failed setup")
+      != 0) {
+    char *errm = emalloc(CK_MAXMSG);
+    
+    snprintf(errm,CK_MAXMSG,
+	     "Bad failed checked setup tr msg (%s)", trm);
+    
+    fail (errm);
+  }
+}
+END_TEST
+
+START_TEST(test_ch_teardown_fail)
+{
+  TCase *tc;
+  Suite *s;
+  SRunner *sr;
+  char *strstat;
+  char *trm;
+
+  s = suite_create("Setup Fail");
+  tc = tcase_create("Core");
+  suite_add_tcase(s, tc);
+  tcase_add_test(tc,test_sub_pass);
+  tcase_add_checked_fixture(tc,NULL, teardown_sub_fail);
+  sr = srunner_create(s);
+  srunner_run_all(sr,CRSILENT);
+
+  fail_unless (srunner_ntests_failed(sr) == 1,
+	       "Failure counts not correct for checked setup failure");
+  fail_unless (srunner_ntests_run(sr) == 0,
+	       "Test run counts not correct for checked setup failure");
+
+  /*  strstat= sr_stat_str(sr);
+
+  fail_unless(strcmp(strstat,
+		     "0%: Checks: 0, Failures: 1, Errors: 0") == 0,
+	      "SRunner stat string incorrect with checked setup failure");
+
+
+  trm = tr_str(srunner_failures(sr)[0]);
+
+  if (strcmp(trm,
+	     "check_check_fixture.c:127:S:Core: Failed setup")
+      != 0) {
+    char *errm = emalloc(CK_MAXMSG);
+    
+    snprintf(errm,CK_MAXMSG,
+	     "Bad failed checked setup tr msg (%s)", trm);
+    
+    fail (errm);
+    }*/
+}
+END_TEST
+
 Suite *make_fixture_suite (void)
 {
 
@@ -88,6 +249,8 @@ Suite *make_fixture_suite (void)
   tcase_add_test(tc,test_fixture_fail_counts);
   tcase_add_test(tc,test_print_counts);
   tcase_add_test(tc,test_setup_failure_msg);
-
+  tcase_add_test(tc,test_ch_setup);
+  tcase_add_test(tc,test_ch_setup_fail);
+  tcase_add_test(tc,test_ch_teardown_fail);
   return s;
 }
