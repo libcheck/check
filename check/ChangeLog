@@ -1,3 +1,12 @@
+2005-01-04 hugo303
+
+	* check.m4, config.h.in, configure.in, src/check_pack.c: Fixed
+	quoting and added configure test for stdint.h.
+
+2005-01-04 hugo303
+
+        * tests/check_check_master.c: Made failure messages more helpful.
+
 2004-11-12 hugo303
 
 	* debian/check.dirs, debian/control, debian/rules: Fixed building
