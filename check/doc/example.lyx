@@ -221,7 +221,7 @@ test a little, code a little
 \begin_inset Quotes erd
 \end_inset 
 
- with unit test writing proceeding coding.
+ with unit test writing preceding coding.
  This constantly gives us insights into module usage, and also makes sure
  we are constantly thinking about how to test our code.
 \layout Subsection

@@ -4,7 +4,7 @@ noinst_PROGRAMS=check_check check_list check_stress check_check_msg ex_output
 EXTRA_DIST=test_output.sh
 
 check_check_SOURCES= \
-	check_check.c
+	check_check.h check_check_sub.c check_check_master.c check_check_main.c
 
 check_list_SOURCES=\
 	check_list.c

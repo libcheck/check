@@ -52,6 +52,9 @@ static int percent_passed (TestStats *t);
 static void srunner_run_tcase (SRunner *sr, TCase *tc);
 static void srunner_add_failure (SRunner *sr, TestResult *tf);
 static TestResult *tfun_run (int msqid, char *tcname, TF *tf);
+static TestResult *receive_result_info (int msqid, int status, char *tcname);
+static void receive_last_loc_info (int msqid, TestResult *tr);
+static void receive_failure_info (int msqid, int status, TestResult *tr);
 static List *srunner_resultlst (SRunner *sr);
 
 static void tr_print (TestResult *tr);
@@ -112,8 +115,8 @@ void srunner_run_all (SRunner *sr, int print_mode)
     srunner_run_tcase (sr, tc);
   }
   if (print_mode >= CRMINIMAL)
-    print_summary_report (sr);
-  print_results (sr, print_mode);
+    srunner_print_summary (sr);
+  srunner_print_results (sr, print_mode);
 }
 
 static void srunner_add_failure (SRunner *sr, TestResult *tr)
@@ -155,22 +158,23 @@ static void srunner_run_tcase (SRunner *sr, TCase *tc)
     tc->teardown();
 }
 
-static TestResult *receive_failure_info (int msqid, int status, char *tcname)
+static void receive_last_loc_info (int msqid, TestResult *tr)
 {
   LastLocMsg *lmsg;
-  FailureMsg *fmsg;
-  TestResult *tr = emalloc (sizeof(TestResult));
-
   lmsg = receive_last_loc_msg (msqid);
   tr->file = last_loc_file (lmsg);
   tr->line = last_loc_line (lmsg);
   free (lmsg);
-  tr->tcname = tcname;
+}  
+
+static void receive_failure_info (int msqid, int status, TestResult *tr)
+{
+  FailureMsg *fmsg;
 
   if (WIFSIGNALED(status)) {
     tr->rtype = CRERROR;
     tr->msg = signal_msg (WTERMSIG(status));
-    return tr;
+    return;
   }
   
   if (WIFEXITED(status)) {
@@ -198,6 +202,15 @@ static TestResult *receive_failure_info (int msqid, int status, char *tcname)
   } else {
     eprintf ("Bad status from wait() call\n");
   }
+}
+
+static TestResult *receive_result_info (int msqid, int status, char *tcname)
+{
+  TestResult *tr = emalloc (sizeof(TestResult));
+
+  tr->tcname = tcname;
+  receive_last_loc_info (msqid, tr);
+  receive_failure_info (msqid, status, tr);
   return tr;
 }
 
@@ -211,16 +224,16 @@ static TestResult *tfun_run (int msqid, char *tcname, TF *tfun)
      eprintf ("Unable to fork:");
   if (pid == 0) {
     tfun->fn(msqid);
-    exit(0);
+    _exit(EXIT_SUCCESS);
   }
   (void) wait(&status);
-  return receive_failure_info(msqid, status, tcname);
+  return receive_result_info(msqid, status, tcname);
 }
 
 
 /* Printing */
 
-void print_summary_report (SRunner *sr)
+void srunner_print_summary (SRunner *sr)
 {
   TestStats *ts = sr->stats;
   printf ("%d%%: Checks: %d, Failures: %d, Errors: %d\n",
@@ -228,7 +241,7 @@ void print_summary_report (SRunner *sr)
   return;
 }
 
-void print_results (SRunner *sr, int print_mode)
+void srunner_print_results (SRunner *sr, int print_mode)
 {
   List *resultlst;
   if (print_mode < CRNORMAL)
@@ -249,9 +262,14 @@ void print_results (SRunner *sr, int print_mode)
   return;
 }
 
-int srunner_nfailures (SRunner *sr)
+int srunner_nfailed_tests (SRunner *sr)
 {
   return sr->stats->n_failed + sr->stats->n_errors;
+}
+
+int srunner_ntests_run (SRunner *sr)
+{
+  return sr->stats->n_checked;
 }
 
 TestResult **srunner_failures (SRunner *sr)
@@ -259,7 +277,7 @@ TestResult **srunner_failures (SRunner *sr)
   int i = 0;
   TestResult **trarray;
   List *rlst;
-  trarray = malloc (sizeof(trarray[0]) * srunner_nfailures(sr));
+  trarray = malloc (sizeof(trarray[0]) * srunner_nfailed_tests(sr));
 
   rlst = srunner_resultlst (sr);
   for (list_front(rlst); !list_at_end(rlst); list_advance(rlst)) {
@@ -351,5 +369,5 @@ static char *exit_msg (int exitval)
 
 static int non_pass (int val)
 {
-  return val == CRFAILURE || CRERROR;
+  return val == CRFAILURE || val == CRERROR;
 }
