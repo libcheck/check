@@ -53,15 +53,12 @@ static Suite *make_fork_sub_suite (void)
 }
 
 static SRunner *fork_sr;
-static Suite *fork_s;
 static SRunner *fork_dummy_sr;
 
 void fork_setup (void)
 {
-
-  fork_s = make_fork_sub_suite();
-  fork_sr = srunner_create(fork_s);
-  fork_dummy_sr = srunner_create (fork_s);
+  fork_sr = srunner_create(make_fork_sub_suite());
+  fork_dummy_sr = srunner_create (make_fork_sub_suite());
   srunner_set_fork_status(fork_sr,CK_NOFORK);
   srunner_run_all(fork_sr,CK_SILENT);
 }
@@ -69,7 +66,6 @@ void fork_setup (void)
 void fork_teardown (void)
 {
   srunner_free(fork_sr);
-  suite_free(fork_s);
 }
 
 START_TEST(test_default_fork)

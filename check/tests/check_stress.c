@@ -42,7 +42,6 @@ static void run (int num_iters)
   }
 
   srunner_free(sr);
-  suite_free(s);
 }
 
   

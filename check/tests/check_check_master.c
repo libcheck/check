@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <check.h>
 #include "check_check.h"
 
@@ -107,7 +108,7 @@ START_TEST(test_check_failure_lfiles)
   int i;
   for (i = 0; i < sub_nfailed; i++) {
 
-    fail_unless (strcmp(tr_lfile(tr_fail_array[i]), "check_check_sub.c") == 0,
+    fail_unless (strstr(tr_lfile(tr_fail_array[i]), "check_check_sub.c") != 0,
 		 "Bad file name");
   }
 }

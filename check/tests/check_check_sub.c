@@ -82,7 +82,6 @@ START_TEST(test_null)
   sr = srunner_create(NULL);
   srunner_run_all (NULL, -1);
   srunner_free (NULL);
-  suite_free (NULL);
   fail("Completed properly");
 }
 END_TEST

@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <stdio.h>
+#include <string.h>
 #include <check.h>
 #include "check_error.h"
 #include "check_str.h"
@@ -14,11 +15,12 @@ static void fixture_sub_setup (void)
 }
 
 
-static Suite *fixture_s;
 static SRunner *fixture_sr;
+
 void setup_fixture (void)
 {
   TCase *tc;
+  Suite *fixture_s;
   
   fixture_s = suite_create("Fix Sub");
   tc = tcase_create("Core");
@@ -31,7 +33,6 @@ void setup_fixture (void)
 void teardown_fixture (void)
 {
   srunner_free(fixture_sr);
-  suite_free(fixture_s);
 }
 
 START_TEST(test_fixture_fail_counts)
@@ -60,12 +61,12 @@ START_TEST(test_setup_failure_msg)
 {
   TestResult **tra;
   char *trm;
-  const char *trmexp = "check_check_fixture.c:13:S:Core: Test failure in fixture";
+  const char *trmexp = "check_check_fixture.c:14:S:Core:unchecked_setup: Test failure in fixture";
 
   tra = srunner_failures(fixture_sr);
   trm = tr_str(tra[0]);
 
-  if (strcmp(trm, trmexp) != 0) {
+  if (strstr(trm, trmexp) == 0) {
     snprintf(errm, sizeof(errm),
 	     "Bad setup tr msg (%s)", trm);
     
@@ -116,7 +117,7 @@ START_TEST(test_ch_setup)
   fail_unless(srunner_ntests_failed(sr) == 0,
 	      "Checked setup not being run correctly");
 
-  suite_free(s);
+
   srunner_free(sr);
 }
 END_TEST
@@ -179,9 +180,9 @@ START_TEST(test_ch_setup_fail)
 
   trm = tr_str(srunner_failures(sr)[0]);
 
-  if (strcmp(trm,
-	     "check_check_fixture.c:126:S:Core: Failed setup")
-      != 0) {
+  if (strstr(trm,
+	     "check_check_fixture.c:127:S:Core:test_sub_pass: Failed setup")
+      == 0) {
     snprintf(errm, sizeof(errm),
 	     "Bad failed checked setup tr msg (%s)", trm);
     
@@ -220,10 +221,10 @@ START_TEST(test_ch_setup_sig)
 
   trm = tr_str(srunner_failures(sr)[0]);
 
-  if (strcmp(trm,
-	     "check_check_fixture.c:136:S:Core: "
+  if (strstr(trm,
+	     "check_check_fixture.c:137:S:Core:test_sub_pass: "
 	     "(after this point) Received signal 8")
-      != 0) {
+      == 0) {
     snprintf(errm, sizeof(errm),
 	     "Msg was (%s)", trm);
     
@@ -262,9 +263,9 @@ START_TEST(test_ch_teardown_fail)
 
   trm = tr_str(srunner_failures(sr)[0]);
 
-  if (strcmp(trm,
-	     "check_check_fixture.c:131:S:Core: Failed teardown")
-      != 0) {
+  if (strstr(trm,
+	     "check_check_fixture.c:132:S:Core:test_sub_pass: Failed teardown")
+      == 0) {
     snprintf(errm, sizeof(errm),
 	     "Bad failed checked teardown tr msg (%s)", trm);
     
@@ -304,10 +305,10 @@ START_TEST(test_ch_teardown_sig)
 
   trm = tr_str(srunner_failures(sr)[0]);
 
-  if (strcmp(trm,
-	     "check_check_fixture.c:142:S:Core: "
+  if (strstr(trm,
+	     "check_check_fixture.c:143:S:Core:test_sub_pass: "
 	     "(after this point) Received signal 8")
-      != 0) {
+      == 0) {
     snprintf(errm, sizeof(errm),
 	     "Bad msg (%s)", trm);
     

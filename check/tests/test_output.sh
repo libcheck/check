@@ -1,17 +1,23 @@
 #!/bin/sh
 
+if [ "${srcdir}" == "." ]; then
+    lsrc=""
+else
+    lsrc="${srcdir}/"
+fi
+
 t0="x"
 t1="xRunning suite(s): Master
 33%: Checks: 3, Failures: 1, Errors: 1"
 t2="xRunning suite(s): Master
 33%: Checks: 3, Failures: 1, Errors: 1
-ex_output.c:13:F:Core: Failure
-ex_output.c:17:E:Core: (after this point) Early exit with return value 1"
+${lsrc}ex_output.c:14:F:Core:test_fail: Failure
+${lsrc}ex_output.c:18:E:Core:test_exit: (after this point) Early exit with return value 1"
 t3="xRunning suite(s): Master
 33%: Checks: 3, Failures: 1, Errors: 1
-ex_output.c:7:P:Core: Passed
-ex_output.c:13:F:Core: Failure
-ex_output.c:17:E:Core: (after this point) Early exit with return value 1"
+${lsrc}ex_output.c:8:P:Core:test_pass: Passed
+${lsrc}ex_output.c:14:F:Core:test_fail: Failure
+${lsrc}ex_output.c:18:E:Core:test_exit: (after this point) Early exit with return value 1"
 
 op0=`./ex_output CK_SILENT`
 op1=`./ex_output CK_MINIMAL`
