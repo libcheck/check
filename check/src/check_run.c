@@ -57,12 +57,12 @@ static void srunner_iterate_suites (SRunner *sr,
 static void srunner_run_tcase (SRunner *sr, TCase *tc);
 static int srunner_run_unchecked_setup (SRunner *sr, TCase *tc);
 static void srunner_run_unchecked_teardown (SRunner *sr, TCase *tc);
-static void tcase_run_checked_setup (TCase *tc);
+static TestResult * tcase_run_checked_setup (SRunner *sr, TCase *tc);
 static void tcase_run_checked_teardown (TCase *tc);
 static void srunner_iterate_tcase_tfuns (SRunner *sr, TCase *tc);
 static void srunner_add_failure (SRunner *sr, TestResult *tf);
-static TestResult *tcase_run_tfun_fork (TCase *tc, TF *tf);
-static TestResult *tcase_run_tfun_nofork (TCase *tc, TF *tf);
+static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tf);
+static TestResult *tcase_run_tfun_nofork (SRunner *sr, TCase *tc, TF *tf);
 static TestResult *receive_result_info_fork (const char *tcname,
                                              const char *tname, int status);
 static TestResult *receive_result_info_nofork (const char *tcname,
@@ -132,7 +132,8 @@ void srunner_run_all (SRunner *sr, enum print_output print_mode)
 static void srunner_add_failure (SRunner *sr, TestResult *tr)
 {  
   list_add_end (sr->resultlst, tr);
-  if (tr->ctx == CK_CTX_TEST)
+  /* If the context is either of these, the test has run. */
+  if ((tr->ctx == CK_CTX_TEST) || (tr->ctx == CK_CTX_TEARDOWN))
     sr->stats->n_checked++;
   if (tr->rtype == CK_FAILURE)
     sr->stats->n_failed++;
@@ -153,10 +154,10 @@ static void srunner_iterate_tcase_tfuns (SRunner *sr, TCase *tc)
     tfun = list_val (tfl);
     switch (srunner_fork_status(sr)) {
     case CK_FORK:
-      tr = tcase_run_tfun_fork (tc, tfun);
+      tr = tcase_run_tfun_fork (sr, tc, tfun);
       break;
     case CK_NOFORK:
-      tr = tcase_run_tfun_nofork (tc, tfun);
+      tr = tcase_run_tfun_nofork (sr, tc, tfun);
       break;
     default:
       eprintf("Bad fork status in SRunner", __FILE__, __LINE__);
@@ -178,9 +179,8 @@ static int srunner_run_unchecked_setup (SRunner *sr, TCase *tc)
   l = tc->unch_sflst;
 
   for (list_front(l); !list_at_end(l); list_advance(l)) {
-    
-    f = list_val(l);
     send_ctx_info(get_send_key(),CK_CTX_SETUP);
+    f = list_val(l);
     f->fun();
 
     tr = receive_result_info_nofork (tc->name, "unchecked_setup");
@@ -190,31 +190,49 @@ static int srunner_run_unchecked_setup (SRunner *sr, TCase *tc)
       rval = 0;
       break;
     }
-    else
-    {
-      free(tr->file);
-      free(tr->msg);
-      free(tr);
-    }
+    free(tr->file);
+    free(tr->msg);
+    free(tr);
   } 
 
   set_fork_status(srunner_fork_status(sr));
   return rval;
 }
 
-static void tcase_run_checked_setup (TCase *tc)
+static TestResult * tcase_run_checked_setup (SRunner *sr, TCase *tc)
 {
+  TestResult *tr = NULL;
   List *l;
   Fixture *f;
-
-  l = tc->ch_sflst;
+  enum fork_status fstat = srunner_fork_status(sr);
   
-  send_ctx_info(get_send_key(),CK_CTX_SETUP);
-
+  l = tc->ch_sflst;
+  if (fstat == CK_FORK) {
+    send_ctx_info(get_send_key(),CK_CTX_SETUP);
+  }
+  
   for (list_front(l); !list_at_end(l); list_advance(l)) {
+    if (fstat == CK_NOFORK) {
+      send_ctx_info(get_send_key(),CK_CTX_SETUP);
+    }
     f = list_val(l);
     f->fun();
+
+    /* Stop the setup and return the failure if nofork mode. */
+    if (fstat == CK_NOFORK) {
+      tr = receive_result_info_nofork (tc->name, "checked_setup");
+      if (tr->rtype != CK_PASS) {
+        break;
+      }
+
+      free(tr->file);
+      free(tr->msg);
+      free(tr);
+      tr = NULL;
+    }
   }
+
+  return tr;
 }
 
 static void tcase_run_checked_teardown (TCase *tc)
@@ -322,16 +340,22 @@ static void set_nofork_info (TestResult *tr)
   }
 }
 
-static TestResult *tcase_run_tfun_nofork (TCase *tc, TF *tfun)
+static TestResult *tcase_run_tfun_nofork (SRunner *sr, TCase *tc, TF *tfun)
 {
-  tcase_run_checked_setup(tc);
-  tfun->fn();
-  tcase_run_checked_teardown(tc);
-  return receive_result_info_nofork (tc->name, tfun->name);
+  TestResult *tr;
+  
+  tr = tcase_run_checked_setup(sr, tc);
+  if (tr == NULL) {
+    tfun->fn();
+    tcase_run_checked_teardown(tc);
+    return receive_result_info_nofork(tc->name, tfun->name);
+  }
+  
+  return tr;
 }
 
   
-static TestResult *tcase_run_tfun_fork (TCase *tc, TF *tfun)
+static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun)
 {
   pid_t pid;
   int status = 0;
@@ -340,7 +364,7 @@ static TestResult *tcase_run_tfun_fork (TCase *tc, TF *tfun)
   if (pid == -1)
      eprintf ("Unable to fork:",__FILE__,__LINE__);
   if (pid == 0) {
-    tcase_run_checked_setup (tc);
+    tcase_run_checked_setup (sr, tc);
     tfun->fn();
     tcase_run_checked_teardown (tc);
     exit(EXIT_SUCCESS);
