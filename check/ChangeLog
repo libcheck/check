@@ -1,3 +1,22 @@
+2001-10-25 22:45  amalec
+
+	* src/check_run.c, tests/check_check_pack.c: Fixed some missing
+	header includes
+
+2001-10-25 22:25  amalec
+
+	* src/check_pack.c: Fix packing of NULL strings (causing problems
+	under Solaris)
+
+2001-10-25 22:17  amalec
+
+	* tests/check_check_pack.c: Minor change to pack tests to ensure
+	that tests don't pass accidentally
+
+2001-10-25 00:45  amalec
+
+	* ChangeLog: Updated ChangeLog
+
 2001-10-25 00:44  amalec
 
 	* depcomp: Added new automake file
