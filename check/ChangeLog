@@ -1,6 +1,29 @@
+2004-08-16 hugo303
+
+	* doc/tutorial.sgml: Applied 'newbies' patch #995028 for autoconf doc.
+	* rpm/check.spec.in: Applied doc patch #995028 from Bill Barnard.
+
+2004-06-04 hugo303
+
+	* tests/: test_log_output.sh test_output.sh: Fixed portability
+	problem by changing == to =.
+
+2004-05-26 hugo303
+
+	* rpm/check.spec.in: Changed copyright.
+
+2004-05-25 hugo303
+
+        * src/check_run.c: Applied patch 796705. Replacing _exit with exit.
+
+2004-05-25 hugo303
+
+	* src/check.c tests/check_check_master.c tests/check_check_sub.c:
+	Applied patch for bug 793671.
+
 2004-05-17 10:44 hugo303
 
-        * Released 0.9.0. See NEWS file for changes.
+	* Released 0.9.0. See NEWS file for changes.
 
 2002-10-16 13:47  neo23
 
