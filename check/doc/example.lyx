@@ -30,7 +30,15 @@ Check Tutorial
 Arien Malec
 \layout Date
 
-25 May, 2001
+29 May, 2001
+\layout Standard
+
+
+\begin_inset LatexCommand \tableofcontents{}
+
+\end_inset 
+
+
 \layout Section
 
 Introduction
@@ -89,14 +97,790 @@ By providing a documented level of correctness, they allow the developer
 ) agressively.
 \layout Standard
 
-That third reason is the reason that turns people into unit testing addicts.
+That third reason is the one that turns people into unit testing addicts.
  There is nothing so satisfying as doing a wholesale replacement of an implement
 ation, and having the unit tests reassure you at each step of that change
  that all is well.
  It is like the difference between exploring the wilderness with and without
  a good map and compass: without the proper gear, you are more likely to
- proceed cautiously and stick to the marked trails; with the proper gear,
- you can take the most direct path to where you want to go.
+ proceed cautiously and stick to the marked trails; with it, you can take
+ the most direct path to where you want to go.
 \layout Section
+
+How to get Check
+\layout Standard
+
+Look at the Check homepage for the latest information on Check: 
+\begin_inset LatexCommand \htmlurl[check.sourceforge.net]{check.sourceforge.net}
+
+\end_inset 
+
+
+\layout Subsection
+
+Anonymous CVS
+\layout Standard
+
+Check is currently under development, so the normal way to get Check is
+ through CVS.
+ Follow the following simple instructions:
+\layout Enumerate
+
+Navigate to the directory below which you want the new check directory to
+ be formed.
+ That is, if you navigate to /home/luser/foo/bar, the check files will be
+ in /home/luser/foo/bar/check.
+\layout Enumerate
+
+Issue the following command to login to CVS.
+ When prompted to supply the anonymous password, simply hit return.
+\begin_deeper 
+\layout Code
+
+cvs -d:pserver:anonymous@cvs.check.sourceforge.net:/cvsroot/check login
+\end_deeper 
+\layout Enumerate
+
+Issue the following command to setup the check subdirectory
+\begin_deeper 
+\layout Code
+
+cvs -z3 -d:pserver:anonymous@cvs.check.sourceforge.net:/cvsroot/check co check
+\end_deeper 
+\layout Enumerate
+
+To keep current with CVS, use the following command within the check directory
+\begin_deeper 
+\layout Code
+
+cvs -z3 update -dP
+\layout Standard
+
+Note that you do not have to supply the server directory path or the user
+ name (it is all kept in the CVS local directory.
+\end_deeper 
+\layout Standard
+
+From that point on, using Check should simply be a matter of the standard:
+ 
+\layout Code
+
+$ ./configure 
+\layout Code
+
+$ make 
+\layout Code
+
+$ make install
+\layout Standard
+
+Of course, since Check comes with its own unit tests, you can substitute
+ 
+\begin_inset Quotes eld
+\end_inset 
+
+make check
+\begin_inset Quotes erd
+\end_inset 
+
+ for 
+\begin_inset Quotes eld
+\end_inset 
+
+make
+\begin_inset Quotes erd
+\end_inset 
+
+ in the above.
+\layout Section
+
+Unit testing in C
+\layout Standard
+
+The approach to unit testing frameworks used for Check originated with Smalltalk
+, which is a late binding object-oriented language supporting reflection.
+ Writing a framework for C requires solving some special problems that framework
+s for Smalltalk, Java or Python don't have to face.
+ In all of those language, the worst that a unit test can do is fail miserably,
+ throwing an exception of some sort.
+ In C, a unit test is just as likely to trash its address space as it is
+ to fail to meet its test requirements, and if the test framework sits in
+ the same address space, goodbye test framework.
+ To solve this problem, Check uses to fork system call to create a new address
+ space in which to run each unit test, and then uses message queues to send
+ information on the testing process back to the test framework.
+ That way, your unit test can do all sorts of nasty things with pointers,
+ and throw a segmentation fault, and the test framework will happily note
+ a unit test error, and chug along.
+\layout Standard
+
+The Check framework is also designed to play happily with common development
+ environments for C programming.
+ The author designed Check around Autoconf/Automake (thus the name Check
+ -- make check is the idiom used for testing with Autoconf/Automake), and
+ the test failure messages thrown up by Check use the comon idiom of filename:li
+nenumber:message used by gcc and family to report problems in source code.
+ With (X)Emacs, the output of Check allows one to quickly navigate to the
+ location of the unit test that failed; presumably that also works in VI
+ and IDEs.
+\layout Subsection
+
+Other unit testing frameworks for C
+\layout Standard
+
+The author knows of the following additional unit testing frameworks for
+ C:
+\layout Description
+
+GNU\SpecialChar ~
+Autounit Much along the same lines as Check, including forking to run
+ unit tests in a separate address space (in fact, the author of Check stole
+ the idea from GNU Autounit).
+ GNU Autounit uses GLib extensively, which means that linking and such need
+ special options, but this may not be a big problem to you, especially if
+ you are already using GTK or GLib.
+ See 
+\begin_inset LatexCommand \htmlurl[http://www.recursism.com/projects/autounit/]{http://www.recursism.com/projects/autounit/}
+
+\end_inset 
+
+.
+\layout Description
+
+cUnit Also uses GLib, but does not fork to protect the address space of
+ unit tests.
+ See 
+\begin_inset LatexCommand \htmlurl[http://people.codefactory.se/~spotty/cunit/]{http://people.codefactory.se/~spotty/cunit/}
+
+\end_inset 
+
+.
+\layout Standard
+
+It is the author's considered opinion that forking or otherwise trapping
+ and reporting signals is indespensible for unit testing (but it probably
+ wouldn't be hard to add that to cUnit).
+ Try 'em all out: adapt this tutorial to use all of the frameworks above,
+ and use whichever you like.
+ Contribute, spread the word, and make one a standard.
+ Languages such as Java and Python are fortunate to have standard unit test
+ frameworks; it would be desirable that C have one as well.
+\layout Section
+
+Tutorial
+\layout Standard
+
+This tutorial will use the JUnit Test Infected article (see 
+\begin_inset LatexCommand \htmlurl[Test Infected]{http://members.pingnet.ch/gamma/junit.htm}
+
+\end_inset 
+
+) as a starting point.
+ We will be creating a library to represent money, allowing conversions
+ between different currency types.
+ The development style will be 
+\begin_inset Quotes eld
+\end_inset 
+
+test a little, code a little
+\begin_inset Quotes erd
+\end_inset 
+
+ with unit test writing proceeding coding.
+ This constantly gives us insights into module usage, and also makes sure
+ we are constantly thinking about how to test our code.
+\layout Subsection
+
+How to write a test
+\layout Standard
+
+Test writing using Check is very simple.
+ The file in which the checks are defined must import check.h as so:
+\layout Code
+
+#import <check.h>
+\layout Standard
+
+The basic unit test looks as follows:
+\layout Code
+
+START_TEST(test_name)
+\layout Code
+
+{
+\layout Code
+
+  /* unit test code */
+\layout Code
+
+}
+\layout Code
+
+END_TEST
+\layout Standard
+
+The START_TEST/END_TEST pair are macros that setup basic structures to permit
+ testing.
+ It is a mistake to leave off the END_TEST marker; doing so produces all
+ sorts of strange errors when the check is compiled.
+ 
+\layout Subsection
+
+Setting up the money tests
+\layout Standard
+
+Since we are creating a library to handle money, we will first create a
+ header money.h, and a file to contain our unit tests, check_money.c (there
+ is a pun there, but no matter...).
+ To manage everything we'll use Autoconf/Automake for this example.
+ (One could do something similar with ordinary makefiles, but in the author's
+ opinion, it is generally easier to use Autoconf/Automake than bare makefiles,
+ and it provides built-in support for running tests).
+ Here is the Makefile.am:
+\layout Code
+
+TESTS=check_money
+\layout Code
+
+noinst_PROGRAMS=check_money
+\layout Code
+
+check_money_SOURCES=  money.h money.c check_money.c
+\layout Standard
+
+Special mumbojumbo to use in configure.in is:
+\layout Code
+
+AC_CHECK_LIB(check,suite_create)
+\layout Standard
+
+This will ensure that things link up properly with Check, and make sure
+ that we can only compile in an environment that has Check.
+ The money.h header should only contain the standard #ifndef MONEY_H stuff,
+ money.c should be empty, and check_money.c should only contain an empty main
+ function.
+ Run this with make -k check, after going through the setups to get autoconf
+ and friends working.
+ If all goes well, make should report that our tests passed.
+ No surprise, because there aren't any tests to fail.
+\layout Subsection
+
+Test a little, code a little
+\layout Standard
+
+The Test Infected article starts out with a Money class, and so will we.
+ Of course, we can't do classes with C, but we don't really need to.
+ The Test Infected approach to writing code says that we should write the
+ unit test 
+\emph on 
+before
+\emph default 
+ we write the code, and in this, we will be even more dogmatic and doctrinaire
+ than the authors of Test Infected (who clearly don't really get this stuff,
+ only being some of the originators of the Patterns approach to software
+ development and OO design).
+\layout Standard
+
+Here is our first unit test:
+\layout Code
+
+START_TEST(test_create) 
+\layout Code
+
+{ 
+\layout Code
+
+ Money *m; 
+\layout Code
+
+ m = money_create (5, "USD");
+\layout Code
+
+ fail_unless (money_amount(m) == 5, 
+\layout Code
+
+              "Amount not set correctly on creation");
+\layout Code
+
+ fail_unless (strcmp(money_currency(m),"USD") == 0, 
+\layout Code
+
+              "Currency not set correctly on creation"); 
+\layout Code
+
+ money_free(m); 
+\layout Code
+
+}
+\layout Code
+
+END_TEST
+\layout Standard
+
+A unit test should just chug along and complete.
+ If it exits early, or is signaled, it will fail with a generic error message.
+ (Note: it is conceivable that you expect an early exit, or a signal.
+ There is currently nothing in Check to specifically assert that we should
+ expect either -- if that is valuable, it may be worth while adding to Check).
+ If we want to get some information about what failed, we need to use the
+ 
+\begin_inset Quotes eld
+\end_inset 
+
+fail_unless
+\begin_inset Quotes erd
+\end_inset 
+
+ function.
+ The 
+\begin_inset Quotes eld
+\end_inset 
+
+fail_unless
+\begin_inset Quotes erd
+\end_inset 
+
+ function (actually a macro) takes a first boolean argument, and an error
+ message to send if the condition is not true.
+ If the boolean argument is too complicated to elegantly express within
+ 
+\begin_inset Quotes eld
+\end_inset 
+
+fail_unless
+\begin_inset Quotes erd
+\end_inset 
+
+, there is an alternate function 
+\begin_inset Quotes eld
+\end_inset 
+
+fail
+\begin_inset Quotes erd
+\end_inset 
+
+, that unconditionally fails.
+ The second test above can be rewritten as follows:
+\layout Code
+
+if (strcmp(money_currency(m), "USD") != 0) {
+\layout Code
+
+  fail ("Currency not set correctly on creation");
+\layout Code
+
+}
+\layout Standard
+
+When we try to compile and run the test suite now, we get a whole host of
+ compilation errors.
+ It may seem a bit strange to deliberately write code that won't compile,
+ but notice what we are doing: in creating the unit test, we are also defining
+ requirements for the money interface.
+ Compilation errors are, in a way, unit test failures of their own, telling
+ us that the implementation does not match the specification.
+ If all we do is edit the sources so that the unit test compiles, we are
+ actually making progress, guided by the unit tests, so that's what we will
+ now do.
+\layout Standard
+
+We will add the following to our header money.h:
+\layout Code
+
+typedef struct Money Money;
+\layout Code
+
+ 
+\layout Code
+
+Money *money_create(int amount, char *currency); 
+\layout Code
+
+int money_amount (Money *m); 
+\layout Code
+
+char *money_currency (Money *m); 
+\layout Code
+
+void money_free(Money *m);
+\layout Standard
+
+and our code now compiles, but fails to link, since we haven't implemented
+ any of the functions.
+ Let's do that now, creating stubs for all of the functions:
+\layout Code
+
+#include <stdlib.h> 
+\layout Code
+
+#include "money.h"
+\layout Code
+
+Money *money_create(int amount, char *currency) 
+\layout Code
+
+{ 
+\layout Code
+
+  return NULL; 
+\layout Code
+
+}
+\layout Code
+
+int money_amount (Money *m) 
+\layout Code
+
+{ 
+\layout Code
+
+  return 0; 
+\layout Code
+
+}
+\layout Code
+
+char *money_currency (Money *m) 
+\layout Code
+
+{ 
+\layout Code
+
+  return NULL; 
+\layout Code
+
+}
+\layout Code
+
+void money_free(Money *m) 
+\layout Code
+
+{ 
+\layout Code
+
+  return; 
+\layout Code
+
+}
+\layout Standard
+
+Now, everything compiles, and we still pass all our tests.
+ How can that be??? Of course -- we haven't run any of our tests yet....
+\layout Subsection
+
+Creating a suite
+\layout Standard
+
+To run unit tests with Check, we must create some test cases, aggregate
+ them into a suite, and run them with a suite runner.
+ That's a bit of overhead, but it is mostly one-off.
+ Here's the code in check_money.c:
+\layout Code
+
+Suite *money_suite (void) 
+\layout Code
+
+{ 
+\layout Code
+
+  Suite *s = suite_create("Money"); 
+\layout Code
+
+  TCase *tc_core = tcase_create("Core");
+\layout Code
+
+ 
+\layout Code
+
+  suite_add_tcase (s, tc_core);
+\layout Code
+
+ 
+\layout Code
+
+  tcase_add_test (tc_core, test_create); 
+\layout Code
+
+  return s; 
+\layout Code
+
+}
+\layout Code
+
+ 
+\layout Code
+
+int main (void) 
+\layout Code
+
+{ 
+\layout Code
+
+  int nf; 
+\layout Code
+
+  Suite *s = money_suite(); 
+\layout Code
+
+  SRunner *sr = srunner_create(s); 
+\layout Code
+
+  srunner_run_all (sr, CRNORMAL); 
+\layout Code
+
+  nf = srunner_nfailures(sr); 
+\layout Code
+
+  srunner_free(sr); 
+\layout Code
+
+  suite_free(s); 
+\layout Code
+
+  return (nf == 0) ? EXIT_SUCCESS : EXIT_FAILURE; 
+\layout Code
+
+}
+\layout Standard
+
+Most of the money_suite code should be self-explainatory.
+ We are creating a suite, creating a test case, adding the test case to
+ the suite, and adding the unit test we created above to the test case.
+ Why separate this off into a separate function, rather than inlining it
+ in main? Because any new tests will get added in money_suite, but nothing
+ will need to change in main for the rest of this example, so main will
+ stay relatively clean and simple.
+\layout Standard
+
+The code in main bears some explaination.
+ We are creating a suite runner object from the suite we created in money_suite.
+ We then run the suite, using the CRNORMAL flag to specify that we should
+ print a summary of the run, and list any failures that may have occured.
+ We could also have specified the CRSILENT flag to specify that no output
+ should occur, and the CRMINIMAL flag to specify that only the run summary
+ should be printed.
+ We capture the number of failures that occured during the run, and use
+ that to decide how to return.
+ The check target created byAutomake uses the return value to decide whether
+ the tests passed or failed.
+ Let's rerun make check now: we get the following satisfying output:
+\layout Code
+
+Running suite: Money 
+\layout Code
+
+0%: Checks: 1, Failures: 1, Errors: 0 
+\layout Code
+
+check_money.c:9:Core: Amount not set correctly on creation
+\layout Standard
+
+The first number in the summary line tells us that 0% of our tests passed,
+ and the rest of the line tells us that there was one check, and one failure.
+ The next line tells us exactly where that failure occured.
+\layout Standard
+
+Let's implement the money_amount function, so that it will pass its tests.
+ We first have to create a Money structure to hold the amount:
+\layout Code
+
+struct Money { 
+\layout Code
+
+  int amount; 
+\layout Code
+
+};
+\layout Standard
+
+Then we will implement the money_amount function to return the correct amount:
+\layout Code
+
+int money_amount (Money *m) 
+\layout Code
+
+{ 
+\layout Code
+
+  return m->amount;
+\layout Code
+
+}
+\layout Standard
+
+We will now rerun make check and...
+ What's this? The output is now as follows:
+\layout Code
+
+Running suite: Money 
+\layout Code
+
+0%: Checks: 1, Failures: 0, Errors: 1 
+\layout Code
+
+check_money.c:5:Core: (after this point) Received signal 11
+\layout Standard
+
+What does this mean? Note that we now have an error, rather than a failure.
+ This means that our unit test either exited early, or was signaled.
+ Next note that the failure message says 
+\begin_inset Quotes eld
+\end_inset 
+
+after this point
+\begin_inset Quotes erd
+\end_inset 
+
+ This means that somewhere after the point noted (check_money.c, line 5)
+ there was a problem: signal 11 (AKA segmentation fault).
+ The last point reached is set on entry to the unit test, and after every
+ call to fail_unless, fail, or the special function mark_point.
+ E.g., if we wrote some test code as follows:
+\layout Code
+
+stuff_that_works();
+\layout Code
+
+mark_point();
+\layout Code
+
+stuff_that_dies();
+\layout Standard
+
+then the point returned will be that marked by mark_point.
+\layout Standard
+
+The reason our test failed so horribly is that we haven't implemented money_crea
+te to create any money.
+ Go ahead and implement that, and money_currency, to make the unit tests
+ pass.
+\layout Subsection
+
+Test fixtures
+\layout Standard
+
+We may want multiple tests to work with the same 
+\layout Subsection
+
+Running multiple cases
+\layout Standard
+
+What happens if we pass -1 as the amount in money_create? What should happen?
+ Let's write a unit test.
+ Since we are testing limits, we should also test what happens when we create
+ money with amount 0:
+\layout Code
+
+START_TEST(test_neg_create) 
+\layout Code
+
+{ 
+\layout Code
+
+  Money *m = money_create(-1, "USD"); 
+\layout Code
+
+  fail_unless (m == NULL, "NULL should be returned on attempt to create
+ with a negative amount"); 
+\layout Code
+
+} 
+\layout Code
+
+END_TEST
+\layout Code
+
+START_TEST(test_zero_create) 
+\layout Code
+
+{ 
+\layout Code
+
+  Money *m = money_create(0, "USD"); 
+\layout Code
+
+  fail_unless (money_amount(m) == 0, "Zero is a valid amount of money");
+ 
+\layout Code
+
+} 
+\layout Code
+
+END_TEST
+\layout Standard
+
+Let's put these in a separate test case, called 
+\begin_inset Quotes eld
+\end_inset 
+
+Limits
+\begin_inset Quotes erd
+\end_inset 
+
+ so that money_suite looks like so:
+\layout Code
+
+Suite *money_suite (void) { 
+\layout Code
+
+  Suite *s = suite_create("Money"); 
+\layout Code
+
+  TCase *tc_core = tcase_create("Core"); 
+\layout Code
+
+  TCase *tc_limits = tcase_create("Limits"); 
+\layout Code
+
+  suite_add_tcase (s, tc_core); 
+\layout Code
+
+  suite_add_tcase (s, tc_limits); 
+\layout Code
+
+  tcase_add_test (tc_core, test_create); 
+\layout Code
+
+  tcase_add_test (tc_limits, test_neg_create); 
+\layout Code
+
+  tcase_add_test (tc_limits, test_zero_create); 
+\layout Code
+
+  return s; 
+\layout Code
+
+}
+\layout Standard
+
+Now we can rerun our suite, and fix the problem(s).
+ Note that errors in the Core test case will be reported as 
+\begin_inset Quotes eld
+\end_inset 
+
+Core
+\begin_inset Quotes erd
+\end_inset 
+
+ and errors in the Limits test case will be reported as 
+\begin_inset Quotes eld
+\end_inset 
+
+Limits,
+\begin_inset Quotes erd
+\end_inset 
+
+ giving you additional information about where things broke.
+\layout Standard
+
+All the rest is simply application of what has been learned in the tutorial
+ through repetitions of 
+\begin_inset Quotes eld
+\end_inset 
+
+test a little, code a little.
+\begin_inset Quotes erd
+\end_inset 
+
 
 \the_end
