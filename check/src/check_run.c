@@ -63,8 +63,10 @@ static void srunner_iterate_tcase_tfuns (SRunner *sr, TCase *tc);
 static void srunner_add_failure (SRunner *sr, TestResult *tf);
 static TestResult *tcase_run_tfun_fork (TCase *tc, TF *tf);
 static TestResult *tcase_run_tfun_nofork (TCase *tc, TF *tf);
-static TestResult *receive_result_info_fork (const char *tcname, int status);
-static TestResult *receive_result_info_nofork (const char *tcname);
+static TestResult *receive_result_info_fork (const char *tcname,
+                                             const char *tname, int status);
+static TestResult *receive_result_info_nofork (const char *tcname,
+                                               const char *tname);
 static void set_fork_info (TestResult *tr, int status);
 static void set_nofork_info (TestResult *tr);
 static char *signal_msg (int sig);
@@ -181,12 +183,18 @@ static int srunner_run_unchecked_setup (SRunner *sr, TCase *tc)
     send_ctx_info(get_send_key(),CK_CTX_SETUP);
     f->fun();
 
-    tr = receive_result_info_nofork (tc->name);
+    tr = receive_result_info_nofork (tc->name, "unchecked_setup");
 
     if (tr->rtype != CK_PASS) {
       srunner_add_failure(sr, tr);
       rval = 0;
       break;
+    }
+    else
+    {
+      free(tr->file);
+      free(tr->msg);
+      free(tr);
     }
   } 
 
@@ -252,7 +260,8 @@ static void srunner_run_tcase (SRunner *sr, TCase *tc)
   }
 }
 
-static TestResult *receive_result_info_fork (const char *tcname, int status)
+static TestResult *receive_result_info_fork (const char *tcname,
+                                             const char *tname, int status)
 {
   TestResult *tr;
 
@@ -260,12 +269,14 @@ static TestResult *receive_result_info_fork (const char *tcname, int status)
   if (tr == NULL)
     eprintf("Failed to receive test result", __FILE__, __LINE__);
   tr->tcname = tcname;
+  tr->tname = tname;
   set_fork_info(tr, status);
 
   return tr;
 }
 
-static TestResult *receive_result_info_nofork (const char *tcname)
+static TestResult *receive_result_info_nofork (const char *tcname,
+                                               const char *tname)
 {
   TestResult *tr;
 
@@ -273,6 +284,7 @@ static TestResult *receive_result_info_nofork (const char *tcname)
   if (tr == NULL)
     eprintf("Failed to receive test result", __FILE__, __LINE__);
   tr->tcname = tcname;
+  tr->tname = tname;
   set_nofork_info(tr);
 
   return tr;
@@ -315,7 +327,7 @@ static TestResult *tcase_run_tfun_nofork (TCase *tc, TF *tfun)
   tcase_run_checked_setup(tc);
   tfun->fn();
   tcase_run_checked_teardown(tc);
-  return receive_result_info_nofork (tc->name);
+  return receive_result_info_nofork (tc->name, tfun->name);
 }
 
   
@@ -334,7 +346,7 @@ static TestResult *tcase_run_tfun_fork (TCase *tc, TF *tfun)
     _exit (EXIT_SUCCESS);
   }
   (void) wait(&status);
-  return receive_result_info_fork (tc->name, status);
+  return receive_result_info_fork (tc->name, tfun->name, status);
 }
 
 static char *signal_msg (int signal)
