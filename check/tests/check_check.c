@@ -5,10 +5,22 @@
 #include "check.h"
 #include "error.h"
 
-
 void setup (void);
 void cleanup (void);
 Suite *make_suite(void);
+
+START_TEST(test_lno)
+{
+  fail("Failure expected"); /*line 14*/
+}
+END_TEST
+
+START_TEST(test_mark_lno)
+{
+  mark_point(); /*line 20*/
+  exit(1); /*should fail at line 20*/
+}
+END_TEST
 
 START_TEST(test_pass)
 {
@@ -86,7 +98,7 @@ TestResult **trarray;
 
 START_TEST(test_check_nfailures)
 {
-  fail_unless (nfailures == 7, "Unexpected number of failures received");
+  fail_unless (nfailures == 9, "Unexpected number of failures received");
 }
 END_TEST
 
@@ -94,6 +106,8 @@ START_TEST(test_check_failures)
 {
   int i;
   char *msgar[] = {
+    "Failure expected",
+    "Early exit with return value 1",
     "Completed properly",
     "This test should fail",
     "Received signal 11",
@@ -101,12 +115,32 @@ START_TEST(test_check_failures)
     "Received signal 8",
     "Early exit with return value 1",
     "Completed properly"};
+  int lnos[] = {
+    14,
+    20,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1};
+  
   for (i = 0; i < nfailures; i++) {
     char *msg;
+
+    if (lnos[i] > 0 && tr_lno(trarray[i]) != lnos[i]) {
+      char *emsg = emalloc (CMAXMSG);
+      snprintf (emsg, CMAXMSG, "Expected lno %d, got %d",
+		lnos[i], tr_lno(trarray[i]));
+      fail (emsg);
+      free (emsg);
+    }
+    
     msg = tr_msg(trarray[i]);
     if (strcmp (msg, msgar[i]) != 0) {
       char *emsg = emalloc (CMAXMSG);
-      snprintf (emsg, CMAXMSG,"Expected %s, got %s", msg, msgar[i]);
+      snprintf (emsg, CMAXMSG,"Expected %s, got %s", msgar[i], msg);
       fail (emsg);
     }
   }
@@ -122,6 +156,8 @@ Suite *make_suite(void)
   suite_add_tcase (s, tc_simple);
   suite_add_tcase (s, tc_signal);
   suite_add_tcase (s, tc_limit);
+  tcase_add_test (tc_simple, test_lno);
+  tcase_add_test (tc_simple, test_mark_lno);
   tcase_add_test (tc_simple, test_pass);
   tcase_add_test (tc_simple, test_fail);
   tcase_add_test (tc_signal, test_segv);

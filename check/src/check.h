@@ -117,7 +117,10 @@ typedef struct SRunner SRunner;
 /* Opaque type for a test failure */
 typedef struct TestResult TestResult;
 
+/* Failure message */
 char *tr_msg (TestResult *tr);
+/* Line number at which failure occured */
+int tr_lno (TestResult *tr);
 
 SRunner *srunner_create (Suite *s);
 void srunner_free (SRunner *sr);

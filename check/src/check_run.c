@@ -274,6 +274,11 @@ char *tr_msg (TestResult *tr)
   return tr->msg;
 }
 
+int tr_lno (TestResult *tr)
+{
+  return tr->line;
+} 
+
 static int percent_passed (TestStats *t)
 {
   if (t->n_failed == 0 && t->n_errors == 0)
