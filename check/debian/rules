@@ -17,11 +17,22 @@ major=2
 #major=`ls src/.libs/lib*.so.* | \
 # awk '{if (match($$0,/\.so\.[0-9]+$$/)) print substr($$0,RSTART+4)}'`
 
+CC_VSK=-dumpversion | cut -c1
+CC=$(shell	if test `gcc $(CC_VSK)` = 3; then \
+			echo gcc; \
+		elif test `which gcc-3.3` -a `gcc-3.3 $(CC_VSK)` = 3; then \
+			echo gcc-3.3; \
+		elif test `which gcc-3.1` -a `gcc-3.1 $(CC_VSK)` = 3; then \
+			echo gcc-3.1; \
+		elif test `which gcc-3.0` -a `gcc-3.0 $(CC_VSK)` = 3; then \
+			echo gcc-3.0; \
+		fi)
+
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
 	# Add here commands to configure the package.
-	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-plain-docdir
+	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-plain-docdir CC="$(CC)"
 
 	touch configure-stamp
 
@@ -62,18 +73,19 @@ binary-indep: build install
 binary-arch: build install
 	dh_testdir
 	dh_testroot
-	dh_movefiles
+	# we don't want another copy of the GPL Licence file
+	dh_movefiles -XCOPYING
 
 #	dh_installdebconf	
 	dh_installdocs
 	dh_installexamples
-	dh_installmenu
+#	dh_installmenu
 #	dh_installlogrotate
 #	dh_installemacsen
 #	dh_installpam
 #	dh_installmime
 #	dh_installinit
-	dh_installcron
+#	dh_installcron
 	dh_installman
 	dh_installinfo
 #	dh_undocumented

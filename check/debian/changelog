@@ -1,3 +1,10 @@
+check (0.9.2-2) unstable; urgency=low
+
+  * Fixed building with gcc3
+  * Removed empty money dir from docs
+
+ -- Fredrik Hugosson <hugo303@users.sourceforge.net>  Fri, 12 Nov 2004 11:54:00 +0000
+
 check (0.9.2-1) unstable; urgency=low
 
   * See upstream changelog
