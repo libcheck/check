@@ -58,6 +58,19 @@ List *list_create (void)
   return lp;
 }
 
+void list_add_front (List *lp, const void *val)
+{
+  if (lp == NULL)
+    return;
+  maybe_grow(lp);
+  memmove(lp->data + sizeof lp->data[0], lp->data,
+          lp->n_elts * sizeof lp->data[0]);
+  lp->last++;
+  lp->n_elts++;
+  lp->current = 0;
+  lp->data[lp->current] = val;
+}
+
 void list_add_end (List *lp, const void *val)
 {
   if (lp == NULL)

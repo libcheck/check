@@ -32,6 +32,10 @@ int list_at_end (List * lp);
 /* Position list at front */
 void list_front(List *lp);
 
+/* Add a value to the front of the list,
+   positioning newly added value as current value.
+   More expensive than list_add_end, as it uses memmove. */
+void list_add_front (List *lp, const void *val);
 
 /* Add a value to the end of the list,
    positioning newly added value as current value */

@@ -148,11 +148,12 @@ static void tcase_add_fixture (TCase *tc, SFun setup, SFun teardown,
       list_add_end (tc->unch_sflst, fixture_create(setup, ischecked));
   }
 
+  /* Add teardowns at front so they are run in reverse order. */
   if (teardown) {
     if (ischecked)
-      list_add_end (tc->ch_tflst, fixture_create(teardown, ischecked));
+      list_add_front (tc->ch_tflst, fixture_create(teardown, ischecked));
     else
-      list_add_end (tc->unch_tflst, fixture_create(teardown, ischecked));  
+      list_add_front (tc->unch_tflst, fixture_create(teardown, ischecked));  
   }
 }
 
