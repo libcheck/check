@@ -175,6 +175,10 @@ char *tr_tcname (TestResult *tr);
 
 /*! Creates an SRunner for the given suite */
 SRunner *srunner_create (Suite *s);
+
+/*! Adds a Suite to an SRunner */
+void *srunner_add_suite (SRunner *sr, Suite *s);
+
 /*! Frees an SRunner */
 void srunner_free (SRunner *sr);
 

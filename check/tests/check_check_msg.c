@@ -3,7 +3,7 @@
 #include "check_msg.h"
 
 int msq;
-void setup (void)
+void msg_setup (void)
 {
   /* Note that we are really sharing the same msq
      as check itself, since all msqs created by
@@ -43,28 +43,15 @@ START_TEST(test_send_lastloc)
 }
 END_TEST
 
-Suite *make_suite (void)
+Suite *make_msg_suite (void)
 {
   Suite *s;
   TCase *tc;
   s = suite_create("Msg");
   tc = tcase_create("Core Tests");
-  tcase_set_fixture(tc, setup, NULL);
+  tcase_set_fixture(tc, msg_setup, NULL);
   tcase_add_test(tc, test_send_failure);
   tcase_add_test(tc, test_send_lastloc);
   suite_add_tcase(s, tc);
   return s;
-}
-
-int main (void)
-{
-
-  int n;
-  Suite *s = make_suite();
-  SRunner *sr = srunner_create(s);
-  srunner_run_all (sr, CRNORMAL);
-  n = srunner_ntests_failed(sr);
-  srunner_free(sr);
-  suite_free(s);
-  return (n == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

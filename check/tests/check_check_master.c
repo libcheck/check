@@ -190,7 +190,7 @@ START_TEST(test_teardown)
 END_TEST  
 
 
-Suite *main_make_suite (void)
+Suite *make_master_suite (void)
 {
   Suite *s;
   TCase *tc_core;
@@ -226,7 +226,7 @@ Suite *main_make_suite (void)
 void setup (void)
 {
   char *msg;
-  Suite *s = sub_make_suite();
+  Suite *s = make_sub_suite();
   SRunner *sr = srunner_create(s);
   srunner_run_all(sr, CRSILENT);
   tr_fail_array = srunner_failures(sr);

@@ -22,7 +22,7 @@
 
 /* This header should be included by any module that needs
    to know the implementation details of the check structures
-   Include list.h before this header
+   Include stdio.h & list.h before this header
 */
 
 /* magic values */
@@ -63,10 +63,11 @@ struct TestResult {
 };
 
 struct SRunner {
-  Suite *s;
+  List *slst;
   TestStats *stats;
   List *resultlst;
   char *log_fname;
+  FILE *log_file;
 };
 
 

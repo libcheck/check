@@ -86,11 +86,10 @@ END_TEST
 
 
 
-int main (void)
+Suite *make_list_suite (void)
 {
   Suite *s = suite_create("Lists");
-  TCase * tc = tcase_create("Lists");
-  SRunner *sr = srunner_create (s);
+  TCase * tc = tcase_create("Core");
 
   suite_add_tcase (s, tc);
   tcase_add_test (tc, test_create);
@@ -98,7 +97,5 @@ int main (void)
   tcase_add_test (tc, test_add_end_and_next);
   tcase_add_test (tc, test_add_a_bunch);
   tcase_add_test (tc, test_free);
-
-  srunner_run_all (sr, CRNORMAL);
-  return (srunner_ntests_failed(sr) == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
+  return s;
 }

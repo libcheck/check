@@ -87,7 +87,7 @@ START_TEST(test_null)
 }
 END_TEST
 
-Suite *sub_make_suite(void)
+Suite *make_sub_suite(void)
 {
   Suite *s = suite_create("Check Servant");
   TCase *tc_simple = tcase_create("Simple Tests");

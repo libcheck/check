@@ -39,6 +39,9 @@ static void receive_last_loc_info (int msqid, TestResult *tr);
 static void receive_failure_info (int msqid, int status, TestResult *tr);
 static List *srunner_resultlst (SRunner *sr);
 
+
+static void srunner_open_log (SRunner *sr);
+static void srunner_close_log (SRunner *sr);
 static void srunner_printf (SRunner *sr, int target_mode,
 			    int print_mode, char *fmt, ...);
 static void srunner_print_summary (SRunner *sr, int print_mode);
@@ -52,12 +55,19 @@ static int non_pass (int val);
 SRunner *srunner_create (Suite *s)
 {
   SRunner *sr = emalloc (sizeof(SRunner)); /* freed in srunner_free */
-  sr->s = s;
+  sr->slst = list_create();
+  list_add_end(sr->slst, s);
   sr->stats = emalloc (sizeof(TestStats)); /* freed in srunner_free */
   sr->stats->n_checked = sr->stats->n_failed = sr->stats->n_errors = 0;
   sr->resultlst = list_create();
   sr->log_fname = NULL;
+  sr->log_file = NULL;
   return sr;
+}
+
+void *srunner_add_suite (SRunner *sr, Suite *s)
+{
+  list_add_end(sr->slst, s);
 }
 
 void srunner_free (SRunner *sr)
@@ -68,6 +78,7 @@ void srunner_free (SRunner *sr)
     return;
   
   free (sr->stats);
+  list_free(sr->slst);
 
   l = sr->resultlst;
   for (list_front(l); !list_at_end(l); list_advance(l)) {
@@ -83,6 +94,7 @@ void srunner_free (SRunner *sr)
 
 void srunner_run_all (SRunner *sr, int print_mode)
 {
+  List *slst;
   List *tcl;
   TCase *tc;
   if (sr == NULL)
@@ -90,17 +102,25 @@ void srunner_run_all (SRunner *sr, int print_mode)
   if (print_mode < 0 || print_mode >= CRLAST)
     eprintf("Bad print_mode argument to srunner_run_all: %d", print_mode);
 
-  srunner_printf (sr, CRMINIMAL, print_mode,
-		   "Running suite: %s\n", sr->s->name);
+  srunner_open_log (sr);
 
-  tcl = sr->s->tclst;
+  slst = sr->slst;
+
+  for (list_front(slst); !list_at_end(slst); list_advance(slst)) {
+    Suite *s = list_val(slst);
+    
+    srunner_printf (sr, CRMINIMAL, print_mode,
+		    "Running suite: %s\n", s->name);
+
+    tcl = s->tclst;
   
-  for (list_front(tcl);!list_at_end (tcl); list_advance (tcl)) {
-    tc = list_val (tcl);
-    srunner_run_tcase (sr, tc);
+    for (list_front(tcl);!list_at_end (tcl); list_advance (tcl)) {
+      tc = list_val (tcl);
+      srunner_run_tcase (sr, tc);
+    }
   }
-
   srunner_print (sr, print_mode);
+  srunner_close_log (sr);
 }
 
 static void srunner_add_failure (SRunner *sr, TestResult *tr)
@@ -222,14 +242,18 @@ static void srunner_printf (SRunner *sr, int target_mode,
 {
   va_list args;
 
-  if (print_mode >= target_mode) {
-    fflush(stdout);
+  fflush(stdout);
 
-    va_start(args, fmt);
+  va_start(args, fmt);
+  if (print_mode >= target_mode) {
     vfprintf(stdout, fmt, args);
-    va_end(args);
     fflush(stdout);
   }
+  if (srunner_has_log (sr)) {
+    vfprintf(sr->log_file, fmt, args);
+    fflush(sr->log_file);
+  }
+  va_end(args);
 }
 
 void srunner_print (SRunner *sr, int print_mode)
@@ -251,8 +275,6 @@ static void srunner_print_summary (SRunner *sr, int print_mode)
 static void srunner_print_results (SRunner *sr, int print_mode)
 {
   List *resultlst;
-  if (print_mode < CRNORMAL)
-    return;
   
   resultlst = sr->resultlst;
   
@@ -262,6 +284,27 @@ static void srunner_print_results (SRunner *sr, int print_mode)
   }
   return;
 }
+
+static void srunner_open_log (SRunner *sr)
+{
+  if (srunner_has_log (sr)) {
+    sr->log_file = fopen(sr->log_fname, "w");
+    if (sr->log_file == NULL)
+      eprintf ("Could not open log file %s:", sr->log_file);
+  }
+}
+
+static void srunner_close_log (SRunner *sr)
+{
+  int rval;
+  if (sr->log_file != NULL) {
+    rval = fclose (sr->log_file);
+    if (rval == EOF)
+      eprintf ("Failed to close log file %s:", sr->log_fname);
+    sr->log_file = NULL;
+  }
+}
+
 
 int srunner_ntests_failed (SRunner *sr)
 {
@@ -394,3 +437,4 @@ static int non_pass (int val)
 {
   return val == CRFAILURE || val == CRERROR;
 }
+

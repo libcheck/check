@@ -10,8 +10,11 @@ int main (void)
 
   Suite *s;
   SRunner *sr;
-  s = main_make_suite();
+  s = make_master_suite();
   sr = srunner_create (s);
+  srunner_add_suite(sr, make_list_suite());
+  srunner_add_suite(sr, make_msg_suite());
+  srunner_add_suite(sr, make_log_suite());
   
   setup();
   printf ("Ran %d tests in subordinate suite\n", sub_nfailed);
