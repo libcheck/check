@@ -138,22 +138,26 @@ static void pack_str (char **buf, char *val)
     strsz = strlen (val) + 1;
 
   pack_int(buf,strsz);  
-  n = sprintf (*buf, "%s", val);
-
-  *buf += n + 1;
+  if (strsz > 0) {
+    n = sprintf (*buf, "%s", val);
+    *buf += n + 1;
+  }
+  
 }  
 
 static char *upack_str (char **buf)
 {
-  char *val;
+  char *val = NULL;
   int strsz;
 
   val = emalloc (CK_MAXMSG);
   
   strsz = upack_int (buf);
-  
-  strncpy (val, *buf, strsz);
-  *buf += strsz;
+
+  if (strsz > 0) {
+    strncpy (val, *buf, strsz);
+    *buf += strsz;
+  }
 
   return val;
 }
