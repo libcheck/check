@@ -1,3 +1,16 @@
+2001-10-25 23:18  amalec
+
+	* AUTHORS: Update AUTHORS to give credit to key contributors
+
+2001-10-25 23:12  amalec
+
+	* configure, configure.in: Clarified configuration warning on doc
+	building
+
+2001-10-25 22:51  amalec
+
+	* ChangeLog: Updating ChangeLog prior to release
+
 2001-10-25 22:45  amalec
 
 	* src/check_run.c, tests/check_check_pack.c: Fixed some missing
