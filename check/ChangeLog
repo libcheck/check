@@ -1,3 +1,11 @@
+2001-06-27 11:25  amalec
+
+	* configure, rpm/check.spec: Updated check.spec
+
+2001-06-27 11:21  amalec
+
+	* ChangeLog: Update ChangeLog
+
 2001-06-27 11:20  amalec
 
 	* NEWS, configure.in, doc/example.lyx, doc/money/check_money.c,
