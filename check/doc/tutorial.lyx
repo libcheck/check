@@ -242,10 +242,10 @@ How to write a test
 \layout Standard
 
 Test writing using Check is very simple.
- The file in which the checks are defined must import check.h as so:
+ The file in which the checks are defined must include check.h as so:
 \layout Code
 
-#import <check.h>
+#include <check.h>
 \layout Standard
 
 The basic unit test looks as follows:
