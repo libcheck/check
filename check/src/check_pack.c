@@ -24,6 +24,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <stdint.h>
 
 #include "check.h"
 #include "check_error.h"
@@ -31,15 +32,8 @@
 #include "check_impl.h"
 #include "check_pack.h"
 
-
 /* typedef an unsigned int that has at least 4 bytes */
-#if SIZEOF_INT == 4
-typedef unsigned int ck_uint32;
-#elif SIZEOF_SHORT == 4
-typedef unsigned short ck_uint32;
-#else
-typedef unsigned long ck_uint32;
-#endif
+typedef uint32_t ck_uint32;
 
 
 static void  pack_int   (char **buf, int val);

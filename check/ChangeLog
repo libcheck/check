@@ -1,5 +1,6 @@
 2004-08-17 hugo303
 
+	* src/check_pack.c: Use stdint.h for specific sized type.
 	* src/check.c, src/check.h.in, tests/check_check_master.c,
 	tests/check_check_sub.c, ChangeLog
 	Applied varargs patch (#933411) and added test cases.
