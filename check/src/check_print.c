@@ -47,7 +47,7 @@ static void srunner_fprint_summary (FILE *file, SRunner *sr, int print_mode)
     char *str;
 
     str = sr_stat_str (sr);
-    fprintf (file, str);
+    fprintf (file, "%s\n", str);
     free(str);
   }
   return;
@@ -71,7 +71,7 @@ void tr_fprint (FILE *file, TestResult *tr, int print_mode)
   if ((print_mode >= CRVERBOSE && tr->rtype == CRPASS) ||
       (tr->rtype != CRPASS && print_mode >= CRNORMAL)) {
     char *trstr = tr_str (tr);
-    fprintf (file, trstr);
+    fprintf (file,"%s\n", trstr);
     free(trstr);
   }
 }
