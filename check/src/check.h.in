@@ -41,12 +41,13 @@
    with tcase_add_test
 
 
-   Suites are created with suite_create, freed with suite_free; test
-   cases are added with suite_add_tcase
+   Suites are created with suite_create; test cases are added
+   with suite_add_tcase
 
    Suites are run through an SRunner, which is created with
-   srunner_create, freed with srunner_free. Additional suites can be
-   added to an SRunner with srunner_add_suite.
+   srunner_create. Additional suites can be added to an SRunner with
+   srunner_add_suite. An SRunner is freed with srunner_free, which also
+   frees all suites added to the runner. 
 
    Use srunner_run_all to run a suite and print results.
 
@@ -92,26 +93,14 @@ typedef struct Suite Suite;
 */
 Suite *suite_create (const char *name);
 
-/* Free a test suite (For the moment, this also frees all contained
-  test cases) */
-void suite_free (Suite *s);
-
 /* Add a test case to a suite */
 void suite_add_tcase (Suite *s, TCase *tc);
 
 /* Create a test case */
 TCase *tcase_create (const char *name);
 
-/* Free a test case
-
-   (Note that as it stands, one will normally free the contaning
-   suite) */
-void tcase_free (TCase *tc);
-
-
 /* Add a test function to a test case
   (macro version) */
- 
 #define tcase_add_test(tc,tf) _tcase_add_test(tc,tf,"" # tf "")
 
 /* Add a test function to a test case
@@ -196,6 +185,7 @@ enum print_output {
   CK_MINIMAL, /* Only summary output */
   CK_NORMAL, /* All failed tests */
   CK_VERBOSE, /* All tests */
+  CK_ENV, /* Look at environment var */
   CK_LAST
 };
 
@@ -233,7 +223,7 @@ SRunner *srunner_create (Suite *s);
 /* Adds a Suite to an SRunner */
 void srunner_add_suite (SRunner *sr, Suite *s);
 
-/* Frees an SRunner */
+/* Frees an SRunner, all suites added to it and all contained test cases */
 void srunner_free (SRunner *sr);
 
 /* Test running */
