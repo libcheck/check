@@ -30,7 +30,7 @@ Check Tutorial
 Arien Malec
 \layout Date
 
-29 May, 2001
+11 July, 2001
 \layout Standard
 
 
@@ -602,7 +602,7 @@ The code in main bears some explanation.
  Let's rerun make check now: we get the following satisfying output:
 \layout Code
 
-Running suite: Money 
+Running suite(s): Money 
 \layout Code
 
 0%: Checks: 1, Failures: 1, Errors: 0 
@@ -649,7 +649,7 @@ We will now rerun make check and...
  What's this? The output is now as follows:
 \layout Code
 
-Running suite: Money 
+Running suite(s): Money 
 \layout Code
 
 0%: Checks: 1, Failures: 0, Errors: 1 
@@ -881,12 +881,16 @@ START_TEST(test_create)
 { 
 \layout Code
 
-  fail_unless (money_amount(five_dollars) == 5, "Amount not set correctly
- on creation"); 
+   fail_unless (money_amount(five_dollars) == 5,
 \layout Code
 
-  fail_unless (strcmp(money_currency(five_dollars),"USD") == 0, "Currency
- not set correctly on creation"); 
+               "Amount not set correctly on creation"); 
+\layout Code
+
+   fail_unless (strcmp(money_currency(five_dollars),"USD") == 0,
+\layout Code
+
+                "Currency not set correctly on creation"); 
 \layout Code
 
 } 
@@ -894,6 +898,56 @@ START_TEST(test_create)
 
 END_TEST
 \end_deeper 
+\layout Subsection
+
+Multiple suites run through the same SRunner
+\layout Standard
+
+In a large program, it will be convenient to create mutiple suites, each
+ testing a module of the program.
+ While one can create several test programs, each running one Suite, it
+ may be convenient to create one main test program, and use it to run multiple
+ suites.
+ The Check test suite provides an example of how to do this.
+ The main testing program is called check_check, and has a header file that
+ declares suite creation functions for all the module tests:
+\layout Code
+
+Suite *make_sub_suite(void);
+\layout Code
+
+Suite *make_sub2_suite(void);
+\layout Code
+
+Suite *make_master_suite(void);
+\layout Code
+
+Suite *make_list_suite(void);
+\layout Code
+
+Suite *make_msg_suite(void);
+\layout Code
+
+Suite *make_log_suite(void);
+\layout Standard
+
+The function srunner_add_suite is used to add additional suites to an SRunner.
+ Here is the code to setup and run the SRunner in the main function:
+\layout Code
+
+SRunner *sr;
+\layout Code
+
+sr = srunner_create (make_master_suite());
+\layout Code
+
+srunner_add_suite(sr, make_list_suite());
+\layout Code
+
+srunner_add_suite(sr, make_msg_suite());
+\layout Code
+
+srunner_add_suite(sr, make_log_suite()); 
 \layout Subsection
 
 Conclusion

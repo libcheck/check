@@ -1,12 +1,36 @@
-Wed Jun 27, 2001:
-Released Check 0.6.1
-Bug fix for srunner_failures (bad version actually returned all results), added srunner_results to do what srunner_failures used to do, and added corrected unit tests for both.
+Wed Jul 11, 2001:
+Released Check 0.7.0
 
-Also changed the API for reporting the number of failed tests from srunner_nfailed to srunner_ntests_failed, to harmonized better with new function srunner_ntests_run. This unfortunately may break some unit tests slightly -- that's why the major release number is 0 :-)
+Included a primitive logging function (at the moment, it only prints a
+copy of the CRVERBOSE output to the log file), added the ability for
+an SRunner to run multiple suites (and reorganized the Check tests to
+take advantage of that), and added the magic to allow Check to be used
+with C++.
+
+Also added Doxygen markup to the header file, but I'm not terribly
+satisfied withe clarity of the output. I may switch to CWEB... Next
+release should include API docs and improved logging, if nothing else
+comes up...
+
+
+Wed Jun 27, 2001:
+
+Released Check 0.6.1
+
+Bug fix for srunner_failures (bad version actually returned all
+results), added srunner_results to do what srunner_failures used to
+do, and added corrected unit tests for both.
+
+Also changed the API for reporting the number of failed tests from
+srunner_nfailed to srunner_ntests_failed, to harmonized better with
+new function srunner_ntests_run. This unfortunately may break some
+unit tests slightly -- that's why the major release number is 0 :-)
 
 Thu Jun 21, 2001:
 Released Check 0.6.0
-Features improved unit test reporting options, more complete unit tests, and end-to-end test, and a full API into TestResults
+
+Features improved unit test reporting options, more complete unit
+tests, and end-to-end test, and a full API into TestResults
 
 Check 0.5.2
 Minor edits

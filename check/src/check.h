@@ -41,9 +41,11 @@ Suites are created with #suite_create, freed with #suite_free; test cases are ad
 
 \subsection running Running suites
 
-\par Suites are run through an SRunner, which is created with #srunner_create, freed with #srunner_free
+\par
+Suites are run through an SRunner, which is created with #srunner_create, freed with #srunner_free. Additional suites can be added to an SRunner with #srunner_add_suite.
 
-\par Use #srunner_run_all to run a suite and print results.
+\par
+Use #srunner_run_all to run a suite and print results.
 
 */
 
@@ -72,7 +74,7 @@ typedef struct Suite Suite;
   For the moment, test cases can only be run through a suite */
 typedef struct TCase TCase; 
 
-/* type for a test function */
+/*! type for a test function */
 typedef void (*TFun) (int);
 
 /*! type for a setup/teardown function */
@@ -108,7 +110,7 @@ void _tcase_add_test (TCase *tc, TFun tf, char *fname);
    exit or signal (e.g., segfault) */
 void tc_set_fixture(TCase *tc, SFun setup, SFun teardown);
 
-/* Internal functions to mark the start and end of a test function */
+/*! Internal function to mark the start of a test function */
 void tcase_fn_start (int msqid, char *fname, char *file, int line);
 
 /*! Start a unit test with START_TEST(unit_name), end with END_TEST
@@ -124,6 +126,8 @@ void __testname (int __msqid)\
 
 /*! Fail the test case unless result is true */
 #define fail_unless(result,msg) _fail_unless(__msqid,result,__FILE__,__LINE__,msg)
+  
+/*! Non macro version of #fail_unless, with more complicated interface */
 void _fail_unless (int msqid, int result, char *file, int line, char *msg);
 
 /*! Always fail */
@@ -132,6 +136,7 @@ void _fail_unless (int msqid, int result, char *file, int line, char *msg);
 /*! Mark the last point reached in a unit test
    (useful for tracking down where a segfault, etc. occurs */
 #define mark_point() _mark_point(__msqid,__FILE__,__LINE__)
+/*! Non macro version of #mark_point */
 void _mark_point (int msqid, char *file, int line);
 
 /*! @} */
