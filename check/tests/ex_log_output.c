@@ -63,6 +63,7 @@ static void run_tests (int printmode)
   srunner_add_suite(sr, make_s2_suite());
   srunner_set_log(sr, "test.log");
   srunner_run_all(sr, printmode);
+  srunner_free(sr);
 }
 
 static void usage(void)
