@@ -108,13 +108,14 @@ void suite_add_tcase (Suite *s, TCase *tc)
   list_add_end (s->tclst, tc);
 }
 
-void _tcase_add_test (TCase *tc, TFun fn, const char *name)
+void _tcase_add_test (TCase *tc, TFun fn, const char *name, int signal)
 {
   TF * tf;
   if (tc == NULL || fn == NULL || name == NULL)
     return;
   tf = emalloc (sizeof(TF)); /* freed in tcase_free */
   tf->fn = fn;
+  tf->signal = signal; /* 0 means no signal expected */
   tf->name = name;
   list_add_end (tc->tflst, tf);
 }

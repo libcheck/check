@@ -1,3 +1,11 @@
+2004-11-08 hugo303
+
+	* src/check.c, src/check.h.in, src/check_impl.h, src/check_run.c,
+	tests/check_check_master.c, tests/check_check_sub.c:
+	Added support for testing on expected signals. Implementation
+	courtesy of Lucas Di Pentima and Cesar Ballardini. Also cleaned
+	up the test verification to simplify merging of new tests.
+
 2004-11-04 hugo303
 
         * src/check.c, src/check_list.c, src/check_list.h, src/check_log.c,

@@ -64,15 +64,17 @@ static void srunner_add_failure (SRunner *sr, TestResult *tf);
 static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tf);
 static TestResult *tcase_run_tfun_nofork (SRunner *sr, TCase *tc, TF *tf);
 static TestResult *receive_result_info_fork (const char *tcname,
-                                             const char *tname, int status);
+                                             const char *tname,
+					     int status, int expected_signal);
 static TestResult *receive_result_info_nofork (const char *tcname,
                                                const char *tname);
-static void set_fork_info (TestResult *tr, int status);
+static void set_fork_info (TestResult *tr, int status, int expected_signal);
 static void set_nofork_info (TestResult *tr);
 static char *signal_msg (int sig);
+static char *signal_error_msg (int signal_received, int signal_expected);
 static char *pass_msg (void);
 static char *exit_msg (int exitstatus);
-static int waserror (int status);
+static int waserror (int status, int expected_signal);
 
 #define MSG_LEN 100
 
@@ -271,26 +273,25 @@ static void srunner_run_unchecked_teardown (SRunner *sr, TCase *tc)
 
 static void srunner_run_tcase (SRunner *sr, TCase *tc)
 {
-  
-  if (srunner_run_unchecked_setup (sr,tc)) {  
-  
+  if (srunner_run_unchecked_setup(sr,tc)) {
     srunner_iterate_tcase_tfuns(sr,tc);
-  
-    srunner_run_unchecked_teardown (sr, tc);
+    srunner_run_unchecked_teardown(sr, tc);
   }
 }
 
 static TestResult *receive_result_info_fork (const char *tcname,
-                                             const char *tname, int status)
+                                             const char *tname,
+					     int status, int expected_signal)
 {
   TestResult *tr;
 
-  tr = receive_test_result (get_recv_key(), waserror(status));
+  tr = receive_test_result(get_recv_key(),
+                           waserror(status, expected_signal));
   if (tr == NULL)
     eprintf("Failed to receive test result", __FILE__, __LINE__);
   tr->tcname = tcname;
   tr->tname = tname;
-  set_fork_info(tr, status);
+  set_fork_info(tr, status, expected_signal);
 
   return tr;
 }
@@ -310,24 +311,43 @@ static TestResult *receive_result_info_nofork (const char *tcname,
   return tr;
 }
 
-static void set_fork_info (TestResult *tr, int status)
+static void set_fork_info (TestResult *tr, int status, int signal_expected)
 {
   int was_sig = WIFSIGNALED(status);
   int was_exit = WIFEXITED(status);
   int exit_status = WEXITSTATUS(status);
+  int signal_received = WTERMSIG(status);
 
   if (was_sig) {
-    tr->rtype = CK_ERROR;
-    tr->msg = signal_msg(WTERMSIG(status));
-  } else if (was_exit && exit_status == 0) {
-    tr->rtype = CK_PASS;
-    tr->msg = pass_msg();
-  } else if (was_exit && exit_status != 0) {
-    if (tr->msg == NULL) { /* early exit */
+    if (signal_expected == signal_received) {
+      tr->rtype = CK_PASS;
+      tr->msg = pass_msg();
+    } else if (signal_expected != 0) { /* signal received, but no the expected one */
       tr->rtype = CK_ERROR;
+      tr->msg = signal_error_msg(signal_received, signal_expected);
+    } else {                           /* signal received and none expected */
+      tr->rtype = CK_ERROR;
+      tr->msg = signal_msg(signal_received);
+    }
+  } else if (signal_expected == 0) {
+    if (was_exit && exit_status == 0) {
+      tr->rtype = CK_PASS;
+      tr->msg = pass_msg();
+    } else if (was_exit && exit_status != 0) {
+      if (tr->msg == NULL) { /* early exit */
+        tr->rtype = CK_ERROR;
+        tr->msg = exit_msg(exit_status);
+      } else {
+        tr->rtype = CK_FAILURE;
+      }
+    }
+  } else { /* a signal was expected and none raised */
+    if (was_exit) {
       tr->msg = exit_msg(exit_status);
-    } else {
-      tr->rtype = CK_FAILURE;
+      if (exit_status == 0)
+	tr->rtype = CK_FAILURE; /* normal exit status */
+      else
+	tr->rtype = CK_FAILURE; /* early exit */
     }
   }
 }
@@ -364,15 +384,23 @@ static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun)
 
   pid = fork();
   if (pid == -1)
-     eprintf ("Unable to fork:",__FILE__,__LINE__);
+     eprintf("Unable to fork:",__FILE__,__LINE__);
   if (pid == 0) {
-    tcase_run_checked_setup (sr, tc);
+    tcase_run_checked_setup(sr, tc);
     tfun->fn();
-    tcase_run_checked_teardown (tc);
+    tcase_run_checked_teardown(tc);
     exit(EXIT_SUCCESS);
   }
   (void) wait(&status);
-  return receive_result_info_fork (tc->name, tfun->name, status);
+  return receive_result_info_fork(tc->name, tfun->name, status, tfun->signal);
+}
+
+static char *signal_error_msg (int signal_received, int signal_expected)
+{
+  char *msg = emalloc (MSG_LEN); /* free'd by caller */
+  snprintf (msg, MSG_LEN, "Error: Received signal %d, expected %d",
+            signal_received, signal_expected);
+  return msg;
 }
 
 static char *signal_msg (int signal)
@@ -416,11 +444,13 @@ void srunner_set_fork_status (SRunner *sr, enum fork_status fstat)
   sr->fstat = fstat;
 }
 
-static int waserror (int status)
+static int waserror (int status, int signal_expected)
 {
   int was_sig = WIFSIGNALED (status);
   int was_exit = WIFEXITED (status);
   int exit_status = WEXITSTATUS (status);
+  int signal_received = WTERMSIG(status);
 
-  return (was_sig || (was_exit && exit_status != 0));
+  return ((was_sig && (signal_received != signal_expected)) ||
+          (was_exit && exit_status != 0));
 }

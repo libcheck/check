@@ -101,11 +101,14 @@ TCase *tcase_create (const char *name);
 
 /* Add a test function to a test case
   (macro version) */
-#define tcase_add_test(tc,tf) _tcase_add_test(tc,tf,"" # tf "")
+#define tcase_add_test(tc,tf) tcase_add_test_raise_signal(tc,tf,0)
+
+#define tcase_add_test_raise_signal(tc,tf,signal) \
+   _tcase_add_test((tc),(tf),"" # tf "",(signal))
 
 /* Add a test function to a test case
   (function version -- use this when the macro won't work */
-void _tcase_add_test (TCase *tc, TFun tf, const char *fname);
+void _tcase_add_test (TCase *tc, TFun tf, const char *fname, int signal);
 
 /* Add unchecked fixture setup/teardown functions to a test case
 
@@ -183,7 +186,8 @@ void _mark_point (const char *file, int line);
 enum test_result {
   CK_PASS, /* Test passed*/
   CK_FAILURE, /* Test completed but failed */
-  CK_ERROR /* Test failed to complete (signal or non-zero early exit) */
+  CK_ERROR /* Test failed to complete
+	      (unexpected signal or non-zero early exit) */ 
 };
 
 /* Specifies the how much output an SRunner should produce */

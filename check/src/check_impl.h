@@ -36,6 +36,7 @@
 typedef struct TF {
   TFun fn;
   const char *name;
+  int signal;
 } TF;
 
 struct Suite {
