@@ -48,6 +48,8 @@ struct MsgSys
   int msqid;
 };
 
+static int _fstat = CK_FORK;
+
 enum {
   LASTLOCMSG = 1,
   FAILUREMSG = 2
@@ -61,6 +63,10 @@ static int init_key (void);
 static int send_key (void);
 static int recv_key (void);
 
+void set_fork_status (enum fork_status fstat)
+{
+  _fstat = fstat;
+}
 
 static FailureMsg *create_failure_msg (char *msg)
 {
@@ -195,6 +201,7 @@ Loc *receive_last_loc_msg (MsgSys *msgsys)
 {
   LastLocMsg *lmsg;
   Loc *loc;
+  int got_msg = 0;
 
   lmsg = emalloc(sizeof(LastLocMsg)); /* caller responsible for freeing */
   while (1) {
@@ -206,12 +213,18 @@ Loc *receive_last_loc_msg (MsgSys *msgsys)
 	break;
       eprintf ("receive_last_loc_msg:Failed to receive message:");
     }
+    got_msg = 1;
   }
-  loc = emalloc(sizeof(Loc));
-  loc->file = last_loc_file(lmsg);
-  loc->line = last_loc_line(lmsg);
-  free(lmsg);
   
+  if (got_msg) {
+    loc = emalloc(sizeof(Loc));
+    loc->file = last_loc_file(lmsg);
+    loc->line = last_loc_line(lmsg);
+  } else {
+    loc = NULL;
+  }
+  
+  free(lmsg);
   return loc;
 }
   
@@ -242,7 +255,16 @@ int init_key(void)
 
 int send_key(void)
 {
-  return getppid();
+  int key;
+  
+  if (_fstat == CK_FORK)
+    key = (int) getppid();
+  else if (_fstat == CK_NOFORK)
+    key = (int) getpid();
+  else
+    key = -1, eprintf ("Bad _fstat");
+
+  return key;
 }
 
 int recv_key(void)

@@ -30,15 +30,21 @@
 #include "check_msg.h"
 #include "check_log.h"
 
+enum {
+  CK_FORK_UNSPECIFIED = -1
+};
 
 static void srunner_run_init (SRunner *sr, enum print_output print_mode);
 static void srunner_run_end (SRunner *sr, enum print_output print_mode);
 static void srunner_iterate_suites (SRunner *sr,
 				    enum print_output print_mode);
 static void srunner_run_tcase (SRunner *sr, TCase *tc);
+static void srunner_iterate_tcase_tfuns (SRunner *sr, TCase *tc);
 static void srunner_add_failure (SRunner *sr, TestResult *tf);
 static TestResult *tfun_run (char *tcname, TF *tf);
+static TestResult *tfun_run_nofork (char *tcname, TF *tf);
 static TestResult *receive_result_info (MsgSys *msgsys, int status, char *tcname);
+static TestResult *receive_result_info_nofork (MsgSys *msgsys, char *tcname);
 static void receive_last_loc_info (MsgSys *msgsys, TestResult *tr);
 static void receive_failure_info (MsgSys *msgsys, int status, TestResult *tr);
 static List *srunner_resultlst (SRunner *sr);
@@ -58,7 +64,7 @@ SRunner *srunner_create (Suite *s)
   sr->resultlst = list_create();
   sr->log_fname = NULL;
   sr->loglst = NULL;
-  sr->fstat = CK_FORK;
+  sr->fstat = CK_FORK_UNSPECIFIED;
   return sr;
 }
 
@@ -92,15 +98,16 @@ void srunner_free (SRunner *sr)
 
 static void srunner_run_init (SRunner *sr, enum print_output print_mode)
 {
+  set_fork_status(srunner_fork_status(sr));
   srunner_init_logging (sr, print_mode);
   log_srunner_start (sr);
 }
 
 static void srunner_run_end (SRunner *sr, enum print_output print_mode)
 {
-
   log_srunner_end (sr);
   srunner_end_logging (sr);
+  set_fork_status(CK_FORK);  
 }
 
 static void srunner_iterate_suites (SRunner *sr,
@@ -156,26 +163,42 @@ static void srunner_add_failure (SRunner *sr, TestResult *tr)
   }
 }
 
-  
-static void srunner_run_tcase (SRunner *sr, TCase *tc)
+static void srunner_iterate_tcase_tfuns (SRunner *sr, TCase *tc)
 {
   List *tfl;
   TF *tfun;
-  TestResult *tr;
+  TestResult *tr = NULL;
+
+  tfl = tc->tflst;
+  
+  for (list_front(tfl); !list_at_end (tfl); list_advance (tfl)) {
+    tfun = list_val (tfl);
+    switch (srunner_fork_status(sr)) {
+    case CK_FORK:
+      tr = tfun_run (tc->name, tfun);
+      break;
+    case CK_NOFORK:
+      tr = tfun_run_nofork (tc->name, tfun);
+      break;
+    default:
+      eprintf("Bad fork status in SRunner");
+    }
+    srunner_add_failure (sr, tr);
+    log_test_end(sr, tr);
+  }
+}
+  
+static void srunner_run_tcase (SRunner *sr, TCase *tc)
+{
   MsgSys *msgsys;
 
   msgsys = init_msgsys();
 
   if (tc->setup)
     tc->setup();
-  tfl = tc->tflst;
   
-  for (list_front(tfl); !list_at_end (tfl); list_advance (tfl)) {
-    tfun = list_val (tfl);
-    tr = tfun_run (tc->name, tfun);
-    srunner_add_failure (sr, tr);
-    log_test_end(sr, tr);
-  }
+  srunner_iterate_tcase_tfuns(sr,tc);
+  
   if (tc->teardown)
     tc->teardown();
   delete_msgsys();
@@ -185,9 +208,16 @@ static void receive_last_loc_info (MsgSys *msgsys, TestResult *tr)
 {
   Loc *loc;
   loc = receive_last_loc_msg (msgsys);
-  tr->file = loc->file;
-  tr->line = loc->line;
-  free (loc);
+  if (loc == NULL) {
+    char *s = emalloc (strlen ("unknown") + 1);
+    strcpy(s,"unknown");
+    tr->file = s;
+    tr->line = -1;
+  } else {
+    tr->file = loc->file;
+    tr->line = loc->line;
+    free (loc);
+  }
 }  
 
 static void receive_failure_info (MsgSys *msgsys, int status, TestResult *tr)
@@ -231,13 +261,48 @@ static TestResult *receive_result_info (MsgSys *msgsys, int status, char *tcname
 {
   TestResult *tr = emalloc (sizeof(TestResult));
 
-  msgsys = get_recv_msgsys();
   tr->tcname = tcname;
   receive_last_loc_info (msgsys, tr);
   receive_failure_info (msgsys, status, tr);
   return tr;
 }
 
+static TestResult *receive_result_info_nofork (MsgSys *msgsys, char *tcname)
+{
+  /*TODO: lots of overlap with receive_failure_info
+    Find a way to generalize */
+
+  char *fmsg;
+  TestResult *tr = emalloc (sizeof(TestResult));
+
+  tr->tcname = tcname;
+  
+  receive_last_loc_info (msgsys, tr);
+  fmsg = receive_failure_msg (msgsys);
+  
+  if (fmsg == NULL) { /* we got through the procedure */
+    tr->rtype = CRPASS;
+    tr->msg = "Test passed";
+  }
+  else {
+    tr->rtype = CRFAILURE;
+    tr->msg = emalloc(strlen(fmsg) + 1);
+    strcpy (tr->msg, fmsg);
+    free (fmsg);
+  }
+  return tr;
+}
+
+static TestResult *tfun_run_nofork (char *tcname, TF *tfun)
+{
+  MsgSys  *msgsys;
+
+  msgsys = get_recv_msgsys();
+  tfun->fn();
+  return receive_result_info_nofork (msgsys, tcname);
+}
+
+  
 static TestResult *tfun_run (char *tcname, TF *tfun)
 {
   pid_t pid;
@@ -352,7 +417,16 @@ static int non_pass (int val)
 
 enum fork_status srunner_fork_status (SRunner *sr)
 {
-  return sr->fstat;
+  if (sr->fstat == CK_FORK_UNSPECIFIED) {
+    char *env = getenv("CK_FORK");
+    if (env == NULL)
+      return CK_FORK;
+    if (strcmp(env,"no") == 0)
+      return CK_NOFORK;
+    else
+      return CK_FORK;
+  } else
+    return sr->fstat;
 }
 
 void srunner_set_fork_status (SRunner *sr, enum fork_status fstat)

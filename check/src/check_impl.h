@@ -82,12 +82,14 @@ typedef struct Log {
 } Log;
 
 struct SRunner {
-  List *slst;
-  TestStats *stats;
-  List *resultlst;
-  char *log_fname;
-  List *loglst;
-  enum fork_status fstat;
+  List *slst; /* List of Suite objects */
+  TestStats *stats; /* Run statistics */
+  List *resultlst; /* List of unit test results */
+  char *log_fname; /* name of log file */
+  List *loglst; /* list of Log objects */
+  enum fork_status fstat; /* controls if suites are forked or not
+			     NOTE: Don't use this value directly,
+			     instead use srunner_fork_status */
 };
 
 
