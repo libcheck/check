@@ -99,7 +99,7 @@ START_TEST(test_fail_empty)
 END_TEST
 
 START_TEST(test_segv)
-{
+{ /* line 101 */
   raise (SIGSEGV);
 }
 END_TEST
@@ -198,6 +198,10 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_simple, test_fail_vararg_msg_3);
   tcase_add_test (tc_simple, test_fail_empty);
   tcase_add_test (tc_signal, test_segv);
+  tcase_add_test_raise_signal (tc_signal, test_segv, 11); /* pass  */
+  tcase_add_test_raise_signal (tc_signal, test_segv, 8);  /* error */
+  tcase_add_test_raise_signal (tc_signal, test_pass, 8);  /* fail  */
+  tcase_add_test_raise_signal (tc_signal, test_fail, 8);  /* fail  */
   tcase_add_test (tc_signal, test_fpe);
   tcase_add_test (tc_signal, test_mark_point);
   tcase_add_test (tc_limit, test_early_exit);
