@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <check.h>
-#include "error.h"
+
+#include "check.h"
 #include "check_msg.h"
 #include "check_check.h"
 
