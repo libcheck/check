@@ -23,7 +23,7 @@
 #include "list.h"
 #include "check.h"
 #include "check_impl.h"
-#include "check_msg_new.h"
+#include "check_msg.h"
 
 static int non_pass (int val);
 static Fixture *fixture_create (SFun fun, int ischecked);

@@ -1,5 +1,5 @@
-#ifndef CHECK_MSG_H
-#define CHECK_MSG_H
+#ifndef CHECK_MSG_NEW_H
+#define CHECK_MSG_NEW_H
 
 /*
   Check: a unit test framework for C
@@ -22,33 +22,20 @@
 
 /* Functions implementing messaging during test runs */
 
-/* Abstract type for a messaging system
-   Hides the details (IPC msg vs. pipes vs...*/
-typedef struct MsgSys MsgSys;
+void send_failure_info (int key, char *msg);
+void send_loc_info (int key, char *file, int line);
+void send_ctx_info (int key,enum ck_result_ctx ctx);
 
-typedef struct loc 
-{
-  int line;
-  char *file;
-} Loc;
+TestResult *receive_test_result (int key);
 
-void send_failure_msg (MsgSys *msgsys, char *fmsg);
-void send_last_loc_msg (MsgSys *msgsys, char * file, int line);
+void setup_messaging(void);
+int get_send_key(void);
+int get_recv_key(void);
+void teardown_messaging(void);
 
-/* malloc'd return value which caller is responsible for
-   freeing in each of the next two functions */
-char *receive_failure_msg (MsgSys *msgsys);
-Loc *receive_last_loc_msg (MsgSys *msgsys);
+/* for testing only */
+void setup_test_messaging(void);
+int get_test_key(void);
+void teardown_test_messaging(void);
 
-MsgSys *init_msgsys (void);
-void delete_msgsys (void);
-
-MsgSys *get_recv_msgsys (void);
-MsgSys *get_send_msgsys (void);
-
-/* Used externally only for testing */
-MsgSys *create_msgsys_with_key(int key);
-void delete_msgsys_with_key(int key);
-MsgSys *get_msgsys_with_key(int key);
-
-#endif /*CHECK_MSG_H */
+#endif /*CHECK_MSG_NEW_H */

@@ -78,7 +78,6 @@ include_HEADERS = check.h
 libcheck_a_SOURCES = \
 	check.h check_impl.h check.c check_run.c\
 	check_pack.h check_pack.c\
-	check_msg_new.h check_msg_new.c\
 	check_msg.h check_msg.c\
 	check_log.h check_log.c\
 	check_str.h check_str.c\
@@ -97,9 +96,9 @@ LIBRARIES = $(lib_LIBRARIES)
 libcheck_a_AR = $(AR) cru
 libcheck_a_LIBADD =
 am_libcheck_a_OBJECTS = check.$(OBJEXT) check_run.$(OBJEXT) \
-	check_pack.$(OBJEXT) check_msg_new.$(OBJEXT) \
-	check_msg.$(OBJEXT) check_log.$(OBJEXT) check_str.$(OBJEXT) \
-	check_print.$(OBJEXT) error.$(OBJEXT) list.$(OBJEXT)
+	check_pack.$(OBJEXT) check_msg.$(OBJEXT) check_log.$(OBJEXT) \
+	check_str.$(OBJEXT) check_print.$(OBJEXT) error.$(OBJEXT) \
+	list.$(OBJEXT)
 libcheck_a_OBJECTS = $(am_libcheck_a_OBJECTS)
 
 DEFS = @DEFS@
@@ -109,10 +108,10 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 @AMDEP_TRUE@DEP_FILES = $(DEPDIR)/check.Po $(DEPDIR)/check_log.Po \
-@AMDEP_TRUE@	$(DEPDIR)/check_msg.Po $(DEPDIR)/check_msg_new.Po \
-@AMDEP_TRUE@	$(DEPDIR)/check_pack.Po $(DEPDIR)/check_print.Po \
-@AMDEP_TRUE@	$(DEPDIR)/check_run.Po $(DEPDIR)/check_str.Po \
-@AMDEP_TRUE@	$(DEPDIR)/error.Po $(DEPDIR)/list.Po
+@AMDEP_TRUE@	$(DEPDIR)/check_msg.Po $(DEPDIR)/check_pack.Po \
+@AMDEP_TRUE@	$(DEPDIR)/check_print.Po $(DEPDIR)/check_run.Po \
+@AMDEP_TRUE@	$(DEPDIR)/check_str.Po $(DEPDIR)/error.Po \
+@AMDEP_TRUE@	$(DEPDIR)/list.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -177,7 +176,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/check.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/check_log.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/check_msg.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/check_msg_new.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/check_pack.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/check_print.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/check_run.Po@am__quote@

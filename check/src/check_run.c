@@ -27,7 +27,7 @@
 #include "list.h"
 #include "check.h"
 #include "check_impl.h"
-#include "check_msg_new.h"
+#include "check_msg.h"
 #include "check_log.h"
 
 
