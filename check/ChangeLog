@@ -1,3 +1,20 @@
+2001-06-01 08:44  amalec
+
+	* Makefile.in, src/Makefile.in, src/check.c, src/check.h,
+	src/check_impl.h, src/check_msg.c, src/check_msg.h,
+	src/check_run.c, src/error.c, src/error.h, src/list.c, src/list.h,
+	tests/Makefile.in: GNUified source files with copyright notice
+
+2001-06-01 08:33  amalec
+
+	* aclocal.m4, configure, configure.in, doc/Makefile.am,
+	doc/example.lyx: Made building docs conditional on presence of lyx
+	and sgml2html
+
+2001-05-31 15:35  amalec
+
+	* ChangeLog: Update ChangeLog
+
 2001-05-31 15:34  amalec
 
 	* configure.in, doc/Makefile.am: Modified Makefile.am to include
