@@ -27,6 +27,7 @@ void send_loc_info (int key, char *file, int line);
 void send_ctx_info (int key,enum ck_result_ctx ctx);
 
 TestResult *receive_test_result (int key);
+TestResult *new_receive_test_result (int key, int waserror);
 
 void setup_messaging(void);
 int get_send_key(void);

@@ -51,6 +51,9 @@ static int get_setup_key (void);
 static void setup_pipe (Pipe *p);
 static void setup_messaging_with_key (int key);
 static void teardown_messaging_with_key (int key);
+static TestResult *construct_test_result (RcvMsg *rmsg, int waserror);
+static void tr_set_loc_by_ctx (TestResult *tr, enum ck_result_ctx ctx,
+			       RcvMsg *rmsg);
 
 void send_failure_info (int key, char *msg)
 {
@@ -103,6 +106,64 @@ TestResult *receive_test_result (int key)
   close(p->recvfd);
   setup_pipe(p);
   return tr;
+}
+
+TestResult *new_receive_test_result (int key, int waserror)
+{
+  Pipe *p;
+  RcvMsg *rmsg;
+
+  p = get_pipe_by_key(key);
+  if (p == NULL)
+    eprintf("Couldn't find pipe with key %d",__FILE__, __LINE__, key);
+  close(p->sendfd);
+  rmsg = new_punpack(p->recvfd);
+  close(p->recvfd);
+  setup_pipe(p);
+  return construct_test_result (rmsg, waserror);
+}
+
+static void tr_set_loc_by_ctx (TestResult *tr, enum ck_result_ctx ctx,
+			       RcvMsg *rmsg)
+{
+  if (ctx == CK_CTX_TEST) {
+    tr->file = rmsg->test_file;
+    tr->line = rmsg->test_line;
+  } else {
+    tr->file = rmsg->fixture_file;
+    tr->line = rmsg->fixture_line;
+  }
+}
+
+static TestResult *construct_test_result (RcvMsg *rmsg, int waserror)
+{
+  TestResult *tr;
+
+  if (rmsg == NULL)
+    return NULL;
+
+  tr = emalloc (sizeof(TestResult));
+  /*
+    a message with an error message (non null) is assigned to the lastctx
+    if waserror, then assign to the lastctx
+    otherwise assign to the lastctx if it is setup, and to test otherwise
+  */
+  if (rmsg->msg != NULL || waserror) {
+    tr->ctx = rmsg->lastctx;
+    tr->msg = rmsg->msg;
+    tr_set_loc_by_ctx(tr, rmsg->lastctx, rmsg);
+  } else if (rmsg->lastctx == CK_CTX_SETUP) {
+    tr->ctx = CK_CTX_SETUP;
+    tr->msg = NULL;
+    tr_set_loc_by_ctx(tr, CK_CTX_SETUP, rmsg);  
+  } else {
+    tr->ctx = CK_CTX_TEST;
+    tr->msg = NULL;
+    tr_set_loc_by_ctx(tr, CK_CTX_TEST, rmsg);
+  }
+
+  return tr;  
+  
 }
 
 void setup_messaging(void)

@@ -309,6 +309,29 @@ START_TEST(test_ppack_multictx)
 }
 END_TEST
 
+START_TEST(test_ppack_nofail)
+{
+  int filedes[2];
+  CtxMsg cmsg;
+  LocMsg lmsg;
+  RcvMsg *rmsg;
+
+  lmsg.file = "abc123.c";
+  lmsg.line = 10;
+  cmsg.ctx = CK_CTX_SETUP;
+  pipe(filedes);
+  ppack(filedes[1],CK_MSG_CTX, &cmsg);
+  ppack(filedes[1],CK_MSG_LOC, &lmsg);
+  close(filedes[1]);
+  rmsg = new_punpack(filedes[0]);
+
+  fail_unless (rmsg->msg == NULL,
+	       "Failure result should be NULL with no failure message");
+  if (rmsg != NULL)
+    free(rmsg);
+}
+END_TEST
+
 Suite *make_pack_suite(void)
 {
 
@@ -329,6 +352,7 @@ Suite *make_pack_suite(void)
   tcase_add_test(tc_core, test_ppack_noctx);
   tcase_add_test(tc_core, test_ppack_onlyctx);
   tcase_add_test(tc_core, test_ppack_multictx);
+  tcase_add_test(tc_core, test_ppack_nofail);
   suite_add_tcase(s, tc_limit);
   tcase_add_test(tc_limit, test_pack_ctx_limit);
   tcase_add_test(tc_limit, test_pack_fail_limit);

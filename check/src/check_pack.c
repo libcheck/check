@@ -367,6 +367,7 @@ static RcvMsg *rcvmsg_create(void)
 
   rmsg = emalloc (sizeof (RcvMsg));
   rmsg->lastctx = -1;
+  rmsg->msg = NULL;
   reset_rcv_test(rmsg);
   reset_rcv_fixture(rmsg);
   return rmsg;
