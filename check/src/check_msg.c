@@ -48,7 +48,6 @@ struct MsgSys
   int msqid;
 };
 
-static int _fstat = CK_FORK;
 
 enum {
   LASTLOCMSG = 1,
@@ -63,10 +62,6 @@ static int init_key (void);
 static int send_key (void);
 static int recv_key (void);
 
-void set_fork_status (enum fork_status fstat)
-{
-  _fstat = fstat;
-}
 
 static FailureMsg *create_failure_msg (char *msg)
 {
@@ -256,10 +251,13 @@ int init_key(void)
 int send_key(void)
 {
   int key;
+  enum fork_status fstat;
+
+  fstat = cur_fork_status();
   
-  if (_fstat == CK_FORK)
+  if (fstat == CK_FORK)
     key = (int) getppid();
-  else if (_fstat == CK_NOFORK)
+  else if (fstat == CK_NOFORK)
     key = (int) getpid();
   else
     key = -1, eprintf ("Bad _fstat");

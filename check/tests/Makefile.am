@@ -22,6 +22,7 @@ check_check_SOURCES= \
 	check_check_log.c\
 	check_check_limit.c\
 	check_check_fork.c\
+	check_check_fixture.c\
 	check_check_main.c
 
 check_stress_SOURCES=\

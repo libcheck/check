@@ -149,9 +149,10 @@ void _mark_point (char *file, int line);
 
 /* Result of a test */
 enum test_result {
-  CRPASS, /* Test passed*/
-  CRFAILURE, /* Test completed but failed */
-  CRERROR /* Test failed to complete (signal or non-zero early exit) */
+  CK_PASS, /* Test passed*/
+  CK_FAILURE, /* Test completed but failed */
+  CK_ERROR, /* Test failed to complete (signal or non-zero early exit) */
+  CK_FIXTURE /* Failure signaled in fixture setup function */
 };
 
 /* Specifies the how much output an SRunner should produce */
@@ -219,7 +220,8 @@ TestResult **srunner_failures (SRunner *sr);
 
 /* Return an array of results for all run tests
 
-   Number of results is equal to srunner_ntests_run
+   Number of results is equal to srunner_ntests_run, and excludes
+   failures due to setup function failure.
 
    Memory is malloc'ed and must be freed, but individual TestResults
    must not */

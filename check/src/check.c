@@ -25,6 +25,7 @@
 #include "check_impl.h"
 #include "check_msg.h"
 
+static int non_pass (int val);
 
 Suite *suite_create (char *name)
 {
@@ -127,6 +128,136 @@ void _fail_unless (int result, char *file, int line, char * msg)
   send_last_loc_msg (msgsys, file, line);
   if (!result) {
     send_failure_msg (msgsys, msg);
-    exit(1);
+    if (cur_fork_status() == CK_FORK)
+      exit(1);
   }
+}
+
+SRunner *srunner_create (Suite *s)
+{
+  SRunner *sr = emalloc (sizeof(SRunner)); /* freed in srunner_free */
+  sr->slst = list_create();
+  list_add_end(sr->slst, s);
+  sr->stats = emalloc (sizeof(TestStats)); /* freed in srunner_free */
+  sr->stats->n_checked = sr->stats->n_failed = sr->stats->n_errors = 0;
+  sr->resultlst = list_create();
+  sr->log_fname = NULL;
+  sr->loglst = NULL;
+  sr->fstat = CK_FORK_UNSPECIFIED;
+  return sr;
+}
+
+void srunner_add_suite (SRunner *sr, Suite *s)
+{
+  list_add_end(sr->slst, s);
+}
+
+void srunner_free (SRunner *sr)
+{
+  List *l;
+  TestResult *tr;
+  if (sr == NULL)
+    return;
+  
+  free (sr->stats);
+  list_free(sr->slst);
+
+  l = sr->resultlst;
+  for (list_front(l); !list_at_end(l); list_advance(l)) {
+    tr = list_val(l);
+    free(tr->file);
+    if (tr->rtype == CK_FAILURE || tr->rtype == CK_ERROR)
+      free(tr->msg);
+    free(tr);
+  }
+  list_free (sr->resultlst);
+
+  free (sr);
+}
+
+int srunner_ntests_failed (SRunner *sr)
+{
+  return sr->stats->n_failed + sr->stats->n_errors;
+}
+
+int srunner_ntests_run (SRunner *sr)
+{
+  return sr->stats->n_checked;
+}
+
+TestResult **srunner_failures (SRunner *sr)
+{
+  int i = 0;
+  TestResult **trarray;
+  List *rlst;
+  trarray = malloc (sizeof(trarray[0]) * srunner_ntests_failed (sr));
+
+  rlst = sr->resultlst;
+  for (list_front(rlst); !list_at_end(rlst); list_advance(rlst)) {
+    TestResult *tr = list_val(rlst);
+    if (non_pass(tr->rtype))
+      trarray[i++] = tr;
+    
+  }
+  return trarray;
+}
+
+TestResult **srunner_results (SRunner *sr)
+{
+  int i = 0;
+  TestResult **trarray;
+  List *rlst;
+
+  trarray = malloc (sizeof(trarray[0]) * srunner_ntests_run (sr));
+
+  rlst = sr->resultlst;
+  for (list_front(rlst); !list_at_end(rlst); list_advance(rlst)) {
+    trarray[i++] = list_val(rlst);
+  }
+  return trarray;
+}
+
+static int non_pass (int val)
+{
+  return val != CK_PASS;
+}
+
+char *tr_msg (TestResult *tr)
+{
+  return tr->msg;
+}
+
+int tr_lno (TestResult *tr)
+{
+  return tr->line;
+}
+
+char *tr_lfile (TestResult *tr)
+{
+  return tr->file;
+}
+
+int tr_rtype (TestResult *tr)
+{
+  return tr->rtype;
+}
+
+char *tr_tcname (TestResult *tr)
+{
+  return tr->tcname;
+}
+
+static int _fstat = CK_FORK;
+
+void set_fork_status (enum fork_status fstat)
+{
+  if (fstat == CK_FORK || fstat == CK_NOFORK)
+    _fstat = fstat;
+  else
+    eprintf ("Bad status in set_fork_status");
+}
+
+enum fork_status cur_fork_status (void)
+{
+  return _fstat;
 }

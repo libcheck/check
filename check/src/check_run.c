@@ -30,71 +30,27 @@
 #include "check_msg.h"
 #include "check_log.h"
 
-enum {
-  CK_FORK_UNSPECIFIED = -1
-};
 
 static void srunner_run_init (SRunner *sr, enum print_output print_mode);
 static void srunner_run_end (SRunner *sr, enum print_output print_mode);
 static void srunner_iterate_suites (SRunner *sr,
 				    enum print_output print_mode);
 static void srunner_run_tcase (SRunner *sr, TCase *tc);
+static int srunner_run_setup (SRunner *sr, TCase *tc, MsgSys *msgsys);
 static void srunner_iterate_tcase_tfuns (SRunner *sr, TCase *tc);
 static void srunner_add_failure (SRunner *sr, TestResult *tf);
 static TestResult *tfun_run (char *tcname, TF *tf);
 static TestResult *tfun_run_nofork (char *tcname, TF *tf);
 static TestResult *receive_result_info (MsgSys *msgsys, int status, char *tcname);
 static TestResult *receive_result_info_nofork (MsgSys *msgsys, char *tcname);
+static TestResult *receive_result_info_setup (MsgSys *msgsys, char *tcname);
 static void receive_last_loc_info (MsgSys *msgsys, TestResult *tr);
 static void receive_failure_info (MsgSys *msgsys, int status, TestResult *tr);
-static List *srunner_resultlst (SRunner *sr);
 
 static char *signal_msg (int sig);
 static char *exit_msg (int exitstatus);
-static int non_pass (int val);
 
 
-SRunner *srunner_create (Suite *s)
-{
-  SRunner *sr = emalloc (sizeof(SRunner)); /* freed in srunner_free */
-  sr->slst = list_create();
-  list_add_end(sr->slst, s);
-  sr->stats = emalloc (sizeof(TestStats)); /* freed in srunner_free */
-  sr->stats->n_checked = sr->stats->n_failed = sr->stats->n_errors = 0;
-  sr->resultlst = list_create();
-  sr->log_fname = NULL;
-  sr->loglst = NULL;
-  sr->fstat = CK_FORK_UNSPECIFIED;
-  return sr;
-}
-
-void srunner_add_suite (SRunner *sr, Suite *s)
-{
-  list_add_end(sr->slst, s);
-}
-
-void srunner_free (SRunner *sr)
-{
-  List *l;
-  TestResult *tr;
-  if (sr == NULL)
-    return;
-  
-  free (sr->stats);
-  list_free(sr->slst);
-
-  l = sr->resultlst;
-  for (list_front(l); !list_at_end(l); list_advance(l)) {
-    tr = list_val(l);
-    free(tr->file);
-    if (tr->rtype == CRFAILURE || tr->rtype == CRERROR)
-      free(tr->msg);
-    free(tr);
-  }
-  list_free (sr->resultlst);
-
-  free (sr);
-}
 
 static void srunner_run_init (SRunner *sr, enum print_output print_mode)
 {
@@ -147,18 +103,23 @@ void srunner_run_all (SRunner *sr, enum print_output print_mode)
 }
 
 static void srunner_add_failure (SRunner *sr, TestResult *tr)
-{
-  sr->stats->n_checked++;
+{  
   list_add_end (sr->resultlst, tr);
   switch (tr->rtype) {
     
-  case CRPASS:
+  case CK_PASS:
+    sr->stats->n_checked++;
     return;
-  case CRFAILURE:
+  case CK_FAILURE:
+    sr->stats->n_checked++;
     sr->stats->n_failed++;
     return;
-  case CRERROR:
+  case CK_ERROR:
+    sr->stats->n_checked++;
     sr->stats->n_errors++;
+    return;
+  case CK_FIXTURE:
+    sr->stats->n_failed++;
     return;
   }
 }
@@ -187,20 +148,41 @@ static void srunner_iterate_tcase_tfuns (SRunner *sr, TCase *tc)
     log_test_end(sr, tr);
   }
 }
+
+static int srunner_run_setup (SRunner *sr, TCase *tc, MsgSys *msgsys)
+{
+  TestResult *tr;
+
+  set_fork_status(CK_NOFORK);
   
+  if (tc->setup)
+    tc->setup();
+
+  tr = receive_result_info_setup (msgsys, tc->name);
+
+  set_fork_status(srunner_fork_status(sr));
+  if (tr->rtype == CK_PASS) {
+    return 1;
+  } else {
+    srunner_add_failure(sr, tr);
+    return 0;
+  }
+  
+}
+
 static void srunner_run_tcase (SRunner *sr, TCase *tc)
 {
   MsgSys *msgsys;
 
   msgsys = init_msgsys();
 
-  if (tc->setup)
-    tc->setup();
+  if (srunner_run_setup (sr,tc,msgsys)) {  
   
-  srunner_iterate_tcase_tfuns(sr,tc);
+    srunner_iterate_tcase_tfuns(sr,tc);
   
-  if (tc->teardown)
-    tc->teardown();
+    if (tc->teardown)
+      tc->teardown();
+  }
   delete_msgsys();
 }
 
@@ -225,7 +207,7 @@ static void receive_failure_info (MsgSys *msgsys, int status, TestResult *tr)
   char *fmsg;
 
   if (WIFSIGNALED(status)) {
-    tr->rtype = CRERROR;
+    tr->rtype = CK_ERROR;
     tr->msg = signal_msg (WTERMSIG(status));
     return;
   }
@@ -233,7 +215,7 @@ static void receive_failure_info (MsgSys *msgsys, int status, TestResult *tr)
   if (WIFEXITED(status)) {
     
     if (WEXITSTATUS(status) == 0) {
-      tr->rtype = CRPASS;
+      tr->rtype = CK_PASS;
       /* TODO: It would be cleaner to strdup this &
 	 not special case the free...*/
       tr->msg = "Test passed";
@@ -242,11 +224,11 @@ static void receive_failure_info (MsgSys *msgsys, int status, TestResult *tr)
       
       fmsg = receive_failure_msg (msgsys);
       if (fmsg == NULL) { /* implies early exit */
-	tr->rtype = CRERROR;
+	tr->rtype = CK_ERROR;
 	tr->msg =  exit_msg (WEXITSTATUS(status));
       }
       else {
-	tr->rtype = CRFAILURE;
+	tr->rtype = CK_FAILURE;
 	tr->msg = emalloc(strlen(fmsg) + 1);
 	strcpy (tr->msg, fmsg);
 	free (fmsg);
@@ -281,17 +263,44 @@ static TestResult *receive_result_info_nofork (MsgSys *msgsys, char *tcname)
   fmsg = receive_failure_msg (msgsys);
   
   if (fmsg == NULL) { /* we got through the procedure */
-    tr->rtype = CRPASS;
+    tr->rtype = CK_PASS;
     tr->msg = "Test passed";
   }
   else {
-    tr->rtype = CRFAILURE;
+    tr->rtype = CK_FAILURE;
     tr->msg = emalloc(strlen(fmsg) + 1);
     strcpy (tr->msg, fmsg);
     free (fmsg);
   }
   return tr;
 }
+
+static TestResult *receive_result_info_setup (MsgSys *msgsys, char *tcname)
+{
+  /*TODO: lots of overlap with receive_failure_info
+    Find a way to generalize */
+
+  char *fmsg;
+  TestResult *tr = emalloc (sizeof(TestResult));
+
+  tr->tcname = tcname;
+  
+  receive_last_loc_info (msgsys, tr);
+  fmsg = receive_failure_msg (msgsys);
+  
+  if (fmsg == NULL) { /* we got through the procedure */
+    tr->rtype = CK_PASS;
+    tr->msg = "Test passed";
+  }
+  else {
+    tr->rtype = CK_FIXTURE;
+    tr->msg = emalloc(strlen(fmsg) + 1);
+    strcpy (tr->msg, fmsg);
+    free (fmsg);
+  }
+  return tr;
+}
+
 
 static TestResult *tfun_run_nofork (char *tcname, TF *tfun)
 {
@@ -322,79 +331,6 @@ static TestResult *tfun_run (char *tcname, TF *tfun)
   return receive_result_info(msgsys, status, tcname);
 }
 
-int srunner_ntests_failed (SRunner *sr)
-{
-  return sr->stats->n_failed + sr->stats->n_errors;
-}
-
-int srunner_ntests_run (SRunner *sr)
-{
-  return sr->stats->n_checked;
-}
-
-TestResult **srunner_failures (SRunner *sr)
-{
-  int i = 0;
-  TestResult **trarray;
-  List *rlst;
-  trarray = malloc (sizeof(trarray[0]) * srunner_ntests_failed (sr));
-
-  rlst = srunner_resultlst (sr);
-  for (list_front(rlst); !list_at_end(rlst); list_advance(rlst)) {
-    TestResult *tr = list_val(rlst);
-    if (non_pass(tr->rtype))
-      trarray[i++] = tr;
-    
-  }
-  return trarray;
-}
-
-TestResult **srunner_results (SRunner *sr)
-{
-  int i = 0;
-  TestResult **trarray;
-  List *rlst;
-
-  trarray = malloc (sizeof(trarray[0]) * srunner_ntests_run (sr));
-
-  rlst = srunner_resultlst (sr);
-  for (list_front(rlst); !list_at_end(rlst); list_advance(rlst)) {
-    trarray[i++] = list_val(rlst);
-  }
-  return trarray;
-}
-
-static List *srunner_resultlst (SRunner *sr)
-{
-  return sr->resultlst;
-}
-
-char *tr_msg (TestResult *tr)
-{
-  return tr->msg;
-}
-
-int tr_lno (TestResult *tr)
-{
-  return tr->line;
-}
-
-char *tr_lfile (TestResult *tr)
-{
-  return tr->file;
-}
-
-int tr_rtype (TestResult *tr)
-{
-  return tr->rtype;
-}
-
-char *tr_tcname (TestResult *tr)
-{
-  return tr->tcname;
-}
-
-
 static char *signal_msg (int signal)
 {
   char *msg = emalloc (CMAXMSG); /* free'd by caller */
@@ -408,11 +344,6 @@ static char *exit_msg (int exitval)
   snprintf(msg, CMAXMSG,
 	   "Early exit with return value %d", exitval);
   return msg;
-}
-
-static int non_pass (int val)
-{
-  return val == CRFAILURE || val == CRERROR;
 }
 
 enum fork_status srunner_fork_status (SRunner *sr)

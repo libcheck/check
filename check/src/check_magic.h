@@ -27,8 +27,8 @@
 /* magic values */
 
 enum {
-  MAXLINE = 9999, /* maximum line no */
-  CMAXMSG = 100   /* maximum length of a message, including terminating nul */
+  CK_MAXLINE = 9999, /* maximum line no */
+  CK_MAXMSG = 100   /* maximum length of a message, including terminating nul */
 };
 
 #endif /*CHECK_MAGIC_H*/

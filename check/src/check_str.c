@@ -32,7 +32,7 @@ char *tr_str (TestResult *tr)
   char *exact_msg;
   char *rstr;
   
-  exact_msg = (tr->rtype == CRERROR) ? "(after this point) ": "";
+  exact_msg = (tr->rtype == CK_ERROR) ? "(after this point) ": "";
   rstr = emalloc(CMAXMSG);
   
   snprintf (rstr, CMAXMSG, "%s:%d:%s:%s: %s%s",
@@ -61,14 +61,17 @@ char *sr_stat_str (SRunner *sr)
 static char *rtype_str (int rtype)
 {
   switch (rtype) {
-  case CRPASS:
+  case CK_PASS:
     return "P";
     break;
-  case CRFAILURE:
+  case CK_FAILURE:
     return "F";
     break;
-  case CRERROR:
+  case CK_ERROR:
     return "E";
+    break;
+  case CK_FIXTURE:
+    return "S";
     break;
   default:
     eprintf("Bad argument %d to rtype_to_string", rtype);

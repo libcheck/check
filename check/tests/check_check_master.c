@@ -82,16 +82,16 @@ START_TEST(test_check_failure_ftypes)
 {
   int i;
   int ftypes[] = {
-    CRFAILURE,
-    CRERROR,
+    CK_FAILURE,
+    CK_ERROR,
     /* CRPASS, */
-    CRFAILURE,
-    CRERROR,
-    CRERROR,
-    CRERROR,
-    CRERROR,
-    CRFAILURE,
-    CRFAILURE};
+    CK_FAILURE,
+    CK_ERROR,
+    CK_ERROR,
+    CK_ERROR,
+    CK_ERROR,
+    CK_FAILURE,
+    CK_FAILURE};
   
   for (i = 0; i < sub_nfailed; i++) {
     fail_unless (ftypes[i] == tr_rtype(tr_fail_array[i]),
@@ -172,16 +172,16 @@ START_TEST(test_check_all_ftypes)
 {
   int i;
   int ftypes[] = {
-    CRFAILURE,
-    CRERROR,
-    CRPASS,
-    CRFAILURE,
-    CRERROR,
-    CRERROR,
-    CRERROR,
-    CRERROR,
-    CRFAILURE,
-    CRFAILURE};
+    CK_FAILURE,
+    CK_ERROR,
+    CK_PASS,
+    CK_FAILURE,
+    CK_ERROR,
+    CK_ERROR,
+    CK_ERROR,
+    CK_ERROR,
+    CK_FAILURE,
+    CK_FAILURE};
   
   for (i = 0; i < sub_ntests; i++) {
     fail_unless (ftypes[i] == tr_rtype(tr_all_array[i]),

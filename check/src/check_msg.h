@@ -41,7 +41,6 @@ void send_last_loc_msg (MsgSys *msgsys, char * file, int line);
 char *receive_failure_msg (MsgSys *msgsys);
 Loc *receive_last_loc_msg (MsgSys *msgsys);
 
-void set_fork_status(enum fork_status fstat);
 MsgSys *init_msgsys (void);
 void delete_msgsys (void);
 

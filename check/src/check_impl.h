@@ -28,8 +28,11 @@
 /* magic values */
 
 enum {
-  MAXLINE = 9999, /* maximum line no */
-  CMAXMSG = 100   /* maximum length of a message, including terminating nul */
+  MAXLINE = 9999 , /* maximum line no */
+  CMAXMSG = 100, /* maximum length of a message, including terminating
+		    nul */
+  CK_FORK_UNSPECIFIED = -1 /* Unspecified fork status, used only
+			      internally */
 };
 
 typedef struct TF {
@@ -56,7 +59,7 @@ typedef struct TestStats {
 } TestStats;
 
 struct TestResult {
-  int rtype;     /* Type of result */
+  enum test_result rtype;     /* Type of result */
   char *file;    /* File where the test occured */
   int line;      /* Line number where the test occurred */
   char *tcname;  /* Test case that generated the result */
@@ -92,5 +95,8 @@ struct SRunner {
 			     instead use srunner_fork_status */
 };
 
+
+void set_fork_status(enum fork_status fstat);
+enum fork_status cur_fork_status (void);
 
 #endif /* CHECK_IMPL_H */
