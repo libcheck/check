@@ -44,6 +44,7 @@ static void run_tests (int printmode)
   s = make_suite();
   sr = srunner_create(s);
   srunner_run_all(sr, printmode);
+  srunner_free(sr);
 }
 
 int main (int argc, char **argv)
