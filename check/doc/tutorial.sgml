@@ -159,10 +159,14 @@ check_money_INCLUDES= @CHECK_CFLAGS@
 check_money_LIBS= @CHECK_LIBS@
    </programlisting>
    <para>
-Special mumbojumbo to use in configure.in is:
+Special mumbo jumbo to use in configure.in is:
    </para>
    <programlisting>
+AC_INIT()
+AM_INIT_AUTOMAKE()
+AC_PROG_CC
 AM_PATH_CHECK()
+AC_OUTPUT(Makefile)
    </programlisting>
    <para>
 This will ensure that things link up properly with Check by defining the appropriate compiler and linker flags as CHECK_CFLAGS and CHECK_LIBS. It also makes sure that we can only compile in an environment that has Check. The money.h header should only contain the standard &num;ifndef MONEY_H stuff, money.c should be empty, and check_money.c should only contain an empty main function. Run this with make -k check, after going through the setups to get autoconf and friends working. If all goes well, make should report that our tests passed. No surprise, because there aren't any tests to fail.
@@ -174,6 +178,28 @@ The AM_PATH_CHECK() macro is defined in the file check.m4 which is installed by 
 AM_PATH_CHECK([MINIMUM-VERSION,[ACTION-IF-FOUND[,ACTION-IF-NOT-FOUND]]])
    </programlisting>
 
+   <para>
+One way to run the autoconf/automake tools is shown below in a simple
+shell script. The variable CHECK_DIR should point to the directory
+where check.m4 is installed. If you install it in a standard location,
+e.g. /usr/share/aclocal, then you won't need the variable defined.
+   </para>
+   <programlisting>
+#!/bin/sh
+if [ -n "$CHECK_DIR" ]; then
+    aclocal -I $CHECK_DIR
+else
+    aclocal
+fi
+autoconf
+autoheader
+automake --add-missing
+   </programlisting>
+   <para>
+This shell script and the above configure.in were run on a Red Hat 9
+box with Autoconf version 2.13 and automake (GNU automake) 1.4-p6. As
+the saying goes, &quot;Your mileage may vary...&quot;
+   </para>
    </section>
 
    <section>
@@ -272,6 +298,17 @@ To run unit tests with Check, we must create some test cases, aggregate them int
    <programlisting>
 #include &lt;stdlib.h&gt;
 #include &lt;check.h&gt;
+#include &quot;money.h&quot;
+
+START_TEST (test_create)
+{
+    Money *m;
+    m = money_create(5, "USD");
+    fail_unless(money_amount(m) == 5, "Amount not set correctly on creation");
+    fail_unless(strcmp(money_currency(m), "USD") == 0, "Currency not set correctly on creation");
+    money_free(m);
+}
+END_TEST
 
 Suite *money_suite (void) 
 { 
