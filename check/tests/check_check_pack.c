@@ -162,6 +162,7 @@ START_TEST(test_pack_fail_limit)
   buf = emalloc (CK_MAXMSGBUF);
   fmsg.msg = "";
   pack(CK_MSG_FAIL,buf,&fmsg);
+  fmsg.msg = "abc";
   upack(buf,&fmsg,&type);
   fail_unless (strcmp(fmsg.msg, "") == 0, "Empty string not handled properly");
   free(fmsg.msg);
@@ -182,6 +183,7 @@ START_TEST(test_pack_loc_limit)
   lmsg.file = "";
   lmsg.line = 0;
   pack(CK_MSG_LOC,buf,&lmsg);
+  lmsg.file = "abc";
   upack(buf,&lmsg,&type);
   fail_unless (strcmp(lmsg.file, "") == 0,
 	       "Empty string not handled properly");
