@@ -1,3 +1,18 @@
+2001-06-04 10:08  amalec
+
+	* doc/Makefile.am, doc/example.lyx, rpm/check.spec: Cleaned up spec
+	file for RPM packaging
+
+2001-06-03 16:50  amalec
+
+	* Makefile.am, Makefile.in, configure, configure.in,
+	doc/Makefile.am, rpm/check.spec: Added RPM spec file and added
+	additional documentation files
+
+2001-06-01 08:46  amalec
+
+	* ChangeLog: Updated ChangeLog
+
 2001-06-01 08:44  amalec
 
 	* Makefile.in, src/Makefile.in, src/check.c, src/check.h,
