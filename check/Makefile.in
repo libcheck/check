@@ -64,6 +64,8 @@ MAKEINFO = @MAKEINFO@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
+have_lyx = @have_lyx@
+have_sgmltools = @have_sgmltools@
 
 SUBDIRS = src tests doc
 
