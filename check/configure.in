@@ -17,12 +17,9 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_RANLIB
-AC_CHECK_PROG(have_lyx,lyx,yes)
-if test x"$have_lyx" != "xyes" ; then
-	AC_MSG_WARN([couldn't find lyx, not building docs])
-fi
+CK_LYX_LINUXDOC([have_lyx="yes"],[have_lyx="no"])
 AC_CHECK_PROG(have_sgmltools,sgml2html,yes)
-if test x"$have_sgmltools" != "xyes" ; then
+if test x"$have_sgmltools" != "xyes" -o x"$have_lyx" != "xyes" ; then
 	AC_MSG_WARN([couldn't find sgml2html, not building docs])
 fi
 AM_CONDITIONAL(MAKE_DOC, test x"$have_lyx" = "xyes" -a x"$have_sgmltools" = "xyes" )
@@ -47,4 +44,6 @@ AC_OUTPUT(Makefile
 	  src/Makefile
 	  tests/Makefile
 	  doc/Makefile
-	  rpm/Makefile)
+	  doc/money/Makefile
+	  rpm/Makefile
+	  debian/Makefile)

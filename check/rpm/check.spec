@@ -49,27 +49,18 @@ rm -rf ${RPM_BUILD_ROOT}
 %doc %{_prefix}/share/doc/%{name}-%{version}/example.html
 %doc %{_prefix}/share/doc/%{name}-%{version}/example.lyx
 %doc %{_prefix}/share/doc/%{name}-%{version}/example.sgml 
-%dir %{_prefix}/share/doc/%{name}-%{version}/money
-%doc %{_prefix}/share/doc/%{name}-%{version}/money/money.h
-%doc %{_prefix}/share/doc/%{name}-%{version}/money/money.c
-%{_prefix}/share/doc/%{name}-%{version}/money/check_money.c
-%doc %{_prefix}/share/doc/%{name}-%{version}/money/aclocal.m4
-%doc %{_prefix}/share/doc/%{name}-%{version}/money/configure.in
-%doc %{_prefix}/share/doc/%{name}-%{version}/money/Makefile.am
-%doc %{_prefix}/share/doc/%{name}-%{version}/money/Makefile.in
-%doc %{_prefix}/share/doc/%{name}-%{version}/money/configure
-%doc %{_prefix}/share/doc/%{name}-%{version}/money/README
-%doc %{_prefix}/share/doc/%{name}-%{version}/money/AUTHORS
-%doc %{_prefix}/share/doc/%{name}-%{version}/money/COPYING
-%doc %{_prefix}/share/doc/%{name}-%{version}/money/INSTALL
-%doc %{_prefix}/share/doc/%{name}-%{version}/money/ChangeLog
-%doc %{_prefix}/share/doc/%{name}-%{version}/money/NEWS
-%doc %{_prefix}/share/doc/%{name}-%{version}/money/stamp-h.in
-%doc %{_prefix}/share/doc/%{name}-%{version}/money/config.h.in
+%dir %{_prefix}/share/doc/%{name}-%{version}/examples
+%doc %{_prefix}/share/doc/%{name}-%{version}/examples/money.h
+%doc %{_prefix}/share/doc/%{name}-%{version}/examples/money.c
+%doc %{_prefix}/share/doc/%{name}-%{version}/examples/check_money.c
+%doc %{_prefix}/share/doc/%{name}-%{version}/examples/configure.in.money
+%doc %{_prefix}/share/doc/%{name}-%{version}/examples/Makefile.am.money
 
 %changelog
 * Mon Aug 6 2001 Arien Malec <arien_malec@yahoo.com>
 - Updated for 0.7.2
+- Moved money example files to example subdirectory, and removed some
+  confusing files
 * Tue Jul 30 2001 Arien Malec <arien_malec@yahoo.com>
 - Updated for 0.7.1
 * Tue Jul 10 2001 Arien Malec <arien_malec@yahoo.com>

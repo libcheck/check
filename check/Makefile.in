@@ -64,7 +64,6 @@ MAKEINFO = @MAKEINFO@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
-have_lyx = @have_lyx@
 have_sgmltools = @have_sgmltools@
 @PLAIN_DOCDIR_TRUE@DOCROOTDIR = $(prefix)/share/doc/$(PACKAGE)
 @PLAIN_DOCDIR_FALSE@DOCROOTDIR = $(prefix)/share/doc/${PACKAGE}-${VERSION}
@@ -72,9 +71,9 @@ docdir = $(DOCROOTDIR)
 
 doc_DATA = ChangeLog ChangeLogOld NEWS README COPYING
 
-SUBDIRS = src tests doc rpm
+SUBDIRS = src tests doc rpm debian
 
-EXTRA_DIST = ChangeLogOld debian debian/*
+EXTRA_DIST = ChangeLogOld
 
 CLEANFILES = *~ 	${PACKAGE}-${VERSION}*.gz 	${PACKAGE}-${VERSION}*.rpm 	ChangeLog.bak
 
@@ -289,7 +288,6 @@ distdir: $(DISTFILES)
 	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
 	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu Makefile
-	$(mkinstalldirs) $(distdir)/debian
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \

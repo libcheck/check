@@ -7,7 +7,7 @@ Standards-Version: 3.5.2
 
 Package: check
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: 
 Description: A unit test framework for C
  Check is a unit test framework for C. It features a simple interface
  for defining unit tests, putting little in the way of the

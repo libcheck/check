@@ -1,0 +1,15 @@
+Document: check-tutorial
+Title: Check Tutorial
+Author: Arien Malec
+Abstract: This document presents a tutorial introduction to the use of Check.
+Section: Apps/Programming
+     
+Format: lyx
+Files: /usr/share/doc/check/example.lyx.gz
+
+Format: linuxdoc-sgml
+Files: /usr/share/doc/check/example.sgml.gz
+
+Format: HTML
+Index: /usr/share/doc/check/example.html
+Files: /usr/share/doc/check/example*.html

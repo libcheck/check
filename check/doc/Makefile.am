@@ -3,9 +3,9 @@ DOCROOTDIR=$(prefix)/share/doc/$(PACKAGE)
 else
 DOCROOTDIR=$(prefix)/share/doc/${PACKAGE}-${VERSION}
 endif
-# Fake out automake to make the money subdirectory...
-afakedir = $(DOCROOTDIR)/money
 docdir = $(DOCROOTDIR)
+
+SUBDIRS=money
 
 SUFFIXES = .sgml
 %.sgml: %.lyx
@@ -23,33 +23,13 @@ html_docs =\
 	example-3.html\
 	example-4.html
 
-example_docs =\
-	money\
-	money/aclocal.m4\
-	money/check_money.c\
-	money/configure.in\
-	money/INSTALL\
-	money/money.c\
-	money/README\
-	money/AUTHORS\
-	money/config.h.in\
-	money/COPYING\
-	money/Makefile.am\
-	money/money.h\
-	money/stamp-h.in\
-	money/ChangeLog\
-	money/configure\
-	money/Makefile.in\
-	money/NEWS
 
-EXTRA_DIST = $(lyx_docs) $(example_docs)
-
-afake_DATA =
+EXTRA_DIST = $(lyx_docs)
 
 if MAKE_DOC
-doc_DATA = $(lyx_docs) $(sgml_docs) $(html_docs) $(example_docs)
+doc_DATA = $(lyx_docs) $(sgml_docs) $(html_docs)
 else
-doc_DATA = $(lyx_docs) $(example_docs)
+doc_DATA = $(lyx_docs)
 endif
 
 CLEANFILES = $(sgml_docs) $(html_docs) *.*~

@@ -7,9 +7,9 @@ docdir = $(DOCROOTDIR)
 
 doc_DATA = ChangeLog ChangeLogOld NEWS README COPYING
 
-SUBDIRS=src tests doc rpm
+SUBDIRS=src tests doc rpm debian
 
-EXTRA_DIST= ChangeLogOld debian debian/*
+EXTRA_DIST= ChangeLogOld
 
 CLEANFILES=*~\
 	${PACKAGE}-${VERSION}*.gz\
