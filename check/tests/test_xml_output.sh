@@ -41,9 +41,9 @@ expected="<?xml version=\"1.0\"?>
 </testsuites>"
 
 ./ex_xml_output > /dev/null
-actual=`cat test.log.xml | grep -v duration | grep -v datetime`
+actual=`cat test.log.xml | grep -v \<duration\> | grep -v \<datetime\> | grep -v \<path\>`
 if [ x"${expected}" != x"${actual}" ]; then
-    echo "Problem with ex_log_output ${3}";
+    echo "Problem with ex_xml_output ${3}";
     echo "Expected:";
     echo "${expected}";
     echo "Got:";

@@ -95,6 +95,9 @@ void tr_fprint (FILE *file, TestResult *tr, enum print_output print_mode)
 void tr_xmlprint (FILE *file, TestResult *tr, enum print_output print_mode)
 {
   char result[10];
+  char *path_name;
+  char *file_name;
+  char *slash;
 
   switch (tr->rtype) {
   case CK_PASS:
@@ -107,12 +110,29 @@ void tr_xmlprint (FILE *file, TestResult *tr, enum print_output print_mode)
     strcpy(result, "error");
     break;
   }
+
+  slash = strrchr(tr->file, '/');
+  if (slash == NULL) {
+    path_name = (char*)".";
+    file_name = tr->file;
+  } else {
+    path_name = strdup(tr->file);
+    path_name[slash - tr->file] = 0; /* Terminate the temporary string. */
+    file_name = slash + 1;
+  }
+    
+
   fprintf(file, "    <test result=\"%s\">\n", result);
-  fprintf(file, "      <fn>%s:%d</fn>\n", tr->file, tr->line);
+  fprintf(file, "      <path>%s</path>\n", path_name);
+  fprintf(file, "      <fn>%s:%d</fn>\n", file_name, tr->line);
   fprintf(file, "      <id>%s</id>\n", tr->tname);
   fprintf(file, "      <description>%s</description>\n", tr->tcname);
   fprintf(file, "      <message>%s</message>\n", tr->msg);
   fprintf(file, "    </test>\n");
+  
+  if (slash != NULL) {
+    free(path_name);
+  }
 }
 
 enum print_output get_env_printmode (void)
