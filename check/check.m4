@@ -2,7 +2,7 @@ dnl AM_PATH_CHECK([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
 dnl Test for check, and define CHECK_CFLAGS and CHECK_LIBS
 dnl
 
-AC_DEFUN(AM_PATH_CHECK,
+AC_DEFUN([AM_PATH_CHECK],
 [
   AC_ARG_WITH(check,
   [  --with-check=PATH       prefix where check is installed [default=auto]])
