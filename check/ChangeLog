@@ -1,3 +1,14 @@
+2001-06-21 17:36  amalec
+
+	* src/check.h, src/check_run.c, tests/Makefile.am,
+	tests/Makefile.in, tests/check_check.c, tests/ex_output.c,
+	tests/test_output.sh: Changed test output, added end-to-end test,
+	and removed redundant field from TestResult struct
+
+2001-06-19 13:01  amalec
+
+	* ChangeLog: Update changelog
+
 2001-06-19 12:59  amalec
 
 	* src/check.h, src/check_run.c, tests/check_check.c: Added
