@@ -449,13 +449,12 @@ static char *signal_error_msg (int signal_received, int signal_expected)
 
 static char *signal_msg (int signal)
 {
-  char *msg = emalloc (MSG_LEN); /* free'd by caller */
+  char *msg = emalloc(MSG_LEN); /* free'd by caller */
   if (alarm_received) {
-    snprintf (msg, MSG_LEN, "Test timeout expired",
-              signal, strsignal(signal));
+    snprintf(msg, MSG_LEN, "Test timeout expired");
   } else {
-    snprintf (msg, MSG_LEN, "Received signal %d (%s)",
-              signal, strsignal(signal));
+    snprintf(msg, MSG_LEN, "Received signal %d (%s)",
+             signal, strsignal(signal));
   }
   return msg;
 }
