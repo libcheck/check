@@ -1,4 +1,4 @@
-Mon, May 17, 2004: Released Check 0.8.5
+Mon, May 17, 2004: Released Check 0.9.0
 
 Run fixture teardowns in reverse order to setup
 Plugged some memory leaks.
@@ -10,8 +10,8 @@ Updated documentation and converted to DocBook.
 Added a new print mode, CK_ENV, that gets the print mode from the
 environment variable CK_VERBOSITY.
 
-Made tcase_free and suite_free static. Everything is now freed when
-srunner_free is called.
+Made tcase_free and suite_free static. This may break existing test
+programs. Everything is now freed when srunner_free is called.
 
 
 Mon Oct 21, 2002: Released Check 0.8.4
