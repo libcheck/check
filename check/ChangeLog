@@ -1,3 +1,31 @@
+2001-07-30 13:10  amalec
+
+	* doc/Makefile.in, tests/ex_log_output.c: Add neglected files
+
+2001-07-30 13:08  amalec
+
+	* src/Makefile.am, src/Makefile.in, src/check_impl.h,
+	src/check_log.c, src/check_log.h, src/check_print.c,
+	src/check_print.h, src/check_run.c, tests/test_log_output.sh:
+	Reorganized printing and logging functions and implemented more
+	sophisticated logging
+
+2001-07-25 14:26  amalec
+
+	* Makefile.in, aclocal.m4, config.h.in, configure,
+	doc/money/aclocal.m4, doc/money/config.h.in, doc/money/configure,
+	src/Makefile.in, tests/Makefile.in, tests/test_log_output.sh: Added
+	log tests
+
+2001-07-11 13:46  amalec
+
+	* NEWS, README, doc/example.lyx, rpm/check.spec, src/check.h,
+	tests/check_check_log.c, tests/check_check_main.c: Updated docs
+
+2001-07-10 16:29  amalec
+
+	* ChangeLog: Update ChangeLog
+
 2001-07-10 16:28  amalec
 
 	* src/Makefile.in, src/check_log.c, tests/check_check.h,
