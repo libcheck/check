@@ -14,13 +14,15 @@ TestResult **tr_all_array;
 
 START_TEST(test_check_nfailures)
 {
-  fail_unless (sub_nfailed == 12, "Unexpected number of failures received");
+  fail_unless (sub_nfailed == 16,
+               "Unexpected number of failures received, %d.", sub_nfailed);
 }
 END_TEST
 
 START_TEST(test_check_ntests_run)
 {
-  fail_unless (sub_ntests == 14, "Unexpected number of tests run");
+  fail_unless (sub_ntests == 18,
+               "Unexpected number of tests run, %d.", sub_ntests);
 }
 END_TEST
 
@@ -34,7 +36,11 @@ START_TEST(test_check_failure_msgs)
     "This test should fail",
     /*    "Test passed", */
     "This test should fail",
-    "Assertion '2==3' failed",
+    "Assertion '2 == 3' failed",
+    "Assertion '2 != 3' failed",
+    "3 != 4",
+    "5 != 6",
+    "7 == 7",
     "Received signal 11",
     "Received signal 8",
     "Received signal 8",
@@ -71,6 +77,10 @@ START_TEST(test_check_failure_lnos)
     -1,
     -1,
     -1,
+    -1,
+    -1,
+    -1,
+    -1,
     -1};
   
   for (i = 0; i < sub_nfailed; i++) {
@@ -92,6 +102,10 @@ START_TEST(test_check_failure_ftypes)
   int ftypes[] = {
     CK_FAILURE,
     CK_ERROR,
+    CK_FAILURE,
+    CK_FAILURE,
+    CK_FAILURE,
+    CK_FAILURE,
     CK_FAILURE,
     CK_FAILURE,
     CK_FAILURE,
@@ -132,6 +146,10 @@ START_TEST(test_check_failure_tcnames)
     "Simple Tests",
     "Simple Tests",
     "Simple Tests",
+    "Simple Tests",
+    "Simple Tests",
+    "Simple Tests",
+    "Simple Tests",
     "Signal Tests",
     "Signal Tests",
     "Signal Tests",
@@ -164,7 +182,11 @@ START_TEST(test_check_all_msgs)
     "This test should fail",
     "Passed",
     "This test should fail",
-    "Assertion '2==3' failed",
+    "Assertion '2 == 3' failed",
+    "Assertion '2 != 3' failed",
+    "3 != 4",
+    "5 != 6",
+    "7 == 7",
     "Received signal 11",
     "Received signal 8",
     "Received signal 8",
@@ -195,6 +217,10 @@ START_TEST(test_check_all_ftypes)
     CK_PASS,
     CK_FAILURE,
     CK_PASS,
+    CK_FAILURE,
+    CK_FAILURE,
+    CK_FAILURE,
+    CK_FAILURE,
     CK_FAILURE,
     CK_FAILURE,
     CK_ERROR,

@@ -23,6 +23,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 #include "check.h"
 #include "check_error.h"
@@ -168,14 +169,21 @@ void _mark_point (const char *file, int line)
   send_loc_info (get_send_key(), file, line);
 }
 
-void _fail_unless (int result, const char *file, int line, const char * msg)
+void _fail_unless (int result, const char *file,
+                   int line, const char * msg, ...)
 {
   if (msg == NULL)
     eprintf ("_fail_unless() called with NULL msg",__FILE__,__LINE__);
 
   send_loc_info (get_send_key(), file, line);
   if (!result) {
-    send_failure_info (get_send_key(), msg);
+    va_list ap;
+    char buf[BUFSIZ];
+
+    va_start(ap,msg);
+    vsnprintf(buf, BUFSIZ, msg, ap);
+    va_end(ap);
+    send_failure_info (get_send_key(), buf);
     if (cur_fork_status() == CK_FORK)
       exit(1);
   }

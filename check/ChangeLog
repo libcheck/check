@@ -1,5 +1,8 @@
 2004-08-17 hugo303
 
+	* src/check.c, src/check.h.in, tests/check_check_master.c,
+	tests/check_check_sub.c, ChangeLog
+	Applied varargs patch (#933411) and added test cases.
 	* src/check.h.in tests/check_check_master.c tests/check_check_sub.c:
 	Applied fail_if (#709167) patch.
 

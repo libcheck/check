@@ -155,18 +155,21 @@ static void __testname (void)\
 
 
 /* Fail the test case unless expr is true */
-#define fail_unless(expr,msg)\
- _fail_unless(expr,__FILE__,__LINE__, msg ? msg : "Assertion '"#expr"' failed")
+#define fail_unless(expr, msg, args...)\
+        _fail_unless(expr, __FILE__, __LINE__,\
+        msg ? msg : "Assertion '"#expr"' failed", ##args)
 
 /* Fail the test case if expr is true */
-#define fail_if(expr, msg)\
- _fail_unless(!(expr),__FILE__,__LINE__,msg ?msg :"Assertion '"#expr"' failed")
-
-/* Non macro version of #fail_unless, with more complicated interface */
-void _fail_unless (int result, const char *file, int line, const char *msg);
+#define fail_if(expr, msg, args...)\
+        _fail_unless(!(expr), __FILE__, __LINE__,\
+        msg ?msg :"Assertion '"#expr"' failed", ##args)
 
 /* Always fail */
-#define fail(msg) _fail_unless(0,__FILE__,__LINE__,msg)
+#define fail(msg, args...) _fail_unless(0, __FILE__, __LINE__, msg, ##args)
+
+/* Non macro version of #fail_unless, with more complicated interface */
+void _fail_unless (int result, const char *file,
+                   int line, const char *msg, ...);
 
 /* Mark the last point reached in a unit test
    
