@@ -116,7 +116,7 @@ void list_advance (List *lp)
 
 void list_apply (List *lp, void (*fp) (void *))
 {
-  if (lp == NULL && fp == NULL)
+  if (lp == NULL || fp == NULL)
     return;
 
   for (list_front(lp); !list_at_end(lp); list_advance(lp))
