@@ -44,12 +44,23 @@ typedef struct FailMsg
   char *msg;
 } FailMsg;
 
+typedef struct RcvMsg
+{
+  enum ck_result_ctx lastctx;
+  char *fixture_file;
+  int fixture_line;
+  char *test_file;
+  int test_line;
+  char *msg;
+} RcvMsg;
+
   
 int pack (enum ck_msg_type type, char *buf, void *data);
 int upack (char *buf, void *data, enum ck_msg_type *type);
 
 void ppack (int fdes, enum ck_msg_type type, void *data);
 TestResult *punpack(int fdes);
+RcvMsg *new_punpack(int fdes);
 
 
 #endif /*CHECK_PACK_H */

@@ -47,6 +47,9 @@ static void pack_type (char **buf, enum ck_msg_type type);
 
 static int read_buf (int fdes, char **buf);
 static int get_result (char *buf, TestResult *tr);
+static void rcvmsg_update_ctx(RcvMsg *rmsg, enum ck_result_ctx ctx);
+static void rcvmsg_update_loc(RcvMsg *rmsg, char *file, int line);
+static RcvMsg *rcvmsg_create(void);
 
 typedef void (*pfun) (char **, void *);
 
@@ -291,6 +294,34 @@ static int get_result (char *buf, TestResult *tr)
   
 }
 
+static int new_get_result (char *buf, RcvMsg *rmsg)
+{
+  enum ck_msg_type type;
+  void *data;
+  int n;
+
+  data = emalloc(CK_MAXMSGBUF);
+  
+  n = upack(buf,data,&type);
+  
+  if (type == CK_MSG_CTX) {
+    CtxMsg *cmsg = data;
+    rcvmsg_update_ctx(rmsg, cmsg->ctx);
+  } else if (type == CK_MSG_LOC) {
+    LocMsg *lmsg = data;
+    rcvmsg_update_loc(rmsg, lmsg->file, lmsg->line);
+  } else if (type == CK_MSG_FAIL) {      
+    FailMsg *fmsg = data;
+    rmsg->msg = emalloc (strlen(fmsg->msg) + 1);
+    strcpy(rmsg->msg, fmsg->msg);
+  } else
+    check_type(type, __FILE__, __LINE__);
+
+  free(data);
+  return n;
+  
+}
+
 
 TestResult *punpack(int fdes)
 {
@@ -318,3 +349,74 @@ TestResult *punpack(int fdes)
   return tr;
 }
 
+static void reset_rcv_test (RcvMsg *rmsg)
+{
+  rmsg->test_line = -1;
+  rmsg->test_file = NULL;
+}
+
+static void reset_rcv_fixture (RcvMsg *rmsg)
+{
+  rmsg->fixture_line = -1;
+  rmsg->fixture_file = NULL;
+}
+
+static RcvMsg *rcvmsg_create(void)
+{
+  RcvMsg *rmsg;
+
+  rmsg = emalloc (sizeof (RcvMsg));
+  rmsg->lastctx = -1;
+  reset_rcv_test(rmsg);
+  reset_rcv_fixture(rmsg);
+  return rmsg;
+}
+
+static void rcvmsg_update_ctx(RcvMsg *rmsg, enum ck_result_ctx ctx)
+{
+  if (rmsg->lastctx != -1)
+    reset_rcv_fixture(rmsg);
+
+  rmsg->lastctx = ctx;
+}
+
+static void rcvmsg_update_loc (RcvMsg *rmsg, char *file, int line)
+{
+  int flen = strlen(file);
+  
+  if (rmsg->lastctx == CK_CTX_TEST) {
+    rmsg->test_line = line;
+    rmsg->test_file = emalloc(flen + 1);
+    strcpy(rmsg->test_file, file);
+  } else {
+    rmsg->fixture_line = line;
+    rmsg->fixture_file = emalloc(flen + 1);
+    strcpy(rmsg->fixture_file, file);
+  }
+}
+  
+RcvMsg *new_punpack(int fdes)
+{
+  int nread, n;
+  char *buf;
+  char *obuf;
+  RcvMsg *rmsg;
+
+  nread = read_buf (fdes, &buf);
+  obuf = buf;
+  rmsg = rcvmsg_create();
+  
+  while (nread > 0) {
+    n = new_get_result(buf, rmsg);
+    nread -= n;
+    buf += n;
+  }
+
+  free(obuf);
+  if (rmsg->lastctx == -1) {
+    free (rmsg);
+    rmsg = NULL;
+  }
+
+  return rmsg;
+}

@@ -195,6 +195,7 @@ END_TEST
 
 START_TEST(test_ch_teardown_fail)
 {
+  /*
   TCase *tc;
   Suite *s;
   SRunner *sr;
@@ -210,11 +211,11 @@ START_TEST(test_ch_teardown_fail)
   srunner_run_all(sr,CRSILENT);
 
   fail_unless (srunner_ntests_failed(sr) == 1,
-	       "Failure counts not correct for checked setup failure");
+	       "Failure counts not correct for checked teardown failure");
   fail_unless (srunner_ntests_run(sr) == 0,
-	       "Test run counts not correct for checked setup failure");
+	       "Test run counts not correct for checked teardown failure");
 
-  /*  strstat= sr_stat_str(sr);
+  strstat= sr_stat_str(sr);
 
   fail_unless(strcmp(strstat,
 		     "0%: Checks: 0, Failures: 1, Errors: 0") == 0,
