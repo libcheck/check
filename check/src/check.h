@@ -106,20 +106,37 @@ void tcase_free (TCase *tc);
   (function version -- use this when the macro won't work */
 void _tcase_add_test (TCase *tc, TFun tf, char *fname);
 
+/* Add unchecked fixture setup/teardown functions to a test case
+
+   If unchecked fixture functions are run at the start and end of the
+   test case, and not before and after unit tests. Note that unchecked
+   setup/teardown functions are not run in a separate address space,
+   like test functions, and so must not exit or signal (e.g.,
+   segfault)
+
+   Also, when run in CK_NOFORK mode, unchecked fixture functions may
+   lead to different unit test behavior IF unit tests change data
+   setup by the fixture functions.
+*/
+void tcase_add_unchecked_fixture (TCase *tc, SFun setup, SFun teardown);
+
 /* Add fixture setup/teardown functions to a test case
 
-   If ischecked, fixture functions are run in the same address space
-   as the unit tests, once per unit test. If the tests are run
-   CK_NOFORK, they are still run before and after each unit test.
+   Checked fixture functions are run before and after unit
+   tests. Unlike unchecked fixture functions, checked fixture
+   functions are run in the same separate address space as the test
+   program, and thus the test function will survive signals or
+   unexpected exits in the fixture function. Also, IF the setup
+   function is idempotent, unit test behavior will be the same in
+   CK_FORK and CK_NOFORK modes.
 
-   If not ischecked, fixture functions are run at the start and end of
-   the test case, and not before and after unit tests. Note that
-   unchecked setup/teardown functions are not run in a separate
-   address space, like test functions, and so must not exit or signal
-   (e.g., segfault)
+   However, since fixture functions are run before and after each unit
+   test, they should not be expensive code.
 
 */
-void tcase_add_fixture (TCase *tc, SFun setup, SFun teardown, int ischecked);
+ 
+void tcase_add_checked_fixture (TCase *tc, SFun setup, SFun teardown);
+  
  
 /* Internal function to mark the start of a test function */
 void tcase_fn_start (char *fname, char *file, int line);

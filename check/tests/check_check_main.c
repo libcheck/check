@@ -17,6 +17,7 @@ int main (void)
   srunner_add_suite(sr, make_limit_suite());
   srunner_add_suite(sr, make_fork_suite());
   srunner_add_suite(sr, make_fixture_suite());
+  srunner_add_suite(sr, make_pack_suite());
   
   setup();
   printf ("Ran %d tests in subordinate suite\n", sub_nfailed);

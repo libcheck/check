@@ -27,6 +27,9 @@
 
 static int non_pass (int val);
 static Fixture *fixture_create (SFun fun, int ischecked);
+static void tcase_add_fixture (TCase *tc, SFun setup, SFun teardown,
+			       int ischecked);
+
 
 Suite *suite_create (char *name)
 {
@@ -113,8 +116,18 @@ static Fixture *fixture_create (SFun fun, int ischecked)
   return f;
 }
 
-  
-void tcase_add_fixture (TCase *tc, SFun setup, SFun teardown, int ischecked)
+void tcase_add_unchecked_fixture (TCase *tc, SFun setup, SFun teardown)
+{
+  tcase_add_fixture(tc,setup,teardown,0);
+}
+
+void tcase_add_checked_fixture (TCase *tc, SFun setup, SFun teardown)
+{
+  tcase_add_fixture (tc,setup,teardown,1);
+}
+
+static void tcase_add_fixture (TCase *tc, SFun setup, SFun teardown,
+			       int ischecked)
 {
   if (setup) {
     if (ischecked)

@@ -19,5 +19,6 @@ Suite *make_log_suite(void);
 Suite *make_limit_suite(void);
 Suite *make_fork_suite(void);
 Suite *make_fixture_suite(void);
+Suite *make_pack_suite(void);
 
 #endif /* CHECK_CHECK_H */

@@ -33,7 +33,7 @@ Suite *make_limit_suite (void)
   TCase *tc = tcase_create("Empty");
 
   tcase_add_test(tc,test_summary);
-  tcase_add_fixture(tc,limit_setup,limit_teardown, 0);
+  tcase_add_unchecked_fixture(tc,limit_setup,limit_teardown);
   
   suite_add_tcase(s, tc);
 

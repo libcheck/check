@@ -20,7 +20,7 @@ void setup_fixture (void)
   
   fixture_s = suite_create("Fix Sub");
   tc = tcase_create("Core");
-  tcase_add_fixture(tc, fixture_sub_setup, NULL, 0);
+  tcase_add_unchecked_fixture(tc, fixture_sub_setup, NULL);
   suite_add_tcase (fixture_s, tc);
   fixture_sr = srunner_create(fixture_s);
   srunner_run_all(fixture_sr,CRSILENT);

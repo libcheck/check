@@ -58,7 +58,7 @@ Suite *make_msg_suite (void)
   TCase *tc;
   s = suite_create("Msg");
   tc = tcase_create("Core Tests");
-  tcase_add_fixture(tc, msg_setup, msg_teardown, 0);
+  tcase_add_unchecked_fixture(tc, msg_setup, msg_teardown);
   tcase_add_test(tc, test_send_failure);
   tcase_add_test(tc, test_send_lastloc);
   suite_add_tcase(s, tc);

@@ -1,5 +1,5 @@
-#ifndef CHECK_MAGIC_H
-#define CHECK_MAGIC_H
+#ifndef CHECK_PACK_H
+#define CHECK_PACK_H
 
 /*
   Check: a unit test framework for C
@@ -20,17 +20,37 @@
   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-/* This header should be included by any module that needs
-   to know Check magic values.
-*/
-
-/* magic values */
-
-enum {
-  CK_MAXLINE = 9999, /* maximum line no */
-  CK_MAXMSG = 100,   /* maximum length of a message, including
-			terminating nul */
-  CK_MAXMSGBUF = 200 /* maximum length of a message buffer */
+enum ck_msg_type {
+  CK_MSG_CTX,
+  CK_MSG_FAIL,
+  CK_MSG_LOC,
+  CK_MSG_LAST
 };
 
-#endif /*CHECK_MAGIC_H*/
+enum ck_msg_context {
+  CK_CTX_SETUP,
+  CK_CTX_TEST,
+  CK_CTX_TEARDOWN
+};
+
+typedef struct CtxMsg
+{
+  enum ck_msg_context ctx;
+} CtxMsg;
+
+typedef struct LocMsg 
+{
+  int line;
+  char *file;
+} LocMsg;
+
+typedef struct FailMsg
+{
+  char *msg;
+} FailMsg;
+
+  
+int pack (enum ck_msg_type type, char *buf, void *data);
+enum ck_msg_type upack (char *buf, void *data);
+
+#endif /*CHECK_PACK_H */

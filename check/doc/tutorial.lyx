@@ -53,7 +53,7 @@ Introduction
 Check is a unit testing framework for C.
  It was inspired by similar frameworks that currently exist for most programming
  languages; the most famous example being JUnit for Java (
-\begin_inset LatexCommand \htmlurl[www.junit.com]{www.junit.com}
+\begin_inset LatexCommand \htmlurl[www.junit.org]{http://www.junit.org}
 
 \end_inset 
 

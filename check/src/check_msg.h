@@ -21,7 +21,6 @@
 */
 
 /* Functions implementing messaging during test runs */
-/* check.h must be included before this header */
 
 /* Abstract type for a messaging system
    Hides the details (IPC msg vs. pipes vs...*/

@@ -237,7 +237,8 @@ Suite *make_master_suite (void)
   tcase_add_test (tc_core, test_check_failure_tcnames);
   tcase_add_test (tc_core, test_check_all_msgs);
   tcase_add_test (tc_core, test_check_all_ftypes);
-  tcase_add_fixture(tc_fixture, test_fixture_setup, test_fixture_teardown, 0);
+  tcase_add_unchecked_fixture(tc_fixture, test_fixture_setup,
+			      test_fixture_teardown);
   /* add the test 3 times to make sure we adequately test
      preservation of fixture values across tests, regardless
      of the order in which tests are added to the test case */
