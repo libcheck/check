@@ -1,3 +1,14 @@
+2001-07-30 18:08  amalec
+
+	* NEWS, configure, configure.in, doc/example.lyx, rpm/buildrpm.sh,
+	rpm/check.spec, tests/Makefile.am, tests/Makefile.in,
+	tests/ex_log_output.c, tests/test_log_output.sh: Update NEWS, docs,
+	and rpm building
+
+2001-07-30 13:10  amalec
+
+	* ChangeLog: Update ChangeLog
+
 2001-07-30 13:10  amalec
 
 	* doc/Makefile.in, tests/ex_log_output.c: Add neglected files
