@@ -1,5 +1,10 @@
 2004-11-09 hugo303
 
+	* src/check_run.c, tests/check_check_master.c: Use strsignal
+	to print describing text for signals.
+
+2004-11-09 hugo303
+
 	* doc/tutorial.sgml: Documented signals handling and timeouts.
 
 2004-11-09 hugo303
