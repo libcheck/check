@@ -19,9 +19,10 @@
  */
 
 #include <sys/types.h>
-#include "unistd.h"
-#include "stdlib.h"
-#include "stdio.h"
+#include <unistd.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <stdio.h>
 #include "list.h"
 #include "check_error.h"
 #include "check.h"
@@ -242,11 +243,21 @@ static void setup_pipe (Pipe *p)
 {
   int fd[2];
 
-  pipe(fd);
+  pipe (fd);
+
   p->sendfd = fd[1];
   p->recvfd = fd[0];
+
+  /* 
+   *  Make the pipe nonblocking so we don't block when too many
+   *  messages are sent while the other end of the pipe waits for the
+   *  test to exit (see bug #482012).  This doesn't solve our problem,
+   *  but it makes it more obvious what is happening since instead of
+   *  blocking the test exits with "Resource temporarily unavailable".
+   */
+  fcntl (p->sendfd, F_SETFL, O_NONBLOCK);
 }
-      
+
 void setup_messaging_with_key (MsgKey *key)
 {
   PipeEntry *pe;
