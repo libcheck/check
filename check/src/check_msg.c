@@ -18,14 +18,17 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include "config.h"
+
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <fcntl.h>
 #include <stdio.h>
-#include "list.h"
+
 #include "check_error.h"
 #include "check.h"
+#include "check_list.h"
 #include "check_impl.h"
 #include "check_msg.h"
 #include "check_pack.h"

@@ -18,8 +18,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef LIST_H
-#define LIST_H
+#ifndef CHECK_LIST_H
+#define CHECK_LIST_H
 
 typedef struct List List;
 
@@ -49,4 +49,4 @@ void list_free (List * lp);
 void list_apply (List *lp, void (*fp) (void *));
 
 
-#endif /*LIST_H*/
+#endif /* CHECK_LIST_H */

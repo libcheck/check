@@ -18,12 +18,13 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include "config.h"
+
 #include <stdio.h>
 #include <stdarg.h>
 
-#include <check.h>
-
-#include "list.h"
+#include "check.h"
+#include "check_list.h"
 #include "check_error.h"
 #include "check_impl.h"
 #include "check_str.h"

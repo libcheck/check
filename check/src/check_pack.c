@@ -25,9 +25,9 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "list.h"
-#include "check_error.h"
 #include "check.h"
+#include "check_error.h"
+#include "check_list.h"
 #include "check_impl.h"
 #include "check_pack.h"
 

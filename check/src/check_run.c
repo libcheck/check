@@ -18,6 +18,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include "config.h"
+
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -25,9 +27,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
-#include "check_error.h"
-#include "list.h"
+
 #include "check.h"
+#include "check_error.h"
+#include "check_list.h"
 #include "check_impl.h"
 #include "check_msg.h"
 #include "check_log.h"
