@@ -21,6 +21,7 @@
 #include "config.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "check_list.h"
 #include "check_error.h"
