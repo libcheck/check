@@ -33,10 +33,29 @@
 #include "check_msg.h"
 #include "check_pack.h"
 
+
+/* 'Pipe' is implemented as a temporary file to overcome message
+ * volume limitations outlined in bug #482012. This scheme works well
+ * with the existing usage wherein the parent does not begin reading
+ * until the child has done writing and exited.
+ *
+ * Pipe life cycle:
+ * - The parent creates a tmpfile().
+ * - The fork() call has the effect of duplicating the file descriptor
+ *   and copying (on write) the FILE* data structures.
+ * - The child writes to the file, and its dup'ed file descriptor and
+ *   data structures are cleaned up on child process exit.
+ * - Before reading, the parent rewind()'s the file to reset both
+ *   FILE* and underlying file descriptor location data.
+ * - When finished, the parent fclose()'s the FILE*, deleting the
+ *   temporary file, per tmpfile()'s semantics.
+ *
+ * This scheme may break down if the usage changes to asynchronous
+ * reading and writing.
+ */
 typedef struct Pipe 
 {
-  int sendfd;
-  int recvfd;
+  FILE *fp;
 } Pipe;
 
 typedef struct PipeEntry
@@ -68,7 +87,7 @@ void send_failure_info (MsgKey key, const char *msg)
   p = get_pipe_by_key (key);
   if (p == NULL)
     eprintf ("Couldn't find pipe with key %d",__FILE__, __LINE__, key);
-  ppack (p->sendfd, CK_MSG_FAIL, (CheckMsg *) &fmsg);
+  ppack (fileno(p->fp), CK_MSG_FAIL, (CheckMsg *) &fmsg);
 }
 
 void send_loc_info (MsgKey key, const char * file, int line)
@@ -81,7 +100,7 @@ void send_loc_info (MsgKey key, const char * file, int line)
   p = get_pipe_by_key (key);
   if (p == NULL)
     eprintf ("Couldn't find pipe with key %d",__FILE__, __LINE__, key);
-  ppack (p->sendfd, CK_MSG_LOC, (CheckMsg *) &lmsg);
+  ppack (fileno(p->fp), CK_MSG_LOC, (CheckMsg *) &lmsg);
 }
 
 void send_ctx_info (MsgKey key,enum ck_result_ctx ctx)
@@ -94,7 +113,7 @@ void send_ctx_info (MsgKey key,enum ck_result_ctx ctx)
   if (p == NULL)
     eprintf ("Couldn't find pipe with key %d",__FILE__, __LINE__, key);
 
-  ppack (p->sendfd, CK_MSG_CTX, (CheckMsg *) &cmsg);
+  ppack (fileno(p->fp), CK_MSG_CTX, (CheckMsg *) &cmsg);
 }
 
 TestResult *receive_test_result (MsgKey key, int waserror)
@@ -106,9 +125,9 @@ TestResult *receive_test_result (MsgKey key, int waserror)
   p = get_pipe_by_key (key);
   if (p == NULL)
     eprintf ("Couldn't find pipe with key %d",__FILE__, __LINE__, key);
-  close (p->sendfd);
-  rmsg = punpack (p->recvfd);
-  close (p->recvfd);
+  rewind(p->fp);
+  rmsg = punpack (fileno(p->fp));
+  fclose (p->fp);
   setup_pipe (p);
 
   result = construct_test_result (rmsg, waserror);
@@ -247,21 +266,7 @@ static Pipe *get_pipe_by_key (MsgKey key)
 
 static void setup_pipe (Pipe *p)
 {
-  int fd[2];
-
-  pipe (fd);
-
-  p->sendfd = fd[1];
-  p->recvfd = fd[0];
-
-  /* 
-   *  Make the pipe nonblocking so we don't block when too many
-   *  messages are sent while the other end of the pipe waits for the
-   *  test to exit (see bug #482012).  This doesn't solve our problem,
-   *  but it makes it more obvious what is happening since instead of
-   *  blocking the test exits with "Resource temporarily unavailable".
-   */
-  fcntl (p->sendfd, F_SETFL, O_NONBLOCK);
+  p->fp = tmpfile();
 }
 
 static void setup_messaging_with_key (MsgKey key)

@@ -41,7 +41,7 @@ START_TEST(test_send_big)
   setup_test_messaging();
   send_ctx_info(get_test_key(),CK_CTX_SETUP);
   send_loc_info(get_test_key(),"abc123.c", 10);
-  for (i = 0; i < 10; i++) {
+  for (i = 0; i < 10000; i++) {
     send_ctx_info(get_test_key(),CK_CTX_TEST);
     send_loc_info(get_test_key(),"abc124.c", i);
   }
