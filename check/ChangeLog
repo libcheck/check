@@ -1,3 +1,9 @@
+2004-08-18 hugo303
+
+	* src/check_run.c, tests/check_check_fixture.c: Fixed setup bug
+	from forum, failure in setup did not abort test in nofork mode.
+	Added test cases for bug.
+
 2004-08-17 hugo303
 
 	* src/check_pack.c: Use stdint.h for specific sized type.

@@ -144,9 +144,15 @@ static void teardown_sub_signal(void)
   raise(SIGFPE);
 }
 
+START_TEST(test_sub_fail)
+{
+  fail("Should never run");
+}
+END_TEST
+
 START_TEST(test_sub_pass)
 {
-  ; /*pass*/
+  fail_unless(1 == 1, "Always pass");
 }
 END_TEST
 
@@ -161,15 +167,15 @@ START_TEST(test_ch_setup_fail)
   s = suite_create("Setup Fail");
   tc = tcase_create("Core");
   suite_add_tcase(s, tc);
-  tcase_add_test(tc,test_sub_pass);
+  tcase_add_test(tc,test_sub_fail);
   tcase_add_checked_fixture(tc,setup_sub_fail, NULL);
   sr = srunner_create(s);
   srunner_run_all(sr,CK_SILENT);
 
-  fail_unless (srunner_ntests_failed(sr) == 1,
-	       "Failure counts not correct for checked setup failure");
   fail_unless (srunner_ntests_run(sr) == 0,
 	       "Test run counts not correct for checked setup failure");
+  fail_unless (srunner_ntests_failed(sr) == 1,
+	       "Failure counts not correct for checked setup failure");
 
   strstat= sr_stat_str(sr);
 
@@ -181,13 +187,82 @@ START_TEST(test_ch_setup_fail)
   trm = tr_str(srunner_failures(sr)[0]);
 
   if (strstr(trm,
-	     "check_check_fixture.c:127:S:Core:test_sub_pass: Failed setup")
+	     "check_check_fixture.c:127:S:Core:test_sub_fail: Failed setup")
       == 0) {
     snprintf(errm, sizeof(errm),
 	     "Bad failed checked setup tr msg (%s)", trm);
     
     fail (errm);
   }
+}
+END_TEST
+
+START_TEST(test_ch_setup_fail_nofork)
+{
+  TCase *tc;
+  Suite *s;
+  SRunner *sr;
+
+  s = suite_create("Setup Fail");
+  tc = tcase_create("Core");
+  suite_add_tcase(s, tc);
+  tcase_add_test(tc, test_sub_fail);
+  tcase_add_checked_fixture(tc, setup_sub_fail, NULL);
+  sr = srunner_create(s);
+  srunner_set_fork_status(sr, CK_NOFORK);
+  srunner_run_all(sr, CK_SILENT);
+
+  fail_unless (srunner_ntests_run(sr) == 0,
+	       "Test run counts not correct for checked setup failure");
+  fail_unless (srunner_ntests_failed(sr) == 1,
+	       "Failure counts not correct for checked setup failure");
+}
+END_TEST
+
+START_TEST(test_ch_setup_fail_nofork_2)
+{
+  TCase *tc;
+  Suite *s;
+  SRunner *sr;
+
+  s = suite_create("Setup Fail");
+  tc = tcase_create("Core");
+  suite_add_tcase(s, tc);
+  tcase_add_test(tc, test_sub_fail);
+  tcase_add_checked_fixture(tc, sub_ch_setup_norm, NULL);
+  tcase_add_checked_fixture(tc, setup_sub_fail, NULL);
+  sr = srunner_create(s);
+  srunner_set_fork_status(sr, CK_NOFORK);
+  srunner_run_all(sr, CK_SILENT);
+
+  fail_unless (srunner_ntests_run(sr) == 0,
+	       "Test run counts not correct for checked setup failure");
+  fail_unless (srunner_ntests_failed(sr) == 1,
+	       "Failure counts not correct for checked setup failure");
+}
+END_TEST
+
+START_TEST(test_ch_setup_pass_nofork)
+{
+  TCase *tc;
+  Suite *s;
+  SRunner *sr;
+
+  s = suite_create("Setup Fail");
+  tc = tcase_create("Core");
+  suite_add_tcase(s, tc);
+  tcase_add_test(tc, test_sub_pass);
+  tcase_add_checked_fixture(tc, sub_ch_setup_norm, NULL);
+  tcase_add_checked_fixture(tc, sub_ch_setup_norm, NULL);
+  tcase_add_checked_fixture(tc, sub_ch_setup_norm, NULL);
+  sr = srunner_create(s);
+  srunner_set_fork_status(sr, CK_NOFORK);
+  srunner_run_all(sr, CK_SILENT);
+
+  fail_unless (srunner_ntests_run(sr) == 1,
+	       "Test run counts not correct for checked setup failure");
+  fail_unless (srunner_ntests_failed(sr) == 0,
+	       "Failure counts not correct for checked setup failure");
 }
 END_TEST
 
@@ -202,7 +277,7 @@ START_TEST(test_ch_setup_sig)
   s = suite_create("Setup Fail");
   tc = tcase_create("Core");
   suite_add_tcase(s, tc);
-  tcase_add_test(tc,test_sub_pass);
+  tcase_add_test(tc,test_sub_fail);
   tcase_add_checked_fixture(tc,setup_sub_signal, NULL);
   sr = srunner_create(s);
   srunner_run_all(sr,CK_SILENT);
@@ -222,7 +297,7 @@ START_TEST(test_ch_setup_sig)
   trm = tr_str(srunner_failures(sr)[0]);
 
   if (strstr(trm,
-	     "check_check_fixture.c:137:S:Core:test_sub_pass: "
+	     "check_check_fixture.c:137:S:Core:test_sub_fail: "
 	     "(after this point) Received signal 8")
       == 0) {
     snprintf(errm, sizeof(errm),
@@ -251,13 +326,13 @@ START_TEST(test_ch_teardown_fail)
 
   fail_unless (srunner_ntests_failed(sr) == 1,
 	       "Failure counts not correct for checked teardown failure");
-  fail_unless (srunner_ntests_run(sr) == 0,
+  fail_unless (srunner_ntests_run(sr) == 1,
 	       "Test run counts not correct for checked teardown failure");
 
   strstat= sr_stat_str(sr);
 
   fail_unless(strcmp(strstat,
-		     "0%: Checks: 0, Failures: 1, Errors: 0") == 0,
+		     "0%: Checks: 1, Failures: 1, Errors: 0") == 0,
 	      "SRunner stat string incorrect with checked setup failure");
 
 
@@ -293,13 +368,13 @@ START_TEST(test_ch_teardown_sig)
 
   fail_unless (srunner_ntests_failed(sr) == 1,
 	       "Failure counts not correct for checked teardown signal");
-  fail_unless (srunner_ntests_run(sr) == 0,
+  fail_unless (srunner_ntests_run(sr) == 1,
 	       "Test run counts not correct for checked teardown signal");
 
   strstat= sr_stat_str(sr);
 
   fail_unless(strcmp(strstat,
-		     "0%: Checks: 0, Failures: 0, Errors: 1") == 0,
+		     "0%: Checks: 1, Failures: 0, Errors: 1") == 0,
 	      "SRunner stat string incorrect with checked teardown signal");
 
 
@@ -333,6 +408,9 @@ Suite *make_fixture_suite (void)
   tcase_add_test(tc,test_setup_failure_msg);
   tcase_add_test(tc,test_ch_setup);
   tcase_add_test(tc,test_ch_setup_fail);
+  tcase_add_test(tc,test_ch_setup_fail_nofork);
+  tcase_add_test(tc,test_ch_setup_fail_nofork_2);
+  tcase_add_test(tc,test_ch_setup_pass_nofork);
   tcase_add_test(tc,test_ch_setup_sig);
   tcase_add_test(tc,test_ch_teardown_fail);
   tcase_add_test(tc,test_ch_teardown_sig);
