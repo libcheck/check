@@ -1,3 +1,23 @@
+2001-07-10 16:28  amalec
+
+	* src/Makefile.in, src/check_log.c, tests/check_check.h,
+	tests/check_check_log.c, tests/check_check_master.c,
+	tests/check_check_sub.c, tests/test_output.sh: Completed testing
+	for multiple suite running, and reorganized files
+
+2001-07-10 16:26  amalec
+
+	* src/: check_log.c, check_log.h: Commit file changes
+
+2001-07-10 16:25  amalec
+
+	* src/: Makefile.am, check.h, check_run.c: Moved check_log.h
+	functions into check.h
+
+2001-07-09 17:10  amalec
+
+	* ChangeLog: Commit ChangeLog
+
 2001-07-09 17:09  amalec
 
 	* src/check.c, src/check.h, src/check_impl.h, src/check_run.c,
