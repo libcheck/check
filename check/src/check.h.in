@@ -168,7 +168,7 @@ static void __testname (void)\
 /* Fail the test case if expr is true */
 #define fail_if(expr, ...)\
         _fail_unless(!(expr), __FILE__, __LINE__,\
-        "Assertion '"#expr"' failed", ## __VA_ARGS__, NULL)
+        "Failure '"#expr"' occured", ## __VA_ARGS__, NULL)
 
 /* Always fail */
 #define fail(...) _fail_unless(0, __FILE__, __LINE__, "Failed" , ## __VA_ARGS__, NULL)
