@@ -55,6 +55,7 @@ typedef union
 typedef struct RcvMsg
 {
   enum ck_result_ctx lastctx;
+  enum ck_result_ctx failctx;
   char *fixture_file;
   int fixture_line;
   char *test_file;

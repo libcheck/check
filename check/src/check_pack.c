@@ -306,12 +306,23 @@ static int get_result (char *buf, RcvMsg *rmsg)
     rcvmsg_update_ctx (rmsg, cmsg->ctx);
   } else if (type == CK_MSG_LOC) {
     LocMsg *lmsg = (LocMsg *) &msg;
-    rcvmsg_update_loc (rmsg, lmsg->file, lmsg->line);
+    if (rmsg->failctx == -1)
+    {
+      rcvmsg_update_loc (rmsg, lmsg->file, lmsg->line);
+    }
     free (lmsg->file);
   } else if (type == CK_MSG_FAIL) {      
     FailMsg *fmsg = (FailMsg *) &msg;
-    rmsg->msg = emalloc (strlen (fmsg->msg) + 1);
-    strcpy (rmsg->msg, fmsg->msg);
+    if (rmsg->msg == NULL)
+    {
+      rmsg->msg = emalloc (strlen (fmsg->msg) + 1);
+      strcpy (rmsg->msg, fmsg->msg);
+      rmsg->failctx = rmsg->lastctx;
+    }
+    else
+    {
+      /* Skip subsequent failure messages, only happens for CK_NOFORK */
+    }
     free (fmsg->msg);
   } else
     check_type (type, __FILE__, __LINE__);
@@ -337,6 +348,7 @@ static RcvMsg *rcvmsg_create (void)
 
   rmsg = emalloc (sizeof (RcvMsg));
   rmsg->lastctx = -1;
+  rmsg->failctx = -1;
   rmsg->msg = NULL;
   reset_rcv_test (rmsg);
   reset_rcv_fixture (rmsg);
@@ -345,17 +357,19 @@ static RcvMsg *rcvmsg_create (void)
 
 void rcvmsg_free (RcvMsg *rmsg)
 {
-  if (rmsg->fixture_file!=NULL) free(rmsg->fixture_file);
-  if (rmsg->test_file!=NULL) free(rmsg->test_file);
-  if (rmsg->msg!=NULL) free(rmsg->msg);
+  free(rmsg->fixture_file);
+  free(rmsg->test_file);
+  free(rmsg->msg);
   free(rmsg);
 }
 
 static void rcvmsg_update_ctx (RcvMsg *rmsg, enum ck_result_ctx ctx)
 {
   if (rmsg->lastctx != -1)
+  {
+    free(rmsg->fixture_file);
     reset_rcv_fixture (rmsg);
-
+  }
   rmsg->lastctx = ctx;
 }
 
@@ -364,12 +378,12 @@ static void rcvmsg_update_loc (RcvMsg *rmsg, const char *file, int line)
   int flen = strlen(file);
   
   if (rmsg->lastctx == CK_CTX_TEST) {
-    if (rmsg->test_file!=NULL) free(rmsg->test_file);
+    free(rmsg->test_file);
     rmsg->test_line = line;
     rmsg->test_file = emalloc (flen + 1);
     strcpy (rmsg->test_file, file);
   } else {
-    if (rmsg->fixture_file!=NULL) free(rmsg->fixture_file);
+    free(rmsg->fixture_file);
     rmsg->fixture_line = line;
     rmsg->fixture_file = emalloc (flen + 1);
     strcpy (rmsg->fixture_file, file);
