@@ -273,16 +273,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-check.o: check.c error.h list.h check.h check_impl.h check_msg.h
-check_check.o: check_check.c check.h check_run.h
-check_list.o: check_list.c list.h check.h check_run.h
-check_msg.o: check_msg.c list.h error.h check.h check_impl.h check_msg.h
-check_run.o: check_run.c error.h list.h check.h check_impl.h check_msg.h \
-	check_run.h
-check_stress.o: check_stress.c check.h check_run.h
-error.o: error.c error.h
-list.o: list.c list.h error.h
-
 info-am:
 info: info-recursive
 dvi-am:
