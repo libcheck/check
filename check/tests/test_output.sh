@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ "${srcdir}" == "." ]; then
+if [ "${srcdir}" = "." ]; then
     lsrc=""
 else
     lsrc="${srcdir}/"
