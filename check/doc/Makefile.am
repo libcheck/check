@@ -14,14 +14,14 @@ SUFFIXES = .sgml
 %.html : %.sgml
 	sgml2html --split=1 $<
 
-lyx_docs = example.lyx
-sgml_docs = example.sgml
+lyx_docs = tutorial.lyx
+sgml_docs = tutorial.sgml
 html_docs =\
-	example.html\
-	example-1.html\
-	example-2.html\
-	example-3.html\
-	example-4.html
+	tutorial.html\
+	tutorial-1.html\
+	tutorial-2.html\
+	tutorial-3.html\
+	tutorial-4.html
 
 
 EXTRA_DIST = $(lyx_docs)
