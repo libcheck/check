@@ -264,6 +264,20 @@ static int non_pass (int val)
   return val != CK_PASS;
 }
 
+TestResult *tr_create(void)
+{
+  TestResult *tr;
+
+  tr = emalloc (sizeof(TestResult));
+
+  tr->ctx = -1;
+  tr->line = -1;
+  tr->rtype = -1;
+  tr->msg = tr->file = tr->tcname = NULL;
+  return tr;
+}
+
+
 char *tr_msg (TestResult *tr)
 {
   return tr->msg;
@@ -282,6 +296,11 @@ char *tr_lfile (TestResult *tr)
 int tr_rtype (TestResult *tr)
 {
   return tr->rtype;
+}
+
+enum ck_result_ctx tr_ctx (TestResult *tr)
+{
+  return tr->ctx;
 }
 
 char *tr_tcname (TestResult *tr)

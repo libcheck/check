@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 
 #include <check.h>
 #include "check_magic.h"
@@ -19,7 +20,7 @@ START_TEST(test_pack_fmsg)
 
   pack (CK_MSG_FAIL, buf, fmsg);
   fmsg->msg = "";
-  type = upack (buf, fmsg);
+  upack (buf, fmsg, &type);
 
   fail_unless (type == CK_MSG_FAIL,
 	       "Bad type unpacked for FailMsg");
@@ -53,7 +54,7 @@ START_TEST(test_pack_loc)
   pack (CK_MSG_LOC, buf, lmsg);
   lmsg->file = "";
   lmsg->line = 0;
-  type = upack (buf, lmsg);
+  upack (buf, lmsg, &type);
 
   fail_unless (type == CK_MSG_LOC,
 	       "Bad type unpacked for LocMsg");
@@ -82,30 +83,29 @@ END_TEST
 
 START_TEST(test_pack_ctx)
 {
-  CtxMsg *cmsg;
+  CtxMsg cmsg;
   char *buf;
   enum ck_msg_type type;
+  int npk, nupk;
 
-  cmsg = emalloc (sizeof(CtxMsg));
   buf = emalloc (CK_MAXMSGBUF);
-  cmsg->ctx = CK_CTX_SETUP;
+  cmsg.ctx = CK_CTX_SETUP;
 
-  pack (CK_MSG_CTX, buf, cmsg);
-  cmsg->ctx = CK_CTX_TEARDOWN;
-  type = upack (buf, cmsg);
+  npk = pack (CK_MSG_CTX, buf, &cmsg);
+  cmsg.ctx = CK_CTX_TEARDOWN;
+  nupk = upack (buf, &cmsg, &type);
 
   fail_unless (type == CK_MSG_CTX,
 	       "Bad type unpacked for CtxMsg");
 
-  if (cmsg->ctx != CK_CTX_SETUP) {
+  if (cmsg.ctx != CK_CTX_SETUP) {
     char *errm = emalloc (CK_MAXMSG);
     snprintf(errm, CK_MAXMSG,
 	     "CtxMsg ctx got %d, expected %d",
-	     cmsg->ctx, CK_CTX_SETUP);
+	     cmsg.ctx, CK_CTX_SETUP);
     fail (errm);
   }
 
-  free (cmsg);
   free (buf);
     
 }
@@ -116,6 +116,7 @@ START_TEST(test_pack_len)
   CtxMsg cmsg;
   char *buf;
   int n = 0;
+  enum ck_msg_type type;
 
   buf = emalloc (CK_MAXMSGBUF);
   cmsg.ctx = CK_CTX_TEST;
@@ -124,7 +125,14 @@ START_TEST(test_pack_len)
 
   /* Value below may change with different implementations of pack */
   fail_unless (n == 4, "Return val from pack not correct");
-
+  n = 0;
+  n = upack(buf,&cmsg,&type);
+  if (n != 4) {
+    char *msg = emalloc (CK_MAXMSG);
+    snprintf(msg,CK_MAXMSG, "%d bytes read from upack, should be 4",n);
+    fail (msg);
+  }
+  
   free(buf);
 }
 END_TEST
@@ -148,11 +156,12 @@ START_TEST(test_pack_fail_limit)
   FailMsg fmsg;
   FailMsg *fmsgp = NULL;
   char *buf;
+  enum ck_msg_type type;
 
   buf = emalloc (CK_MAXMSGBUF);
   fmsg.msg = "";
   pack(CK_MSG_FAIL,buf,&fmsg);
-  (void) upack(buf,&fmsg);
+  upack(buf,&fmsg,&type);
   fail_unless (strcmp(fmsg.msg, "") == 0, "Empty string not handled properly");
   free(fmsg.msg);
   fmsg.msg = NULL;
@@ -166,18 +175,97 @@ START_TEST(test_pack_loc_limit)
   LocMsg lmsg;
   LocMsg *lmsgp = NULL;
   char *buf;
+  enum ck_msg_type type;
 
   buf = emalloc (CK_MAXMSGBUF);
   lmsg.file = "";
   lmsg.line = 0;
   pack(CK_MSG_LOC,buf,&lmsg);
-  (void) upack(buf,&lmsg);
+  upack(buf,&lmsg,&type);
   fail_unless (strcmp(lmsg.file, "") == 0,
 	       "Empty string not handled properly");
   free(lmsg.file);
   lmsg.file = NULL;
   pack(CK_MSG_LOC,buf,&lmsg);
   pack(CK_MSG_LOC,buf,lmsgp);
+}
+END_TEST
+
+START_TEST(test_ppack)
+{
+  int filedes[2];
+  CtxMsg cmsg;
+  LocMsg lmsg;
+  FailMsg fmsg;
+  TestResult *tr;
+
+  cmsg.ctx = CK_CTX_TEST;
+  lmsg.file = "abc123.c";
+  lmsg.line = 10;
+  fmsg.msg = "oops";
+  pipe(filedes);
+  ppack(filedes[1],CK_MSG_CTX, &cmsg);
+  ppack(filedes[1],CK_MSG_LOC, &lmsg);
+  ppack(filedes[1],CK_MSG_FAIL, &fmsg);
+  close(filedes[1]);
+  tr = punpack(filedes[0]);
+
+  fail_unless (tr_ctx(tr) == CK_CTX_TEST,
+	       "Bad rtype from ppunpack");
+  fail_unless (tr_lno(tr) == 10,
+	       "Bad loc line number from ppunpack");
+  fail_unless (strcmp(tr_lfile(tr), "abc123.c") == 0,
+	       "Bad loc filename from ppunpack");
+  fail_unless (strcmp(tr_msg(tr), "oops") == 0,
+	       "Bad msg from ppunpack");
+
+  free(tr);
+}
+END_TEST
+
+START_TEST(test_ppack_noctx)
+{
+  int filedes[2];
+  LocMsg lmsg;
+  FailMsg fmsg;
+  TestResult *tr;
+
+  lmsg.file = "abc123.c";
+  lmsg.line = 10;
+  fmsg.msg = "oops";
+  pipe(filedes);
+  ppack(filedes[1],CK_MSG_LOC, &lmsg);
+  ppack(filedes[1],CK_MSG_FAIL, &fmsg);
+  close(filedes[1]);
+  tr = punpack(filedes[0]);
+
+  fail_unless (tr == NULL,
+	       "Result should be NULL with no CTX");
+
+  if (tr != NULL)
+    free(tr);
+}
+END_TEST
+
+START_TEST(test_ppack_onlyctx)
+{
+  int filedes[2];
+  CtxMsg cmsg;
+  TestResult *tr;
+
+  cmsg.ctx = CK_CTX_SETUP;
+  pipe(filedes);
+  ppack(filedes[1],CK_MSG_CTX, &cmsg);
+  close(filedes[1]);
+  tr = punpack(filedes[0]);
+
+  fail_unless (tr_msg(tr) == NULL,
+	       "Result message should be NULL with only CTX");
+  fail_unless (tr_lno(tr) == -1,
+	       "Result loc line should be -1 with only CTX");
+
+  if (tr != NULL)
+    free(tr);
 }
 END_TEST
 
@@ -197,6 +285,9 @@ Suite *make_pack_suite(void)
   tcase_add_test(tc_core, test_pack_loc);
   tcase_add_test(tc_core, test_pack_ctx);
   tcase_add_test(tc_core, test_pack_len);
+  tcase_add_test(tc_core, test_ppack);
+  tcase_add_test(tc_core, test_ppack_noctx);
+  tcase_add_test(tc_core, test_ppack_onlyctx);
   suite_add_tcase(s, tc_limit);
   tcase_add_test(tc_limit, test_pack_ctx_limit);
   tcase_add_test(tc_limit, test_pack_fail_limit);

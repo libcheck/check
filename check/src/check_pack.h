@@ -27,15 +27,10 @@ enum ck_msg_type {
   CK_MSG_LAST
 };
 
-enum ck_msg_context {
-  CK_CTX_SETUP,
-  CK_CTX_TEST,
-  CK_CTX_TEARDOWN
-};
 
 typedef struct CtxMsg
 {
-  enum ck_msg_context ctx;
+  enum ck_result_ctx ctx;
 } CtxMsg;
 
 typedef struct LocMsg 
@@ -51,6 +46,10 @@ typedef struct FailMsg
 
   
 int pack (enum ck_msg_type type, char *buf, void *data);
-enum ck_msg_type upack (char *buf, void *data);
+int upack (char *buf, void *data, enum ck_msg_type *type);
+
+void ppack (int fdes, enum ck_msg_type type, void *data);
+TestResult *punpack(int fdes);
+
 
 #endif /*CHECK_PACK_H */

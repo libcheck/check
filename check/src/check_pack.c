@@ -19,10 +19,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <unistd.h>
 
+#include "list.h"
 #include "error.h"
-#include "check_pack.h"
+#include "check.h"
 #include "check_magic.h"
+#include "check_impl.h"
+#include "check_pack.h"
 
 
 static void pack_int (char **buf, int val);
@@ -41,6 +45,9 @@ static void check_type (int type, char *file, int line);
 static enum ck_msg_type upack_type (char **buf);
 static void pack_type (char **buf, enum ck_msg_type type);
 
+static int read_buf (int fdes, char **buf);
+static int get_result (char *buf, TestResult *tr);
+
 typedef void (*pfun) (char **, void *);
 
 static pfun pftab [] = {
@@ -58,6 +65,7 @@ static pfun upftab [] = {
 int pack (enum ck_msg_type type, char *buf, void *data)
 {
   char *obuf;
+  int nread;
   
   if (buf == NULL)
     return -1;
@@ -71,20 +79,28 @@ int pack (enum ck_msg_type type, char *buf, void *data)
   
   pftab[type] (&buf, data);
 
-  return buf - obuf;
+  nread = buf - obuf;
+  return nread;
 }
 
-enum ck_msg_type upack (char *buf, void *data)
+int upack (char *buf, void *data, enum ck_msg_type *type)
 {
-  enum ck_msg_type type;
+  char *obuf;
+  int nread;
 
-  type = upack_type (&buf);
+  if (buf == NULL)
+    return -1;
 
-  check_type(type, __FILE__, __LINE__);
+  obuf = buf;
+
+  *type = upack_type (&buf);
+
+  check_type(*type, __FILE__, __LINE__);
   
-  upftab[type] (&buf, data);
+  upftab[*type] (&buf, data);
 
-  return type;
+  nread = buf - obuf;
+  return nread;
 }
 
 static void pack_int (char **buf, int val)
@@ -200,5 +216,101 @@ static void check_type (int type, char *file, int line)
 {
   if (type >= CK_MSG_LAST)
     eprintf ("%s:%d:Bad message type arg", file, line);
+}
+
+void ppack (int fdes, enum ck_msg_type type, void *data)
+{
+  char *buf;
+  int n;
+  ssize_t r;
+
+  buf = emalloc (CK_MAXMSGBUF);
+  n = pack(type, buf, data);
+  r = write (fdes, buf, n);
+  if (r == -1)
+    eprintf("Error in ppack:");
+
+  free(buf);
+}
+
+static int read_buf (int fdes, char **buf)
+{
+  char *readloc;
+  int n;
+  int nread = 0;
+  int mul;
+  
+  *buf = emalloc(CK_MAXMSGBUF);
+  readloc = *buf;
+  mul = 2;
+  while (1) {
+    n = read(fdes,readloc,CK_MAXMSGBUF);
+    if (n == 0)
+      break;
+    if (n == -1)
+      eprintf("Error in read_buf:");
+
+    nread += n;
+    *buf = erealloc(*buf,CK_MAXMSGBUF * mul);
+    mul++;
+    readloc += CK_MAXMSGBUF;
+  }
+  return nread;
+}    
+
+static int get_result (char *buf, TestResult *tr)
+{
+  enum ck_msg_type type;
+  void *data;
+  int n;
+
+  data = emalloc(CK_MAXMSGBUF);
+  
+  n = upack(buf,data,&type);
+  
+  if (type == CK_MSG_CTX) {
+    tr->ctx = ((CtxMsg *) data)->ctx;
+  } else if (type == CK_MSG_LOC) {
+    LocMsg *lmsg = data;
+    tr->line = lmsg->line;
+    tr->file = emalloc(strlen(lmsg->file) + 1);
+    strcpy(tr->file, lmsg->file);
+  } else if (type == CK_MSG_FAIL) {      
+    FailMsg *fmsg = data;
+    tr->msg = emalloc (strlen(fmsg->msg) + 1);
+    strcpy(tr->msg, fmsg->msg);
+  } else
+    check_type(type, __FILE__, __LINE__);
+
+  free(data);
+  return n;
+  
+}
+
+
+TestResult *punpack(int fdes)
+{
+  int nread, n;
+  char *buf;
+  char *obuf;
+  TestResult *tr;
+  
+  nread = read_buf (fdes, &buf);
+  obuf = buf;
+  tr = tr_create();
+  
+  while (nread > 0) {
+    n = get_result(buf, tr);
+    nread -= n;
+    buf += n;
+  }
+
+  free(obuf);
+  if (tr->ctx == -1) {
+    free (tr);
+    tr = NULL;
+  }
+
+  return tr;
 }
 

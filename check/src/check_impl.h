@@ -68,11 +68,14 @@ typedef struct TestStats {
 
 struct TestResult {
   enum test_result rtype;     /* Type of result */
+  enum ck_result_ctx ctx;     /* When the result occurred */
   char *file;    /* File where the test occured */
   int line;      /* Line number where the test occurred */
   char *tcname;  /* Test case that generated the result */
   char *msg;     /* Failure message */
 };
+
+TestResult *tr_create(void);
 
 enum cl_event {
   CLSTART_SR,

@@ -196,8 +196,16 @@ typedef struct TestResult TestResult;
 
 /* accessors for tr fields */
 
+ enum ck_result_ctx {
+  CK_CTX_SETUP,
+  CK_CTX_TEST,
+  CK_CTX_TEARDOWN
+};
+
 /* Type of result */
 int tr_rtype (TestResult *tr);
+/* Context in which the result occurred */ 
+enum ck_result_ctx tr_ctx (TestResult *tr); 
 /* Failure message */
 char *tr_msg (TestResult *tr);
 /* Line number at which failure occured */
