@@ -1,3 +1,10 @@
+check (0.7.3-1) unstable; urgency=low
+
+  * Bug fix to Autoconf macro for shell portability & to debian doc-base
+    file
+
+ -- Arien Malec <amalec@debian>  Tue, 21 Aug 2001 17:44:24 +0000
+
 check (0.7.2-1) unstable; urgency=low
 
   * Initial Release.
