@@ -62,6 +62,8 @@ typedef struct RcvMsg
   char *msg;
 } RcvMsg;
 
+void rcvmsg_free (RcvMsg *rmsg);
+
   
 int pack (enum ck_msg_type type, char **buf, CheckMsg *msg);
 int upack (char *buf, CheckMsg *msg, enum ck_msg_type *type);

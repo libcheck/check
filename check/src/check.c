@@ -57,7 +57,8 @@ void suite_free (Suite *s)
   List *l;
   if (s == NULL)
     return;
-  for (l = s->tclst; !list_at_end(l); list_advance (l)) {
+  l = s->tclst;
+  for (list_front(l); !list_at_end(l); list_advance (l)) {
     tcase_free (list_val(l));
   }
   list_free (s->tclst);

@@ -33,11 +33,6 @@
 #include "check_msg.h"
 #include "check_pack.h"
 
-struct MsgKey
-{
-  int key;
-};
-
 typedef struct Pipe 
 {
   int sendfd;
@@ -54,17 +49,17 @@ typedef struct PipeEntry
 
 List *plst = NULL;
 
-static PipeEntry *get_pe_by_key(MsgKey *key);
-static Pipe *get_pipe_by_key(MsgKey *key);
-static MsgKey *get_setup_key (void);
+static PipeEntry *get_pe_by_key(MsgKey key);
+static Pipe *get_pipe_by_key(MsgKey key);
+static MsgKey get_setup_key (void);
 static void setup_pipe (Pipe *p);
-static void setup_messaging_with_key (MsgKey *key);
-static void teardown_messaging_with_key (MsgKey *key);
+static void setup_messaging_with_key (MsgKey key);
+static void teardown_messaging_with_key (MsgKey key);
 static TestResult *construct_test_result (RcvMsg *rmsg, int waserror);
 static void tr_set_loc_by_ctx (TestResult *tr, enum ck_result_ctx ctx,
 			       RcvMsg *rmsg);
 
-void send_failure_info (MsgKey *key, const char *msg)
+void send_failure_info (MsgKey key, const char *msg)
 {
   FailMsg fmsg;
   Pipe *p;
@@ -76,7 +71,7 @@ void send_failure_info (MsgKey *key, const char *msg)
   ppack (p->sendfd, CK_MSG_FAIL, (CheckMsg *) &fmsg);
 }
 
-void send_loc_info (MsgKey *key, const char * file, int line)
+void send_loc_info (MsgKey key, const char * file, int line)
 {
   LocMsg lmsg;
   Pipe *p;
@@ -89,7 +84,7 @@ void send_loc_info (MsgKey *key, const char * file, int line)
   ppack (p->sendfd, CK_MSG_LOC, (CheckMsg *) &lmsg);
 }
 
-void send_ctx_info (MsgKey *key,enum ck_result_ctx ctx)
+void send_ctx_info (MsgKey key,enum ck_result_ctx ctx)
 {
   CtxMsg cmsg;
   Pipe *p;
@@ -102,10 +97,11 @@ void send_ctx_info (MsgKey *key,enum ck_result_ctx ctx)
   ppack (p->sendfd, CK_MSG_CTX, (CheckMsg *) &cmsg);
 }
 
-TestResult *receive_test_result (MsgKey *key, int waserror)
+TestResult *receive_test_result (MsgKey key, int waserror)
 {
   Pipe *p;
   RcvMsg *rmsg;
+  TestResult *result;
 
   p = get_pipe_by_key (key);
   if (p == NULL)
@@ -115,7 +111,9 @@ TestResult *receive_test_result (MsgKey *key, int waserror)
   close (p->recvfd);
   setup_pipe (p);
 
-  return construct_test_result (rmsg, waserror);
+  result = construct_test_result (rmsg, waserror);
+  rcvmsg_free(rmsg);
+  return result;
 }
 
 static void tr_set_loc_by_ctx (TestResult *tr, enum ck_result_ctx ctx,
@@ -124,9 +122,13 @@ static void tr_set_loc_by_ctx (TestResult *tr, enum ck_result_ctx ctx,
   if (ctx == CK_CTX_TEST) {
     tr->file = rmsg->test_file;
     tr->line = rmsg->test_line;
+    rmsg->test_file = NULL;
+    rmsg->test_line = -1;
   } else {
     tr->file = rmsg->fixture_file;
     tr->line = rmsg->fixture_line;
+    rmsg->fixture_file = NULL;
+    rmsg->fixture_line = -1;
   }
 }
 
@@ -142,6 +144,7 @@ static TestResult *construct_test_result (RcvMsg *rmsg, int waserror)
   if (rmsg->msg != NULL || waserror) {
     tr->ctx = rmsg->lastctx;
     tr->msg = rmsg->msg;
+    rmsg->msg = NULL;
     tr_set_loc_by_ctx (tr, rmsg->lastctx, rmsg);
   } else if (rmsg->lastctx == CK_CTX_SETUP) {
     tr->ctx = CK_CTX_SETUP;
@@ -162,27 +165,27 @@ void setup_messaging (void)
   setup_messaging_with_key (get_recv_key());
 }
 
-MsgKey *get_send_key (void)
+MsgKey get_send_key (void)
 {
-  MsgKey *key = emalloc (sizeof (MsgKey));
+  MsgKey key;
   
   if (cur_fork_status () == CK_FORK)
-    key->key = getppid ();
+    key.key = getppid ();
   else
-    key->key = getpid ();
+    key.key = getpid ();
 
   return key;
 }
 
-MsgKey *get_recv_key (void)
+MsgKey get_recv_key (void)
 {
-  MsgKey *key = emalloc (sizeof (MsgKey));
+  MsgKey key;
 
-  key->key = getpid ();
+  key.key = getpid ();
   return key;
 }
 
-static MsgKey *get_setup_key (void)
+static MsgKey get_setup_key (void)
 {
   return get_recv_key ();
 }
@@ -198,10 +201,10 @@ void setup_test_messaging (void)
   setup_messaging_with_key (get_test_key ());
 }
 
-MsgKey *get_test_key (void)
+MsgKey get_test_key (void)
 {
-  MsgKey *key = emalloc (sizeof (MsgKey));
-  key->key = -1;
+  MsgKey key;
+  key.key = -1;
   return key;
 
 }
@@ -211,13 +214,13 @@ void teardown_test_messaging (void)
   teardown_messaging_with_key (get_test_key ());
 }
 
-static PipeEntry *get_pe_by_key (MsgKey *key)
+static PipeEntry *get_pe_by_key (MsgKey key)
 {
   PipeEntry *pe = NULL;
   
   for (list_front(plst); !list_at_end(plst); list_advance(plst)) {
     PipeEntry *p = list_val(plst);
-    if (p->key == key->key) {
+    if (p->key == key.key) {
       pe = p;
       break;
     }
@@ -226,7 +229,7 @@ static PipeEntry *get_pe_by_key (MsgKey *key)
   return pe;
 }
 
-static Pipe *get_pipe_by_key (MsgKey *key)
+static Pipe *get_pipe_by_key (MsgKey key)
 {
   Pipe *pr = NULL;
   PipeEntry *pe = get_pe_by_key (key);
@@ -261,7 +264,7 @@ static void setup_pipe (Pipe *p)
   fcntl (p->sendfd, F_SETFL, O_NONBLOCK);
 }
 
-static void setup_messaging_with_key (MsgKey *key)
+static void setup_messaging_with_key (MsgKey key)
 {
   PipeEntry *pe;
 
@@ -272,7 +275,7 @@ static void setup_messaging_with_key (MsgKey *key)
   if (pe == NULL) {
     pe = emalloc (sizeof (PipeEntry));
     pe->cur = 0;
-    pe->key = key->key;
+    pe->key = key.key;
     list_add_end (plst, pe);
   }
   if (pe->cur == 0) {
@@ -287,7 +290,7 @@ static void setup_messaging_with_key (MsgKey *key)
     eprintf ("Only one nesting of suite runs supported", __FILE__, __LINE__);
 }
 
-static void teardown_messaging_with_key (MsgKey *key)
+static void teardown_messaging_with_key (MsgKey key)
 {
   PipeEntry *pe = get_pe_by_key (key);
 

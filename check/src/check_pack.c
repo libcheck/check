@@ -63,6 +63,7 @@ static int   get_result (char *buf, RcvMsg *rmsg);
 static void  rcvmsg_update_ctx (RcvMsg *rmsg, enum ck_result_ctx ctx);
 static void  rcvmsg_update_loc (RcvMsg *rmsg, const char *file, int line);
 static RcvMsg *rcvmsg_create (void);
+void rcvmsg_free (RcvMsg *rmsg);
 
 typedef int  (*pfun)  (char **, CheckMsg *);
 typedef void (*upfun) (char **, CheckMsg *);
@@ -342,6 +343,14 @@ static RcvMsg *rcvmsg_create (void)
   return rmsg;
 }
 
+void rcvmsg_free (RcvMsg *rmsg)
+{
+  if (rmsg->fixture_file!=NULL) free(rmsg->fixture_file);
+  if (rmsg->test_file!=NULL) free(rmsg->test_file);
+  if (rmsg->msg!=NULL) free(rmsg->msg);
+  free(rmsg);
+}
+
 static void rcvmsg_update_ctx (RcvMsg *rmsg, enum ck_result_ctx ctx)
 {
   if (rmsg->lastctx != -1)
@@ -355,10 +364,12 @@ static void rcvmsg_update_loc (RcvMsg *rmsg, const char *file, int line)
   int flen = strlen(file);
   
   if (rmsg->lastctx == CK_CTX_TEST) {
+    if (rmsg->test_file!=NULL) free(rmsg->test_file);
     rmsg->test_line = line;
     rmsg->test_file = emalloc (flen + 1);
     strcpy (rmsg->test_file, file);
   } else {
+    if (rmsg->fixture_file!=NULL) free(rmsg->fixture_file);
     rmsg->fixture_line = line;
     rmsg->fixture_file = emalloc (flen + 1);
     strcpy (rmsg->fixture_file, file);
