@@ -1,5 +1,20 @@
-Thu Aug 23, 2001:
-Released Check 0.7.3
+Wed Oct 24, 2001:
+Released Check 0.8.0
+
+Support running in a nofork mode. Defined a checked fixture as well as
+an unchecked fixture, support failing in checked and uncheck fixture
+functions, and errors in checked fixture functions. Rewrote the
+back-end to use pipes, rather than message queues.
+
+Renamed some public constants to use the CK_ naming convention. This
+will break existing test programs.
+
+Documented the new features, and changed the distribution to include
+sgml and html files, as well as lyx files, as many people don't have
+lyx.
+
+
+Thu Aug 23, 2001: Released Check 0.7.3
 
 Fixed the Autoconf Lyx check in acinclude.m4 so that configure works
 on Solaris systems (and hopefully others), and cleaned up a minor

@@ -24,7 +24,7 @@ void setup_fixture (void)
   tcase_add_unchecked_fixture(tc, fixture_sub_setup, NULL);
   suite_add_tcase (fixture_s, tc);
   fixture_sr = srunner_create(fixture_s);
-  srunner_run_all(fixture_sr,CRSILENT);
+  srunner_run_all(fixture_sr,CK_SILENT);
 }
 
 void teardown_fixture (void)
@@ -112,7 +112,7 @@ START_TEST(test_ch_setup)
   tcase_add_test(tc,test_sub_ch_setup_norm);
   tcase_add_test(tc,test_sub_ch_setup_norm);
   tcase_add_checked_fixture(tc,sub_ch_setup_norm,sub_ch_teardown_norm);
-  srunner_run_all(sr, CRSILENT);
+  srunner_run_all(sr, CK_SILENT);
 
   fail_unless(srunner_ntests_failed(sr) == 0,
 	      "Checked setup not being run correctly");
@@ -164,7 +164,7 @@ START_TEST(test_ch_setup_fail)
   tcase_add_test(tc,test_sub_pass);
   tcase_add_checked_fixture(tc,setup_sub_fail, NULL);
   sr = srunner_create(s);
-  srunner_run_all(sr,CRSILENT);
+  srunner_run_all(sr,CK_SILENT);
 
   fail_unless (srunner_ntests_failed(sr) == 1,
 	       "Failure counts not correct for checked setup failure");
@@ -193,9 +193,8 @@ START_TEST(test_ch_setup_fail)
 }
 END_TEST
 
-START_TEST(test_ch_teardown_fail)
+START_TEST(test_ch_setup_sig)
 {
-  /*
   TCase *tc;
   Suite *s;
   SRunner *sr;
@@ -206,9 +205,53 @@ START_TEST(test_ch_teardown_fail)
   tc = tcase_create("Core");
   suite_add_tcase(s, tc);
   tcase_add_test(tc,test_sub_pass);
+  tcase_add_checked_fixture(tc,setup_sub_signal, NULL);
+  sr = srunner_create(s);
+  srunner_run_all(sr,CK_SILENT);
+
+  fail_unless (srunner_ntests_failed(sr) == 1,
+	       "Failure counts not correct for checked setup signal");
+  fail_unless (srunner_ntests_run(sr) == 0,
+	       "Test run counts not correct for checked setup signal");
+
+  strstat= sr_stat_str(sr);
+
+  fail_unless(strcmp(strstat,
+		     "0%: Checks: 0, Failures: 0, Errors: 1") == 0,
+	      "SRunner stat string incorrect with checked setup signal");
+
+
+  trm = tr_str(srunner_failures(sr)[0]);
+
+  if (strcmp(trm,
+	     "check_check_fixture.c:137:S:Core: "
+	     "(after this point) Received signal 8")
+      != 0) {
+    char *errm = emalloc(CK_MAXMSG);
+    
+    snprintf(errm,CK_MAXMSG,
+	     "Msg was (%s)", trm);
+    
+    fail (errm);
+  }
+}
+END_TEST
+
+START_TEST(test_ch_teardown_fail)
+{
+  TCase *tc;
+  Suite *s;
+  SRunner *sr;
+  char *strstat;
+  char *trm;
+
+  s = suite_create("Teardown Fail");
+  tc = tcase_create("Core");
+  suite_add_tcase(s, tc);
+  tcase_add_test(tc,test_sub_pass);
   tcase_add_checked_fixture(tc,NULL, teardown_sub_fail);
   sr = srunner_create(s);
-  srunner_run_all(sr,CRSILENT);
+  srunner_run_all(sr,CK_SILENT);
 
   fail_unless (srunner_ntests_failed(sr) == 1,
 	       "Failure counts not correct for checked teardown failure");
@@ -225,15 +268,61 @@ START_TEST(test_ch_teardown_fail)
   trm = tr_str(srunner_failures(sr)[0]);
 
   if (strcmp(trm,
-	     "check_check_fixture.c:127:S:Core: Failed setup")
+	     "check_check_fixture.c:132:S:Core: Failed teardown")
       != 0) {
     char *errm = emalloc(CK_MAXMSG);
     
     snprintf(errm,CK_MAXMSG,
-	     "Bad failed checked setup tr msg (%s)", trm);
+	     "Bad failed checked teardown tr msg (%s)", trm);
     
     fail (errm);
-    }*/
+  }
+  
+}
+END_TEST
+
+START_TEST(test_ch_teardown_sig)
+{
+  TCase *tc;
+  Suite *s;
+  SRunner *sr;
+  char *strstat;
+  char *trm;
+
+  s = suite_create("Teardown Sig");
+  tc = tcase_create("Core");
+  suite_add_tcase(s, tc);
+  tcase_add_test(tc,test_sub_pass);
+  tcase_add_checked_fixture(tc,NULL, teardown_sub_signal);
+  sr = srunner_create(s);
+  srunner_run_all(sr,CK_SILENT);
+
+  fail_unless (srunner_ntests_failed(sr) == 1,
+	       "Failure counts not correct for checked teardown signal");
+  fail_unless (srunner_ntests_run(sr) == 0,
+	       "Test run counts not correct for checked teardown signal");
+
+  strstat= sr_stat_str(sr);
+
+  fail_unless(strcmp(strstat,
+		     "0%: Checks: 0, Failures: 0, Errors: 1") == 0,
+	      "SRunner stat string incorrect with checked teardown signal");
+
+
+  trm = tr_str(srunner_failures(sr)[0]);
+
+  if (strcmp(trm,
+	     "check_check_fixture.c:143:S:Core: "
+	     "(after this point) Received signal 8")
+      != 0) {
+    char *errm = emalloc(CK_MAXMSG);
+    
+    snprintf(errm,CK_MAXMSG,
+	     "Bad msg (%s)", trm);
+    
+    fail (errm);
+  }
+  
 }
 END_TEST
 
@@ -252,6 +341,8 @@ Suite *make_fixture_suite (void)
   tcase_add_test(tc,test_setup_failure_msg);
   tcase_add_test(tc,test_ch_setup);
   tcase_add_test(tc,test_ch_setup_fail);
+  tcase_add_test(tc,test_ch_setup_sig);
   tcase_add_test(tc,test_ch_teardown_fail);
+  tcase_add_test(tc,test_ch_teardown_sig);
   return s;
 }

@@ -20,22 +20,24 @@
   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+typedef struct MsgKey MsgKey;
+
 /* Functions implementing messaging during test runs */
 
-void send_failure_info (int key, char *msg);
-void send_loc_info (int key, char *file, int line);
-void send_ctx_info (int key,enum ck_result_ctx ctx);
+void send_failure_info (MsgKey *key, char *msg);
+void send_loc_info (MsgKey *key, char *file, int line);
+void send_ctx_info (MsgKey *key,enum ck_result_ctx ctx);
 
-TestResult *receive_test_result (int key, int waserror);
+TestResult *receive_test_result (MsgKey *key, int waserror);
 
 void setup_messaging(void);
-int get_send_key(void);
-int get_recv_key(void);
+MsgKey *get_send_key(void);
+MsgKey *get_recv_key(void);
 void teardown_messaging(void);
 
 /* for testing only */
 void setup_test_messaging(void);
-int get_test_key(void);
+MsgKey *get_test_key(void);
 void teardown_test_messaging(void);
 
 #endif /*CHECK_MSG_NEW_H */

@@ -34,7 +34,7 @@ static void run (int num_iters)
     tcase_add_test (tc, test_fail);
   }
 
-  srunner_run_all(sr, CRSILENT);
+  srunner_run_all(sr, CK_SILENT);
   if (srunner_ntests_failed (sr) != num_iters) {
     printf ("Error: expected %d failures, got %d\n",
 	    num_iters, srunner_ntests_failed(sr));

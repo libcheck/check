@@ -256,7 +256,7 @@ void setup (void)
   Suite *s = make_sub_suite();
   SRunner *sr = srunner_create(s);
   srunner_add_suite(sr, make_sub2_suite());
-  srunner_run_all(sr, CRSILENT);
+  srunner_run_all(sr, CK_SILENT);
   tr_fail_array = srunner_failures(sr);
   tr_all_array = srunner_results(sr);
   sub_nfailed = srunner_ntests_failed(sr);

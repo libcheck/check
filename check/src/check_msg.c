@@ -28,6 +28,11 @@
 #include "check_msg.h"
 #include "check_pack.h"
 
+struct MsgKey
+{
+  int key;
+};
+
 typedef struct Pipe 
 {
   int sendfd;
@@ -39,23 +44,22 @@ typedef struct PipeEntry
   int key;
   Pipe *p1;
   Pipe *p2;
-  Pipe *p3;
   int cur;
 } PipeEntry;
 
 List *plst = NULL;
 
-static PipeEntry *get_pe_by_key(int key);
-static Pipe *get_pipe_by_key(int key);
-static int get_setup_key (void);
+static PipeEntry *get_pe_by_key(MsgKey *key);
+static Pipe *get_pipe_by_key(MsgKey *key);
+static MsgKey *get_setup_key (void);
 static void setup_pipe (Pipe *p);
-static void setup_messaging_with_key (int key);
-static void teardown_messaging_with_key (int key);
+static void setup_messaging_with_key (MsgKey *key);
+static void teardown_messaging_with_key (MsgKey *key);
 static TestResult *construct_test_result (RcvMsg *rmsg, int waserror);
 static void tr_set_loc_by_ctx (TestResult *tr, enum ck_result_ctx ctx,
 			       RcvMsg *rmsg);
 
-void send_failure_info (int key, char *msg)
+void send_failure_info (MsgKey *key, char *msg)
 {
   FailMsg fmsg;
   Pipe *p;
@@ -67,7 +71,7 @@ void send_failure_info (int key, char *msg)
   ppack(p->sendfd, CK_MSG_FAIL, &fmsg);
 }
 
-void send_loc_info (int key, char * file, int line)
+void send_loc_info (MsgKey *key, char * file, int line)
 {
   LocMsg lmsg;
   Pipe *p;
@@ -80,7 +84,7 @@ void send_loc_info (int key, char * file, int line)
   ppack(p->sendfd, CK_MSG_LOC, &lmsg);
 }
 
-void send_ctx_info (int key,enum ck_result_ctx ctx)
+void send_ctx_info (MsgKey *key,enum ck_result_ctx ctx)
 {
   CtxMsg cmsg;
   Pipe *p;
@@ -93,7 +97,7 @@ void send_ctx_info (int key,enum ck_result_ctx ctx)
   ppack(p->sendfd, CK_MSG_CTX, &cmsg);
 }
 
-TestResult *receive_test_result (int key, int waserror)
+TestResult *receive_test_result (MsgKey *key, int waserror)
 {
   Pipe *p;
   RcvMsg *rmsg;
@@ -152,20 +156,27 @@ void setup_messaging(void)
   setup_messaging_with_key(get_recv_key());
 }
 
-int get_send_key(void)
+MsgKey *get_send_key(void)
 {
+  MsgKey *key = emalloc(sizeof(MsgKey));
+  
   if (cur_fork_status() == CK_FORK)
-    return getppid();
+    key->key = getppid();
   else
-    return getpid();
+    key->key = getpid();
+
+  return key;
 }
 
-int get_recv_key(void)
+MsgKey *get_recv_key(void)
 {
-  return getpid();
+  MsgKey *key = emalloc(sizeof(MsgKey));
+
+  key->key = getpid();
+  return key;
 }
 
-static int get_setup_key (void)
+static MsgKey *get_setup_key (void)
 {
   return get_recv_key();
 }
@@ -181,9 +192,12 @@ void setup_test_messaging(void)
   setup_messaging_with_key(get_test_key());
 }
 
-int get_test_key(void)
+MsgKey *get_test_key(void)
 {
-  return -1;
+  MsgKey *key = emalloc(sizeof(MsgKey));
+  key->key = -1;
+  return key;
+
 }
 
 void teardown_test_messaging(void)
@@ -191,13 +205,13 @@ void teardown_test_messaging(void)
   teardown_messaging_with_key(get_test_key());
 }
 
-static PipeEntry *get_pe_by_key(key)
+static PipeEntry *get_pe_by_key(MsgKey *key)
 {
   PipeEntry *pe = NULL;
   
   for (list_front(plst); !list_at_end(plst); list_advance(plst)) {
     PipeEntry *p = list_val(plst);
-    if (p->key == key) {
+    if (p->key == key->key) {
       pe = p;
       break;
     }
@@ -206,7 +220,7 @@ static PipeEntry *get_pe_by_key(key)
   return pe;
 }
 
-static Pipe *get_pipe_by_key(int key)
+static Pipe *get_pipe_by_key(MsgKey *key)
 {
   Pipe *pr = NULL;
   PipeEntry *pe = get_pe_by_key(key);
@@ -218,8 +232,6 @@ static Pipe *get_pipe_by_key(int key)
     pr = pe->p1;
   else if (pe->cur == 2)
     pr = pe->p2;
-  else if (pe->cur == 3)
-    pr = pe->p3;
   
   return pr;
 }
@@ -233,7 +245,7 @@ static void setup_pipe (Pipe *p)
   p->recvfd = fd[0];
 }
       
-void setup_messaging_with_key (int key)
+void setup_messaging_with_key (MsgKey *key)
 {
   PipeEntry *pe;
 
@@ -244,7 +256,7 @@ void setup_messaging_with_key (int key)
   if (pe == NULL) {
     pe = emalloc(sizeof(PipeEntry));
     pe->cur = 0;
-    pe->key = key;
+    pe->key = key->key;
     list_add_end(plst, pe);
   }
   if (pe->cur == 0) {
@@ -255,16 +267,12 @@ void setup_messaging_with_key (int key)
     pe->cur = 2;
     pe->p2 = emalloc(sizeof(Pipe));
     setup_pipe (pe->p2);
-  } else if (pe->cur == 2) {
-    pe->cur = 3;
-    pe->p3 = emalloc(sizeof(Pipe));
-    setup_pipe (pe->p3);
   } else
-    eprintf("Only two nestings of suite runs supported", __FILE__, __LINE__);
+    eprintf("Only one nesting of suite runs supported", __FILE__, __LINE__);
 
 }
 
-void teardown_messaging_with_key (int key)
+void teardown_messaging_with_key (MsgKey *key)
 {
   PipeEntry *pe = get_pe_by_key(key);
 
@@ -276,9 +284,6 @@ void teardown_messaging_with_key (int key)
   } else if (pe->cur == 2) {
     pe->cur = 1;
     free(pe->p2);
-  } else if (pe->cur == 3) {
-    pe->cur = 2;
-    free(pe->p3);
   }
   
 }

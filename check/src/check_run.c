@@ -111,7 +111,7 @@ void srunner_run_all (SRunner *sr, enum print_output print_mode)
 {
   if (sr == NULL)
     return;
-  if (print_mode < 0 || print_mode >= CRLAST)
+  if (print_mode < 0 || print_mode >= CK_LAST)
     eprintf("Bad print_mode argument to srunner_run_all: %d",
 	    __FILE__, __LINE__, print_mode);
       
@@ -123,14 +123,12 @@ void srunner_run_all (SRunner *sr, enum print_output print_mode)
 static void srunner_add_failure (SRunner *sr, TestResult *tr)
 {  
   list_add_end (sr->resultlst, tr);
-  if (tr->ctx == CK_CTX_TEST) {
+  if (tr->ctx == CK_CTX_TEST)
     sr->stats->n_checked++;
-    if (tr->rtype == CK_FAILURE)
-      sr->stats->n_failed++;
-    else if (tr->rtype == CK_ERROR)
-      sr->stats->n_errors++;
-  } else
+  if (tr->rtype == CK_FAILURE)
     sr->stats->n_failed++;
+  else if (tr->rtype == CK_ERROR)
+    sr->stats->n_errors++;
   
 }
 
@@ -323,7 +321,7 @@ static TestResult *tcase_run_tfun_fork (TCase *tc, TF *tfun)
   if (pid == 0) {
     tcase_run_checked_setup(tc);
     tfun->fn();
-    /*tcase_run_checked_teardown(tc);*/
+    tcase_run_checked_teardown(tc);
     _exit(EXIT_SUCCESS);
   }
   (void) wait(&status);

@@ -190,11 +190,23 @@ cUnit Also uses GLib, but does not fork to protect the address space of
 \end_inset 
 
 .
+\layout Description
+
+CUnit Standard C, with plans for an Win32 GUI implementation.
+ Does not currently fork or otherwise protect the address space of unit
+ tests.
+ In early development.
+ See 
+\begin_inset LatexCommand \htmlurl[http://cunit.sourceforge.net]{http://cunit.sourceforge.net}
+
+\end_inset 
+
+.
 \layout Standard
 
 It is the author's considered opinion that forking or otherwise trapping
  and reporting signals is indispensable for unit testing (but it probably
- wouldn't be hard to add that to cUnit).
+ wouldn't be hard to add that to cUnit or CUnit).
  Try 'em all out: adapt this tutorial to use all of the frameworks above,
  and use whichever you like.
  Contribute, spread the word, and make one a standard.
@@ -202,7 +214,7 @@ It is the author's considered opinion that forking or otherwise trapping
  frameworks; it would be desirable that C have one as well.
 \layout Section
 
-Tutorial
+Tutorial: Basic unit testing
 \layout Standard
 
 This tutorial will use the JUnit Test Infected article (see 
@@ -560,7 +572,7 @@ int main (void)
   SRunner *sr = srunner_create(s); 
 \layout Code
 
-  srunner_run_all (sr, CRNORMAL); 
+  srunner_run_all (sr, CK_NORMAL); 
 \layout Code
 
   nf = srunner_ntests_failed(sr); 
@@ -601,17 +613,66 @@ Unit tests are internally defined as static functions.
 
 The code in main bears some explanation.
  We are creating a suite runner object from the suite we created in money_suite.
- We then run the suite, using the CRNORMAL flag to specify that we should
+ We then run the suite, using the CK_NORMAL flag to specify that we should
  print a summary of the run, and list any failures that may have occurred.
- We could also have specified the CRSILENT flag to specify that no output
- should occur, the CRMINIMAL flag to specify that only the run summary should
- be printed, or the CRVERBOSE flag to indicate that all tests should be
- reported on, whether they passed or failed.
  We capture the number of failures that occurred during the run, and use
  that to decide how to return.
  The check target created by Automake uses the return value to decide whether
  the tests passed or failed.
- Let's rerun make check now: we get the following satisfying output:
+\layout Subsection
+
+SRunner output
+\layout Standard
+
+The function to run tests in an SRunner is defined as follows:
+\layout Code
+
+void srunner_run_all (SRunner *sr, enum print_output print_mode);
+\layout Standard
+
+This function does two things:
+\layout Enumerate
+
+Runs all of the unit tests for all of the test cases defined for all of
+ the suites in the SRunner, and collects the results in the SRunner
+\layout Enumerate
+
+Prints the results according to the print mode specified
+\layout Standard
+
+For SRunners that have already been run, there is also a separate printing
+ function defined as follows:
+\layout Code
+
+void srunner_print (SRunner *sr, enum print_output print_mode);
+\layout Standard
+
+The enumeration values defined in Check to control print output are as follows:
+\layout Description
+
+CK_SILENT Specifies that no output is to be generated.
+ If you use this flag, you either need to programmatically examine the SRunner
+ object, print separately, or use test logging (described below: 
+\begin_inset LatexCommand \ref{test_logging}
+
+\end_inset 
+
+).
+\layout Description
+
+CK_MINIMAL Only a summary of the test run will be printed (number run, passed,
+ failed, errors).
+\layout Description
+
+CK_NORMAL Prints the summary of the run, and prints one message per failed
+ tests.
+\layout Description
+
+CK_VERBOSE Prints the summary, and one message per test (passed or failed)
+\layout Standard
+
+With the CK_NORMAL flag specified, let's rerun make check now.
+ We get the following satisfying output:
 \layout Code
 
 Running suite(s): Money 
@@ -703,6 +764,9 @@ The reason our test failed so horribly is that we haven't implemented money_crea
 te to create any money.
  Go ahead and implement that, and money_currency, to make the unit tests
  pass.
+\layout Section
+
+Advanced Features
 \layout Subsection
 
 Running multiple cases
@@ -816,6 +880,42 @@ Limits,
  giving you additional information about where things broke.
 \layout Subsection
 
+No fork mode
+\layout Standard
+
+Check normally forks to create a separate address space.
+ This allows a signal or early exit to be caught and reported, rather than
+ taking down the entire test program, and is normally very useful.
+ However, when you are trying to debug why the segmentation fault or other
+ program error occurred, forking makes it difficult to use debugging tools.
+ To define fork mode for an SRunner object, you can do one of the following:
+\layout Enumerate
+
+Define the CK_FORK environment variable to equal 
+\begin_inset Quotes eld
+\end_inset 
+
+no
+\begin_inset Quotes erd
+\end_inset 
+
+.
+\layout Enumerate
+
+Explicitly define the fork status through the use of the following function:
+\begin_deeper 
+\layout Code
+
+void srunner_set_fork_status (SRunner *sr, enum fork_status fstat); 
+\end_deeper 
+\layout Standard
+
+The enum fork_status defines the following values: CK_FORK and CK_NOFORK.
+\layout Standard
+
+The explicit definition overrides the environment variable.
+\layout Subsection
+
 Test fixtures
 \layout Standard
 
@@ -824,7 +924,35 @@ We may want multiple tests that all use the same Money.
  unit test, it may be convenient to add some setup that is constant across
  all the tests in a test case.
  In the extreme programming approach to unit tests, such setup is called
- a test fixture, and we create one in Check as follows:
+ a test fixture.
+\layout Standard
+
+A fixture is created by defining a setup and/or a teardown function, and
+ associating it with a test case.
+ There are two kinds of test fixtures in Check: checked and unchecked fixtures.
+ These are defined as follows:
+\layout Description
+
+Checked\SpecialChar ~
+fixtures are run inside the address space created by the fork to
+ create the unit test.
+ Before each unit test, the setup function is run, if defined.
+ After each unit test, the teardown function is run, if defined.
+ Because they run inside the forked address space, if checked fixtures signal
+ or otherwise fail, they will be caught and reported by the SRunner.
+\layout Description
+
+Unchecked\SpecialChar ~
+fixtures are run before and after the run of unit tests for a test
+ case.
+ They may use the fail functions, but may not signal or exit, since they
+ are run in the same address space as the test program.
+\layout Subsubsection
+
+Test fixture examples
+\layout Standard
+
+We create a test fixture in Check as follows:
 \layout Enumerate
 
 Define the global variables, and functions to setup and teardown the globals.
@@ -863,7 +991,7 @@ Add the setup and teardown functions to the test case with
 \begin_inset Quotes eld
 \end_inset 
 
-tcase_set_fixture
+tcase_add_checked_fixture
 \begin_inset Quotes erd
 \end_inset 
 
@@ -879,7 +1007,7 @@ money_suite
 \begin_deeper 
 \layout Code
 
-tcase_set_fixture (tc_core, setup, teardown);
+tcase_add_checked_fixture (tc_core, setup, teardown);
 \end_deeper 
 \layout Enumerate
 
@@ -910,24 +1038,37 @@ START_TEST(test_create)
 
 END_TEST
 \end_deeper 
+\layout Subsubsection
+
+Checked vs Unchecked fixtures
 \layout Standard
 
-There are currently some limitations to the setup/teardown functions.
- They are run outside of the unit tests, and in the same address space as
- the main test program.
- This means two things:
-\layout Enumerate
-
-If the setup or teardown functions signal or exit they will take down the
- entire test program.
-\layout Enumerate
-
-fail and friends can't be used within the setup/teardown functions to test
- setup code.
+Because checked fixtures run once per unit test, they should not be used
+ for expensive setup.
+ Because unchecked fixtures may take down the entire test program, they
+ should only be used if they are known to be safe.
 \layout Standard
 
-The setup and teardown functions are always called (unless, of course, setup
- brings down the whole test program :-).
+Additionally, checked and uncheck fixtures may behave differently in CK_NOFORK
+ mode.
+ Because the fork creates a separate address space, in CK_FORK mode unit
+ tests may abuse the objects created in an unchecked fixture with impunity,
+ without affecting other unit tests in the same test case.
+ However, in CK_NOFORK mode, all tests live in the same address space, and
+ side effects in one test will affect the unchecked fixture for other tests.
+ A checked fixture, however, will generally not be affected by unit test
+ side effects, since the setup is run before each unit test.
+ (There is an exception for side effects to the total environment in which
+ the test program lives: e.g., if the setup function initializes a file that
+ a unit test then changes, the combination of the teardown function and
+ setup fuction must be able to restore the environment for the next unit
+ test).
+\layout Standard
+
+If the setup function in a fixture fails, in either checked or unchecked
+ fixtures, the unit tests for the test case, and the teardown function for
+ the fixture will not be run.
+ A fixture error will be created and reported to the SRunner.
 \layout Subsection
 
 Multiple suites run through the same SRunner
@@ -979,6 +1120,11 @@ srunner_add_suite(sr, make_msg_suite());
 
 srunner_add_suite(sr, make_log_suite()); 
 \layout Subsection
+
+
+\begin_inset LatexCommand \label{test_logging}
+
+\end_inset 
 
 Test Logging
 \layout Standard

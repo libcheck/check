@@ -1,7 +1,6 @@
-# Makefile.in generated automatically by automake 1.5 from Makefile.am.
+# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
 
-# Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
-# Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -11,7 +10,6 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-@SET_MAKE@
 
 SHELL = @SHELL@
 
@@ -33,9 +31,13 @@ infodir = @infodir@
 mandir = @mandir@
 includedir = @includedir@
 oldincludedir = /usr/include
+
+DESTDIR =
+
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
+
 top_builddir = ..
 
 ACLOCAL = @ACLOCAL@
@@ -44,406 +46,330 @@ AUTOMAKE = @AUTOMAKE@
 AUTOHEADER = @AUTOHEADER@
 
 INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
-INSTALL_HEADER = $(INSTALL_DATA)
 transform = @program_transform_name@
+
 NORMAL_INSTALL = :
 PRE_INSTALL = :
 POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-AMTAR = @AMTAR@
 AWK = @AWK@
 CC = @CC@
-DEPDIR = @DEPDIR@
-EXEEXT = @EXEEXT@
-INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LN_S = @LN_S@
-OBJEXT = @OBJEXT@
+MAKEINFO = @MAKEINFO@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
-am__include = @am__include@
-am__quote = @am__quote@
 have_sgmltools = @have_sgmltools@
-install_sh = @install_sh@
 
-TESTS = \
-	check_check\
-	test_output.sh\
-	test_log_output.sh
+TESTS =  	check_check 	test_output.sh 	test_log_output.sh
 
 
-#	test_setup_output.sh
-noinst_PROGRAMS = \
-	check_check\
-	check_stress\
-	ex_output\
-	ex_log_output\
-	ex_setup_output
+noinst_PROGRAMS =  	check_check 	check_stress 	ex_output 	ex_log_output
 
 
 EXTRA_DIST = test_output.sh test_log_output.sh
 
-check_check_SOURCES = \
-	check_check.h\
-	check_list.c\
-	check_check_sub.c\
-	check_check_master.c\
-	check_check_msg.c\
-	check_check_log.c\
-	check_check_limit.c\
-	check_check_fork.c\
-	check_check_fixture.c\
-	check_check_pack.c\
-	check_check_main.c
+check_check_SOURCES =  	check_check.h 	check_list.c 	check_check_sub.c 	check_check_master.c 	check_check_msg.c 	check_check_log.c 	check_check_limit.c 	check_check_fork.c 	check_check_fixture.c 	check_check_pack.c 	check_check_main.c
 
 
-check_stress_SOURCES = \
-	check_stress.c
+check_stress_SOURCES =  	check_stress.c
 
 
-ex_output_SOURCES = \
-	ex_output.c
+ex_output_SOURCES =  	ex_output.c
 
 
-ex_log_output_SOURCES = \
-	ex_log_output.c
-
-
-ex_setup_output_SOURCES = \
-	ex_setup_output.c
+ex_log_output_SOURCES =  	ex_log_output.c
 
 
 INCLUDES = -I$(srcdir)/../src
 LDADD = ../src/libcheck.a
 
 CLEANFILES = *.*~ *.log test_logfile
-subdir = tests
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/config.h
-CONFIG_CLEAN_FILES =
-noinst_PROGRAMS = check_check$(EXEEXT) check_stress$(EXEEXT) \
-	ex_output$(EXEEXT) ex_log_output$(EXEEXT) \
-	ex_setup_output$(EXEEXT)
-PROGRAMS = $(noinst_PROGRAMS)
+CONFIG_HEADER = ../config.h
+CONFIG_CLEAN_FILES = 
+PROGRAMS =  $(noinst_PROGRAMS)
 
-am_check_check_OBJECTS = check_list.$(OBJEXT) check_check_sub.$(OBJEXT) \
-	check_check_master.$(OBJEXT) check_check_msg.$(OBJEXT) \
-	check_check_log.$(OBJEXT) check_check_limit.$(OBJEXT) \
-	check_check_fork.$(OBJEXT) check_check_fixture.$(OBJEXT) \
-	check_check_pack.$(OBJEXT) check_check_main.$(OBJEXT)
-check_check_OBJECTS = $(am_check_check_OBJECTS)
-check_check_LDADD = $(LDADD)
-check_check_DEPENDENCIES = ../src/libcheck.a
-check_check_LDFLAGS =
-am_check_stress_OBJECTS = check_stress.$(OBJEXT)
-check_stress_OBJECTS = $(am_check_stress_OBJECTS)
-check_stress_LDADD = $(LDADD)
-check_stress_DEPENDENCIES = ../src/libcheck.a
-check_stress_LDFLAGS =
-am_ex_log_output_OBJECTS = ex_log_output.$(OBJEXT)
-ex_log_output_OBJECTS = $(am_ex_log_output_OBJECTS)
-ex_log_output_LDADD = $(LDADD)
-ex_log_output_DEPENDENCIES = ../src/libcheck.a
-ex_log_output_LDFLAGS =
-am_ex_output_OBJECTS = ex_output.$(OBJEXT)
-ex_output_OBJECTS = $(am_ex_output_OBJECTS)
-ex_output_LDADD = $(LDADD)
-ex_output_DEPENDENCIES = ../src/libcheck.a
-ex_output_LDFLAGS =
-am_ex_setup_output_OBJECTS = ex_setup_output.$(OBJEXT)
-ex_setup_output_OBJECTS = $(am_ex_setup_output_OBJECTS)
-ex_setup_output_LDADD = $(LDADD)
-ex_setup_output_DEPENDENCIES = ../src/libcheck.a
-ex_setup_output_LDFLAGS =
 
-DEFS = @DEFS@
-DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-depcomp = $(SHELL) $(top_srcdir)/depcomp
-@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/check_check_fixture.Po \
-@AMDEP_TRUE@	$(DEPDIR)/check_check_fork.Po \
-@AMDEP_TRUE@	$(DEPDIR)/check_check_limit.Po \
-@AMDEP_TRUE@	$(DEPDIR)/check_check_log.Po \
-@AMDEP_TRUE@	$(DEPDIR)/check_check_main.Po \
-@AMDEP_TRUE@	$(DEPDIR)/check_check_master.Po \
-@AMDEP_TRUE@	$(DEPDIR)/check_check_msg.Po \
-@AMDEP_TRUE@	$(DEPDIR)/check_check_pack.Po \
-@AMDEP_TRUE@	$(DEPDIR)/check_check_sub.Po \
-@AMDEP_TRUE@	$(DEPDIR)/check_list.Po $(DEPDIR)/check_stress.Po \
-@AMDEP_TRUE@	$(DEPDIR)/ex_log_output.Po $(DEPDIR)/ex_output.Po \
-@AMDEP_TRUE@	$(DEPDIR)/ex_setup_output.Po
-COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
-	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-CCLD = $(CC)
-LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+check_check_OBJECTS =  check_list.o check_check_sub.o \
+check_check_master.o check_check_msg.o check_check_log.o \
+check_check_limit.o check_check_fork.o check_check_fixture.o \
+check_check_pack.o check_check_main.o
+check_check_LDADD = $(LDADD)
+check_check_DEPENDENCIES =  ../src/libcheck.a
+check_check_LDFLAGS = 
+check_stress_OBJECTS =  check_stress.o
+check_stress_LDADD = $(LDADD)
+check_stress_DEPENDENCIES =  ../src/libcheck.a
+check_stress_LDFLAGS = 
+ex_output_OBJECTS =  ex_output.o
+ex_output_LDADD = $(LDADD)
+ex_output_DEPENDENCIES =  ../src/libcheck.a
+ex_output_LDFLAGS = 
+ex_log_output_OBJECTS =  ex_log_output.o
+ex_log_output_LDADD = $(LDADD)
+ex_log_output_DEPENDENCIES =  ../src/libcheck.a
+ex_log_output_LDFLAGS = 
 CFLAGS = @CFLAGS@
-DIST_SOURCES = $(check_check_SOURCES) $(check_stress_SOURCES) \
-	$(ex_log_output_SOURCES) $(ex_output_SOURCES) \
-	$(ex_setup_output_SOURCES)
-DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(check_check_SOURCES) $(check_stress_SOURCES) $(ex_log_output_SOURCES) $(ex_output_SOURCES) $(ex_setup_output_SOURCES)
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+DIST_COMMON =  Makefile.am Makefile.in
 
-all: all-am
 
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = tar
+GZIP_ENV = --best
+DEP_FILES =  .deps/check_check_fixture.P .deps/check_check_fork.P \
+.deps/check_check_limit.P .deps/check_check_log.P \
+.deps/check_check_main.P .deps/check_check_master.P \
+.deps/check_check_msg.P .deps/check_check_pack.P \
+.deps/check_check_sub.P .deps/check_list.P .deps/check_stress.P \
+.deps/ex_log_output.P .deps/ex_output.P
+SOURCES = $(check_check_SOURCES) $(check_stress_SOURCES) $(ex_output_SOURCES) $(ex_log_output_SOURCES)
+OBJECTS = $(check_check_OBJECTS) $(check_stress_OBJECTS) $(ex_output_OBJECTS) $(ex_log_output_OBJECTS)
+
+all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .c .o .obj
-$(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
-	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  tests/Makefile
-Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
-	cd $(top_builddir) && \
-	  CONFIG_HEADERS= CONFIG_LINKS= \
-	  CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
+.SUFFIXES: .S .c .o .s
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu tests/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-noinstPROGRAMS:
 
 clean-noinstPROGRAMS:
 	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
-check_check$(EXEEXT): $(check_check_OBJECTS) $(check_check_DEPENDENCIES) 
-	@rm -f check_check$(EXEEXT)
-	$(LINK) $(check_check_LDFLAGS) $(check_check_OBJECTS) $(check_check_LDADD) $(LIBS)
-check_stress$(EXEEXT): $(check_stress_OBJECTS) $(check_stress_DEPENDENCIES) 
-	@rm -f check_stress$(EXEEXT)
-	$(LINK) $(check_stress_LDFLAGS) $(check_stress_OBJECTS) $(check_stress_LDADD) $(LIBS)
-ex_log_output$(EXEEXT): $(ex_log_output_OBJECTS) $(ex_log_output_DEPENDENCIES) 
-	@rm -f ex_log_output$(EXEEXT)
-	$(LINK) $(ex_log_output_LDFLAGS) $(ex_log_output_OBJECTS) $(ex_log_output_LDADD) $(LIBS)
-ex_output$(EXEEXT): $(ex_output_OBJECTS) $(ex_output_DEPENDENCIES) 
-	@rm -f ex_output$(EXEEXT)
-	$(LINK) $(ex_output_LDFLAGS) $(ex_output_OBJECTS) $(ex_output_LDADD) $(LIBS)
-ex_setup_output$(EXEEXT): $(ex_setup_output_OBJECTS) $(ex_setup_output_DEPENDENCIES) 
-	@rm -f ex_setup_output$(EXEEXT)
-	$(LINK) $(ex_setup_output_LDFLAGS) $(ex_setup_output_OBJECTS) $(ex_setup_output_LDADD) $(LIBS)
+
+distclean-noinstPROGRAMS:
+
+maintainer-clean-noinstPROGRAMS:
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
 
 mostlyclean-compile:
-	-rm -f *.$(OBJEXT) core *.core
+	-rm -f *.o core *.core
+
+clean-compile:
 
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/check_check_fixture.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/check_check_fork.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/check_check_limit.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/check_check_log.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/check_check_main.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/check_check_master.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/check_check_msg.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/check_check_pack.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/check_check_sub.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/check_list.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/check_stress.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ex_log_output.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ex_output.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ex_setup_output.Po@am__quote@
+maintainer-clean-compile:
 
-distclean-depend:
-	-rm -rf $(DEPDIR)
+check_check: $(check_check_OBJECTS) $(check_check_DEPENDENCIES)
+	@rm -f check_check
+	$(LINK) $(check_check_LDFLAGS) $(check_check_OBJECTS) $(check_check_LDADD) $(LIBS)
 
-.c.o:
-@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(COMPILE) -c `test -f $< || echo '$(srcdir)/'`$<
+check_stress: $(check_stress_OBJECTS) $(check_stress_DEPENDENCIES)
+	@rm -f check_stress
+	$(LINK) $(check_stress_LDFLAGS) $(check_stress_OBJECTS) $(check_stress_LDADD) $(LIBS)
 
-.c.obj:
-@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(COMPILE) -c `cygpath -w $<`
-CCDEPMODE = @CCDEPMODE@
-uninstall-info-am:
+ex_output: $(ex_output_OBJECTS) $(ex_output_DEPENDENCIES)
+	@rm -f ex_output
+	$(LINK) $(ex_output_LDFLAGS) $(ex_output_OBJECTS) $(ex_output_LDADD) $(LIBS)
+
+ex_log_output: $(ex_log_output_OBJECTS) $(ex_log_output_DEPENDENCIES)
+	@rm -f ex_log_output
+	$(LINK) $(ex_log_output_LDFLAGS) $(ex_log_output_OBJECTS) $(ex_log_output_LDADD) $(LIBS)
 
 tags: TAGS
 
-ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
-	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
-	unique=`for i in $$list; do \
-	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
-	  done | \
-	  $(AWK) '    { files[$$0] = 1; } \
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
-	mkid -fID $$unique $(LISP)
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
 
-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
-		$(TAGS_FILES) $(LISP)
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
-	unique=`for i in $$list; do \
-	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
-	  done | \
-	  $(AWK) '    { files[$$0] = 1; } \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || etags $(ETAGS_ARGS) $$tags  $$unique $(LISP)
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
-GTAGS:
-	here=`CDPATH=: && cd $(top_builddir) && pwd` \
-	  && cd $(top_srcdir) \
-	  && gtags -i $(GTAGS_ARGS) $$here
+mostlyclean-tags:
+
+clean-tags:
 
 distclean-tags:
-	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH
+	-rm -f TAGS ID
 
-check-TESTS: $(TESTS)
-	@failed=0; all=0; xfail=0; xpass=0; \
-	srcdir=$(srcdir); export srcdir; \
-	list='$(TESTS)'; \
-	if test -n "$$list"; then \
-	  for tst in $$list; do \
-	    if test -f ./$$tst; then dir=./; \
-	    elif test -f $$tst; then dir=; \
-	    else dir="$(srcdir)/"; fi; \
-	    if $(TESTS_ENVIRONMENT) $${dir}$$tst; then \
-	      all=`expr $$all + 1`; \
-	      case " $(XFAIL_TESTS) " in \
-	      *" $$tst "*) \
-	        xpass=`expr $$xpass + 1`; \
-	        failed=`expr $$failed + 1`; \
-	        echo "XPASS: $$tst"; \
-	      ;; \
-	      *) \
-	        echo "PASS: $$tst"; \
-	      ;; \
-	      esac; \
-	    elif test $$? -ne 77; then \
-	      all=`expr $$all + 1`; \
-	      case " $(XFAIL_TESTS) " in \
-	      *" $$tst "*) \
-	        xfail=`expr $$xfail + 1`; \
-	        echo "XFAIL: $$tst"; \
-	      ;; \
-	      *) \
-	        failed=`expr $$failed + 1`; \
-	        echo "FAIL: $$tst"; \
-	      ;; \
-	      esac; \
-	    fi; \
-	  done; \
-	  if test "$$failed" -eq 0; then \
-	    if test "$$xfail" -eq 0; then \
-	      banner="All $$all tests passed"; \
-	    else \
-	      banner="All $$all tests behaved as expected ($$xfail expected failures)"; \
-	    fi; \
-	  else \
-	    if test "$$xpass" -eq 0; then \
-	      banner="$$failed of $$all tests failed"; \
-	    else \
-	      banner="$$failed of $$all tests did not behave as expected ($$xpass unexpected passes)"; \
-	    fi; \
-	  fi; \
-	  dashes=`echo "$$banner" | sed s/./=/g`; \
-	  echo "$$dashes"; \
-	  echo "$$banner"; \
-	  echo "$$dashes"; \
-	  test "$$failed" -eq 0; \
-	fi
+maintainer-clean-tags:
 
-DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-top_distdir = ..
-distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
+subdir = tests
 
 distdir: $(DISTFILES)
+	here=`cd $(top_builddir) && pwd`; \
+	top_distdir=`cd $(top_distdir) && pwd`; \
+	distdir=`cd $(distdir) && pwd`; \
+	cd $(top_srcdir) \
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu tests/Makefile
 	@for file in $(DISTFILES); do \
-	  if test -f $$file; then d=.; else d=$(srcdir); fi; \
-	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
-	  if test "$$dir" != "$$file" && test "$$dir" != "."; then \
-	    $(mkinstalldirs) "$(distdir)/$$dir"; \
-	  fi; \
+	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pR $$d/$$file $(distdir) \
-	    || exit 1; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
-	    || cp -p $$d/$$file $(distdir)/$$file \
-	    || exit 1; \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+
+DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
+
+-include $(DEP_FILES)
+
+mostlyclean-depend:
+
+clean-depend:
+
+distclean-depend:
+	-rm -rf .deps
+
+maintainer-clean-depend:
+
+%.o: %.c
+	@echo '$(COMPILE) -c $<'; \
+	$(COMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm .deps/$(*F).pp
+
+%.lo: %.c
+	@echo '$(LTCOMPILE) -c $<'; \
+	$(LTCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-sed -e 's/^\([^:]*\)\.o[ 	]*:/\1.lo \1.o :/' \
+	  < .deps/$(*F).pp > .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm -f .deps/$(*F).pp
+check-TESTS: $(TESTS)
+	@failed=0; all=0; \
+	srcdir=$(srcdir); export srcdir; \
+	for tst in $(TESTS); do \
+	  if test -f $$tst; then dir=.; \
+	  else dir="$(srcdir)"; fi; \
+	  if $(TESTS_ENVIRONMENT) $$dir/$$tst; then \
+	    all=`expr $$all + 1`; \
+	    echo "PASS: $$tst"; \
+	  elif test $$? -ne 77; then \
+	    all=`expr $$all + 1`; \
+	    failed=`expr $$failed + 1`; \
+	    echo "FAIL: $$tst"; \
+	  fi; \
+	done; \
+	if test "$$failed" -eq 0; then \
+	  banner="All $$all tests passed"; \
+	else \
+	  banner="$$failed of $$all tests failed"; \
+	fi; \
+	dashes=`echo "$$banner" | sed s/./=/g`; \
+	echo "$$dashes"; \
+	echo "$$banner"; \
+	echo "$$dashes"; \
+	test "$$failed" -eq 0
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
 check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-am
-all-am: Makefile $(PROGRAMS)
-
-installdirs:
-
-install: install-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am:
 install-exec: install-exec-am
+
+install-data-am:
 install-data: install-data-am
-uninstall: uninstall-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
-
-installcheck: installcheck-am
+install: install-am
+uninstall-am:
+uninstall: uninstall-am
+all-am: Makefile $(PROGRAMS)
+all-redirect: all-am
 install-strip:
-	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
-	  `test -z '$(STRIP)' || \
-	    echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+
+
 mostlyclean-generic:
 
 clean-generic:
 	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
-	-rm -f Makefile $(CONFIG_CLEAN_FILES) stamp-h stamp-h[0-9]*
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-	@echo "This command is intended for maintainers to use"
-	@echo "it deletes files that may require special tools to rebuild."
-clean: clean-am
-
-clean-am: clean-generic clean-noinstPROGRAMS mostlyclean-am
-
-distclean: distclean-am
-
-distclean-am: clean-am distclean-compile distclean-depend \
-	distclean-generic distclean-tags
-
-dvi: dvi-am
-
-dvi-am:
-
-info: info-am
-
-info-am:
-
-install-data-am:
-
-install-exec-am:
-
-install-info: install-info-am
-
-install-man:
-
-installcheck-am:
-
-maintainer-clean: maintainer-clean-am
-
-maintainer-clean-am: distclean-am maintainer-clean-generic
+mostlyclean-am:  mostlyclean-noinstPROGRAMS mostlyclean-compile \
+		mostlyclean-tags mostlyclean-depend mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-mostlyclean-am: mostlyclean-compile mostlyclean-generic
+clean-am:  clean-noinstPROGRAMS clean-compile clean-tags clean-depend \
+		clean-generic mostlyclean-am
 
-uninstall-am: uninstall-info-am
+clean: clean-am
 
-.PHONY: GTAGS all all-am check check-TESTS check-am clean clean-generic \
-	clean-noinstPROGRAMS distclean distclean-compile \
-	distclean-depend distclean-generic distclean-tags distdir dvi \
-	dvi-am info info-am install install-am install-data \
-	install-data-am install-exec install-exec-am install-info \
-	install-info-am install-man install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic tags uninstall uninstall-am \
-	uninstall-info-am
+distclean-am:  distclean-noinstPROGRAMS distclean-compile distclean-tags \
+		distclean-depend distclean-generic clean-am
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-noinstPROGRAMS \
+		maintainer-clean-compile maintainer-clean-tags \
+		maintainer-clean-depend maintainer-clean-generic \
+		distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-noinstPROGRAMS distclean-noinstPROGRAMS \
+clean-noinstPROGRAMS maintainer-clean-noinstPROGRAMS \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir mostlyclean-depend \
+distclean-depend clean-depend maintainer-clean-depend check-TESTS \
+info-am info dvi-am dvi check check-am installcheck-am installcheck \
+install-exec-am install-exec install-data-am install-data install-am \
+install uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

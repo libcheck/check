@@ -13,10 +13,10 @@ ex_output.c:7:P:Core: Passed
 ex_output.c:13:F:Core: Failure
 ex_output.c:17:E:Core: (after this point) Early exit with return value 1"
 
-op0=`./ex_output CRSILENT`
-op1=`./ex_output CRMINIMAL`
-op2=`./ex_output CRNORMAL`
-op3=`./ex_output CRVERBOSE`
+op0=`./ex_output CK_SILENT`
+op1=`./ex_output CK_MINIMAL`
+op2=`./ex_output CK_NORMAL`
+op3=`./ex_output CK_VERBOSE`
 
 
 test_output ( ) {
@@ -31,8 +31,8 @@ test_output ( ) {
     
 }
 
-test_output "$t0" x"$op0" "CRSILENT";
-test_output "$t1" x"$op1" "CRMINIMAL";
-test_output "$t2" x"$op2" "CRNORMAL";
-test_output "$t3" x"$op3" "CRVERBOSE";
+test_output "$t0" x"$op0" "CK_SILENT";
+test_output "$t1" x"$op1" "CK_MINIMAL";
+test_output "$t2" x"$op2" "CK_NORMAL";
+test_output "$t3" x"$op3" "CK_VERBOSE";
 exit 0

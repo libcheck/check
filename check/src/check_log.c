@@ -103,18 +103,18 @@ void stdout_lfun (SRunner *sr, FILE *file, enum print_output printmode,
   
   switch (evt) {
   case CLSTART_SR:
-    if (printmode > CRSILENT) {
+    if (printmode > CK_SILENT) {
       fprintf(file, "Running suite(s):");
     }
     break;
   case CLSTART_S:
     s = obj;
-    if (printmode > CRSILENT) {
+    if (printmode > CK_SILENT) {
       fprintf(file, " %s", s->name);
     }
     break;
   case CLEND_SR:
-    if (printmode > CRSILENT) {
+    if (printmode > CK_SILENT) {
       fprintf (file, "\n");
       srunner_fprint (file, sr, printmode);
     }
@@ -147,14 +147,14 @@ void lfile_lfun (SRunner *sr, FILE *file, enum print_output printmode,
     break;
   case CLEND_SR:
     fprintf (file, "Results for all suites run:\n");
-    srunner_fprint (file, sr, CRMINIMAL);
+    srunner_fprint (file, sr, CK_MINIMAL);
     break;
   case CLEND_S:
     s = obj;
     break;
   case CLEND_T:
     tr = obj;
-    tr_fprint(file, tr, CRVERBOSE);
+    tr_fprint(file, tr, CK_VERBOSE);
     break;
   default:
     eprintf("Bad event type received in stdout_lfun", __FILE__, __LINE__);

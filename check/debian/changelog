@@ -1,3 +1,9 @@
+check (0.8.0-1) unstable; urgency=low
+
+  * See upstream changelog
+
+ -- Arien Malec <arien_malec@yahoo.com>  Wed, 24 Oct 2001 10:17:24 +0000
+
 check (0.7.3-1) unstable; urgency=low
 
   * Bug fix to Autoconf macro for shell portability & to debian doc-base

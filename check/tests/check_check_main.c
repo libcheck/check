@@ -21,7 +21,7 @@ int main (void)
   
   setup();
   printf ("Ran %d tests in subordinate suite\n", sub_nfailed);
-  srunner_run_all (sr, CRNORMAL);
+  srunner_run_all (sr, CK_NORMAL);
   cleanup();
   fork_teardown();
   teardown_fixture();

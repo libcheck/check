@@ -11,7 +11,7 @@ static void limit_setup (void)
 {
   Suite *s = suite_create("Empty");
   sr = srunner_create(s);
-  srunner_run_all(sr, CRSILENT);
+  srunner_run_all(sr, CK_SILENT);
 }
 
 static void limit_teardown (void)

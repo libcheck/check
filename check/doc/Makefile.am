@@ -21,15 +21,17 @@ html_docs =\
 	tutorial-1.html\
 	tutorial-2.html\
 	tutorial-3.html\
+	tutorial-5.html\
 	tutorial-4.html
 
 
-EXTRA_DIST = $(lyx_docs)
+EXTRA_DIST = $(lyx_docs) $(sgml_docs) $(html_docs)
 
 if MAKE_DOC
 doc_DATA = $(lyx_docs) $(sgml_docs) $(html_docs)
+CLEANFILES = $(sgml_docs) $(html_docs) *.*~
 else
 doc_DATA = $(lyx_docs)
+CLEANFILES=*.*~
 endif
 
-CLEANFILES = $(sgml_docs) $(html_docs) *.*~

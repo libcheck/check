@@ -2,14 +2,12 @@ TESTS=\
 	check_check\
 	test_output.sh\
 	test_log_output.sh
-#	test_setup_output.sh
 
 noinst_PROGRAMS=\
 	check_check\
 	check_stress\
 	ex_output\
-	ex_log_output\
-	ex_setup_output
+	ex_log_output
 
 EXTRA_DIST=test_output.sh test_log_output.sh
 
@@ -35,8 +33,6 @@ ex_output_SOURCES=\
 ex_log_output_SOURCES=\
 	ex_log_output.c
 
-ex_setup_output_SOURCES=\
-	ex_setup_output.c
 
 INCLUDES= -I$(srcdir)/../src
 LDADD= ../src/libcheck.a

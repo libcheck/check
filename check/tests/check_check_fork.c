@@ -63,7 +63,7 @@ void fork_setup (void)
   fork_sr = srunner_create(fork_s);
   fork_dummy_sr = srunner_create (fork_s);
   srunner_set_fork_status(fork_sr,CK_NOFORK);
-  srunner_run_all(fork_sr,CRSILENT);
+  srunner_run_all(fork_sr,CK_SILENT);
 }
 
 void fork_teardown (void)
@@ -95,6 +95,15 @@ START_TEST(test_env)
 }
 END_TEST
 
+START_TEST(test_env_and_set)
+{
+  putenv("CK_FORK=no");
+  srunner_set_fork_status(fork_dummy_sr, CK_FORK);  
+  fail_unless(srunner_fork_status(fork_dummy_sr) == CK_FORK,
+	      "Explicit setting of fork status should override env");
+}
+END_TEST
+
 
 START_TEST(test_nofork)
 {
@@ -115,6 +124,7 @@ Suite *make_fork_suite(void)
   tcase_add_test(tc,test_default_fork);
   tcase_add_test(tc,test_set_fork);
   tcase_add_test(tc,test_env);
+  tcase_add_test(tc,test_env_and_set);
   tcase_add_test(tc,test_nofork);
   
   return s;

@@ -179,11 +179,11 @@ enum test_result {
 
 /* Specifies the how much output an SRunner should produce */
 enum print_output {
-  CRSILENT, /* No output */
-  CRMINIMAL, /* Only summary output */
-  CRNORMAL, /* All failed tests */
-  CRVERBOSE, /* All tests */
-  CRLAST
+  CK_SILENT, /* No output */
+  CK_MINIMAL, /* Only summary output */
+  CK_NORMAL, /* All failed tests */
+  CK_VERBOSE, /* All tests */
+  CK_LAST
 };
 
 

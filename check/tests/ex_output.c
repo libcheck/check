@@ -49,20 +49,20 @@ int main (int argc, char **argv)
 {
   
   if (argc != 2) {
-    printf ("Usage: ex_output (CRSILENT | CRMINIMAL | CRNORMAL | CRVERBOSE)\n");
+    printf ("Usage: ex_output (CK_SILENT | CK_MINIMAL | CK_NORMAL | CK_VERBOSE)\n");
     return EXIT_FAILURE;
   }
 
-  if (strcmp (argv[1], "CRSILENT") == 0)
-    run_tests(CRSILENT);
-  else if (strcmp (argv[1], "CRMINIMAL") == 0)
-    run_tests(CRMINIMAL);
-  else if (strcmp (argv[1], "CRNORMAL") == 0)
-    run_tests(CRNORMAL);
-  else if (strcmp (argv[1], "CRVERBOSE") == 0)
-    run_tests(CRVERBOSE);
+  if (strcmp (argv[1], "CK_SILENT") == 0)
+    run_tests(CK_SILENT);
+  else if (strcmp (argv[1], "CK_MINIMAL") == 0)
+    run_tests(CK_MINIMAL);
+  else if (strcmp (argv[1], "CK_NORMAL") == 0)
+    run_tests(CK_NORMAL);
+  else if (strcmp (argv[1], "CK_VERBOSE") == 0)
+    run_tests(CK_VERBOSE);
   else {
-    printf ("Usage: ex_output (CRSILENT | CRMINIMAL | CRNORMAL | CRVERBOSE)\n");
+    printf ("Usage: ex_output (CK_SILENT | CK_MINIMAL | CK_NORMAL | CK_VERBOSE)\n");
     return EXIT_FAILURE;
   }    
     

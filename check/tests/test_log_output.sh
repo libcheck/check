@@ -25,8 +25,8 @@ test_log_output ( ) {
     
 }
 
-test_log_output "CRSILENT";
-test_log_output "CRMINIMAL";
-test_log_output "CRNORMAL";
-test_log_output "CRVERBOSE";
+test_log_output "CK_SILENT";
+test_log_output "CK_MINIMAL";
+test_log_output "CK_NORMAL";
+test_log_output "CK_VERBOSE";
 exit 0

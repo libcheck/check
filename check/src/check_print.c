@@ -46,7 +46,7 @@ void srunner_fprint (FILE *file, SRunner *sr, enum print_output print_mode)
 static void srunner_fprint_summary (FILE *file, SRunner *sr,
 				    enum print_output print_mode)
 {
-  if (print_mode >= CRMINIMAL) {
+  if (print_mode >= CK_MINIMAL) {
     char *str;
 
     str = sr_stat_str (sr);
@@ -72,8 +72,8 @@ static void srunner_fprint_results (FILE *file, SRunner *sr,
 
 void tr_fprint (FILE *file, TestResult *tr, enum print_output print_mode)
 {
-  if ((print_mode >= CRVERBOSE && tr->rtype == CK_PASS) ||
-      (tr->rtype != CK_PASS && print_mode >= CRNORMAL)) {
+  if ((print_mode >= CK_VERBOSE && tr->rtype == CK_PASS) ||
+      (tr->rtype != CK_PASS && print_mode >= CK_NORMAL)) {
     char *trstr = tr_str (tr);
     fprintf (file,"%s\n", trstr);
     free(trstr);
