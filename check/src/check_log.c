@@ -210,23 +210,21 @@ void xml_lfun (SRunner *sr, FILE *file, enum print_output printmode,
 {
   TestResult *tr;
   Suite *s;
-  static struct tm *now = NULL;
   static struct timeval inittv, endtv;
-  char *t;
+  static char t[sizeof "yyyy-mm-dd hh:mm:ss"] = {0};
 
-  if (now == NULL)
+  if (t[0] == 0)
   {
-    now = emalloc(sizeof(struct tm));
+    struct tm now;
     gettimeofday(&inittv, NULL);
-    localtime_r(&(inittv.tv_sec), now);
+    localtime_r(&(inittv.tv_sec), &now);
+    strftime(t, sizeof("yyyy-mm-dd hh:mm:ss"), "%Y-%m-%d %H:%M:%S", &now);
   }
 
   switch (evt) {
   case CLINITLOG_SR:
     fprintf(file, "<?xml version=\"1.0\"?>\n");
     fprintf(file, "<testsuites xmlns=\"http://check.sourceforge.net/ns\">\n");
-    t = emalloc(sizeof("yyyy-mm-dd hh:mm:ss"));
-    strftime(t, sizeof("yyyy-mm-dd hh:mm:ss"), "%Y-%m-%d %H:%M:%S", now);
     fprintf(file, "  <datetime>%s</datetime>\n", t);
     break;
   case CLENDLOG_SR:
