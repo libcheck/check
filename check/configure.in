@@ -4,7 +4,7 @@ AC_INIT(src/check.c)
 
 CHECK_MAJOR_VERSION=0
 CHECK_MINOR_VERSION=8
-CHECK_MICRO_VERSION=3
+CHECK_MICRO_VERSION=4
 CHECK_VERSION=$CHECK_MAJOR_VERSION.$CHECK_MINOR_VERSION.$CHECK_MICRO_VERSION
 
 AM_INIT_AUTOMAKE(check,$CHECK_VERSION)
@@ -35,16 +35,16 @@ fi
 CK_LYX_LINUXDOC([have_lyx="yes"],[have_lyx="no"])
 AC_CHECK_PROG(have_sgmltools,sgml2html,yes)
 if test x"$have_sgmltools" != "xyes" -o x"$have_lyx" != "xyes" ; then
-	AC_MSG_WARN([required tools not found, not building docs])
+   AC_MSG_WARN([required tools not found, not building docs])
 fi
-AM_CONDITIONAL(MAKE_DOC, test x"$have_lyx" = "xyes" -a x"$have_sgmltools" = "xyes" )
+AM_CONDITIONAL(MAKE_DOC,
+               test x"$have_lyx" = "xyes" -a x"$have_sgmltools" = "xyes" )
 dnl Checks for libraries.
 
 dnl Checks for header files.
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS(unistd.h)
-AM_CONFIG_HEADER(config.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -60,6 +60,8 @@ dnl AC_FUNC_FORK
 dnl AC_FUNC_MALLOC
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([strerror])
+
+AM_CONFIG_HEADER(config.h)
 
 AC_OUTPUT(Makefile
 	  src/Makefile

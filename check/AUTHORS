@@ -4,6 +4,9 @@ Maintainer:  Sven Neumann <sven@convergence.de>
 
 Patches:     Bernhard Reiter (configure issues)
              Neil Spring (const fixes)
+             Rick Poyner (pipe handling, bug fixes)
+             Dietmar Petras (bug fixes)
+             Gilgamesh Nootebos (bug fixes)
 
 Design suggestions:
              Fred Drake (checked fixture functions)
