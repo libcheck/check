@@ -269,7 +269,11 @@ static int get_result (char *buf, TestResult *tr)
   n = upack(buf,data,&type);
   
   if (type == CK_MSG_CTX) {
-    tr->ctx = ((CtxMsg *) data)->ctx;
+    CtxMsg *cmsg = data;
+    if (tr->ctx != -1) {
+      tr_reset(tr);
+    }
+    tr->ctx = cmsg->ctx;
   } else if (type == CK_MSG_LOC) {
     LocMsg *lmsg = data;
     tr->line = lmsg->line;
@@ -294,7 +298,7 @@ TestResult *punpack(int fdes)
   char *buf;
   char *obuf;
   TestResult *tr;
-  
+
   nread = read_buf (fdes, &buf);
   obuf = buf;
   tr = tr_create();

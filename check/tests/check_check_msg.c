@@ -1,54 +1,32 @@
-#include <sys/types.h>
-#include <sys/ipc.h>
-#include <sys/msg.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <check.h>
 #include "error.h"
 #include "check_magic.h"
-#include "check_msg.h"
+#include "check_msg_new.h"
 #include "check_check.h"
 
-MsgSys *msgsys;
-
-enum {
-  KEY = 1
-};
-
-static void msg_setup (void)
+START_TEST(test_send)
 {
-  msgsys = create_msgsys_with_key(KEY);
-}
+  TestResult *tr;
+  setup_test_messaging();
+  send_ctx_info(get_test_key(),CK_CTX_SETUP);
+  send_loc_info(get_test_key(),"abc123.c", 10);
+  send_ctx_info(get_test_key(),CK_CTX_TEST);
+  send_loc_info(get_test_key(),"abc123.c", 22);
+  send_loc_info(get_test_key(),"abc123.c", 25);
+  send_failure_info(get_test_key(),"Oops");
+  tr = receive_test_result(get_test_key());
+  teardown_test_messaging();
 
-static void msg_teardown (void)
-{
-  delete_msgsys_with_key(KEY);
-}
-
-START_TEST(test_send_failure)
-{
-  char *fmsg;
-  /* Failure message sending and receiving need to be in equal pairs
-     otherwise the world may fall off its axis...*/
-  send_failure_msg (msgsys, "This is a test");
-  fmsg = receive_failure_msg (msgsys);
-  fail_unless (strcmp (fmsg, "This is a test") == 0,
-	       "Didn't receive the correct message");
-  free(fmsg);
-}
-END_TEST
-
-START_TEST(test_send_lastloc)
-{
-  Loc *loc;
-
-  send_last_loc_msg (msgsys, "abc", 1);
-  send_last_loc_msg (msgsys, "def", 2);
-  loc = receive_last_loc_msg (msgsys);
-  fail_unless (strcmp (loc->file, "def") == 0,
-	       "Didn't receive the correct file name");
-  fail_unless (loc->line == 2,
-	       "Didn't receive the correct line number");
-  free(loc);
+  fail_unless (tr_ctx(tr) == CK_CTX_TEST,
+	       "Bad CTX received");
+  fail_unless (strcmp(tr_msg(tr), "Oops") == 0,
+	       "Bad failure msg received");
+  fail_unless (strcmp(tr_lfile(tr), "abc123.c") == 0,
+	       "Bad loc file received");
+  fail_unless (tr_lno(tr) == 25,
+	       "Bad loc line received");
 }
 END_TEST
 
@@ -58,9 +36,7 @@ Suite *make_msg_suite (void)
   TCase *tc;
   s = suite_create("Msg");
   tc = tcase_create("Core Tests");
-  tcase_add_unchecked_fixture(tc, msg_setup, msg_teardown);
-  tcase_add_test(tc, test_send_failure);
-  tcase_add_test(tc, test_send_lastloc);
+  tcase_add_test(tc, test_send);
   suite_add_tcase(s, tc);
   return s;
 }

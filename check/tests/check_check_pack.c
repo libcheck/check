@@ -111,6 +111,7 @@ START_TEST(test_pack_ctx)
 }
 END_TEST
 
+
 START_TEST(test_pack_len)
 {
   CtxMsg cmsg;
@@ -269,6 +270,32 @@ START_TEST(test_ppack_onlyctx)
 }
 END_TEST
 
+START_TEST(test_ppack_multictx)
+{
+  int filedes[2];
+  CtxMsg cmsg;
+  LocMsg lmsg;
+  TestResult *tr;
+
+  cmsg.ctx = CK_CTX_SETUP;
+  lmsg.line = 5;
+  lmsg.file = "abc123.c";
+  pipe(filedes);
+  ppack(filedes[1],CK_MSG_CTX, &cmsg);
+  ppack(filedes[1],CK_MSG_LOC, &lmsg);
+  cmsg.ctx = CK_CTX_TEST;
+  ppack(filedes[1],CK_MSG_CTX, &cmsg);
+  close(filedes[1]);
+  tr = punpack(filedes[0]);
+
+  fail_unless (tr_lno(tr) == -1,
+	       "Result loc line should be -1 after CTX change");
+
+  if (tr != NULL)
+    free(tr);
+}
+END_TEST
+
 Suite *make_pack_suite(void)
 {
 
@@ -288,6 +315,7 @@ Suite *make_pack_suite(void)
   tcase_add_test(tc_core, test_ppack);
   tcase_add_test(tc_core, test_ppack_noctx);
   tcase_add_test(tc_core, test_ppack_onlyctx);
+  tcase_add_test(tc_core, test_ppack_multictx);
   suite_add_tcase(s, tc_limit);
   tcase_add_test(tc_limit, test_pack_ctx_limit);
   tcase_add_test(tc_limit, test_pack_fail_limit);

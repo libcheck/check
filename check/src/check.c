@@ -29,6 +29,7 @@ static int non_pass (int val);
 static Fixture *fixture_create (SFun fun, int ischecked);
 static void tcase_add_fixture (TCase *tc, SFun setup, SFun teardown,
 			       int ischecked);
+static void tr_init (TestResult *tr);
 
 
 Suite *suite_create (char *name)
@@ -269,12 +270,21 @@ TestResult *tr_create(void)
   TestResult *tr;
 
   tr = emalloc (sizeof(TestResult));
+  tr_init (tr);
+  return tr;
+}
 
+void tr_reset(TestResult *tr)
+{
+  tr_init(tr);
+}
+
+static void tr_init (TestResult *tr)
+{
   tr->ctx = -1;
   tr->line = -1;
   tr->rtype = -1;
   tr->msg = tr->file = tr->tcname = NULL;
-  return tr;
 }
 
 

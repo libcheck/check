@@ -76,6 +76,7 @@ struct TestResult {
 };
 
 TestResult *tr_create(void);
+void tr_reset(TestResult *tr);
 
 enum cl_event {
   CLSTART_SR,
