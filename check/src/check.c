@@ -39,6 +39,8 @@ static Fixture *fixture_create (SFun fun, int ischecked);
 static void tcase_add_fixture (TCase *tc, SFun setup, SFun teardown,
 			       int ischecked);
 static void tr_init (TestResult *tr);
+static void suite_free (Suite *s);
+static void tcase_free (TCase *tc);
 
 Suite *suite_create (const char *name)
 {
@@ -52,7 +54,7 @@ Suite *suite_create (const char *name)
   return s;
 }
 
-void suite_free (Suite *s)
+static void suite_free (Suite *s)
 {
   List *l;
   if (s == NULL)
@@ -82,7 +84,7 @@ TCase *tcase_create (const char *name)
 }
 
 
-void tcase_free (TCase *tc)
+static void tcase_free (TCase *tc)
 {
   list_apply (tc->tflst, free);
   list_apply (tc->unch_sflst, free);
@@ -205,6 +207,10 @@ void srunner_free (SRunner *sr)
     return;
   
   free (sr->stats);
+  l = sr->slst;
+  for (list_front(l); !list_at_end(l); list_advance(l)) {
+    suite_free(list_val(l));
+  }
   list_free(sr->slst);
 
   l = sr->resultlst;
@@ -288,6 +294,7 @@ static void tr_init (TestResult *tr)
   tr->msg = NULL;
   tr->file = NULL;
   tr->tcname = NULL;
+  tr->tname = NULL;
 }
 
 
