@@ -1,3 +1,57 @@
+2001-07-09 17:09  amalec
+
+	* src/check.c, src/check.h, src/check_impl.h, src/check_run.c,
+	src/list.h, tests/Makefile.am, tests/Makefile.in,
+	tests/check_check.h, tests/check_check_log.c,
+	tests/check_check_main.c, tests/check_check_master.c,
+	tests/check_check_msg.c, tests/check_check_sub.c,
+	tests/check_list.c: Completed test for initial logging feature, and
+	added feature to run multiple suites through an SRunner
+
+2001-06-29 18:27  amalec
+
+	* src/Makefile.in, src/check.h, src/check_impl.h, src/check_log.h,
+	src/check_run.c, tests/check_check_log.c, tests/test_output.sh:
+	Restructured printing to allow for logging function
+
+2001-06-28 17:40  amalec
+
+	* src/: Makefile.am, Makefile.in: Add check_log.c to Makefile.am
+
+2001-06-28 17:33  amalec
+
+	* tests/: Makefile.am, Makefile.in: Complete move of
+	check_check_log.c -- this time for real...
+
+2001-06-28 17:31  amalec
+
+	* Doxyfile, src/check_log.h, tests/Makefile.am, tests/Makefile.in:
+	Complete move of check_check_log.c
+
+2001-06-28 17:30  amalec
+
+	* tests/: Makefile.am, check_check_log.c, check_log.c: Moved
+	check_log.c to check_check_log.c
+
+2001-06-28 15:56  amalec
+
+	* doc/money/stamp-h: Removed stamp-h
+
+2001-06-28 15:51  amalec
+
+	* src/check_log.h, tests/check_log.c: Added skeleton files for
+	check logging
+
+2001-06-28 15:33  amalec
+
+	* Doxyfile, configure, configure.in, src/check.h,
+	tests/Makefile.am, tests/Makefile.in: Additional doxygenation of
+	check.h
+
+2001-06-27 11:27  amalec
+
+	* ChangeLog: Updated ChangeLog
+
 2001-06-27 11:25  amalec
 
 	* configure, rpm/check.spec: Updated check.spec
