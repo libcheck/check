@@ -1,7 +1,17 @@
-TESTS=check_check check_list check_check_msg test_output.sh
+TESTS=check_check check_list check_check_msg check_log test_output.sh
 
-noinst_PROGRAMS=check_check check_list check_stress check_check_msg ex_output
+noinst_PROGRAMS=\
+	check_check\
+	check_list\
+	check_stress\
+	check_check_msg\
+	check_log\
+	ex_output
+
 EXTRA_DIST=test_output.sh
+
+check_log_SOURCES=\
+	check_log.c
 
 check_check_SOURCES= \
 	check_check.h check_check_sub.c check_check_master.c check_check_main.c

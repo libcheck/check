@@ -3,10 +3,10 @@
 # General configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = Check
-PROJECT_NUMBER         = 0.6.1
+PROJECT_NUMBER         = 0.7.0
 OUTPUT_DIRECTORY       = /home/amalec/check/doc/
 OUTPUT_LANGUAGE        = English
-EXTRACT_ALL            = YES
+EXTRACT_ALL            = NO
 EXTRACT_PRIVATE        = NO
 EXTRACT_STATIC         = YES
 HIDE_UNDOC_MEMBERS     = NO
@@ -70,7 +70,7 @@ IGNORE_PREFIX          =
 # configuration options related to the HTML output
 #---------------------------------------------------------------------------
 GENERATE_HTML          = YES
-HTML_OUTPUT            = html
+HTML_OUTPUT            = 
 HTML_HEADER            = 
 HTML_FOOTER            = 
 HTML_STYLESHEET        = 
@@ -87,7 +87,7 @@ TREEVIEW_WIDTH         = 250
 # configuration options related to the LaTeX output
 #---------------------------------------------------------------------------
 GENERATE_LATEX         = YES
-LATEX_OUTPUT           = latex
+LATEX_OUTPUT           = 
 COMPACT_LATEX          = NO
 PAPER_TYPE             = letter
 EXTRA_PACKAGES         = 
@@ -98,7 +98,7 @@ LATEX_BATCHMODE        = NO
 #---------------------------------------------------------------------------
 # configuration options related to the RTF output
 #---------------------------------------------------------------------------
-GENERATE_RTF           = YES
+GENERATE_RTF           = NO
 RTF_OUTPUT             = rtf
 COMPACT_RTF            = NO
 RTF_HYPERLINKS         = NO
@@ -106,7 +106,7 @@ RTF_STYLESHEET_FILE    =
 #---------------------------------------------------------------------------
 # configuration options related to the man page output
 #---------------------------------------------------------------------------
-GENERATE_MAN           = YES
+GENERATE_MAN           = NO
 MAN_OUTPUT             = man
 MAN_EXTENSION          = .3
 #---------------------------------------------------------------------------
