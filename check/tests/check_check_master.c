@@ -9,7 +9,7 @@ TestResult **tr_fail_array;
 TestResult **tr_all_array;
 
 
-#define MAXSTR 100
+#define MAXSTR 300
 
 typedef struct {
   const char *tcname;
@@ -33,25 +33,25 @@ static master_test_t master_tests[] = {
   { "Simple Tests",  -1, CK_FAILURE, "5 != 6" },
   { "Simple Tests",  -1, CK_FAILURE, "7 == 7" },
   { "Simple Tests",  -1, CK_FAILURE, "Failed" },
-  { "Signal Tests",  -1, CK_ERROR,   "Received signal 11" },
+  { "Signal Tests",  -1, CK_ERROR,   "Received signal 11 (Segmentation fault)" },
   { "Signal Tests",  -1, CK_PASS,    "Passed" },
-  { "Signal Tests", 104, CK_ERROR,   "Error: Received signal 11, expected 8" },
+  { "Signal Tests", 104, CK_ERROR,   "Error: Received signal 11 (Segmentation fault), expected 8 (Floating point exception)" },
   { "Signal Tests",  -1, CK_FAILURE, "Early exit with return value 0" },
   { "Signal Tests",  -1, CK_FAILURE, "Early exit with return value 1" },
-  { "Signal Tests",  -1, CK_ERROR,   "Received signal 8" },
-  { "Signal Tests",  -1, CK_ERROR,   "Received signal 8" },
-  { "Timeout Tests", 132, CK_ERROR,  "Received signal 9" },
+  { "Signal Tests",  -1, CK_ERROR,   "Received signal 8 (Floating point exception)" },
+  { "Signal Tests",  -1, CK_ERROR,   "Received signal 8 (Floating point exception)" },
+  { "Timeout Tests", 132, CK_ERROR,  "Received signal 9 (Killed)" },
   { "Timeout Tests",  -1, CK_PASS,   "Passed" },
-  { "Timeout Tests", 145, CK_ERROR,  "Received signal 9" },
-  { "Timeout Tests", 151, CK_ERROR,  "Received signal 9" },
-  { "Extended Timeout Tests", 132, CK_ERROR,  "Received signal 9" },
+  { "Timeout Tests", 145, CK_ERROR,  "Received signal 9 (Killed)" },
+  { "Timeout Tests", 151, CK_ERROR,  "Received signal 9 (Killed)" },
+  { "Extended Timeout Tests", 132, CK_ERROR,  "Received signal 9 (Killed)" },
   { "Extended Timeout Tests",  -1, CK_PASS,   "Passed" },
   { "Extended Timeout Tests",  -1, CK_PASS,   "Passed" },
-  { "Extended Timeout Tests", 151, CK_ERROR,  "Received signal 9" },
-  { "Timeout Tests", 132, CK_ERROR,  "Received signal 9" },
+  { "Extended Timeout Tests", 151, CK_ERROR,  "Received signal 9 (Killed)" },
+  { "Timeout Tests", 132, CK_ERROR,  "Received signal 9 (Killed)" },
   { "Timeout Tests",  -1, CK_PASS,   "Passed" },
-  { "Timeout Tests", 145, CK_ERROR,  "Received signal 9" },
-  { "Timeout Tests", 151, CK_ERROR,  "Received signal 9" },
+  { "Timeout Tests", 145, CK_ERROR,  "Received signal 9 (Killed)" },
+  { "Timeout Tests", 151, CK_ERROR,  "Received signal 9 (Killed)" },
   { "Limit Tests",   -1, CK_ERROR,   "Early exit with return value 1" },
   { "Limit Tests",   -1, CK_FAILURE, "Completed properly" },
   { "Limit Tests",   -1, CK_FAILURE, "Completed properly" },

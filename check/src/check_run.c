@@ -18,6 +18,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#define _GNU_SOURCE
 #include "config.h"
 
 #include <sys/types.h>
@@ -418,16 +419,23 @@ static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun)
 
 static char *signal_error_msg (int signal_received, int signal_expected)
 {
+  char *sig_r_str;
+  char *sig_e_str;
   char *msg = emalloc (MSG_LEN); /* free'd by caller */
-  snprintf (msg, MSG_LEN, "Error: Received signal %d, expected %d",
-            signal_received, signal_expected);
+  sig_r_str = strdup(strsignal(signal_received));
+  sig_e_str = strdup(strsignal(signal_expected));
+  snprintf (msg, MSG_LEN, "Error: Received signal %d (%s), expected %d (%s)",
+            signal_received, sig_r_str, signal_expected, sig_e_str);
+  free(sig_r_str);
+  free(sig_e_str);
   return msg;
 }
 
 static char *signal_msg (int signal)
 {
   char *msg = emalloc (MSG_LEN); /* free'd by caller */
-  snprintf (msg, MSG_LEN, "Received signal %d", signal);
+  snprintf (msg, MSG_LEN, "Received signal %d (%s)",
+            signal, strsignal(signal));
   return msg;
 }
 
