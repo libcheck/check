@@ -21,6 +21,7 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
 #include "check.h"
@@ -42,6 +43,10 @@ void srunner_print (SRunner *sr, enum print_output print_mode)
 
 void srunner_fprint (FILE *file, SRunner *sr, enum print_output print_mode)
 {
+  if (print_mode == CK_ENV) {
+    print_mode = get_env_printmode();
+  }
+
   srunner_fprint_summary (file, sr, print_mode);
   srunner_fprint_results (file, sr, print_mode);
 }
@@ -75,10 +80,28 @@ static void srunner_fprint_results (FILE *file, SRunner *sr,
 
 void tr_fprint (FILE *file, TestResult *tr, enum print_output print_mode)
 {
+  if (print_mode == CK_ENV) {
+    print_mode = get_env_printmode();
+  }
+
   if ((print_mode >= CK_VERBOSE && tr->rtype == CK_PASS) ||
       (tr->rtype != CK_PASS && print_mode >= CK_NORMAL)) {
     char *trstr = tr_str (tr);
     fprintf (file,"%s\n", trstr);
     free(trstr);
   }
+}
+
+enum print_output get_env_printmode (void)
+{
+  char *env = getenv ("CK_VERBOSITY");
+  if (env == NULL)
+    return CK_NORMAL;
+  if (strcmp (env, "silent") == 0)
+    return CK_SILENT;
+  if (strcmp (env, "minimal") == 0)
+    return CK_MINIMAL;
+  if (strcmp (env, "verbose") == 0)
+    return CK_VERBOSE;
+  return CK_NORMAL;
 }

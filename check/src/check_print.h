@@ -23,6 +23,7 @@
 
 void tr_fprint (FILE *file, TestResult *tr, enum print_output print_mode);
 void srunner_fprint (FILE *file, SRunner *sr, enum print_output print_mode);
+enum print_output get_env_printmode (void);
 
 
 #endif /* CHECK_PRINT_H */

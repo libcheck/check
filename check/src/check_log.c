@@ -54,6 +54,11 @@ void srunner_register_lfun (SRunner *sr, FILE *lfile, int close,
 			    LFun lfun, enum print_output printmode)
 {
   Log *l = emalloc (sizeof(Log));
+
+  if (printmode == CK_ENV) {
+    printmode = get_env_printmode();
+  }
+
   l->lfile = lfile;
   l->lfun = lfun;
   l->close = close;
@@ -106,6 +111,10 @@ void stdout_lfun (SRunner *sr, FILE *file, enum print_output printmode,
   TestResult *tr;
   Suite *s;
   
+  if (printmode == CK_ENV) {
+    printmode = get_env_printmode();
+  }
+
   switch (evt) {
   case CLSTART_SR:
     if (printmode > CK_SILENT) {
