@@ -1,5 +1,9 @@
 2005-02-28 hugo303
 
+	* debian/files: Removed this auto generated file.
+
+2005-02-28 hugo303
+
 	* rpm/check.spec.in: Added patch for x86_64 arch (fc3).
 
 2005-02-28 hugo303
