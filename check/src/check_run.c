@@ -31,10 +31,10 @@
 #include "check_log.h"
 
 
-static void srunner_run_init (SRunner *sr, enum print_verbosity print_mode);
-static void srunner_run_end (SRunner *sr, enum print_verbosity print_mode);
+static void srunner_run_init (SRunner *sr, enum print_output print_mode);
+static void srunner_run_end (SRunner *sr, enum print_output print_mode);
 static void srunner_iterate_suites (SRunner *sr,
-				    enum print_verbosity print_mode);
+				    enum print_output print_mode);
 static void srunner_run_tcase (SRunner *sr, TCase *tc);
 static void srunner_add_failure (SRunner *sr, TestResult *tf);
 static TestResult *tfun_run (char *tcname, TF *tf);
@@ -58,6 +58,7 @@ SRunner *srunner_create (Suite *s)
   sr->resultlst = list_create();
   sr->log_fname = NULL;
   sr->loglst = NULL;
+  sr->fstat = CK_FORK;
   return sr;
 }
 
@@ -89,13 +90,13 @@ void srunner_free (SRunner *sr)
   free (sr);
 }
 
-static void srunner_run_init (SRunner *sr, enum print_verbosity print_mode)
+static void srunner_run_init (SRunner *sr, enum print_output print_mode)
 {
   srunner_init_logging (sr, print_mode);
   log_srunner_start (sr);
 }
 
-static void srunner_run_end (SRunner *sr, enum print_verbosity print_mode)
+static void srunner_run_end (SRunner *sr, enum print_output print_mode)
 {
 
   log_srunner_end (sr);
@@ -103,7 +104,7 @@ static void srunner_run_end (SRunner *sr, enum print_verbosity print_mode)
 }
 
 static void srunner_iterate_suites (SRunner *sr,
-				    enum print_verbosity print_mode)
+				    enum print_output print_mode)
   
 {
   List *slst;
@@ -126,7 +127,7 @@ static void srunner_iterate_suites (SRunner *sr,
   }
 }
 
-void srunner_run_all (SRunner *sr, int print_mode)
+void srunner_run_all (SRunner *sr, enum print_output print_mode)
 {
   if (sr == NULL)
     return;
@@ -348,3 +349,14 @@ static int non_pass (int val)
 {
   return val == CRFAILURE || val == CRERROR;
 }
+
+enum fork_status srunner_fork_status (SRunner *sr)
+{
+  return sr->fstat;
+}
+
+void srunner_set_fork_status (SRunner *sr, enum fork_status fstat)
+{
+  sr->fstat = fstat;
+}
+

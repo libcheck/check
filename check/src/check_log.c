@@ -46,7 +46,7 @@ char *srunner_log_fname (SRunner *sr)
 }
 
 void srunner_register_lfun (SRunner *sr, FILE *lfile, int close,
-			    LFun lfun, enum print_verbosity printmode)
+			    LFun lfun, enum print_output printmode)
 {
   Log *l = emalloc (sizeof(Log));
   l->lfile = lfile;
@@ -95,7 +95,7 @@ static void srunner_send_evt (SRunner *sr, void *obj, enum cl_event evt)
   }
 }
 
-void stdout_lfun (SRunner *sr, FILE *file, enum print_verbosity printmode,
+void stdout_lfun (SRunner *sr, FILE *file, enum print_output printmode,
 		  void *obj, enum cl_event evt)
 {
   TestResult *tr;
@@ -132,7 +132,7 @@ void stdout_lfun (SRunner *sr, FILE *file, enum print_verbosity printmode,
   
 }
 
-void lfile_lfun (SRunner *sr, FILE *file, enum print_verbosity printmode,
+void lfile_lfun (SRunner *sr, FILE *file, enum print_output printmode,
 		 void *obj, enum cl_event evt)
 {
   TestResult *tr;
@@ -174,7 +174,7 @@ FILE *srunner_open_lfile (SRunner *sr)
   return f;
 }
 
-void srunner_init_logging (SRunner *sr, enum print_verbosity print_mode)
+void srunner_init_logging (SRunner *sr, enum print_output print_mode)
 {
   FILE *f;
   sr->loglst = list_create();

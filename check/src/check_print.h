@@ -20,8 +20,8 @@
 #ifndef CHECK_PRINT_H
 #define CHECK_PRINT_H
 
-void tr_fprint (FILE *file, TestResult *tr, int print_mode);
-void srunner_fprint (FILE *file, SRunner *sr, int print_mode);
+void tr_fprint (FILE *file, TestResult *tr, enum print_output print_mode);
+void srunner_fprint (FILE *file, SRunner *sr, enum print_output print_mode);
 
 
 #endif /* CHECK_PRINT_H */

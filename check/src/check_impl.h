@@ -71,14 +71,14 @@ enum cl_event {
   CLEND_T
 };
 
-typedef void (*LFun) (SRunner *, FILE*, enum print_verbosity,
+typedef void (*LFun) (SRunner *, FILE*, enum print_output,
 		      void *, enum cl_event);
 
 typedef struct Log {
   FILE *lfile;
   LFun lfun;
   int close;
-  enum print_verbosity mode;
+  enum print_output mode;
 } Log;
 
 struct SRunner {
@@ -87,6 +87,7 @@ struct SRunner {
   List *resultlst;
   char *log_fname;
   List *loglst;
+  enum fork_status fstat;
 };
 
 

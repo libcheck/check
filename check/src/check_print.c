@@ -26,22 +26,25 @@
 #include "check_str.h"
 #include "check_print.h"
 
-static void srunner_fprint_summary (FILE *file, SRunner *sr, int print_mode);
-static void srunner_fprint_results (FILE *file, SRunner *sr, int print_mode);
+static void srunner_fprint_summary (FILE *file, SRunner *sr,
+				    enum print_output print_mode);
+static void srunner_fprint_results (FILE *file, SRunner *sr,
+				    enum print_output print_mode);
 
 
-void srunner_print (SRunner *sr, int print_mode)
+void srunner_print (SRunner *sr, enum print_output print_mode)
 {
   srunner_fprint (stdout, sr, print_mode);
 }
 
-void srunner_fprint (FILE *file, SRunner *sr, int print_mode)
+void srunner_fprint (FILE *file, SRunner *sr, enum print_output print_mode)
 {
   srunner_fprint_summary (file, sr, print_mode);
   srunner_fprint_results (file, sr, print_mode);
 }
 
-static void srunner_fprint_summary (FILE *file, SRunner *sr, int print_mode)
+static void srunner_fprint_summary (FILE *file, SRunner *sr,
+				    enum print_output print_mode)
 {
   if (print_mode >= CRMINIMAL) {
     char *str;
@@ -53,7 +56,8 @@ static void srunner_fprint_summary (FILE *file, SRunner *sr, int print_mode)
   return;
 }
 
-static void srunner_fprint_results (FILE *file, SRunner *sr, int print_mode)
+static void srunner_fprint_results (FILE *file, SRunner *sr,
+				    enum print_output print_mode)
 {
   List *resultlst;
   
@@ -66,7 +70,7 @@ static void srunner_fprint_results (FILE *file, SRunner *sr, int print_mode)
   return;
 }
 
-void tr_fprint (FILE *file, TestResult *tr, int print_mode)
+void tr_fprint (FILE *file, TestResult *tr, enum print_output print_mode)
 {
   if ((print_mode >= CRVERBOSE && tr->rtype == CRPASS) ||
       (tr->rtype != CRPASS && print_mode >= CRNORMAL)) {
