@@ -6,12 +6,13 @@
 int msq;
 static void msg_setup (void)
 {
-  /* Note that we are really sharing the same msq
-     as check itself, since all msqs created by
-     create_msq() are the same queue...*/
-  msq = create_msq();
+  msq = create_msq(1);
 }
 
+static void msg_teardown (void)
+{
+  delete_msq(msq);
+}
 
 START_TEST(test_send_failure)
 {
@@ -50,7 +51,7 @@ Suite *make_msg_suite (void)
   TCase *tc;
   s = suite_create("Msg");
   tc = tcase_create("Core Tests");
-  tcase_set_fixture(tc, msg_setup, NULL);
+  tcase_set_fixture(tc, msg_setup, msg_teardown);
   tcase_add_test(tc, test_send_failure);
   tcase_add_test(tc, test_send_lastloc);
   suite_add_tcase(s, tc);

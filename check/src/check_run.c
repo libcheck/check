@@ -33,7 +33,7 @@
 
 static void srunner_run_tcase (SRunner *sr, TCase *tc);
 static void srunner_add_failure (SRunner *sr, TestResult *tf);
-static TestResult *tfun_run (int msqid, char *tcname, TF *tf);
+static TestResult *tfun_run (char *tcname, TF *tf);
 static TestResult *receive_result_info (int msqid, int status, char *tcname);
 static void receive_last_loc_info (int msqid, TestResult *tr);
 static void receive_failure_info (int msqid, int status, TestResult *tr);
@@ -147,20 +147,21 @@ static void srunner_run_tcase (SRunner *sr, TCase *tc)
   TestResult *tr;
   int msqid;
 
+  msqid = create_msq((int) getpid());
+
   if (tc->setup)
     tc->setup();
-  msqid = create_msq();
   tfl = tc->tflst;
   
   for (list_front(tfl); !list_at_end (tfl); list_advance (tfl)) {
     tfun = list_val (tfl);
-    tr = tfun_run (msqid, tc->name, tfun);
+    tr = tfun_run (tc->name, tfun);
     srunner_add_failure (sr, tr);
     log_test_end(sr, tr);
   }
-  delete_msq(msqid);
   if (tc->teardown)
     tc->teardown();
+  delete_msq(msqid);
 }
 
 static void receive_last_loc_info (int msqid, TestResult *tr)
@@ -219,10 +220,11 @@ static TestResult *receive_result_info (int msqid, int status, char *tcname)
   return tr;
 }
 
-static TestResult *tfun_run (int msqid, char *tcname, TF *tfun)
+static TestResult *tfun_run (char *tcname, TF *tfun)
 {
   pid_t pid;
   int status = 0;
+  int  msqid = get_msq((int) getpid());
 
   pid = fork();
   if (pid == -1)

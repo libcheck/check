@@ -24,6 +24,7 @@
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/msg.h>
+#include <error.h>
 #include "list.h"
 #include "error.h"
 #include "check.h"
@@ -98,11 +99,34 @@ void send_last_loc_msg (int msqid, char * file, int line)
   free(rmsg);
 }
 
-int create_msq (void) {
+static char *ipcerrstr (int ipcerr) 
+{
+  switch (ipcerr) {
+  case EACCES: return "EACCES";
+  case EEXIST: return "EEXIST";
+  case EIDRM: return "EIDRM";
+  case ENOENT: return "ENOENT";
+  case ENOMEM: return "ENOMEM";
+  case ENOSPC: return "ENOSPC";
+  default: return "None";
+  }
+}
+
+
+int create_msq (int key) {
   int msqid;
-  msqid = msgget((key_t) 1, 0666 | IPC_CREAT);
+  msqid = msgget((key_t) key, 0666 | IPC_CREAT);
   if (msqid == -1)
-    eprintf ("Unable to create message queue:");
+    eprintf ("Unable to create message queue (%s):", ipcerrstr(errno));
+  return msqid;
+}
+
+int get_msq (int key) 
+{
+  int msqid;
+  msqid = msgget ((key_t) key, 0666);
+  if (msqid == -1)
+    eprintf ("Unable to create message queue (%s):", ipcerrstr(errno));
   return msqid;
 }
 

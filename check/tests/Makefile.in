@@ -68,13 +68,14 @@ have_sgmltools = @have_sgmltools@
 
 TESTS =  	check_check 	test_output.sh 	test_log_output.sh
 
+#	test_setup_output.sh
 
-noinst_PROGRAMS =  	check_check 	check_stress 	ex_output 	ex_log_output
+noinst_PROGRAMS =  	check_check 	check_stress 	ex_output 	ex_log_output 	ex_setup_output
 
 
 EXTRA_DIST = test_output.sh test_log_output.sh
 
-check_check_SOURCES =  	check_check.h 	check_list.c 	check_check_sub.c 	check_check_master.c 	check_check_msg.c 	check_check_log.c 	check_check_main.c
+check_check_SOURCES =  	check_check.h 	check_list.c 	check_check_sub.c 	check_check_master.c 	check_check_msg.c 	check_check_log.c 	check_check_limit.c 	check_check_main.c
 
 
 check_stress_SOURCES =  	check_stress.c
@@ -84,6 +85,9 @@ ex_output_SOURCES =  	ex_output.c
 
 
 ex_log_output_SOURCES =  	ex_log_output.c
+
+
+ex_setup_output_SOURCES =  	ex_setup_output.c
 
 
 INCLUDES = -I$(srcdir)/../src
@@ -102,7 +106,7 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 check_check_OBJECTS =  check_list.o check_check_sub.o \
 check_check_master.o check_check_msg.o check_check_log.o \
-check_check_main.o
+check_check_limit.o check_check_main.o
 check_check_LDADD = $(LDADD)
 check_check_DEPENDENCIES =  ../src/libcheck.a
 check_check_LDFLAGS = 
@@ -118,6 +122,10 @@ ex_log_output_OBJECTS =  ex_log_output.o
 ex_log_output_LDADD = $(LDADD)
 ex_log_output_DEPENDENCIES =  ../src/libcheck.a
 ex_log_output_LDFLAGS = 
+ex_setup_output_OBJECTS =  ex_setup_output.o
+ex_setup_output_LDADD = $(LDADD)
+ex_setup_output_DEPENDENCIES =  ../src/libcheck.a
+ex_setup_output_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -129,12 +137,13 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-DEP_FILES =  .deps/check_check_log.P .deps/check_check_main.P \
-.deps/check_check_master.P .deps/check_check_msg.P \
-.deps/check_check_sub.P .deps/check_list.P .deps/check_stress.P \
-.deps/ex_log_output.P .deps/ex_output.P
-SOURCES = $(check_check_SOURCES) $(check_stress_SOURCES) $(ex_output_SOURCES) $(ex_log_output_SOURCES)
-OBJECTS = $(check_check_OBJECTS) $(check_stress_OBJECTS) $(ex_output_OBJECTS) $(ex_log_output_OBJECTS)
+DEP_FILES =  .deps/check_check_limit.P .deps/check_check_log.P \
+.deps/check_check_main.P .deps/check_check_master.P \
+.deps/check_check_msg.P .deps/check_check_sub.P .deps/check_list.P \
+.deps/check_stress.P .deps/ex_log_output.P .deps/ex_output.P \
+.deps/ex_setup_output.P
+SOURCES = $(check_check_SOURCES) $(check_stress_SOURCES) $(ex_output_SOURCES) $(ex_log_output_SOURCES) $(ex_setup_output_SOURCES)
+OBJECTS = $(check_check_OBJECTS) $(check_stress_OBJECTS) $(ex_output_OBJECTS) $(ex_log_output_OBJECTS) $(ex_setup_output_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -187,6 +196,10 @@ ex_output: $(ex_output_OBJECTS) $(ex_output_DEPENDENCIES)
 ex_log_output: $(ex_log_output_OBJECTS) $(ex_log_output_DEPENDENCIES)
 	@rm -f ex_log_output
 	$(LINK) $(ex_log_output_LDFLAGS) $(ex_log_output_OBJECTS) $(ex_log_output_LDADD) $(LIBS)
+
+ex_setup_output: $(ex_setup_output_OBJECTS) $(ex_setup_output_DEPENDENCIES)
+	@rm -f ex_setup_output
+	$(LINK) $(ex_setup_output_LDFLAGS) $(ex_setup_output_OBJECTS) $(ex_setup_output_LDADD) $(LIBS)
 
 tags: TAGS
 

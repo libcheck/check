@@ -34,7 +34,8 @@ typedef struct FailureMsg {
   char msg[CMAXMSG];
 } FailureMsg;
 
-int create_msq (void);
+int create_msq (int key);
+int get_msq (int key);
 void delete_msq (int msqid);
 
 void send_failure_msg (int msqid, char *msg);
