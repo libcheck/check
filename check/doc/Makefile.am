@@ -10,6 +10,7 @@ SUFFIXES = .sgml
 %.html : %.sgml
 	sgml2html --split=1 $<
 
+lyx_docs = example.lyx
 sgml_docs = example.sgml
 html_docs =\
 	example.html\
@@ -38,8 +39,10 @@ example_docs =\
 	money/Makefile.in\
 	money/NEWS
 
+EXTRA_DIST = $(lyx_docs) $(example_docs)
+
 afake_DATA =
 
-doc_DATA = example.lyx $(sgml_docs) $(html_docs) $(example_docs)
+doc_DATA = $(lyx_docs) $(sgml_docs) $(html_docs) $(example_docs)
 
 CLEANFILES = $(sgml_docs) $(html_docs) *.*~
