@@ -1,3 +1,18 @@
+Fri, Nov 12, 2004: Released Check 0.9.2
+
+Use strsignal to print describing text for signals.
+Documented signals handling and timeouts.
+Changed failure message for fail_if.
+Added support for timeouts on tests, enabling detection of eternal loops.
+Changed name on function list_create to check_list_create to avoid name clash.
+Applied ANSI C99 patch (#1047014) for macro var args.
+Cleaned up the self test verification to simplify merging of new tests.
+Fixed debian and rpm targets
+
+Added support for testing on expected signals. Implementation courtesy of
+Lucas Di Pentima and Cesar Ballardini. 
+
+
 Fri, Sep 3, 2004: Released Check 0.9.1
 
 Updated tutorial with new features.

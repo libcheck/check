@@ -1,3 +1,8 @@
+2004-11-10 hugo303
+
+	* Makefile.am, rpm/check.spec.in, rpm/Makefile.am: Fixed so
+	distributions build without trouble.
+
 2004-11-09 hugo303
 
 	* src/check_run.c, tests/check_check_master.c: Use strsignal
