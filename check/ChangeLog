@@ -1,5 +1,9 @@
 2005-02-28 hugo303
 
+	* rpm/check.spec.in: Added patch for x86_64 arch (fc3).
+
+2005-02-28 hugo303
+
 	* tests/ex_xml_output.c, tests/ex_log_output.c, tests/ex_output.c,
 	  src/check_log.c:
 	  Fixed memory leaks.

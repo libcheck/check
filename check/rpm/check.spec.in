@@ -18,13 +18,13 @@ Check is a unit test framework for C. It features a simple interface for definin
 %setup
 
 %build
-./configure --prefix %{_prefix} 
+./configure --prefix %{_prefix} --libdir %{_libdir}
 make
 
 %install
 rm -rf ${RPM_BUILD_ROOT}
 mkdir -p ${RPM_BUILD_ROOT}%{_prefix}
-make prefix=$RPM_BUILD_ROOT%{_prefix} install
+make prefix=$RPM_BUILD_ROOT%{_prefix} libdir=$RPM_BUILD_ROOT%{_libdir} install
 
 %clean
 rm -rf ${RPM_BUILD_ROOT}
@@ -38,12 +38,15 @@ rm %{_prefix}/share/doc/%{name}-%{version}/index.html
 
 %files
 %defattr(-,root,root)
-%{_prefix}/include/check.h
-%{_prefix}/lib/libcheck.a
+%{_includedir}/check.h
+%{_libdir}/libcheck.a
 %{_prefix}/share/aclocal/check.m4
 %doc %{_prefix}/share/doc/%{name}-%{version}
 
 %changelog
+* Mon Feb 28 2005 hugo303
+- patch from antoine Fri Jan 28 2005
+- fix lib64 for x86_64 arch (fc3)
 * Wed Nov 10 2004 hugo303
 - Updated for 0.9.2
 - Changed Release to 1 again.
