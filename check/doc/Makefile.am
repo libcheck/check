@@ -24,7 +24,7 @@ example_docs =\
 	money\
 	money/aclocal.m4\
 	money/check_money.c\
-	MONEY/configure.in\
+	money/configure.in\
 	money/INSTALL\
 	money/money.c\
 	money/README\

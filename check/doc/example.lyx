@@ -33,6 +33,11 @@ Arien Malec
 29 May, 2001
 \layout Standard
 
+
+\begin_inset LatexCommand \tableofcontents{}
+
+\end_inset 
+
 Copyright (c) 2001 Arien Malec.
  Permission is granted to copy, distribute and/or modify this document under
  the terms of the GNU Free Documentation License, Version 1.1 or any later
@@ -40,14 +45,6 @@ Copyright (c) 2001 Arien Malec.
  with no Front-Cover Texts, and with no Back-Cover Texts.
  A copy of the license is included in the section entitled "GNU Free Documentati
 on License".
-\layout Standard
-\pagebreak_top \pagebreak_bottom 
-
-\begin_inset LatexCommand \tableofcontents{}
-
-\end_inset 
-
-
 \layout Section
 
 Introduction
@@ -174,7 +171,7 @@ cvs -z3 update -dP
 \layout Standard
 
 Note that you do not have to supply the server directory path or the user
- name (it is all kept in the CVS local directory.
+ name (it is all kept in the CVS local directory.)
 \end_deeper 
 \layout Standard
 
