@@ -80,6 +80,13 @@
     etc. Please visit the Check project page at <A
     HREF="http://sourceforge.net/projects/check/">http://sourceforge.net/projects/check/</A></P>
 
+    <p>Patches to Check, unless trivial, should be against latest CVS,
+    and should include a full set of unit tests testing the new
+    behavior. No functionality goes into Check without unit tests, and
+    submitting a patch without automated testing guarantees that it
+    will go into the request queue, not the "to be applied soon"
+    pool.</p>
+
     <h3>TODO</h3>
 
     The following enhancements are being considered for Check. Please
@@ -107,10 +114,10 @@
 	<ul>
 
 	  <li>Allow fail and friends to be used within fixture
-	  setup/teardown functions</li>
+	  setup/teardown functions (done in 0.8.0)</li>
 
 	  <li>Allow forkless running of suites, to allow
-	  debugging</li>
+	  debugging (done in 0.8.0)</li>
 
 	  <li>Allow unit tests that expect signals or exits</li>
 
@@ -134,15 +141,16 @@
 	  <li>Increase tests for more non-public modules</li>
 
 	  <li>Refactor to allow better unit testing of printing
-	  functionality (without end-to-end testing of output</li>
+	  functionality. (done in 0.8.0)</li>
 	</ul>
       </li>
-      <li>
-	<ul>Internals
-	    <li>Currently Check can only be used on POSIX machines
-	    supporting SysV message queues. This excludes Win32 native
-	    and broken POSIX implementations (e.g., cygwin on
-	    Win9x). Abstract the forking and message passing
+      <li>Internals
+	<ul>
+	    <li>Implement message passing between unit test and test
+	    programs using pipes, rather than SysV IPC, to allow
+	    support under cygwin. (done in 0.8.0)</li>
+
+	    <li> Abstract the forking and message passing
 	    implementation to allow Win32 compatibility.</li>
 	</ul>
       </li>

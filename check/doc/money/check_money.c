@@ -46,7 +46,7 @@ Suite *money_suite (void)
   suite_add_tcase (s, tc_core);
   suite_add_tcase (s, tc_limits);
   tcase_add_test (tc_core, test_create);
-  tcase_set_fixture (tc_core, setup, teardown);
+  tcase_add_checked_fixture (tc_core, setup, teardown);
   tcase_add_test (tc_limits, test_neg_create);
   tcase_add_test (tc_limits, test_zero_create);
   return s;
@@ -57,7 +57,7 @@ int main (void)
   int nf;
   Suite *s = money_suite();
   SRunner *sr = srunner_create(s);
-  srunner_run_all (sr, CRNORMAL);
+  srunner_run_all (sr, CK_NORMAL);
   nf = srunner_ntests_failed(sr);
   srunner_free(sr);
   suite_free(s);

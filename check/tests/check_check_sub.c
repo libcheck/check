@@ -31,13 +31,7 @@ END_TEST
 
 START_TEST(test_segv)
 {
-  char arr[1];
-  int i = 0;
-
-  while (1) {
-    arr[i] = 'a';
-    i++;
-  }
+  raise (SIGSEGV);
 }
 END_TEST
 

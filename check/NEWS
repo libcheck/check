@@ -6,6 +6,10 @@ an unchecked fixture, support failing in checked and uncheck fixture
 functions, and errors in checked fixture functions. Rewrote the
 back-end to use pipes, rather than message queues.
 
+Reimplemented printing functions in terms of string formatting
+functions, to allow better testing of output without full end-to-end
+testing.
+
 Renamed some public constants to use the CK_ naming convention. This
 will break existing test programs.
 
