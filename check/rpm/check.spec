@@ -1,15 +1,16 @@
 Summary: A unit test framework for C
 Name: check
-Version: 0.5.2
+Version: 0.6.0
 Release: 1
 Epoch: 1
-Source: http://prdownloads.sourceforge.net/check/check-0.5.2.tar.gz
+Source: http://prdownloads.sourceforge.net/check/check-0.6.0.tar.gz
 Group: Development/Tools
 Copyright: GPL
 URL: http://check.sourceforge.net
 Prefix: %{_prefix}
 BuildPrereq: lyx sgml-tools
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
+Packager: Arien Malec <arien_malec@yahoo.com>
 
 %description
 Check is a unit test framework for C. It features a simple interface for defining unit tests, putting little in the way of the developer. Tests are run in a separate address space, so Check can catch both assertion failures and code errors that cause segmentation faults or other signals. The output from unit tests can be used within source code editors and IDEs.
@@ -45,7 +46,6 @@ rm -rf ${RPM_BUILD_ROOT}
 %doc %{_prefix}/share/doc/%{name}-%{version}/example-2.html
 %doc %{_prefix}/share/doc/%{name}-%{version}/example-3.html
 %doc %{_prefix}/share/doc/%{name}-%{version}/example-4.html
-%doc %{_prefix}/share/doc/%{name}-%{version}/example-5.html
 %doc %{_prefix}/share/doc/%{name}-%{version}/example.html
 %doc %{_prefix}/share/doc/%{name}-%{version}/example.lyx
 %doc %{_prefix}/share/doc/%{name}-%{version}/example.sgml 
@@ -68,5 +68,7 @@ rm -rf ${RPM_BUILD_ROOT}
 %doc %{_prefix}/share/doc/%{name}-%{version}/money/config.h.in
 
 %changelog
+* Thu Jun 21 2001 Arien Malec <arien_malec@yahoo.com>
+- Updated for 0.6.0, removed example-5.html
 * Sat Jun 2 2001 Arien Malec <arien_malec@yahoo.com>
 - First packaging.

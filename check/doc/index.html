@@ -15,22 +15,21 @@
     
     <P>Check was inspired by similar frameworks that currently exist
     for most programming languages; the most famous example being
-    JUnit for Java ( <A HREF="www.junit.com">www.junit.com</A>
-    ). There is a list of unit test frameworks for multiple languages
-    at
-      <A
-	 HREF="http://www.xprogramming.com/software.htm">www.xprogramming.com/software.htm</A>
-      . Unit testing has a long history as part of formal quality
+    JUnit for Java (<A HREF="www.junit.com">www.junit.com</A>). There
+    is a list of unit test frameworks for multiple languages at <A
+    HREF="http://www.xprogramming.com/software.htm">www.xprogramming.com/software.htm</A>
+    . Unit testing has a long history as part of formal quality
     assurance methodologies, but has recently been associated with the
     lightweight methodology called Extreme Programming. In that
     methodology, the characteristic practice involves interspersing
-    unit test writing with coding (" test a little, code a little"
-    ). While the incremental unit test/code approach is indispensable
-    to Extreme Programming, it is also applicable, and perhaps
-      indispensable, outside of that methodology.
-    <P>The incremental
-      test/code approach provides three main benefits to the developer:
-    <P>
+    unit test writing with coding (" test a little, code a
+    little"). While the incremental unit test/code approach is
+    indispensable to Extreme Programming, it is also applicable, and
+    perhaps indispensable, outside of that methodology.
+
+    <P>The incremental test/code approach provides three main benefits
+    to the developer:<P>
+      
     <OL>
       <LI>Because the unit tests use the interface to the unit being
       tested, they allow the developer to think about how the
@@ -57,6 +56,8 @@
     trails; with it, you can take the most direct path to where you
     want to go.<P>
 
+    <H2>Information about Check</H2>
+
     <P>Look at the Check homepage for the latest
     information on Check: <A
     HREF="http://check.sourceforge.net">http://check.sourceforge.net</A>
@@ -66,11 +67,71 @@
     HREF="http://sourceforge.net/projects/check/">http://sourceforge.net/projects/check/</A>
     </P>
 
-    <P>Check can be dowloaded from <A HREF="http://sourceforge.net/project/showfiles.php?group_id=28255&release_id=37982">here</A>.</P>
-
     <P>A tutorial introduction to Check can be found <A
     HREF="example.html">here</A>.</P>
+
+    <H2>Getting Check</H2>
+    <P>Check can be dowloaded from <A HREF="http://sourceforge.net/project/showfiles.php?group_id=28255&release_id=37982">here</A>.</P>
+
+    <H2>Contributing</H2>
+
+    <P>The author welcomes any and all help with Check, whether
+    through enhancement requests, bug reports, patches, documentation,
+    etc. Please visit the Check project page at <A
+    HREF="http://sourceforge.net/projects/check/">http://sourceforge.net/projects/check/</A>    
+
+    <P>To contribute to Check, you should download the source through
+    anonymous CVS, following these simple instructions:</P>
     
+    <OL>
+      <LI>Navigate to the directory below which you want the new check
+      directory to be formed. That is, if you navigate to
+      /home/luser/foo/bar, the check files will be in
+      /home/luser/foo/bar/check.</LI>
+
+      <LI>Issue the following command to login to CVS. When prompted
+      to supply the anonymous password, simply hit return.
+	<HR>
+<PRE>
+$ cvs -d:pserver:anonymous@cvs.check.sourceforge.net:/cvsroot/check login
+</PRE>
+	<HR>
+      </LI>
+      <LI>Issue the following command to setup the check subdirectory
+	<HR>
+<PRE>
+$ cvs -z3 -d:pserver:anonymous@cvs.check.sourceforge.net:/cvsroot/check co check
+</PRE>
+	<HR>
+      </LI>
+
+      <LI>To keep current with CVS, use the following command within the
+check directory
+	<HR>
+<PRE>
+$ cvs -z3 update -dP 
+</PRE>
+	<HR>
+ 
+	<P>Note that you do not have to supply the server directory
+	path or the user name (it is all kept in the CVS local
+	directory.)
+      </LI>
+    </OL>
+    
+    <P>From that point on, using Check should simply be a matter of
+      the standard:
+    <P>
+    <HR>
+    <PRE>
+$ ./configure
+$ make
+$ make install
+</PRE>
+    <HR>
+    <P>Of course, since Check comes with its own unit tests, you can (and should)
+    substitute "make check" for "make" in the above.</P>
+
       <A href="http://sourceforge.net"> <IMG
       src="http://sourceforge.net/sflogo.php?group_id=28255"
       width="88" height="31" border="0" alt="SourceForge Logo"></A>

@@ -129,99 +129,6 @@ The Check project page is at
 
 \layout Section
 
-How to get Check
-\layout Subsection
-
-Anonymous CVS
-\layout Standard
-
-Check is currently under development, so the normal way to get Check is
- through CVS.
- Follow the following simple instructions:
-\layout Enumerate
-
-Navigate to the directory below which you want the new check directory to
- be formed.
- That is, if you navigate to /home/luser/foo/bar, the check files will be
- in /home/luser/foo/bar/check.
-\layout Enumerate
-
-Issue the following command to login to CVS.
- When prompted to supply the anonymous password, simply hit return.
-\begin_deeper 
-\layout Code
-
-cvs -d:pserver:anonymous@cvs.check.sourceforge.net:/cvsroot/check login
-\end_deeper 
-\layout Enumerate
-
-Issue the following command to setup the check subdirectory
-\begin_deeper 
-\layout Code
-
-cvs -z3 -d:pserver:anonymous@cvs.check.sourceforge.net:/cvsroot/check co check
-\end_deeper 
-\layout Enumerate
-
-To keep current with CVS, use the following command within the check directory
-\begin_deeper 
-\layout Code
-
-cvs -z3 update -dP
-\layout Standard
-
-Note that you do not have to supply the server directory path or the user
- name (it is all kept in the CVS local directory.)
-\end_deeper 
-\layout Standard
-
-From that point on, using Check should simply be a matter of the standard:
- 
-\layout Code
-
-$ ./configure 
-\layout Code
-
-$ make 
-\layout Code
-
-$ make install
-\layout Standard
-
-Of course, since Check comes with its own unit tests, you can substitute
- 
-\begin_inset Quotes eld
-\end_inset 
-
-make check
-\begin_inset Quotes erd
-\end_inset 
-
- for 
-\begin_inset Quotes eld
-\end_inset 
-
-make
-\begin_inset Quotes erd
-\end_inset 
-
- in the above.
-\layout Subsection
-
-Contributing
-\layout Standard
-
-The author welcomes any and all help with Check, whether through enhancement
- requests, bug reports, patches, documentation, etc.
- Please visit the Check project page at 
-\begin_inset LatexCommand \htmlurl[http://sourceforge.net/projects/check/]{http://sourceforge.net/projects/check/}
-
-\end_inset 
-
-.
- Check is free software, licensed under the GPL.
-\layout Section
-
 Unit testing in C
 \layout Standard
 
@@ -685,8 +592,9 @@ The code in main bears some explanation.
  We then run the suite, using the CRNORMAL flag to specify that we should
  print a summary of the run, and list any failures that may have occurred.
  We could also have specified the CRSILENT flag to specify that no output
- should occur, and the CRMINIMAL flag to specify that only the run summary
- should be printed.
+ should occur, the CRMINIMAL flag to specify that only the run summary should
+ be printed, or the CRVERBOSE flag to indicate that all tests should be
+ reported on, whether they passed or failed.
  We capture the number of failures that occurred during the run, and use
  that to decide how to return.
  The check target created by Automake uses the return value to decide whether
@@ -700,12 +608,13 @@ Running suite: Money
 0%: Checks: 1, Failures: 1, Errors: 0 
 \layout Code
 
-check_money.c:9:Core: Amount not set correctly on creation
+check_money.c:9:F:Core: Amount not set correctly on creation
 \layout Standard
 
 The first number in the summary line tells us that 0% of our tests passed,
  and the rest of the line tells us that there was one check, and one failure.
- The next line tells us exactly where that failure occurred.
+ The next line tells us exactly where that failure occurred, what kind of
+ failure it was (P for pass, F for failure, E for error).
 \layout Standard
 
 Let's implement the money_amount function, so that it will pass its tests.
@@ -746,7 +655,7 @@ Running suite: Money
 0%: Checks: 1, Failures: 0, Errors: 1 
 \layout Code
 
-check_money.c:5:Core: (after this point) Received signal 11
+check_money.c:5:E:Core: (after this point) Received signal 11
 \layout Standard
 
 What does this mean? Note that we now have an error, rather than a failure.

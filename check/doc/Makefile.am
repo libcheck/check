@@ -17,8 +17,7 @@ html_docs =\
 	example-1.html\
 	example-2.html\
 	example-3.html\
-	example-4.html\
-	example-5.html
+	example-4.html
 
 example_docs =\
 	money\

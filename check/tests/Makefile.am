@@ -1,6 +1,7 @@
 TESTS=check_check check_list check_check_msg test_output.sh
 
 noinst_PROGRAMS=check_check check_list check_stress check_check_msg ex_output
+EXTRA_DIST=test_output.sh
 
 check_check_SOURCES= \
 	check_check.c
