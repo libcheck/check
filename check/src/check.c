@@ -170,17 +170,19 @@ void _mark_point (const char *file, int line)
 }
 
 void _fail_unless (int result, const char *file,
-                   int line, const char * msg, ...)
+                   int line, const char *expr, ...)
 {
-  if (msg == NULL)
-    eprintf ("_fail_unless() called with NULL msg",__FILE__,__LINE__);
-
+  const char *msg;
+    
   send_loc_info (get_send_key(), file, line);
   if (!result) {
     va_list ap;
     char buf[BUFSIZ];
-
-    va_start(ap,msg);
+    
+    va_start(ap,expr);
+    msg = (const char*)va_arg(ap, char *);
+    if (msg == NULL)
+      msg = expr;
     vsnprintf(buf, BUFSIZ, msg, ap);
     va_end(ap);
     send_failure_info (get_send_key(), buf);

@@ -48,9 +48,23 @@ START_TEST(test_fail_null_msg)
 }
 END_TEST
 
+
+START_TEST(test_fail_no_msg)
+{
+  fail_unless(4 == 5);
+}
+END_TEST
+
 START_TEST(test_fail_if_null_msg)
 {
   fail_if(2 != 3, NULL);
+}
+END_TEST
+
+
+START_TEST(test_fail_if_no_msg)
+{
+  fail_if(4 != 5);
 }
 END_TEST
 
@@ -75,6 +89,12 @@ START_TEST(test_fail_vararg_msg_3)
   int x = 7;
   int y = 7;
   fail("%d == %d", x, y);
+}
+END_TEST
+
+START_TEST(test_fail_empty)
+{
+  fail();
 }
 END_TEST
 
@@ -170,10 +190,13 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_simple, test_fail_if_pass);
   tcase_add_test (tc_simple, test_fail_if_fail);
   tcase_add_test (tc_simple, test_fail_null_msg);
+  tcase_add_test (tc_simple, test_fail_no_msg);
   tcase_add_test (tc_simple, test_fail_if_null_msg);
+  tcase_add_test (tc_simple, test_fail_if_no_msg);
   tcase_add_test (tc_simple, test_fail_vararg_msg_1);
   tcase_add_test (tc_simple, test_fail_vararg_msg_2);
   tcase_add_test (tc_simple, test_fail_vararg_msg_3);
+  tcase_add_test (tc_simple, test_fail_empty);
   tcase_add_test (tc_signal, test_segv);
   tcase_add_test (tc_signal, test_fpe);
   tcase_add_test (tc_signal, test_mark_point);

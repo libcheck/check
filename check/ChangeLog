@@ -1,3 +1,8 @@
+2004-11-04 hugo303
+
+	* src/check.c, src/check.h.in, tests/check_check_master.c,
+	tests/check_check_sub.c: Applied ANSI C99 patch (#1047014)
+
 2004-08-20 hugo303
 
 	* doc/tutorial.sgml: Updated with new features.

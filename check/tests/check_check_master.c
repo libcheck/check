@@ -14,14 +14,14 @@ TestResult **tr_all_array;
 
 START_TEST(test_check_nfailures)
 {
-  fail_unless (sub_nfailed == 16,
+  fail_unless (sub_nfailed == 19,
                "Unexpected number of failures received, %d.", sub_nfailed);
 }
 END_TEST
 
 START_TEST(test_check_ntests_run)
 {
-  fail_unless (sub_ntests == 18,
+  fail_unless (sub_ntests == 21,
                "Unexpected number of tests run, %d.", sub_ntests);
 }
 END_TEST
@@ -37,10 +37,13 @@ START_TEST(test_check_failure_msgs)
     /*    "Test passed", */
     "This test should fail",
     "Assertion '2 == 3' failed",
+    "Assertion '4 == 5' failed",
     "Assertion '2 != 3' failed",
+    "Assertion '4 != 5' failed",
     "3 != 4",
     "5 != 6",
     "7 == 7",
+    "Failed",
     "Received signal 11",
     "Received signal 8",
     "Received signal 8",
@@ -81,6 +84,9 @@ START_TEST(test_check_failure_lnos)
     -1,
     -1,
     -1,
+    -1,
+    -1,
+    -1,
     -1};
   
   for (i = 0; i < sub_nfailed; i++) {
@@ -102,6 +108,9 @@ START_TEST(test_check_failure_ftypes)
   int ftypes[] = {
     CK_FAILURE,
     CK_ERROR,
+    CK_FAILURE,
+    CK_FAILURE,
+    CK_FAILURE,
     CK_FAILURE,
     CK_FAILURE,
     CK_FAILURE,
@@ -150,6 +159,9 @@ START_TEST(test_check_failure_tcnames)
     "Simple Tests",
     "Simple Tests",
     "Simple Tests",
+    "Simple Tests",
+    "Simple Tests",
+    "Simple Tests",
     "Signal Tests",
     "Signal Tests",
     "Signal Tests",
@@ -183,10 +195,13 @@ START_TEST(test_check_all_msgs)
     "Passed",
     "This test should fail",
     "Assertion '2 == 3' failed",
+    "Assertion '4 == 5' failed",
     "Assertion '2 != 3' failed",
+    "Assertion '4 != 5' failed",
     "3 != 4",
     "5 != 6",
     "7 == 7",
+    "Failed",
     "Received signal 11",
     "Received signal 8",
     "Received signal 8",
@@ -222,6 +237,9 @@ START_TEST(test_check_all_ftypes)
     CK_FAILURE,
     CK_FAILURE,
     CK_FAILURE,
+    CK_FAILURE,
+    CK_FAILURE,
+    CK_FAILURE,    
     CK_FAILURE,
     CK_ERROR,
     CK_ERROR,
