@@ -1,3 +1,13 @@
+2001-06-12 10:28  amalec
+
+	* configure, configure.in, src/check.h, src/check_run.c,
+	tests/check_check.c: Added new tests for line number
+
+2001-06-04 10:58  amalec
+
+	* ChangeLog, doc/index.html: Added homepage file in doc directory,
+	and updated change log
+
 2001-06-04 10:08  amalec
 
 	* doc/Makefile.am, doc/example.lyx, rpm/check.spec: Cleaned up spec
