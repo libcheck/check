@@ -305,7 +305,7 @@ void srunner_set_fork_status (SRunner *sr, enum fork_status fstat);
   
 #ifdef __cplusplus 
 #define CK_CPPEND }
-CL_CPPEND
+CK_CPPEND
 #endif
 
 #endif /* CHECK_H */
