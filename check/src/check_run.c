@@ -343,7 +343,7 @@ static TestResult *tcase_run_tfun_fork (TCase *tc, TF *tfun)
     tcase_run_checked_setup (tc);
     tfun->fn();
     tcase_run_checked_teardown (tc);
-    _exit (EXIT_SUCCESS);
+    exit(EXIT_SUCCESS);
   }
   (void) wait(&status);
   return receive_result_info_fork (tc->name, tfun->name, status);
