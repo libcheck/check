@@ -1,3 +1,22 @@
+2001-08-23 21:25  amalec
+
+	* NEWS: Document 0.7.3 in NEWS
+
+2001-08-23 21:13  amalec
+
+	* debian/changelog: This time, fix debian changelog correctly
+
+2001-08-23 21:10  amalec
+
+	* debian/changelog: Fixed maintainer email in debian changelog
+
+2001-08-22 23:08  amalec
+
+	* ChangeLog, acinclude.m4, aclocal.m4, configure, configure.in,
+	debian/changelog, debian/check.doc-base.tut, debian/files,
+	rpm/check.spec: Updated acinclude.m4 to increase portability; fixed
+	a minor packaging bug in debian doc-base files
+
 2001-08-18 05:28  amalec
 
 	* ChangeLog, doc/index.html: index.html changes
