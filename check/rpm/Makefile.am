@@ -19,4 +19,4 @@ rpm: check.spec
 	cp ${RPM_SRC} ..
 	rm -rf ${RPMDIRS}
 
-CLEANFILES=*.*~
+CLEANFILES=*.*~ check.spec
