@@ -1,7 +1,7 @@
 Summary: A unit test framework for C
 Name: check
 Version: @VERSION@
-Release: 2
+Release: 1
 Epoch: 1
 Source: http://prdownloads.sourceforge.net/check/check-%{version}.tar.gz
 Group: Development/Tools
@@ -9,7 +9,7 @@ Copyright: Arien Malec <arien_malec@yahoo.com>
 URL: http://check.sourceforge.net/
 Prefix: %{_prefix}
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
-Packager: Arien Malec <arien_malec@yahoo.com>
+Packager: Fredrik Hugosson <hugo303@sourceforge.net>
 
 %description
 Check is a unit test framework for C. It features a simple interface for defining unit tests, putting little in the way of the developer. Tests are run in a separate address space, so Check can catch both assertion failures and code errors that cause segmentation faults or other signals. The output from unit tests can be used within source code editors and IDEs.
@@ -44,6 +44,9 @@ rm %{_prefix}/share/doc/%{name}-%{version}/index.html
 %doc %{_prefix}/share/doc/%{name}-%{version}
 
 %changelog
+* Wed Nov 10 2004 hugo303
+- Updated for 0.9.2
+- Changed Release to 1 again.
 * Sat Jun  6 2004 Bill Barnard <bill@barnard-engineering.com> - 1:0.9.0-2
 - Updated for 0.9.0
 - Minor edits/additions to tutorial.sgml
