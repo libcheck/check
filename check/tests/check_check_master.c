@@ -14,13 +14,13 @@ TestResult **tr_all_array;
 
 START_TEST(test_check_nfailures)
 {
-  fail_unless (sub_nfailed == 10, "Unexpected number of failures received");
+  fail_unless (sub_nfailed == 11, "Unexpected number of failures received");
 }
 END_TEST
 
 START_TEST(test_check_ntests_run)
 {
-  fail_unless (sub_ntests == 11, "Unexpected number of tests run");
+  fail_unless (sub_ntests == 12, "Unexpected number of tests run");
 }
 END_TEST
 
@@ -37,6 +37,7 @@ START_TEST(test_check_failure_msgs)
     "Received signal 8",
     "Received signal 8",
     "Early exit with return value 1",
+    "Completed properly",
     "Completed properly",
     "We failed"};
 
@@ -59,6 +60,7 @@ START_TEST(test_check_failure_lnos)
   int lnos[] = {
     8,
     14,
+    -1,
     -1,
     -1,
     -1,
@@ -94,6 +96,7 @@ START_TEST(test_check_failure_ftypes)
     CK_ERROR,
     CK_ERROR,
     CK_FAILURE,
+    CK_FAILURE,
     CK_FAILURE};
   
   for (i = 0; i < sub_nfailed; i++) {
@@ -128,6 +131,7 @@ START_TEST(test_check_failure_tcnames)
     "Signal Tests",
     "Limit Tests",
     "Limit Tests",
+    "Limit Tests",
     "Core"};
   
   for (i = 0; i < sub_nfailed; i++) {
@@ -158,6 +162,7 @@ START_TEST(test_check_all_msgs)
     "Received signal 8",
     "Early exit with return value 1",
     "Completed properly",
+    "Completed properly",
     "We failed"};
 
   for (i = 0; i < sub_ntests; i++) {
@@ -186,6 +191,7 @@ START_TEST(test_check_all_ftypes)
     CK_ERROR,
     CK_ERROR,
     CK_ERROR,
+    CK_FAILURE,
     CK_FAILURE,
     CK_FAILURE};
   

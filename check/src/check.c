@@ -185,7 +185,8 @@ SRunner *srunner_create (Suite *s)
 {
   SRunner *sr = emalloc (sizeof(SRunner)); /* freed in srunner_free */
   sr->slst = list_create();
-  list_add_end(sr->slst, s);
+  if (s != NULL)
+    list_add_end(sr->slst, s);
   sr->stats = emalloc (sizeof(TestStats)); /* freed in srunner_free */
   sr->stats->n_checked = sr->stats->n_failed = sr->stats->n_errors = 0;
   sr->resultlst = list_create();

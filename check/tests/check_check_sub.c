@@ -86,6 +86,15 @@ START_TEST(test_null)
 }
 END_TEST
 
+START_TEST(test_null_2)
+{
+  SRunner *sr = srunner_create(NULL);
+  srunner_run_all (sr, CK_NORMAL);
+  srunner_free (sr);
+  fail("Completed properly");
+}
+END_TEST
+
 START_TEST(test_2nd_suite)
 {
   fail("We failed");
@@ -121,5 +130,6 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_signal, test_mark_point);
   tcase_add_test (tc_limit, test_early_exit);
   tcase_add_test (tc_limit, test_null);
+  tcase_add_test (tc_limit, test_null_2);
   return s;
 }
