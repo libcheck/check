@@ -1,3 +1,10 @@
+Thu Aug 23, 2001:
+Released Check 0.7.3
+
+Fixed the Autoconf Lyx check in acinclude.m4 so that configure works
+on Solaris systems (and hopefully others), and cleaned up a minor
+problem in Debian packaging.
+
 Fri Aug 17, 2001:
 Released Check 0.7.2
 
