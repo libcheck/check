@@ -27,6 +27,10 @@
 #include "check_impl.h"
 #include "check_msg.h"
 
+int check_major_version = CHECK_MAJOR_VERSION;
+int check_minor_version = CHECK_MINOR_VERSION;
+int check_micro_version = CHECK_MICRO_VERSION;
+
 static int non_pass (int val);
 static Fixture *fixture_create (SFun fun, int ischecked);
 static void tcase_add_fixture (TCase *tc, SFun setup, SFun teardown,

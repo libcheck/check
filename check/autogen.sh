@@ -28,6 +28,10 @@ DIE=0
 	DIE=1
 }
 
+if test "$DIE" -eq 1; then
+	exit 1
+fi
+
 echo "I am testing that you have the required versions of autoconf and automake"
 echo
 

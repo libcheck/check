@@ -7,3 +7,9 @@ source code editors and IDEs.
 
 See http://check.sourceforge.net for more information, including a
 tutorial.
+
+If you get Check out of CVS, you will need a working setup of automake
+(at least version 1.4) and autoconf (at least version 2.13) in order
+to successfully build Check. There's a script called autogen.sh that
+calls autoconf and automake for you and then runs the generated 
+configure script.

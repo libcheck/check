@@ -51,11 +51,23 @@
 
 */
 
+
 #ifdef __cplusplus
 #define CK_CPPSTART extern "C" {
 CK_CPPSTART
 #endif
-  
+
+
+/* check version numbers */
+
+#define CHECK_MAJOR_VERSION (@CHECK_MAJOR_VERSION@)
+#define CHECK_MINOR_VERSION (@CHECK_MINOR_VERSION@)
+#define CHECK_MICRO_VERSION (@CHECK_MICRO_VERSION@)
+
+extern int check_major_version;
+extern int check_minor_version;
+extern int check_micro_version;
+
 
 /* opaque type for a test case
 
@@ -152,8 +164,8 @@ static void __testname (void)\
 #define END_TEST }
 
 
-/* Fail the test case unless result is true */
-#define fail_unless(result,msg) _fail_unless(result,__FILE__,__LINE__,msg)
+/* Fail the test case unless expr is true */
+#define fail_unless(expr,msg) _fail_unless(expr,__FILE__,__LINE__,msg)
   
 /* Non macro version of #fail_unless, with more complicated interface */
 void _fail_unless (int result, char *file, int line, char *msg);

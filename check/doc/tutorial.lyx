@@ -293,16 +293,24 @@ noinst_PROGRAMS=check_money
 \layout Code
 
 check_money_SOURCES=  money.h money.c check_money.c
+\layout Code
+
+check_money_INCLUDES= @CHECK_CFLAGS@
+\layout Code
+
+check_money_LIBS= @CHECK_LIBS@
 \layout Standard
 
 Special mumbojumbo to use in configure.in is:
 \layout Code
 
-AC_CHECK_LIB(check,suite_create)
+AM_PATH_CHECK()
 \layout Standard
 
-This will ensure that things link up properly with Check, and make sure
- that we can only compile in an environment that has Check.
+This will ensure that things link up properly with Check by defining the
+ appropriate compiler and linker flags as CHECK_CFLAGS and CHECK_LIBS.
+ It also makes sure that we can only compile in an environment that has
+ Check.
  The money.h header should only contain the standard #ifndef MONEY_H stuff,
  money.c should be empty, and check_money.c should only contain an empty main
  function.
@@ -310,6 +318,18 @@ This will ensure that things link up properly with Check, and make sure
  and friends working.
  If all goes well, make should report that our tests passed.
  No surprise, because there aren't any tests to fail.
+\layout Standard
+
+The AM_PATH_CHECK() macro is defined in the file check.m4 which is installed
+ by Check.
+ If you see warnings from automake or aclocal this most certainly means
+ that you forgot to call aclocal or that aclocal can't find check.m4.
+ AM_PATH_CHECK() has some optional parameters that you might find useful:
+\layout Code
+
+AM_PATH_CHECK([MINIMUM-VERSION,[ACTION-IF-FOUND[,ACTION-IF-NOT-FOUND]]])
+\layout Code
+
 \layout Subsection
 
 Test a little, code a little

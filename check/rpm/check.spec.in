@@ -1,12 +1,12 @@
 Summary: A unit test framework for C
 Name: check
-Version: 0.8.1
+Version: @VERSION@
 Release: 1
 Epoch: 1
-Source: http://prdownloads.sourceforge.net/check/check-0.8.1.tar.gz
+Source: http://prdownloads.sourceforge.net/check/check-@VERSION@.tar.gz
 Group: Development/Tools
-Copyright: GPL
-URL: http://check.sourceforge.net
+Copyright: LGPL
+URL: http://check.sourceforge.net/
 Prefix: %{_prefix}
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 Packager: Arien Malec <arien_malec@yahoo.com>

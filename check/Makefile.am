@@ -9,7 +9,10 @@ doc_DATA = ChangeLog ChangeLogOld NEWS README COPYING
 
 SUBDIRS=src tests doc rpm debian
 
-EXTRA_DIST= ChangeLogOld autogen.sh
+m4datadir = $(datadir)/aclocal
+m4data_DATA = check.m4
+
+EXTRA_DIST= ChangeLogOld autogen.sh $(m4data_DATA)
 
 CLEANFILES=*~\
 	${PACKAGE}-${VERSION}*.gz\

@@ -1,6 +1,18 @@
 dnl Process this file with autoconf to produce a configure script.
+
 AC_INIT(src/check.c)
-AM_INIT_AUTOMAKE(check,0.8.1)
+
+CHECK_MAJOR_VERSION=0
+CHECK_MINOR_VERSION=8
+CHECK_MICRO_VERSION=2
+CHECK_VERSION=$CHECK_MAJOR_VERSION.$CHECK_MINOR_VERSION.$CHECK_MICRO_VERSION
+
+AM_INIT_AUTOMAKE(check,$CHECK_VERSION)
+
+AC_SUBST(CHECK_MAJOR_VERSION)
+AC_SUBST(CHECK_MINOR_VERSION)
+AC_SUBST(CHECK_MICRO_VERSION)
+
 AC_ARG_ENABLE(plain_docdir,
 [  --enable-plain-docdir        don't append version information to docdir],
 [case "${enableval}" in
@@ -47,8 +59,10 @@ AC_CHECK_FUNCS([strerror])
 
 AC_OUTPUT(Makefile
 	  src/Makefile
+	  src/check.h
 	  tests/Makefile
 	  doc/Makefile
 	  doc/money/Makefile
 	  rpm/Makefile
+	  rpm/check.spec
 	  debian/Makefile)

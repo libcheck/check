@@ -12,5 +12,6 @@ libcheck_a_SOURCES=\
 	check_error.h check_error.c\
 	list.h list.c
 
+EXTRA_DIST=check.h.in
 
 CLEANFILES=*.*~

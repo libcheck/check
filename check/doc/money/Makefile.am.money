@@ -6,3 +6,6 @@ check_money_SOURCES=\
 	money.h\
 	money.c\
 	check_money.c
+
+check_money_INCLUDES = @CHECK_CFLAGS@
+check_money_LDADD = @CHECK_LIBS@
