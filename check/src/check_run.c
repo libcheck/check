@@ -44,7 +44,6 @@ struct TestResult {
   int rtype;     /* Type of result */
   char *file;    /* File where the test occured */
   int line;      /* Line number where the test occurred */
-  int exact_loc; /* Is the location given by file:line exact? */
   char *tcname;  /* Test case that generated the result */
   char *msg;     /* Failure message */
 };
@@ -55,7 +54,7 @@ static void srunner_add_failure (SRunner *sr, TestResult *tf);
 static TestResult *tfun_run (int msqid, char *tcname, TF *tf);
 static List *srunner_resultlst (SRunner *sr);
 
-static void print_failure (TestResult *tr);
+static void tr_print (TestResult *tr);
 static char *signal_msg (int sig);
 static char *exit_msg (int exitstatus);
 static int non_pass (int val);
@@ -114,8 +113,7 @@ void srunner_run_all (SRunner *sr, int print_mode)
   }
   if (print_mode >= CRMINIMAL)
     print_summary_report (sr);
-  if (print_mode >= CRNORMAL)
-    print_failures (sr);
+  print_results (sr, print_mode);
 }
 
 static void srunner_add_failure (SRunner *sr, TestResult *tr)
@@ -171,7 +169,6 @@ static TestResult *receive_failure_info (int msqid, int status, char *tcname)
 
   if (WIFSIGNALED(status)) {
     tr->rtype = CRERROR;
-    tr->exact_loc = 0;
     tr->msg = signal_msg (WTERMSIG(status));
     return tr;
   }
@@ -180,7 +177,9 @@ static TestResult *receive_failure_info (int msqid, int status, char *tcname)
     
     if (WEXITSTATUS(status) == 0) {
       tr->rtype = CRPASS;
-      tr->exact_loc = 1;
+      /* TODO: It would be cleaner to strdup this &
+	 not special case the free...*/
+      tr->msg = "Test passed";
     }
     else {
       
@@ -188,11 +187,9 @@ static TestResult *receive_failure_info (int msqid, int status, char *tcname)
       if (fmsg == NULL) { /* implies early exit */
 	tr->rtype = CRERROR;
 	tr->msg =  exit_msg (WEXITSTATUS(status));
-	tr->exact_loc = 0;
       }
       else {
 	tr->rtype = CRFAILURE;
-	tr->exact_loc = 1;
 	tr->msg = emalloc(strlen(fmsg->msg) + 1);
 	strcpy (tr->msg, fmsg->msg);
 	free (fmsg);
@@ -231,13 +228,23 @@ void print_summary_report (SRunner *sr)
   return;
 }
 
-void print_failures (SRunner *sr)
+void print_results (SRunner *sr, int print_mode)
 {
   List *resultlst;
+  if (print_mode < CRNORMAL)
+    return;
+  
   resultlst = sr->resultlst;
   
   for (list_front(resultlst); !list_at_end(resultlst); list_advance(resultlst)) {
-    print_failure (list_val(resultlst));
+    TestResult *tr = list_val(resultlst);
+    if (tr_rtype(tr) == CRPASS)
+      if (print_mode >= CRVERBOSE) 
+	tr_print (tr);
+      else
+	;
+    else
+      tr_print (tr);
   }
   return;
 }
@@ -303,13 +310,27 @@ static int percent_passed (TestStats *t)
 		   (float) t->n_checked * 100);
 }
 
-static void print_failure (TestResult *tr)
+static char *rtype_to_string (int rtype)
+{
+  switch (rtype) {
+  case CRPASS:
+    return "P";
+    break;
+  case CRFAILURE:
+    return "F";
+    break;
+  case CRERROR:
+    return "E";
+    break;
+  }
+}
+
+static void tr_print (TestResult *tr)
 {
   char *exact_msg;
-  if (tr->rtype == CRPASS)
-    return;
-  exact_msg = (tr->exact_loc) ? "" : "(after this point) ";
-  printf ("%s:%d:%s: %s%s\n", tr->file, tr->line, tr->tcname,
+  exact_msg = (tr->rtype == CRERROR) ? "(after this point) ": "";
+  printf ("%s:%d:%s:%s: %s%s\n", tr->file, tr->line,
+	  rtype_to_string(tr->rtype),  tr->tcname,
 	  exact_msg, tr->msg);
 }
 

@@ -155,8 +155,9 @@ TestResult **srunner_failures (SRunner *sr);
 /* Print a summary report of %passed, #checks, failures */
 void print_summary_report (SRunner *sr);
 
-/* Print a detailed report of failures (one failure per line) */
-void print_failures (SRunner *sr);
+/* Print a detailed report of test results
+   print_mode works like with srunner_run_all*/
+void print_results (SRunner *sr, int print_mode);
 
 
 #endif /* CHECK_H */

@@ -67,9 +67,9 @@ VERSION = @VERSION@
 have_lyx = @have_lyx@
 have_sgmltools = @have_sgmltools@
 
-TESTS = check_check check_list check_check_msg
+TESTS = check_check check_list check_check_msg test_output.sh
 
-noinst_PROGRAMS = check_check check_list check_stress check_check_msg
+noinst_PROGRAMS = check_check check_list check_stress check_check_msg ex_output
 
 check_check_SOURCES =  	check_check.c
 
@@ -81,6 +81,9 @@ check_stress_SOURCES =  	check_stress.c
 
 
 check_check_msg_SOURCES =  	check_check_msg.c
+
+
+ex_output_SOURCES =  	ex_output.c
 
 
 INCLUDES = -I$(srcdir)/../src
@@ -113,6 +116,10 @@ check_check_msg_OBJECTS =  check_check_msg.o
 check_check_msg_LDADD = $(LDADD)
 check_check_msg_DEPENDENCIES =  ../src/libcheck.a
 check_check_msg_LDFLAGS = 
+ex_output_OBJECTS =  ex_output.o
+ex_output_LDADD = $(LDADD)
+ex_output_DEPENDENCIES =  ../src/libcheck.a
+ex_output_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -125,9 +132,9 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = gtar
 GZIP_ENV = --best
 DEP_FILES =  .deps/check_check.P .deps/check_check_msg.P \
-.deps/check_list.P .deps/check_stress.P
-SOURCES = $(check_check_SOURCES) $(check_list_SOURCES) $(check_stress_SOURCES) $(check_check_msg_SOURCES)
-OBJECTS = $(check_check_OBJECTS) $(check_list_OBJECTS) $(check_stress_OBJECTS) $(check_check_msg_OBJECTS)
+.deps/check_list.P .deps/check_stress.P .deps/ex_output.P
+SOURCES = $(check_check_SOURCES) $(check_list_SOURCES) $(check_stress_SOURCES) $(check_check_msg_SOURCES) $(ex_output_SOURCES)
+OBJECTS = $(check_check_OBJECTS) $(check_list_OBJECTS) $(check_stress_OBJECTS) $(check_check_msg_OBJECTS) $(ex_output_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -180,6 +187,10 @@ check_stress: $(check_stress_OBJECTS) $(check_stress_DEPENDENCIES)
 check_check_msg: $(check_check_msg_OBJECTS) $(check_check_msg_DEPENDENCIES)
 	@rm -f check_check_msg
 	$(LINK) $(check_check_msg_LDFLAGS) $(check_check_msg_OBJECTS) $(check_check_msg_LDADD) $(LIBS)
+
+ex_output: $(ex_output_OBJECTS) $(ex_output_DEPENDENCIES)
+	@rm -f ex_output
+	$(LINK) $(ex_output_LDFLAGS) $(ex_output_OBJECTS) $(ex_output_LDADD) $(LIBS)
 
 tags: TAGS
 

@@ -27,7 +27,6 @@ START_TEST(test_pass)
 {
   fail_unless (1==1, "This test should pass");
   fail_unless (9999, "This test should pass");
-  fail("Completed properly");
 }
 END_TEST
 
@@ -99,7 +98,7 @@ TestResult **trarray;
 
 START_TEST(test_check_nfailures)
 {
-  fail_unless (nfailures == 9, "Unexpected number of failures received");
+  fail_unless (nfailures == 8, "Unexpected number of failures received");
 }
 END_TEST
 
@@ -109,7 +108,7 @@ START_TEST(test_check_failure_msgs)
   char *msgar[] = {
     "Failure expected",
     "Early exit with return value 1",
-    "Completed properly",
+    "Test passed",
     "This test should fail",
     "Received signal 11",
     "Received signal 8",
@@ -163,7 +162,7 @@ START_TEST(test_check_failure_ftypes)
   int ftypes[] = {
     CRFAILURE,
     CRERROR,
-    CRFAILURE,
+    CRPASS,
     CRFAILURE,
     CRERROR,
     CRERROR,
