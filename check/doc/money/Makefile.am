@@ -1,0 +1,8 @@
+TESTS=check_money
+
+noinst_PROGRAMS=check_money
+
+check_money_SOURCES=\
+	money.h\
+	money.c\
+	check_money.c
