@@ -14,13 +14,13 @@ TestResult **tr_all_array;
 
 START_TEST(test_check_nfailures)
 {
-  fail_unless (sub_nfailed == 11, "Unexpected number of failures received");
+  fail_unless (sub_nfailed == 12, "Unexpected number of failures received");
 }
 END_TEST
 
 START_TEST(test_check_ntests_run)
 {
-  fail_unless (sub_ntests == 12, "Unexpected number of tests run");
+  fail_unless (sub_ntests == 14, "Unexpected number of tests run");
 }
 END_TEST
 
@@ -30,6 +30,8 @@ START_TEST(test_check_failure_msgs)
   const char *msgar[] = {
     "Failure expected",
     "Early exit with return value 1",
+    /*    "Test passed", */
+    "This test should fail",
     /*    "Test passed", */
     "This test should fail",
     "Assertion '2==3' failed",
@@ -68,6 +70,7 @@ START_TEST(test_check_failure_lnos)
     -1,
     -1,
     -1,
+    -1,
     -1};
   
   for (i = 0; i < sub_nfailed; i++) {
@@ -89,6 +92,7 @@ START_TEST(test_check_failure_ftypes)
   int ftypes[] = {
     CK_FAILURE,
     CK_ERROR,
+    CK_FAILURE,
     CK_FAILURE,
     CK_FAILURE,
     CK_ERROR,
@@ -126,6 +130,8 @@ START_TEST(test_check_failure_tcnames)
     "Simple Tests",
     "Simple Tests",
     "Simple Tests",
+    "Simple Tests",
+    "Simple Tests",
     "Signal Tests",
     "Signal Tests",
     "Signal Tests",
@@ -156,6 +162,8 @@ START_TEST(test_check_all_msgs)
     "Early exit with return value 1",
     "Passed",
     "This test should fail",
+    "Passed",
+    "This test should fail",
     "Assertion '2==3' failed",
     "Received signal 11",
     "Received signal 8",
@@ -184,6 +192,8 @@ START_TEST(test_check_all_ftypes)
   int ftypes[] = {
     CK_FAILURE,
     CK_ERROR,
+    CK_PASS,
+    CK_FAILURE,
     CK_PASS,
     CK_FAILURE,
     CK_FAILURE,

@@ -158,6 +158,10 @@ static void __testname (void)\
 #define fail_unless(expr,msg)\
  _fail_unless(expr,__FILE__,__LINE__, msg ? msg : "Assertion '"#expr"' failed")
 
+/* Fail the test case if expr is true */
+#define fail_if(expr, msg)\
+ _fail_unless(!(expr),__FILE__,__LINE__,msg ?msg :"Assertion '"#expr"' failed")
+
 /* Non macro version of #fail_unless, with more complicated interface */
 void _fail_unless (int result, const char *file, int line, const char *msg);
 

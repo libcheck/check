@@ -35,6 +35,19 @@ START_TEST(test_fail_null_msg)
 }
 END_TEST
 
+START_TEST(test_fail_if_pass)
+{
+  fail_if(1==2, "This test should pass");
+  fail_if(0, "This test should pass");
+}
+END_TEST
+
+START_TEST(test_fail_if_fail)
+{
+  fail_if(1==1, "This test should fail");
+}
+END_TEST
+
 START_TEST(test_segv)
 {
   raise (SIGSEGV);
@@ -124,6 +137,8 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_simple, test_mark_lno);
   tcase_add_test (tc_simple, test_pass);
   tcase_add_test (tc_simple, test_fail);
+  tcase_add_test (tc_simple, test_fail_if_pass);
+  tcase_add_test (tc_simple, test_fail_if_fail);
   tcase_add_test (tc_simple, test_fail_null_msg);
   tcase_add_test (tc_signal, test_segv);
   tcase_add_test (tc_signal, test_fpe);

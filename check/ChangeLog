@@ -1,3 +1,8 @@
+2004-08-17 hugo303
+
+	* src/check.h.in tests/check_check_master.c tests/check_check_sub.c:
+	Applied fail_if (#709167) patch.
+
 2004-08-16 hugo303
 
 	* doc/tutorial.sgml: Applied 'newbies' patch #995028 for autoconf doc.
