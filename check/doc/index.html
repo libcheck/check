@@ -82,7 +82,9 @@
 
     <h3>TODO</h3>
 
-    The following enhancements are being considered for Check:
+    The following enhancements are being considered for Check. Please
+    let the author know if you would like to assist in any of these,
+    or if you would like to suggest additional enhancements:
 
     <ul>
       <li>Printing and Logging
@@ -124,6 +126,15 @@
 
 	  <li>Refactor to allow better unit testing of printing
 	  functionality (without end-to-end testing of output</li>
+	</ul>
+      </li>
+      <li>
+	<ul>Internals
+	    <li>Currently Check can only be used on POSIX machines
+	    supporting SysV message queues. This excludes Win32 native
+	    and broken POSIX implementations (e.g., cygwin on
+	    Win9x). Abstract the forking and message passing
+	    implementation to allow Win32 compatibility.</li>
 	</ul>
       </li>
       <li>Packaging

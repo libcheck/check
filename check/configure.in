@@ -37,4 +37,5 @@ AC_CHECK_FUNCS(strerror)
 AC_OUTPUT(Makefile
 	  src/Makefile
 	  tests/Makefile
-	  doc/Makefile)
+	  doc/Makefile
+	  rpm/Makefile)
