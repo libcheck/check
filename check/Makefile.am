@@ -1,3 +1,3 @@
-SUBDIRS=src tests
+SUBDIRS=src tests doc
 
 CLEANFILES=*.*~
