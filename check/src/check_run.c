@@ -106,11 +106,14 @@ void srunner_run_all (SRunner *sr, int print_mode)
 
   slst = sr->slst;
 
+  srunner_printf (sr, CRMINIMAL, print_mode,
+		  "Running suite(s):");
+  
   for (list_front(slst); !list_at_end(slst); list_advance(slst)) {
     Suite *s = list_val(slst);
     
     srunner_printf (sr, CRMINIMAL, print_mode,
-		    "Running suite: %s\n", s->name);
+		    " %s", s->name);
 
     tcl = s->tclst;
   
@@ -119,6 +122,9 @@ void srunner_run_all (SRunner *sr, int print_mode)
       srunner_run_tcase (sr, tc);
     }
   }
+
+  srunner_printf (sr, CRMINIMAL, print_mode,
+		  "\n");
   srunner_print (sr, print_mode);
   srunner_close_log (sr);
 }

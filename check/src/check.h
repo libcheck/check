@@ -49,9 +49,13 @@ Suites are created with #suite_create, freed with #suite_free; test cases are ad
 
 /*! \file check.h */
 
+#ifdef __cplusplus
+extern "C" { 
+#endif 
+
 /*! Magic values */
 enum {
-  CMAXMSG = 100, /*! maximum length of a message, including terminating nul */
+  CMAXMSG = 100 /*!< maximum length of a message, including terminating nul */
 };
 
 /*! \defgroup check_core Check Core
@@ -202,30 +206,53 @@ int srunner_ntests_run (SRunner *sr);
    Number of failures is equal to #srunner_nfailed_tests.
    Memory is alloc'ed and must be freed, but individual
    TestResults must not */
-TestResult **srunner_failures (SRunner *sr);
+  TestResult **srunner_failures (SRunner *sr);
 
-/*! \brief Return an array of results for all run tests
+  /*! \brief Return an array of results for all run tests
   Number of failrues is equal to #srunner_ntests_run
   Memory is alloc'ed and must be freed, but individual
   TestResults must not */
-TestResult **srunner_results (SRunner *sr);
-/* Printing */
+  TestResult **srunner_results (SRunner *sr);
+  /* Printing */
 
 /*! Print the results contained in an SRunner
   \param sr SRunner for which results are printed
   \param print_mode Specification of print verbosity, constrainted to enum #print_verbosity
 */
-void srunner_print (SRunner *sr, int print_mode);
+  void srunner_print (SRunner *sr, int print_mode);
+  
+/*! @} */
 
-/*! Print a summary report of %passed, #checks, failures */
-/* void srunner_print_summary (SRunner *sr); */
 
-/*! \brief Print a detailed report of test results
-  \param sr SRunner for which results are printed
-  \param print_mode Specification of print verbosity, constrainted to enum #print_verbosity
+/*! \defgroup check_log Logging functions
+  @{
 */
-/* void srunner_print_results (SRunner *sr, int print_mode); */
+  
+/*! Set a log file to which to write during test running.
+  Log file setting is an initialize only operation -- it should be done
+  immediatly after SRunner creation, and the log file can't be changed
+  after being set.
+  \param sr The SRunner for which to enable logging
+  \param fname The file name to which to write the log
+ */
+void srunner_set_log (SRunner *sr, char *fname);
+
+/*! Does the SRunner have a log file?
+  \param sr The SRunner to test
+  \return True if logging, False otherwise
+*/
+int srunner_has_log (SRunner *sr);
+
+/*! Return the name of the log file, or NULL if none
+  \param sr The SRunner to query
+  \return The current log file, or NULL if not logging
+*/
+char *srunner_log_fname (SRunner *sr);
 
 /*! @} */
+  
+#ifdef __cplusplus 
+}
+#endif
 
 #endif /* CHECK_H */
