@@ -1,6 +1,7 @@
 Author:      Arien Malec <arien_malec@yahoo.com>
 
-Maintainer:  Sven Neumann <sven@convergence.de>
+Maintainers: Fredrik Hugosson <hugo303@users.sourceforge.net>
+             Sven Neumann <sven@convergence.de>
 
 Patches:     Bernhard Reiter (configure issues)
              Neil Spring (const fixes)
