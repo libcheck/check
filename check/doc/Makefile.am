@@ -1,4 +1,4 @@
-DOCROOTDIR= $(prefix)/doc/$(PACKAGE)-$(VERSION)
+DOCROOTDIR= $(prefix)/share/doc/$(PACKAGE)-$(VERSION)
 # Fake out automake to make the money subdirectory...
 afakedir = $(DOCROOTDIR)/money
 docdir = $(DOCROOTDIR)
@@ -24,7 +24,7 @@ example_docs =\
 	money\
 	money/aclocal.m4\
 	money/check_money.c\
-	money/configure.in\
+	MONEY/configure.in\
 	money/INSTALL\
 	money/money.c\
 	money/README\
