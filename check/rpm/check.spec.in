@@ -1,9 +1,9 @@
 Summary: A unit test framework for C
 Name: check
 Version: @VERSION@
-Release: 1
+Release: 2
 Epoch: 1
-Source: http://prdownloads.sourceforge.net/check/check-@VERSION@.tar.gz
+Source: http://prdownloads.sourceforge.net/check/check-%{version}.tar.gz
 Group: Development/Tools
 Copyright: Arien Malec <arien_malec@yahoo.com>
 URL: http://check.sourceforge.net/
@@ -18,9 +18,7 @@ Check is a unit test framework for C. It features a simple interface for definin
 %setup
 
 %build
-
 ./configure --prefix %{_prefix} 
-
 make
 
 %install
@@ -31,33 +29,27 @@ make prefix=$RPM_BUILD_ROOT%{_prefix} install
 %clean
 rm -rf ${RPM_BUILD_ROOT}
 
+%post
+cd %{_prefix}/share/doc/%{name}-%{version}
+ln -s book1.html index.html
+
+%preun
+rm %{_prefix}/share/doc/%{name}-%{version}/index.html
+
 %files
 %defattr(-,root,root)
 %{_prefix}/include/check.h
 %{_prefix}/lib/libcheck.a
 %{_prefix}/share/aclocal/check.m4
-%dir %{_prefix}/share/doc/%{name}-%{version}
-%doc %{_prefix}/share/doc/%{name}-%{version}/ChangeLog
-%doc %{_prefix}/share/doc/%{name}-%{version}/ChangeLogOld
-%doc %{_prefix}/share/doc/%{name}-%{version}/NEWS
-%doc %{_prefix}/share/doc/%{name}-%{version}/README
-%doc %{_prefix}/share/doc/%{name}-%{version}/COPYING
-%doc %{_prefix}/share/doc/%{name}-%{version}/tutorial.html
-%doc %{_prefix}/share/doc/%{name}-%{version}/tutorial-1.html
-%doc %{_prefix}/share/doc/%{name}-%{version}/tutorial-2.html
-%doc %{_prefix}/share/doc/%{name}-%{version}/tutorial-3.html
-%doc %{_prefix}/share/doc/%{name}-%{version}/tutorial-4.html
-%doc %{_prefix}/share/doc/%{name}-%{version}/tutorial-5.html
-%doc %{_prefix}/share/doc/%{name}-%{version}/tutorial.lyx
-%doc %{_prefix}/share/doc/%{name}-%{version}/tutorial.sgml 
-%dir %{_prefix}/share/doc/%{name}-%{version}/examples
-%doc %{_prefix}/share/doc/%{name}-%{version}/examples/money.h
-%doc %{_prefix}/share/doc/%{name}-%{version}/examples/money.c
-%doc %{_prefix}/share/doc/%{name}-%{version}/examples/check_money.c
-%doc %{_prefix}/share/doc/%{name}-%{version}/examples/configure.in.money
-%doc %{_prefix}/share/doc/%{name}-%{version}/examples/Makefile.am.money
+%doc %{_prefix}/share/doc/%{name}-%{version}
 
 %changelog
+* Sat Jun  6 2004 Bill Barnard <bill@barnard-engineering.com> - 1:0.9.0-2
+- Updated for 0.9.0
+- Minor edits/additions to tutorial.sgml
+- Removed all html files from the tarball, generated them instead
+- Removed check.spec file from rpm dir, generated it instead
+- Removed redundant explicit file list from %docdir section
 * Fri May 24 2002 Sven Neumann <sven@convergence.de>
 - Updated for 0.8.3
 * Mon Oct 24 2001 Arien Malec <arien_malec@yahoo.com>
