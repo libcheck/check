@@ -37,7 +37,6 @@ static void tcase_add_fixture (TCase *tc, SFun setup, SFun teardown,
 			       int ischecked);
 static void tr_init (TestResult *tr);
 
-
 Suite *suite_create (char *name)
 {
   Suite *s;
@@ -164,6 +163,9 @@ void _mark_point (char *file, int line)
 
 void _fail_unless (int result, char *file, int line, char * msg)
 {
+  if (msg == NULL)
+    eprintf ("_fail_unless() called with NULL msg",__FILE__,__LINE__);
+
   if (line > MAXLINE)
     eprintf ("Line number %d too large to use",__FILE__,__LINE__, line);
 

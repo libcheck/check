@@ -29,6 +29,12 @@ START_TEST(test_fail)
 }
 END_TEST
 
+START_TEST(test_fail_null_msg)
+{
+  fail_unless (2==3, NULL);
+}
+END_TEST
+
 START_TEST(test_segv)
 {
   raise (SIGSEGV);
@@ -110,6 +116,7 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_simple, test_mark_lno);
   tcase_add_test (tc_simple, test_pass);
   tcase_add_test (tc_simple, test_fail);
+  tcase_add_test (tc_simple, test_fail_null_msg);
   tcase_add_test (tc_signal, test_segv);
   tcase_add_test (tc_signal, test_fpe);
   tcase_add_test (tc_signal, test_mark_point);
