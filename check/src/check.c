@@ -166,8 +166,7 @@ void srunner_free (SRunner *sr)
   for (list_front(l); !list_at_end(l); list_advance(l)) {
     tr = list_val(l);
     free(tr->file);
-    if (tr->rtype == CK_FAILURE || tr->rtype == CK_ERROR)
-      free(tr->msg);
+    free(tr->msg);
     free(tr);
   }
   list_free (sr->resultlst);
