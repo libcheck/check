@@ -20,5 +20,19 @@
   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+/*! \page check_log Check logging
+ */
+
+/*! Set a log file to which to write during test running
+  \param sr The SRunner for which to enable logging
+  \param fname The file name to which to write the log
+ */
+void srunner_set_log (SRunner *sr, char *fname);
+
+/*! Does the SRunner have a log file?
+  \param sr The SRunner to test
+  \return True if logging, False otherwise
+*/
+int srunner_has_log (SRunner *sr);
 
 #endif /*CHECK_LOG_H*/

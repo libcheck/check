@@ -8,7 +8,7 @@ OUTPUT_DIRECTORY       = /home/amalec/check/doc/
 OUTPUT_LANGUAGE        = English
 EXTRACT_ALL            = NO
 EXTRACT_PRIVATE        = NO
-EXTRACT_STATIC         = YES
+EXTRACT_STATIC         = NO
 HIDE_UNDOC_MEMBERS     = NO
 HIDE_UNDOC_CLASSES     = NO
 BRIEF_MEMBER_DESC      = YES
@@ -37,7 +37,7 @@ GENERATE_TESTLIST      = YES
 GENERATE_BUGLIST       = YES
 ALIASES                = 
 MAX_INITIALIZER_LINES  = 30
-OPTIMIZE_OUTPUT_FOR_C  = NO
+OPTIMIZE_OUTPUT_FOR_C  = YES
 SHOW_USED_FILES        = YES
 #---------------------------------------------------------------------------
 # configuration options related to warning and progress messages
@@ -92,8 +92,8 @@ COMPACT_LATEX          = NO
 PAPER_TYPE             = letter
 EXTRA_PACKAGES         = 
 LATEX_HEADER           = 
-PDF_HYPERLINKS         = NO
-USE_PDFLATEX           = NO
+PDF_HYPERLINKS         = YES
+USE_PDFLATEX           = YES
 LATEX_BATCHMODE        = NO
 #---------------------------------------------------------------------------
 # configuration options related to the RTF output

@@ -67,14 +67,15 @@ VERSION = @VERSION@
 have_lyx = @have_lyx@
 have_sgmltools = @have_sgmltools@
 
-TESTS = check_check check_list check_check_msg check_log test_output.sh
+TESTS =  	check_check 	check_list 	check_check_msg 	check_check_log 	test_output.sh
 
-noinst_PROGRAMS =  	check_check 	check_list 	check_stress 	check_check_msg 	check_log 	ex_output
+
+noinst_PROGRAMS =  	check_check 	check_list 	check_stress 	check_check_msg 	check_check_log 	ex_output
 
 
 EXTRA_DIST = test_output.sh
 
-check_log_SOURCES =  	check_log.c
+check_check_log_SOURCES =  	check_log.c
 
 
 check_check_SOURCES =  	check_check.h check_check_sub.c check_check_master.c check_check_main.c
@@ -123,10 +124,10 @@ check_check_msg_OBJECTS =  check_check_msg.o
 check_check_msg_LDADD = $(LDADD)
 check_check_msg_DEPENDENCIES =  ../src/libcheck.a
 check_check_msg_LDFLAGS = 
-check_log_OBJECTS =  check_log.o
-check_log_LDADD = $(LDADD)
-check_log_DEPENDENCIES =  ../src/libcheck.a
-check_log_LDFLAGS = 
+check_check_log_OBJECTS =  check_log.o
+check_check_log_LDADD = $(LDADD)
+check_check_log_DEPENDENCIES =  ../src/libcheck.a
+check_check_log_LDFLAGS = 
 ex_output_OBJECTS =  ex_output.o
 ex_output_LDADD = $(LDADD)
 ex_output_DEPENDENCIES =  ../src/libcheck.a
@@ -145,8 +146,8 @@ GZIP_ENV = --best
 DEP_FILES =  .deps/check_check_main.P .deps/check_check_master.P \
 .deps/check_check_msg.P .deps/check_check_sub.P .deps/check_list.P \
 .deps/check_log.P .deps/check_stress.P .deps/ex_output.P
-SOURCES = $(check_check_SOURCES) $(check_list_SOURCES) $(check_stress_SOURCES) $(check_check_msg_SOURCES) $(check_log_SOURCES) $(ex_output_SOURCES)
-OBJECTS = $(check_check_OBJECTS) $(check_list_OBJECTS) $(check_stress_OBJECTS) $(check_check_msg_OBJECTS) $(check_log_OBJECTS) $(ex_output_OBJECTS)
+SOURCES = $(check_check_SOURCES) $(check_list_SOURCES) $(check_stress_SOURCES) $(check_check_msg_SOURCES) $(check_check_log_SOURCES) $(ex_output_SOURCES)
+OBJECTS = $(check_check_OBJECTS) $(check_list_OBJECTS) $(check_stress_OBJECTS) $(check_check_msg_OBJECTS) $(check_check_log_OBJECTS) $(ex_output_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -200,9 +201,9 @@ check_check_msg: $(check_check_msg_OBJECTS) $(check_check_msg_DEPENDENCIES)
 	@rm -f check_check_msg
 	$(LINK) $(check_check_msg_LDFLAGS) $(check_check_msg_OBJECTS) $(check_check_msg_LDADD) $(LIBS)
 
-check_log: $(check_log_OBJECTS) $(check_log_DEPENDENCIES)
-	@rm -f check_log
-	$(LINK) $(check_log_LDFLAGS) $(check_log_OBJECTS) $(check_log_LDADD) $(LIBS)
+check_check_log: $(check_check_log_OBJECTS) $(check_check_log_DEPENDENCIES)
+	@rm -f check_check_log
+	$(LINK) $(check_check_log_LDFLAGS) $(check_check_log_OBJECTS) $(check_check_log_LDADD) $(LIBS)
 
 ex_output: $(ex_output_OBJECTS) $(ex_output_DEPENDENCIES)
 	@rm -f ex_output
