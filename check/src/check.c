@@ -104,7 +104,7 @@ void tcase_fn_start (char *fname, char *file, int line)
 {
   int msqid;
 
-  msqid = get_msq();
+  msqid = get_send_msq();
   send_last_loc_msg (msqid, file, line);
 }
 
@@ -112,7 +112,7 @@ void _mark_point (char *file, int line)
 {
   int msqid;
 
-  msqid = get_msq();
+  msqid = get_send_msq();
   send_last_loc_msg (msqid, file, line);
 }
 
@@ -120,7 +120,7 @@ void _fail_unless (int result, char *file, int line, char * msg)
 {
   int msqid;
 
-  msqid = get_msq();
+  msqid = get_send_msq();
   if (line > MAXLINE)
     eprintf ("Line number %d too large to use", line);
 

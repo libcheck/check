@@ -32,6 +32,10 @@
 #include "check_run.h"
 
 
+static void srunner_run_init (SRunner *sr, enum print_verbosity print_mode);
+static void srunner_run_end (SRunner *sr, enum print_verbosity print_mode);
+static void srunner_iterate_suites (SRunner *sr,
+				    enum print_verbosity print_mode);
 static void srunner_run_tcase (SRunner *sr, TCase *tc);
 static void srunner_add_failure (SRunner *sr, TestResult *tf);
 static TestResult *tfun_run (char *tcname, TF *tf);
@@ -39,7 +43,6 @@ static TestResult *receive_result_info (int msqid, int status, char *tcname);
 static void receive_last_loc_info (int msqid, TestResult *tr);
 static void receive_failure_info (int msqid, int status, TestResult *tr);
 static List *srunner_resultlst (SRunner *sr);
-int _is_child = 0;
 
 static char *signal_msg (int sig);
 static char *exit_msg (int exitstatus);
@@ -85,23 +88,28 @@ void srunner_free (SRunner *sr)
   list_free (sr->resultlst);
 
   free (sr);
-} 
+}
 
+static void srunner_run_init (SRunner *sr, enum print_verbosity print_mode)
+{
+  srunner_init_logging (sr, print_mode);
+  log_srunner_start (sr);
+}
 
+static void srunner_run_end (SRunner *sr, enum print_verbosity print_mode)
+{
 
-void srunner_run_all (SRunner *sr, int print_mode)
+  log_srunner_end (sr);
+  srunner_end_logging (sr);
+}
+
+static void srunner_iterate_suites (SRunner *sr,
+				    enum print_verbosity print_mode)
+  
 {
   List *slst;
   List *tcl;
   TCase *tc;
-  if (sr == NULL)
-    return;
-  if (print_mode < 0 || print_mode >= CRLAST)
-    eprintf("Bad print_mode argument to srunner_run_all: %d", print_mode);
-
-  srunner_init_logging (sr, print_mode);
-
-  log_srunner_start (sr);
 
   slst = sr->slst;
   
@@ -117,10 +125,18 @@ void srunner_run_all (SRunner *sr, int print_mode)
       srunner_run_tcase (sr, tc);
     }
   }
+}
 
-  log_srunner_end (sr);
-
-  srunner_end_logging (sr);
+void srunner_run_all (SRunner *sr, int print_mode)
+{
+  if (sr == NULL)
+    return;
+  if (print_mode < 0 || print_mode >= CRLAST)
+    eprintf("Bad print_mode argument to srunner_run_all: %d", print_mode);
+      
+  srunner_run_init (sr, print_mode);
+  srunner_iterate_suites (sr, print_mode);
+  srunner_run_end (sr, print_mode);
 }
 
 static void srunner_add_failure (SRunner *sr, TestResult *tr)
@@ -215,7 +231,7 @@ static TestResult *receive_result_info (int msqid, int status, char *tcname)
 {
   TestResult *tr = emalloc (sizeof(TestResult));
 
-  msqid = get_msq();
+  msqid = get_recv_msq();
   tr->tcname = tcname;
   receive_last_loc_info (msqid, tr);
   receive_failure_info (msqid, status, tr);
@@ -228,13 +244,12 @@ static TestResult *tfun_run (char *tcname, TF *tfun)
   int status = 0;
   int  msqid;
 
-  msqid = get_msq();
+  msqid = get_recv_msq();
 
   pid = fork();
   if (pid == -1)
      eprintf ("Unable to fork:");
   if (pid == 0) {
-    _is_child = 1;
     tfun->fn();
     _exit(EXIT_SUCCESS);
   }
@@ -333,9 +348,4 @@ static char *exit_msg (int exitval)
 static int non_pass (int val)
 {
   return val == CRFAILURE || val == CRERROR;
-}
-
-int is_child (void)
-{
-  return _is_child;
 }

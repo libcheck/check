@@ -34,9 +34,6 @@ typedef struct FailureMsg {
   char msg[CMAXMSG];
 } FailureMsg;
 
-int init_msq (void);
-int get_msq (void);
-void delete_msq (void);
 
 void send_failure_msg (int msqid, char *msg);
 void send_last_loc_msg (int msqid, char * file, int line);
@@ -50,5 +47,14 @@ LastLocMsg *receive_last_loc_msg (int msqid);
 /* return value is malloc'd, caller responsible for freeing */
 char *last_loc_file(LastLocMsg *msg);
 int last_loc_line(LastLocMsg *msg);
+
+int init_msq (void);
+void delete_msq (void);
+
+int get_recv_msq (void);
+int get_send_msq (void);
+int init_key (void);
+int send_key (void);
+int recv_key (void);
 
 #endif /*CHECK_MSG_H */

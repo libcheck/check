@@ -39,7 +39,8 @@ enum {
 };
 static LastLocMsg *create_last_loc_msg (char *file, int line);
 static FailureMsg *create_failure_msg (char *msg);
-static key_t get_key(void);
+static int get_msq (key_t key);
+static char *ipcerrstr (int ipcerr);
 
 static FailureMsg *create_failure_msg (char *msg)
 {
@@ -102,36 +103,33 @@ void send_last_loc_msg (int msqid, char * file, int line)
   free(rmsg);
 }
 
-static char *ipcerrstr (int ipcerr) 
-{
-  switch (ipcerr) {
-  case EACCES: return "EACCES";
-  case EEXIST: return "EEXIST";
-  case EIDRM: return "EIDRM";
-  case ENOENT: return "ENOENT";
-  case ENOMEM: return "ENOMEM";
-  case ENOSPC: return "ENOSPC";
-  default: return "None";
-  }
-}
-
-
 int init_msq (void) {
   int msqid;
 
-  msqid = msgget(get_key(), 0666 | IPC_CREAT);
+  msqid = msgget(init_key(), 0666 | IPC_CREAT);
   if (msqid == -1)
     eprintf ("Unable to create message queue (%s):", ipcerrstr(errno));
   return msqid;
 }
 
-int get_msq (void) 
+int get_recv_msq (void)
+{
+  return get_msq ((key_t) recv_key());
+}
+
+int get_send_msq (void)
+{
+  return get_msq ((key_t) send_key());
+}
+
+
+static int get_msq (key_t key)
 {
   int msqid;
   
-  msqid = msgget (get_key(), 0666);
+  msqid = msgget (key, 0666);
   if (msqid == -1)
-    eprintf ("Unable to create message queue (%s):", ipcerrstr(errno));
+    eprintf ("Unable to get message queue (%s):", ipcerrstr(errno));
   return msqid;
 }
 
@@ -139,7 +137,7 @@ void delete_msq (void)
 {
   int msqid;
 
-  msqid = get_msq();
+  msqid = get_msq((key_t) init_key());
   if (msgctl (msqid, IPC_RMID, NULL) == -1)
     eprintf ("Failed to free message queue:");
 }
@@ -185,10 +183,33 @@ FailureMsg *receive_failure_msg (int msqid)
   return rmsg;
 }
 
-static key_t get_key (void)
+int init_key(void)
 {
-  if (is_child())
-    return (key_t) getppid();
-  else
-    return (key_t) getpid();
+  return getpid();
 }
+
+int send_key(void)
+{
+  return getppid();
+}
+
+int recv_key(void)
+{
+  return getpid();
+}
+
+static char *ipcerrstr (int ipcerrno)
+{
+  /* Debian sid has broken error reporting for IPC */
+  switch (errno) {
+  case EACCES: return "EACCES";
+  case EEXIST: return "EEXIST";
+  case EIDRM: return "EIDRM";
+  case ENOENT: return "ENOENT";
+  case ENOMEM: return "ENOMEM";
+  case ENOSPC: return "ENOSPC";
+  default: return "Other";
+  }
+}
+
+    
