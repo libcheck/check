@@ -382,7 +382,7 @@ With the CK_NORMAL flag specified, let's rerun make check now. We get the follow
    <programlisting>
 Running suite(s): Money 
 0%: Checks: 1, Failures: 1, Errors: 0 
-check_money.c:9:F:Core: Amount not set correctly on creation
+check_money.c:9:F:Core:test_create: Amount not set correctly on creation
    </programlisting>
    <para>
 The first number in the summary line tells us that 0&percnt; of our tests passed, and the rest of the line tells us that there was one check, and one failure. The next line tells us exactly where that failure occurred, what kind of failure it was (P for pass, F for failure, E for error).
@@ -410,7 +410,7 @@ We will now rerun make check and... What's this? The output is now as follows:
    <programlisting>
 Running suite(s): Money 
 0%: Checks: 1, Failures: 0, Errors: 1 
-check_money.c:5:E:Core: (after this point) Received signal 11
+check_money.c:5:E:Core:test_create: (after this point) Received signal 11
    </programlisting>
    <para>
 What does this mean? Note that we now have an error, rather than a failure. This means that our unit test either exited early, or was signaled. Next note that the failure message says &ldquo;after this point&rdquo; This means that somewhere after the point noted (check_money.c, line 5) there was a problem: signal 11 (AKA segmentation fault). The last point reached is set on entry to the unit test, and after every call to fail_unless, fail, or the special function mark_point. E.g., if we wrote some test code as follows:
@@ -665,11 +665,11 @@ Check will write the results of the run to test.log. The printmode argument to s
    </para>
    <programlisting>
 Running suite S1 
-ex_log_output.c:7:P:Core: Test passed
-ex_log_output.c:13:F:Core: Failure
-ex_log_output.c:17:E:Core: (after this point) Early exit with return value 1
+ex_log_output.c:7:P:Core:test_pass: Test passed
+ex_log_output.c:13:F:Core:test_fail: Failure
+ex_log_output.c:17:E:Core:test_exit: (after this point) Early exit with return value 1
 Running suite S2 
-ex_log_output.c:25:P:Core: Test passed
+ex_log_output.c:25:P:Core:test_pass2: Test passed
 Results for all suites run:
 50%: Checks: 4, Failures: 1, Errors: 1
    </programlisting>
