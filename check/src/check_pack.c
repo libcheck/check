@@ -113,7 +113,7 @@ int upack (char *buf, CheckMsg *msg, enum ck_msg_type *type)
 
 static void pack_int (char **buf, int val)
 {
-  unsigned char *ubuf = *buf;
+  unsigned char *ubuf = (unsigned char *) *buf;
   ck_uint32 uval = val;
 
   ubuf[0] = (uval >> 24) & 0xFF;
@@ -126,7 +126,7 @@ static void pack_int (char **buf, int val)
 
 static int upack_int (char **buf)
 {
-  unsigned char *ubuf = *buf;
+  unsigned char *ubuf = (unsigned char *) *buf;
   ck_uint32 uval;
 
   uval = ((ubuf[0] << 24) | (ubuf[1] << 16) | (ubuf[2] << 8) | ubuf[3]);

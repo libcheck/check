@@ -38,7 +38,7 @@ START_TEST(test_double_set_log)
   fail_unless(strcmp(srunner_log_fname(sr), "test_log") == 0,
 	      "Log file is initialize only and shouldn't be changeable once set");
 }
-END_TEST;  
+END_TEST
 
 Suite *make_log_suite(void)
 {
