@@ -1,3 +1,27 @@
+2002-03-02 01:42  amalec
+
+	* debian/changelog, debian/files, rpm/check.spec, src/Makefile.am,
+	src/Makefile.in, src/check.c, src/check_error.c, src/check_error.h,
+	src/check_log.c, src/check_msg.c, src/check_pack.c,
+	src/check_run.c, src/check_str.c, src/error.c, src/error.h,
+	src/list.c, tests/check_check_fixture.c, tests/check_check_pack.c:
+	Moved error.[hc] to check_error.[hc], and fixed bug in running
+	checked setup in nofork mode.
+
+2002-02-28 02:02  amalec
+
+	* COPYING, configure, configure.in, src/check.c, src/check.h,
+	src/check_impl.h, src/check_log.c, src/check_log.h,
+	src/check_magic.h, src/check_msg.c, src/check_msg.h,
+	src/check_pack.c, src/check_pack.h, src/check_print.c,
+	src/check_print.h, src/check_run.c, src/check_str.c,
+	src/check_str.h, src/error.c, src/error.h, src/list.c, src/list.h:
+	Changed license to LGPL
+
+2001-10-25 23:19  amalec
+
+	* ChangeLog: Update ChangeLog
+
 2001-10-25 23:18  amalec
 
 	* AUTHORS: Update AUTHORS to give credit to key contributors
