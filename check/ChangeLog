@@ -1,3 +1,62 @@
+2002-05-24  Sven Neumann  <sven@convergence.de>
+
+	* Made 0.8.3 Release.
+
+2002-05-24 17:00  neo23
+
+	* NEWS, doc/tutorial.lyx, rpm/check.spec.in: Added check.m4 to the
+	spec file. Updated NEWS. Updated the date of the tutorial.
+
+2002-05-24 16:35  neo23
+
+	* debian/: check.dirs, check.files, control: Added check.m4 to
+	debian rules. Changed the maintainer entry.
+
+2002-05-23 17:08  neo23
+
+	* doc/tutorial.lyx: Mention that EXIT_SUCCESS and EXIT_FAILURE are
+	defined in stdlib.h.  Suggested by Russell Reed in bug #547129.
+
+2002-05-10 14:01  neo23
+
+	* src/check_msg.c: Declared local functions static (based on a
+	patch from Gilgamesh Nootebos).
+
+2002-05-03 13:58  neo23
+
+	* src/Makefile.am, src/check.c, src/check_error.c,
+	src/check_list.c, src/check_list.h, src/check_log.c,
+	src/check_msg.c, src/check_pack.c, src/check_print.c,
+	src/check_run.c, src/check_str.c, src/list.c, src/list.h,
+	tests/check_list.c: Renamed list.[ch] to check_list.[ch] for
+	consistency.  Include config.h from all over the place, cleaned up
+	includes.
+
+2002-05-02 10:34  neo23
+
+	* src/check_pack.c, tests/check_check_log.c: Removed compiler
+	warnings mentioned in bug #547126.
+
+2002-05-02 10:27  neo23
+
+	* src/check_print.c, tests/check_check_msg.c: Don't include
+	"error.h" (bug #546175 small cygwin portability problem).
+
+2002-04-16 19:33  neo23
+
+	* doc/tutorial.lyx: Changed date to that of the latest release. 
+	Added a name to an internal reference so that we get a working link
+	in the generated HTML.
+
+2002-04-15 18:47  neo23
+
+	* check.m4, configure.in: Fixed check.m4 so that --without-check is
+	a valid option to disable check.  Bumped version number to 0.8.3.
+
+2002-04-15 12:58  neo23
+
+	* ChangeLog: Updated ChangeLog.
+
 2002-04-15 12:57  neo23
 
 	* NEWS, README: Made 0.8.2 Release.
