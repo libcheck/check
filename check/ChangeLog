@@ -1,3 +1,33 @@
+2001-05-31 08:35  amalec
+
+	* doc/example.lyx: Commit changes to example, get things in synch
+
+2001-05-31 08:32  amalec
+
+	* doc/money/: COPYING, ChangeLog, INSTALL, Makefile.am,
+	Makefile.in, NEWS, README, aclocal.m4, check_money.c, config.h,
+	config.h.in, config.log, config.status, configure, configure.in,
+	money.c, money.h, stamp-h, stamp-h.in: Hopefully finally solved CVS
+	problems and commited changes to money example and example.lyx
+
+2001-05-30 16:48  amalec
+
+	* doc/money/AUTHORS: Trying to commit added files...
+
+2001-05-30 16:45  amalec
+
+	* doc/example.lyx: Cleaning up CVS..
+
+2001-05-30 16:37  amalec
+
+	* ChangeLogOld: Trying to update documentation and change log, and
+	statisfy CVS...
+
+2001-05-30 16:34  amalec
+
+	* ChangeLog: Refined documentation, and moved old change log
+	information to ChangeLogOld
+
 2001-05-30 15:44  amalec
 
 	* doc/example.lyx: Added complete example to accompany
