@@ -1,3 +1,8 @@
+2004-11-12 hugo303
+
+	* debian/check.dirs, debian/control, debian/rules: Fixed building
+	with gcc3. Removed empty money dir from docs.
+
 2004-11-10 hugo303
 
 	* Makefile.am, rpm/check.spec.in, rpm/Makefile.am: Fixed so
