@@ -1,3 +1,18 @@
+Fri, Sep 3, 2004: Released Check 0.9.1
+
+Updated tutorial with new features.
+Added support for XML output of the test results, courtesy of Frederic Peters.
+Fixed setup bug from forum, failure in setup did not abort test in nofork mode.
+Applied varargs patch (#933411) and added test cases.
+Applied fail_if (#709167) patch.
+Applied 'newbies' patch #995028 for autoconf doc.
+Applied doc patch #995028 from Bill Barnard.
+Fixed portability problems tests by changing == to =.
+Changed copyright according to bug report.
+Applied patch 796705. Replacing _exit with exit.
+Applied patch for bug 793671.
+
+
 Mon, May 17, 2004: Released Check 0.9.0
 
 Run fixture teardowns in reverse order to setup
