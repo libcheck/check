@@ -1,3 +1,187 @@
+2001-10-25 00:44  amalec
+
+	* depcomp: Added new automake file
+
+2001-10-25 00:43  amalec
+
+	* NEWS, doc/index.html, doc/money/check_money.c,
+	tests/check_check_sub.c: Added comments on string functions to
+	NEWS, cleaned up money example, and fixed a signal unit test so
+	that it will pass under cygwin
+
+2001-10-24 17:25  amalec
+
+	* Makefile.in, NEWS, aclocal.m4, configure, debian/Makefile.in,
+	debian/changelog, debian/files, doc/Makefile.am, doc/Makefile.in,
+	doc/tutorial.lyx, doc/money/Makefile.in, rpm/Makefile.in,
+	rpm/check.spec, src/Makefile.am, src/Makefile.in, src/check.h,
+	src/check_log.c, src/check_msg.c, src/check_msg.h,
+	src/check_print.c, src/check_run.c, tests/Makefile.am,
+	tests/Makefile.in, tests/check_check_fixture.c,
+	tests/check_check_fork.c, tests/check_check_limit.c,
+	tests/check_check_main.c, tests/check_check_master.c,
+	tests/check_stress.c, tests/ex_log_output.c, tests/ex_output.c,
+	tests/test_log_output.sh, tests/test_output.sh: Documentation
+	updates
+
+2001-10-22 23:57  amalec
+
+	* src/check_msg.c, src/check_pack.c, src/check_pack.h,
+	tests/check_check_pack.c: Removed old ppunpack, renamed new_*, and
+	updated callers
+
+2001-10-22 23:26  amalec
+
+	* src/check_msg.c, src/check_msg.h, src/check_pack.c,
+	src/check_run.c, tests/check_check_master.c,
+	tests/check_check_msg.c, tests/check_check_pack.c: Moved Check to
+	use new internal ppack routine, and fixed a nasty bug
+
+2001-10-19 23:27  amalec
+
+	* src/check_msg.c, src/check_msg.h, src/check_pack.c,
+	tests/check_check_msg.c, tests/check_check_pack.c: New version of
+	receive_test_result passes unit tests
+
+2001-10-19 18:44  amalec
+
+	* src/check_pack.c, src/check_pack.h, tests/check_check_fixture.c,
+	tests/check_check_pack.c: Changed punpack to return test and
+	fixture locs to preserve test information when teardown messages
+	are sent
+
+2001-10-17 01:15  amalec
+
+	* src/check_run.c, tests/check_check_fixture.c: Checked setup
+	passes unit tests
+
+2001-10-13 16:13  amalec
+
+	* src/Makefile.am, src/Makefile.in, src/check.c, src/check_msg.c,
+	src/check_msg.h, src/check_run.c, tests/check_check_msg.c: Replace
+	previous messaging implementation files with new module
+
+2001-10-13 06:05  amalec
+
+	* src/check.c, src/check.h, src/check_log.c, src/check_msg.c,
+	src/check_pack.c, src/check_run.c, src/check_str.c, src/error.c,
+	src/error.h, tests/check_check_master.c, tests/test_log_output.sh,
+	tests/test_output.sh: Fully implemented new messaging back-end
+	based on pipes
+
+2001-10-10 18:01  amalec
+
+	* Makefile.in, aclocal.m4, configure, debian/Makefile.in,
+	doc/Makefile.in, doc/money/Makefile.in, rpm/Makefile.in,
+	src/Makefile.am, src/Makefile.in, src/check.c, src/check_impl.h,
+	src/check_pack.c, tests/Makefile.in, tests/check_check_msg.c,
+	tests/check_check_pack.c: Updated messaging tests to use new
+	infrastructure
+
+2001-10-04 21:55  amalec
+
+	* src/check.c, src/check.h, src/check_impl.h, src/check_pack.c,
+	src/check_pack.h, tests/check_check_pack.c: Completed
+	implementation of check_pack
+
+2001-10-02 15:38  amalec
+
+	* doc/index.html, doc/tutorial.lyx, src/Makefile.am,
+	src/Makefile.in, src/check.c, src/check.h, src/check_magic.h,
+	src/check_msg.h, src/check_pack.c, src/check_pack.h,
+	tests/Makefile.am, tests/Makefile.in, tests/check_check.h,
+	tests/check_check_fixture.c, tests/check_check_fork.c,
+	tests/check_check_limit.c, tests/check_check_main.c,
+	tests/check_check_master.c, tests/check_check_msg.c,
+	tests/check_check_pack.c: First generation packing code as the
+	infrastructure to revising message passing between processes, to
+	accomodate context messages
+
+2001-09-28 00:20  amalec
+
+	* src/check.c, src/check.h, src/check_impl.h, src/check_run.c,
+	src/list.c, src/list.h, tests/check_check_fixture.c,
+	tests/check_check_fork.c, tests/check_check_limit.c,
+	tests/check_check_master.c, tests/check_check_msg.c: Added
+	framework for support of checked fixture functions
+
+2001-09-27 16:08  amalec
+
+	* src/: check.c, check_run.c: Refactored failure info functions
+
+2001-09-19 00:14  amalec
+
+	* src/check.c, src/check.h, src/check_impl.h, src/check_magic.h,
+	src/check_msg.c, src/check_msg.h, src/check_print.c,
+	src/check_run.c, src/check_str.c, tests/Makefile.am,
+	tests/Makefile.in, tests/check_check.h,
+	tests/check_check_fixture.c, tests/check_check_main.c,
+	tests/check_check_master.c: Setup failure is working and partially
+	tested
+
+2001-09-14 23:15  amalec
+
+	* tests/: check_check.h, check_check_fork.c, check_check_main.c:
+	Completed implementation of CK_NOFORK
+
+2001-09-07 22:12  amalec
+
+	* src/: check_impl.h, check_msg.c, check_msg.h, check_run.c:
+	Implemented nofork mode
+
+2001-09-06 18:10  amalec
+
+	* Doxyfile, configure.in, src/check.h, src/check_impl.h,
+	src/check_log.c, src/check_log.h, src/check_print.c,
+	src/check_print.h, src/check_run.c, tests/Makefile.am,
+	tests/Makefile.in, tests/check_check.h, tests/check_check_main.c:
+	Added initial control functions to control forking
+
+2001-09-05 16:48  amalec
+
+	* src/check.c, src/check_msg.c, src/check_msg.h, src/check_run.c,
+	tests/check_check_msg.c: Completely abstracted the details of
+	messaging behind check_msg.c
+
+2001-09-01 00:12  amalec
+
+	* src/: check.c, check_msg.c, check_msg.h, check_run.c: Ensure that
+	each subprocesses alloc the correct msg queue
+
+2001-08-30 01:00  amalec
+
+	* src/check.c, src/check.h, src/check_msg.c, src/check_msg.h,
+	src/check_run.c, tests/check_check_msg.c: Eliminated passing of
+	msqid in unit tests
+
+2001-08-29 00:49  amalec
+
+	* src/check_print.c, src/check_str.c, tests/check_check_limit.c:
+	Added test checking running empty suites
+
+2001-08-28 17:06  amalec
+
+	* src/check_magic.h: Moved magic values to separate header
+
+2001-08-28 17:04  amalec
+
+	* src/Makefile.am, src/Makefile.in, src/check.h, src/check_impl.h,
+	src/check_print.c, src/check_str.c, src/check_str.h,
+	tests/check_check_master.c, tests/check_check_msg.c: Separated
+	printing from string formating functions to allow better testing.
+
+2001-08-28 00:18  amalec
+
+	* configure, configure.in, src/check_msg.c, src/check_msg.h,
+	src/check_run.c, tests/Makefile.am, tests/Makefile.in,
+	tests/check_check.h, tests/check_check_main.c,
+	tests/check_check_msg.c: Use pid/ppid as message queue key,
+	preliminary to removing _msqid from unit test functions
+
+2001-08-23 21:26  amalec
+
+	* ChangeLog: Final ChangeLog for 0.7.3 release
+
 2001-08-23 21:25  amalec
 
 	* NEWS: Document 0.7.3 in NEWS
