@@ -1,3 +1,7 @@
+2005-03-02 hugo303
+
+	* src/check.h.in: Added define for NULL if needed.
+
 2005-03-01 hugo303
 
 	* src/check_run.c, tests/check_check_master.c: Changed timeout

@@ -70,6 +70,9 @@ extern int check_major_version;
 extern int check_minor_version;
 extern int check_micro_version;
 
+#ifndef NULL
+#define NULL ((void*)0)
+#endif
 
 /* opaque type for a test case
 
