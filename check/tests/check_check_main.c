@@ -6,9 +6,9 @@
 int main (void)
 {
   int n;
-
-
   SRunner *sr;
+
+  fork_setup();
   sr = srunner_create (make_master_suite());
   srunner_add_suite(sr, make_list_suite());
   srunner_add_suite(sr, make_msg_suite());
@@ -20,6 +20,7 @@ int main (void)
   printf ("Ran %d tests in subordinate suite\n", sub_nfailed);
   srunner_run_all (sr, CRNORMAL);
   cleanup();
+  fork_teardown();
   n = srunner_ntests_failed(sr);
   srunner_free(sr);
   return (n == 0) ? EXIT_SUCCESS : EXIT_FAILURE;

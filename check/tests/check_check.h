@@ -4,6 +4,8 @@
 int sub_nfailed;
 int sub_ntests;
 
+void fork_setup (void);
+void fork_teardown (void);
 void setup (void);
 void cleanup (void);
 Suite *make_sub_suite(void);
