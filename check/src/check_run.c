@@ -41,7 +41,7 @@ struct SRunner {
 };
 
 struct TestResult {
-  int ftype;     /* Type of result */
+  int rtype;     /* Type of result */
   char *file;    /* File where the test occured */
   int line;      /* Line number where the test occurred */
   int exact_loc; /* Is the location given by file:line exact? */
@@ -84,7 +84,7 @@ void srunner_free (SRunner *sr)
   for (list_front(l); !list_at_end(l); list_advance(l)) {
     tr = list_val(l);
     free(tr->file);
-    if (tr->ftype == CRFAILURE || tr->ftype == CRERROR)
+    if (tr->rtype == CRFAILURE || tr->rtype == CRERROR)
       free(tr->msg);
     free(tr);
   }
@@ -122,7 +122,7 @@ static void srunner_add_failure (SRunner *sr, TestResult *tr)
 {
   sr->stats->n_checked++;
   list_add_end (sr->resultlst, tr);
-  switch (tr->ftype) {
+  switch (tr->rtype) {
     
   case CRPASS:
     return;
@@ -170,7 +170,7 @@ static TestResult *receive_failure_info (int msqid, int status, char *tcname)
   tr->tcname = tcname;
 
   if (WIFSIGNALED(status)) {
-    tr->ftype = CRERROR;
+    tr->rtype = CRERROR;
     tr->exact_loc = 0;
     tr->msg = signal_msg (WTERMSIG(status));
     return tr;
@@ -179,19 +179,19 @@ static TestResult *receive_failure_info (int msqid, int status, char *tcname)
   if (WIFEXITED(status)) {
     
     if (WEXITSTATUS(status) == 0) {
-      tr->ftype = CRPASS;
+      tr->rtype = CRPASS;
       tr->exact_loc = 1;
     }
     else {
       
       fmsg = receive_failure_msg (msqid);
       if (fmsg == NULL) { /* implies early exit */
-	tr->ftype = CRERROR;
+	tr->rtype = CRERROR;
 	tr->msg =  exit_msg (WEXITSTATUS(status));
 	tr->exact_loc = 0;
       }
       else {
-	tr->ftype = CRFAILURE;
+	tr->rtype = CRFAILURE;
 	tr->exact_loc = 1;
 	tr->msg = emalloc(strlen(fmsg->msg) + 1);
 	strcpy (tr->msg, fmsg->msg);
@@ -257,7 +257,7 @@ TestResult **srunner_failures (SRunner *sr)
   rlst = srunner_resultlst (sr);
   for (list_front(rlst); !list_at_end(rlst); list_advance(rlst)) {
     TestResult *tr = list_val(rlst);
-    if (non_pass(tr->ftype))
+    if (non_pass(tr->rtype))
       trarray[i++] = tr;
     
   }
@@ -277,7 +277,22 @@ char *tr_msg (TestResult *tr)
 int tr_lno (TestResult *tr)
 {
   return tr->line;
-} 
+}
+
+char *tr_lfile (TestResult *tr)
+{
+  return tr->file;
+}
+
+int tr_rtype (TestResult *tr)
+{
+  return tr->rtype;
+}
+
+char *tr_tcname (TestResult *tr)
+{
+  return tr->tcname;
+}
 
 static int percent_passed (TestStats *t)
 {
@@ -291,7 +306,7 @@ static int percent_passed (TestStats *t)
 static void print_failure (TestResult *tr)
 {
   char *exact_msg;
-  if (tr->ftype == CRPASS)
+  if (tr->rtype == CRPASS)
     return;
   exact_msg = (tr->exact_loc) ? "" : "(after this point) ";
   printf ("%s:%d:%s: %s%s\n", tr->file, tr->line, tr->tcname,

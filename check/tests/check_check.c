@@ -7,18 +7,19 @@
 
 void setup (void);
 void cleanup (void);
-Suite *make_suite(void);
+Suite *sub_make_suite(void);
+Suite *main_make_suite(void);
 
 START_TEST(test_lno)
 {
-  fail("Failure expected"); /*line 14*/
+  fail("Failure expected"); /*line 15*/
 }
 END_TEST
 
 START_TEST(test_mark_lno)
 {
-  mark_point(); /*line 20*/
-  exit(1); /*should fail at line 20*/
+  mark_point(); /*line 21*/
+  exit(1); /*should fail at line 21*/
 }
 END_TEST
 
@@ -102,7 +103,7 @@ START_TEST(test_check_nfailures)
 }
 END_TEST
 
-START_TEST(test_check_failures)
+START_TEST(test_check_failure_msgs)
 {
   int i;
   char *msgar[] = {
@@ -115,9 +116,26 @@ START_TEST(test_check_failures)
     "Received signal 8",
     "Early exit with return value 1",
     "Completed properly"};
+
+  for (i = 0; i < nfailures; i++) {
+    char *msg;   
+    msg = tr_msg(trarray[i]);
+    if (strcmp (msg, msgar[i]) != 0) {
+      char *emsg = emalloc (CMAXMSG);
+      snprintf (emsg, CMAXMSG,"Expected %s, got %s", msgar[i], msg);
+      fail (emsg);
+      free (emsg);
+    }
+  }
+}
+END_TEST
+  
+START_TEST(test_check_failure_lnos)
+{
+  int i;
   int lnos[] = {
-    14,
-    20,
+    15,
+    21,
     -1,
     -1,
     -1,
@@ -127,7 +145,6 @@ START_TEST(test_check_failures)
     -1};
   
   for (i = 0; i < nfailures; i++) {
-    char *msg;
 
     if (lnos[i] > 0 && tr_lno(trarray[i]) != lnos[i]) {
       char *emsg = emalloc (CMAXMSG);
@@ -135,19 +152,55 @@ START_TEST(test_check_failures)
 		lnos[i], tr_lno(trarray[i]));
       fail (emsg);
       free (emsg);
-    }
-    
-    msg = tr_msg(trarray[i]);
-    if (strcmp (msg, msgar[i]) != 0) {
-      char *emsg = emalloc (CMAXMSG);
-      snprintf (emsg, CMAXMSG,"Expected %s, got %s", msgar[i], msg);
-      fail (emsg);
-    }
+    }    
   }
 }
 END_TEST
 
-Suite *make_suite(void)
+START_TEST(test_check_failure_ftypes)
+{
+  int i;
+  int ftypes[] = {
+    CRFAILURE,
+    CRERROR,
+    CRFAILURE,
+    CRFAILURE,
+    CRERROR,
+    CRERROR,
+    CRERROR,
+    CRERROR,
+    CRFAILURE};
+  
+  for (i = 0; i < nfailures; i++) {
+    fail_unless (ftypes[i] == tr_rtype(trarray[i]),
+		 "Failure type wrong");
+  }
+}
+END_TEST
+
+START_TEST(test_check_failure_lfiles)
+{
+  int i;
+  for (i = 0; i < nfailures; i++) {
+
+    fail_unless (strcmp(tr_lfile(trarray[i]), "check_check.c") == 0,
+		 "Bad file name");
+  }
+}
+END_TEST
+
+START_TEST(test_check_failure_tcnames)
+{
+  int i;
+  for (i = 0; i < nfailures; i++) {
+
+    fail_unless (strcmp(tr_tcname(trarray[i]), "Check Servant") == 0,
+		 "Bad test case name");
+  }
+}
+END_TEST
+
+Suite *sub_make_suite(void)
 {
   Suite *s = suite_create("Check Servant");
   TCase *tc_simple = tcase_create("Simple Tests");
@@ -193,22 +246,23 @@ START_TEST(test_teardown)
 }
 END_TEST  
 
-int main (void)
+
+Suite *main_make_suite (void)
 {
-  int n;
-
-
   Suite *s;
-  TCase *tc;
+  TCase *tc_core;
   TCase *tc_fixture;
   TCase *tc_post_teardown;
-  SRunner *sr;
+  
   s = suite_create("Master");
-  tc = tcase_create("Core Tests");
-  suite_add_tcase (s, tc);
-  tcase_add_test (tc, test_check_nfailures);
-  tcase_add_test (tc, test_check_failures);
+  tc_core = tcase_create("Core Tests");
   tc_fixture = tcase_create("Fixture Setup Tests");
+  suite_add_tcase (s, tc_core);
+  tcase_add_test (tc_core, test_check_nfailures);
+  tcase_add_test (tc_core, test_check_failure_msgs);
+  tcase_add_test (tc_core, test_check_failure_lnos);
+  tcase_add_test (tc_core, test_check_failure_lfiles);
+  tcase_add_test (tc_core, test_check_failure_ftypes);
   tcase_set_fixture(tc_fixture, test_fixture_setup, test_fixture_teardown);
   /* add the test 3 times to make sure we adequately test
      preservation of fixture values across tests, regardless
@@ -220,6 +274,17 @@ int main (void)
   tc_post_teardown = tcase_create ("Fixture Teardown Tests");
   tcase_add_test (tc_post_teardown, test_teardown);
   suite_add_tcase (s, tc_post_teardown);
+  return s;
+}
+
+int main (void)
+{
+  int n;
+
+
+  Suite *s;
+  SRunner *sr;
+  s = main_make_suite();
   sr = srunner_create (s);
   
   setup();
@@ -235,7 +300,7 @@ int main (void)
 void setup (void)
 {
   char *msg;
-  Suite *s = make_suite();
+  Suite *s = sub_make_suite();
   SRunner *sr = srunner_create(s);
   srunner_run_all(sr, CRSILENT);
   trarray = srunner_failures(sr);
