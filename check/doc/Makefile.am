@@ -43,6 +43,10 @@ EXTRA_DIST = $(lyx_docs) $(example_docs)
 
 afake_DATA =
 
+if MAKE_DOC
 doc_DATA = $(lyx_docs) $(sgml_docs) $(html_docs) $(example_docs)
+else
+doc_DATA = $(lyx_docs) $(example_docs)
+endif
 
 CLEANFILES = $(sgml_docs) $(html_docs) *.*~

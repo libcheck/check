@@ -117,7 +117,7 @@ ation, and having the unit tests reassure you at each step of that change
 \layout Standard
 
 Look at the Check homepage for the latest information on Check: 
-\begin_inset LatexCommand \htmlurl[check.sourceforge.net]{check.sourceforge.net}
+\begin_inset LatexCommand \htmlurl[http://check.sourceforge.net]{http://check.sourceforge.net}
 
 \end_inset 
 
