@@ -1,3 +1,13 @@
+2001-06-21 18:15  amalec
+
+	* NEWS, doc/Makefile.am, doc/example.lyx, doc/index.html,
+	rpm/check.spec, tests/Makefile.am, tests/Makefile.in: Specfile
+	changes, updates to NEWS
+
+2001-06-21 17:37  amalec
+
+	* ChangeLog: Update ChangeLog
+
 2001-06-21 17:36  amalec
 
 	* src/check.h, src/check_run.c, tests/Makefile.am,
