@@ -24,7 +24,7 @@
 #include "check_impl.h"
 #include "check_str.h"
 
-static char *rtype_str (int rtype);
+static char *tr_type_str (TestResult *tr);
 static int percent_passed (TestStats *t);
 
 char *tr_str (TestResult *tr) 
@@ -37,7 +37,7 @@ char *tr_str (TestResult *tr)
   
   snprintf (rstr, CMAXMSG, "%s:%d:%s:%s: %s%s",
 	    tr->file, tr->line,
-	    rtype_str(tr->rtype),  tr->tcname,
+	    tr_type_str(tr),  tr->tcname,
 	    exact_msg, tr->msg);
 
   return rstr;
@@ -58,25 +58,20 @@ char *sr_stat_str (SRunner *sr)
 }
 
 
-static char *rtype_str (int rtype)
+static char *tr_type_str (TestResult *tr)
 {
-  switch (rtype) {
-  case CK_PASS:
-    return "P";
-    break;
-  case CK_FAILURE:
-    return "F";
-    break;
-  case CK_ERROR:
-    return "E";
-    break;
-  case CK_FIXTURE:
-    return "S";
-    break;
-  default:
-    eprintf("Bad argument %d to rtype_to_string", rtype);
-    return NULL;
-  }
+  char *str = NULL;
+  if (tr->ctx == CK_CTX_TEST) {
+    if (tr->rtype == CK_PASS)
+      str = "P";
+    else if (tr->rtype == CK_FAILURE)
+      str = "F";
+    else if (tr->rtype == CK_ERROR)
+      str = "E";
+  } else
+    str = "S";
+
+  return str;
 }
 
 static int percent_passed (TestStats *t)

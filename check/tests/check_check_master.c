@@ -146,7 +146,7 @@ START_TEST(test_check_all_msgs)
   char *msgar[] = {
     "Failure expected",
     "Early exit with return value 1",
-    "Test passed",
+    "Passed",
     "This test should fail",
     "Received signal 11",
     "Received signal 8",

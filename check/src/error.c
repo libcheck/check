@@ -24,12 +24,13 @@
   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-void eprintf (char *fmt, ...)
+void eprintf (char *fmt, char *file, int line, ...)
 {
   va_list args;
-  fflush(stdout);
+  fflush(stderr);
 
-  va_start(args, fmt);
+  fprintf(stderr,"%s:%d: ",file,line);
+  va_start(args, line);
   vfprintf(stderr, fmt, args);
   va_end(args);
 
@@ -46,7 +47,7 @@ void *emalloc (size_t n)
   void *p;
   p = malloc(n);
   if (p == NULL)
-    eprintf("malloc of %u bytes failed:", n);
+    eprintf("malloc of %u bytes failed:", __FILE__, __LINE__, n);
   return p;
 }
 
@@ -55,6 +56,6 @@ void *erealloc (void * ptr, size_t n)
   void *p;
   p = realloc (ptr, n);
   if (p == NULL)
-    eprintf("realloc of %u bytes failed:", n);
+    eprintf("realloc of %u bytes failed:", __FILE__, __LINE__, n);
   return p;
 }

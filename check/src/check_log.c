@@ -126,7 +126,7 @@ void stdout_lfun (SRunner *sr, FILE *file, enum print_output printmode,
     tr = obj;
     break;
   default:
-    eprintf("Bad event type received in stdout_lfun");
+    eprintf("Bad event type received in stdout_lfun", __FILE__, __LINE__);
   }
 
   
@@ -157,7 +157,7 @@ void lfile_lfun (SRunner *sr, FILE *file, enum print_output printmode,
     tr_fprint(file, tr, CRVERBOSE);
     break;
   default:
-    eprintf("Bad event type received in stdout_lfun");
+    eprintf("Bad event type received in stdout_lfun", __FILE__, __LINE__);
   }
 
   
@@ -169,7 +169,8 @@ FILE *srunner_open_lfile (SRunner *sr)
   if (srunner_has_log (sr)) {
     f = fopen(sr->log_fname, "w");
     if (f == NULL)
-      eprintf ("Could not open log file %s:", sr->log_fname);
+      eprintf ("Could not open log file %s:", __FILE__, __LINE__,
+	       sr->log_fname);
   }
   return f;
 }
@@ -196,7 +197,7 @@ void srunner_end_logging (SRunner *sr)
     if (lg->close) {
       rval = fclose (lg->lfile);
       if (rval != 0)
-	eprintf ("Error closing log file:");
+	eprintf ("Error closing log file:", __FILE__, __LINE__);
     }
     free (lg);
   }

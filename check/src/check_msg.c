@@ -90,7 +90,7 @@ static char *last_loc_file (LastLocMsg *msg)
     return NULL;
   for (i = 0; mmsg[i] != '\n'; i++) {
     if (mmsg[i] == '\0')
-      eprintf ("Badly formated last loc message");
+      eprintf ("Badly formated last loc message", __FILE__, __LINE__);
     rmsg[i] = mmsg[i];
   }
   rmsg[i] = '\0';
@@ -105,7 +105,7 @@ static int last_loc_line (LastLocMsg *msg)
   rmsg  = msg->msg;
   while (*rmsg != '\n') {
     if (*rmsg == '\0')
-      eprintf ("Badly formated last loc message");
+      eprintf ("Badly formated last loc message", __FILE__, __LINE__);
     rmsg++;
   }
   rmsg++; /*advance past \n */
@@ -120,7 +120,7 @@ void send_last_loc_msg (MsgSys *msgsys, char *file, int line)
   rval = msgsnd(msgsys->msqid, (void *) rmsg, CMAXMSG, IPC_NOWAIT);
   if (rval == -1) {
     eprintf ("send_last_loc_msg:Failed to send message, msqid = %d:",
-	     msgsys->msqid);
+	     __FILE__, __LINE__, msgsys->msqid);
   }
   free(rmsg);
 }
@@ -147,7 +147,8 @@ MsgSys *create_msgsys_with_key (int key)
 
   msgsys->msqid = msgget((key_t) key, 0666 | IPC_CREAT);
   if (msgsys->msqid == -1)
-    eprintf ("Unable to create message queue (%s):", ipcerrstr(errno));
+    eprintf ("Unable to create message queue (%s):",
+	     __FILE__, __LINE__, ipcerrstr(errno));
   return msgsys;
 }
 
@@ -160,7 +161,8 @@ MsgSys *get_msgsys_with_key (int key)
   
   msgsys->msqid = msgget ((key_t) key, 0666);
   if (msgsys->msqid == -1)
-    eprintf ("Unable to get message queue (%s):", ipcerrstr(errno));
+    eprintf ("Unable to get message queue (%s):",
+	     __FILE__, __LINE__, ipcerrstr(errno));
   return msgsys;
 }
 
@@ -170,7 +172,7 @@ void delete_msgsys_with_key (int key)
 
   msgsys = get_msgsys_with_key ((key_t) key);
   if (msgctl (msgsys->msqid, IPC_RMID, NULL) == -1)
-    eprintf ("Failed to free message queue:");
+    eprintf ("Failed to free message queue:", __FILE__, __LINE__);
   free(msgsys);
 }
 
@@ -188,7 +190,7 @@ void send_failure_msg (MsgSys *msgsys, char *msg)
   
   rval = msgsnd(msgsys->msqid, (void *) rmsg, CMAXMSG, IPC_NOWAIT);
   if (rval == -1)
-    eprintf ("send_failure_msg:Failed to send message:");
+    eprintf ("send_failure_msg:Failed to send message:", __FILE__, __LINE__);
   free(rmsg);
 }
 
@@ -206,7 +208,8 @@ Loc *receive_last_loc_msg (MsgSys *msgsys)
     if (rval == -1) {
       if (errno == ENOMSG)
 	break;
-      eprintf ("receive_last_loc_msg:Failed to receive message:");
+      eprintf ("receive_last_loc_msg:Failed to receive message:",
+	       __FILE__, __LINE__);
     }
     got_msg = 1;
   }
@@ -235,7 +238,8 @@ char *receive_failure_msg (MsgSys *msgsys)
   if (rval == -1) {
     if (errno == ENOMSG)
       return NULL;
-    eprintf ("receive_failure_msg:Failed to receive message:");
+    eprintf ("receive_failure_msg:Failed to receive message:",
+	     __FILE__, __LINE__);
   }
   msg = emalloc(strlen(fmsg->msg) + 1);
   strcpy(msg,fmsg->msg);
@@ -260,7 +264,7 @@ int send_key(void)
   else if (fstat == CK_NOFORK)
     key = (int) getpid();
   else
-    key = -1, eprintf ("Bad _fstat");
+    key = -1, eprintf ("Bad _fstat", __FILE__, __LINE__);
 
   return key;
 }

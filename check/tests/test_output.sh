@@ -9,7 +9,7 @@ ex_output.c:13:F:Core: Failure
 ex_output.c:17:E:Core: (after this point) Early exit with return value 1"
 t3="xRunning suite(s): Master
 33%: Checks: 3, Failures: 1, Errors: 1
-ex_output.c:7:P:Core: Test passed
+ex_output.c:7:P:Core: Passed
 ex_output.c:13:F:Core: Failure
 ex_output.c:17:E:Core: (after this point) Early exit with return value 1"
 

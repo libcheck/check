@@ -24,7 +24,7 @@
 
 /* Print error message and die
    If fmt ends in colon, include system error information */
-void eprintf (char *fmt, ...);
+void eprintf (char *fmt, char *file, int line,...);
 /* malloc or die */
 void *emalloc(size_t n);
 void *erealloc(void *, size_t n);

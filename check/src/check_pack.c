@@ -228,7 +228,7 @@ void ppack (int fdes, enum ck_msg_type type, void *data)
   n = pack(type, buf, data);
   r = write (fdes, buf, n);
   if (r == -1)
-    eprintf("Error in ppack:");
+    eprintf("Error in ppack:",__FILE__,__LINE__);
 
   free(buf);
 }
@@ -248,7 +248,7 @@ static int read_buf (int fdes, char **buf)
     if (n == 0)
       break;
     if (n == -1)
-      eprintf("Error in read_buf:");
+      eprintf("Error in read_buf:", __FILE__, __LINE__);
 
     nread += n;
     *buf = erealloc(*buf,CK_MAXMSGBUF * mul);

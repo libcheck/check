@@ -23,7 +23,7 @@
 #include "list.h"
 #include "check.h"
 #include "check_impl.h"
-#include "check_msg.h"
+#include "check_msg_new.h"
 
 static int non_pass (int val);
 static Fixture *fixture_create (SFun fun, int ischecked);
@@ -147,31 +147,23 @@ static void tcase_add_fixture (TCase *tc, SFun setup, SFun teardown,
 
 void tcase_fn_start (char *fname, char *file, int line)
 {
-  MsgSys *msgsys;
-
-  msgsys = get_send_msgsys();
-  send_last_loc_msg (msgsys, file, line);
+  send_ctx_info (get_send_key(),CK_CTX_TEST);
+  send_loc_info (get_send_key(),file, line);
 }
 
 void _mark_point (char *file, int line)
 {
-  MsgSys *msgsys;
-
-  msgsys = get_send_msgsys();
-  send_last_loc_msg (msgsys, file, line);
+  send_loc_info (get_send_key(), file, line);
 }
 
 void _fail_unless (int result, char *file, int line, char * msg)
 {
-  MsgSys *msgsys;
-
-  msgsys = get_send_msgsys();
   if (line > MAXLINE)
-    eprintf ("Line number %d too large to use", line);
+    eprintf ("Line number %d too large to use",__FILE__,__LINE__, line);
 
-  send_last_loc_msg (msgsys, file, line);
+  send_loc_info (get_send_key(), file, line);
   if (!result) {
-    send_failure_msg (msgsys, msg);
+    send_failure_info (get_send_key(), msg);
     if (cur_fork_status() == CK_FORK)
       exit(1);
   }
@@ -325,7 +317,7 @@ void set_fork_status (enum fork_status fstat)
   if (fstat == CK_FORK || fstat == CK_NOFORK)
     _fstat = fstat;
   else
-    eprintf ("Bad status in set_fork_status");
+    eprintf ("Bad status in set_fork_status", __FILE__, __LINE__);
 }
 
 enum fork_status cur_fork_status (void)

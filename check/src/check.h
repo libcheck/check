@@ -174,8 +174,7 @@ void _mark_point (char *file, int line);
 enum test_result {
   CK_PASS, /* Test passed*/
   CK_FAILURE, /* Test completed but failed */
-  CK_ERROR, /* Test failed to complete (signal or non-zero early exit) */
-  CK_FIXTURE /* Failure signaled in fixture setup function */
+  CK_ERROR /* Test failed to complete (signal or non-zero early exit) */
 };
 
 /* Specifies the how much output an SRunner should produce */
