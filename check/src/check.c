@@ -51,7 +51,7 @@ Suite *suite_create (const char *name)
     s->name = "";
   else
     s->name = name;
-  s->tclst = list_create();
+  s->tclst = check_list_create();
   return s;
 }
 
@@ -75,11 +75,11 @@ TCase *tcase_create (const char *name)
     tc->name = "";
   else
     tc->name = name;
-  tc->tflst = list_create();
-  tc->unch_sflst = list_create();
-  tc->ch_sflst = list_create();
-  tc->unch_tflst = list_create();
-  tc->ch_tflst = list_create();
+  tc->tflst = check_list_create();
+  tc->unch_sflst = check_list_create();
+  tc->ch_sflst = check_list_create();
+  tc->unch_tflst = check_list_create();
+  tc->ch_tflst = check_list_create();
 
   return tc;
 }
@@ -194,12 +194,12 @@ void _fail_unless (int result, const char *file,
 SRunner *srunner_create (Suite *s)
 {
   SRunner *sr = emalloc (sizeof(SRunner)); /* freed in srunner_free */
-  sr->slst = list_create();
+  sr->slst = check_list_create();
   if (s != NULL)
     list_add_end(sr->slst, s);
   sr->stats = emalloc (sizeof(TestStats)); /* freed in srunner_free */
   sr->stats->n_checked = sr->stats->n_failed = sr->stats->n_errors = 0;
-  sr->resultlst = list_create();
+  sr->resultlst = check_list_create();
   sr->log_fname = NULL;
   sr->xml_fname = NULL;
   sr->loglst = NULL;

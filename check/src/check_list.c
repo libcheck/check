@@ -47,7 +47,7 @@ static void maybe_grow (List *lp)
   }
 }
 
-List *list_create (void)
+List *check_list_create (void)
 {
   List *lp;
   lp = emalloc (sizeof(List));

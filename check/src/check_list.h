@@ -24,7 +24,7 @@
 typedef struct List List;
 
 /* Create an empty list */
-List * list_create (void);
+List * check_list_create (void);
 
 /* Is list at end? */
 int list_at_end (List * lp);

@@ -273,7 +273,7 @@ static void setup_messaging_with_key (MsgKey key)
   PipeEntry *pe;
 
   if (plst == NULL)
-    plst = list_create();
+    plst = check_list_create();
 
   pe = get_pe_by_key (key);
   if (pe == NULL) {

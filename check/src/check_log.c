@@ -287,7 +287,7 @@ FILE *srunner_open_xmlfile (SRunner *sr)
 void srunner_init_logging (SRunner *sr, enum print_output print_mode)
 {
   FILE *f;
-  sr->loglst = list_create();
+  sr->loglst = check_list_create();
   srunner_register_lfun (sr, stdout, 0, stdout_lfun, print_mode);
   f = srunner_open_lfile (sr);
   if (f) {

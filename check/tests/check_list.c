@@ -9,7 +9,7 @@ START_TEST(test_create)
 {
   List *lp;
 
-  lp = list_create();
+  lp = check_list_create();
 
   fail_unless (list_val(lp) == NULL,
 	       "Current list value should be NULL for newly created list");
@@ -25,7 +25,7 @@ END_TEST
 
 START_TEST(test_free)
 {
-  List *lp = list_create();
+  List *lp = check_list_create();
   list_add_end (lp, "abc");
   list_add_end (lp, "123");
   list_add_end (lp, NULL);
@@ -35,7 +35,7 @@ END_TEST
 
 START_TEST(test_add_end)
 {
-  List * lp = list_create();
+  List * lp = check_list_create();
   const char * tval = "abc";
   
   list_add_end (lp, tval);
@@ -54,7 +54,7 @@ START_TEST(test_add_a_bunch)
   List *lp;
   int i, j;
   for (i = 0; i < 3; i++) {
-    lp = list_create();
+    lp = check_list_create();
     for (j = 0; j < 1000; j++)
       list_add_end (lp, "abc");
     list_free(lp);
@@ -64,7 +64,7 @@ END_TEST
 
 START_TEST(test_add_end_and_next)
 {
-  List *lp = list_create();
+  List *lp = check_list_create();
   const char *tval1 = "abc";
   const char *tval2 = "123";
   
