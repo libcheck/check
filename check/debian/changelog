@@ -1,0 +1,9 @@
+check (0.7.1-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Arien Malec <arien_malec@yahoo.com>  Fri,  3 Aug 2001 09:06:29 -0700
+
+Local variables:
+mode: debian-changelog
+End:
