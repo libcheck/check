@@ -4,7 +4,7 @@ AC_INIT(src/check.c)
 
 CHECK_MAJOR_VERSION=0
 CHECK_MINOR_VERSION=8
-CHECK_MICRO_VERSION=4
+CHECK_MICRO_VERSION=5
 CHECK_VERSION=$CHECK_MAJOR_VERSION.$CHECK_MINOR_VERSION.$CHECK_MICRO_VERSION
 
 AM_INIT_AUTOMAKE(check,$CHECK_VERSION)
@@ -32,13 +32,11 @@ AC_PROG_RANLIB
 if test -n "$GCC"; then
    CFLAGS="$CFLAGS -Wall -Wstrict-prototypes -Wmissing-prototypes -Wwrite-strings"
 fi
-CK_LYX_LINUXDOC([have_lyx="yes"],[have_lyx="no"])
-AC_CHECK_PROG(have_sgmltools,sgml2html,yes)
-if test x"$have_sgmltools" != "xyes" -o x"$have_lyx" != "xyes" ; then
+AC_CHECK_PROG(have_docbook2html,docbook2html,yes)
+if test x"$have_docbook2html" != "xyes" ; then
    AC_MSG_WARN([required tools not found, not building docs])
 fi
-AM_CONDITIONAL(MAKE_DOC,
-               test x"$have_lyx" = "xyes" -a x"$have_sgmltools" = "xyes" )
+AM_CONDITIONAL(MAKE_DOC, test x"$have_docbook2html" = "xyes")
 dnl Checks for libraries.
 
 dnl Checks for header files.
@@ -51,9 +49,9 @@ AC_C_CONST
 AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 
-AC_CHECK_SIZEOF(int)
-AC_CHECK_SIZEOF(short)
-AC_CHECK_SIZEOF(long)
+AC_CHECK_SIZEOF(int, 4)
+AC_CHECK_SIZEOF(short, 2)
+AC_CHECK_SIZEOF(long, 4)
 
 dnl Checks for library functions.
 dnl AC_FUNC_FORK
