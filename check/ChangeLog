@@ -1,3 +1,14 @@
+2001-05-31 15:34  amalec
+
+	* configure.in, doc/Makefile.am: Modified Makefile.am to include
+	docs in dist
+
+2001-05-31 15:26  amalec
+
+	* ChangeLog, Makefile.am, Makefile.in, aclocal.m4, configure,
+	configure.in, doc/Makefile.am, src/Makefile.in, tests/Makefile.in:
+	Added Automake support to create and install documentation
+
 2001-05-31 14:30  amalec
 
 	* doc/money/: config.h, config.log, config.status: Removed unneded
