@@ -81,9 +81,11 @@ static int waserror (int status, int expected_signal);
 #define MSG_LEN 100
 
 static pid_t current_test;
+static int alarm_received;
 
 static void sig_handler(int sig_nr)
 {
+  alarm_received = 1;
   kill(current_test, SIGKILL);
 }
 
@@ -336,12 +338,20 @@ static void set_fork_info (TestResult *tr, int status, int signal_expected)
 
   if (was_sig) {
     if (signal_expected == signal_received) {
-      tr->rtype = CK_PASS;
-      tr->msg = pass_msg();
-    } else if (signal_expected != 0) { /* signal received, but no the expected one */
+      if (alarm_received) {
+        /* Got alarm instead of signal */
+        tr->rtype = CK_ERROR;
+        tr->msg = signal_error_msg(signal_received, signal_expected);
+      } else {
+        tr->rtype = CK_PASS;
+        tr->msg = pass_msg();
+      }
+    } else if (signal_expected != 0) {
+      /* signal received, but not the expected one */
       tr->rtype = CK_ERROR;
       tr->msg = signal_error_msg(signal_received, signal_expected);
-    } else {                           /* signal received and none expected */
+    } else {
+      /* signal received and none expected */
       tr->rtype = CK_ERROR;
       tr->msg = signal_msg(signal_received);
     }
@@ -409,6 +419,7 @@ static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun)
   }
 
   current_test = pid;
+  alarm_received = 0;
   alarm(tc->timeout);
   do {
     pid = wait(&status);
@@ -424,8 +435,13 @@ static char *signal_error_msg (int signal_received, int signal_expected)
   char *msg = emalloc (MSG_LEN); /* free'd by caller */
   sig_r_str = strdup(strsignal(signal_received));
   sig_e_str = strdup(strsignal(signal_expected));
-  snprintf (msg, MSG_LEN, "Error: Received signal %d (%s), expected %d (%s)",
-            signal_received, sig_r_str, signal_expected, sig_e_str);
+  if (alarm_received) {
+    snprintf (msg, MSG_LEN, "Test timeout expired, expected signal %d (%s)",
+              signal_expected, sig_e_str);
+  } else {
+    snprintf (msg, MSG_LEN, "Received signal %d (%s), expected %d (%s)",
+              signal_received, sig_r_str, signal_expected, sig_e_str);
+  }
   free(sig_r_str);
   free(sig_e_str);
   return msg;
@@ -434,8 +450,13 @@ static char *signal_error_msg (int signal_received, int signal_expected)
 static char *signal_msg (int signal)
 {
   char *msg = emalloc (MSG_LEN); /* free'd by caller */
-  snprintf (msg, MSG_LEN, "Received signal %d (%s)",
-            signal, strsignal(signal));
+  if (alarm_received) {
+    snprintf (msg, MSG_LEN, "Test timeout expired",
+              signal, strsignal(signal));
+  } else {
+    snprintf (msg, MSG_LEN, "Received signal %d (%s)",
+              signal, strsignal(signal));
+  }
   return msg;
 }
 
