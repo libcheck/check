@@ -78,8 +78,67 @@
     <P>The author welcomes any and all help with Check, whether
     through enhancement requests, bug reports, patches, documentation,
     etc. Please visit the Check project page at <A
-    HREF="http://sourceforge.net/projects/check/">http://sourceforge.net/projects/check/</A>    
+    HREF="http://sourceforge.net/projects/check/">http://sourceforge.net/projects/check/</A></P>
 
+    <h3>TODO</h3>
+
+    The following enhancements are being considered for Check:
+
+    <ul>
+      <li>Printing and Logging
+	<ul>
+	  <li>Allow unit test output (stdout and stderr) to be
+	  captured and logged</li>
+
+	  <li>Create an XML DTD for test
+	  output</li>
+
+	  <li>Enhance the current TestResult interface & structures to
+	  match the DTD/model</li>
+
+	  <li>Open the API for printing/logging customization</li>
+
+	  <li>JUnit-style UI?</li>
+	</ul>
+      </li>
+      <li>Unit test writing
+	<ul>
+	  <li>Allow unit tests that expect signals or exits</li>
+	  
+	  <li>Allow unit tests that expect output (see stdout logging
+	  above) (but maybe perl/sh/expect/dejagnu are better
+	  tools)</li>
+
+	  <li>Interface with gcov somehow???</li>
+
+	  <li>Autoproduce unit test framework from header files</li>
+	  
+	</ul>
+      </li>
+      <li>Check tests
+	<ul>
+	  <li>Use gcov to test and expand coverage of existing unit
+	  tests</li>
+
+	  <li>Increase tests for more non-public modules</li>
+
+	  <li>Refactor to allow better unit testing of printing
+	  functionality (without end-to-end testing of output</li>
+	</ul>
+      </li>
+      <li>Packaging
+	<ul>
+	  <li>Automate RPM production</li>
+
+	  <li>Debian packaging</li>
+
+	  <li>Get Check into Debian Sid</li>
+	</ul>
+      </li>
+    </ul>
+	
+    
+    <h3>CVS access</h3>
     <P>To contribute to Check, you should download the source through
     anonymous CVS, following these simple instructions:</P>
     
