@@ -26,7 +26,7 @@ START_TEST(test_pass2)
 }
 END_TEST
 
-Suite *make_s1_suite (void)
+static Suite *make_s1_suite (void)
 {
   Suite *s;
   TCase *tc;
@@ -41,7 +41,7 @@ Suite *make_s1_suite (void)
   return s;
 }
 
-Suite *make_s2_suite (void)
+static Suite *make_s2_suite (void)
 {
   Suite *s;
   TCase *tc;
@@ -54,7 +54,7 @@ Suite *make_s2_suite (void)
   return s;
 }
 
-void run_tests (int printmode)
+static void run_tests (int printmode)
 {
   SRunner *sr;
 

@@ -20,31 +20,52 @@
   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+/* Comments are in Doxygen format: see http://www.stack.nl/~dimitri/doxygen/ */
+
 /*! \mainpage Check: a unit test framework for C
 
-\section overview Overview
-Check is a unit test framework for C. It features a simple interface for defining unit tests, putting little in the way of the developer. Tests are run in a separate address space, so Check can catch both assertion failures and code errors that cause segmentation faults or other signals. The output from unit tests can be used within source code editors and IDEs.
+\section overview
+
+Overview Check is a unit test framework for C. It features a simple
+interface for defining unit tests, putting little in the way of the
+developer. Tests are run in a separate address space, so Check can
+catch both assertion failures and code errors that cause segmentation
+faults or other signals. The output from unit tests can be used within
+source code editors and IDEs.
 
 \section quickref Quick Reference
 
 \subsection creating Creating
 
 \par
-Unit tests are created with the #START_TEST/#END_TEST macro pair. The #fail_unless and #fail macros are used for creating checks within unit tests; the #mark_point macro is useful for trapping the location of signals and/or early exits.
+
+Unit tests are created with the #START_TEST/#END_TEST macro pair. The
+#fail_unless and #fail macros are used for creating checks within unit
+tests; the #mark_point macro is useful for trapping the location of
+signals and/or early exits.
 
 \subsection managing Managing test cases and suites
 
 \par
-Test cases are created with #tcase_create, unit tests are added with #tcase_add_test
+
+Test cases are created with #tcase_create, unit tests are added
+with #tcase_add_test
+
 \par
-Suites are created with #suite_create, freed with #suite_free; test cases are added with #suite_add_tcase
+
+Suites are created with #suite_create, freed with #suite_free; test
+cases are added with #suite_add_tcase
 
 \subsection running Running suites
 
 \par
-Suites are run through an SRunner, which is created with #srunner_create, freed with #srunner_free. Additional suites can be added to an SRunner with #srunner_add_suite.
+
+Suites are run through an SRunner, which is created with
+#srunner_create, freed with #srunner_free. Additional suites can be
+added to an SRunner with #srunner_add_suite.
 
 \par
+
 Use #srunner_run_all to run a suite and print results.
 
 */
@@ -69,9 +90,12 @@ enum {
 typedef struct Suite Suite;
 
 /*! \brief opaque type for a test case
-  A TCase represents a test case.
-  Create with #tcase_create, free with #tcase_free.
-  For the moment, test cases can only be run through a suite */
+
+A TCase represents a test case.  Create with #tcase_create, free with
+#tcase_free.  For the moment, test cases can only be run through a
+suite
+*/
+  
 typedef struct TCase TCase; 
 
 /*! type for a test function */
@@ -104,11 +128,14 @@ void suite_add_tcase (Suite *s, TCase *tc);
   (function version -- use this when the macro won't work */
 void _tcase_add_test (TCase *tc, TFun tf, char *fname);
 
-/*! Add fixture setup/teardown functions to a test case
-   Note that setup/teardown functions are not run in a separate
-   address space, like test functions, and so must not
-   exit or signal (e.g., segfault) */
-void tc_set_fixture(TCase *tc, SFun setup, SFun teardown);
+/*!
+
+Add fixture setup/teardown functions to a test case Note that
+setup/teardown functions are not run in a separate address space, like
+test functions, and so must not exit or signal (e.g., segfault)
+
+*/
+void tcase_set_fixture(TCase *tc, SFun setup, SFun teardown);
 
 /*! Internal function to mark the start of a test function */
 void tcase_fn_start (int msqid, char *fname, char *file, int line);
@@ -116,7 +143,7 @@ void tcase_fn_start (int msqid, char *fname, char *file, int line);
 /*! Start a unit test with START_TEST(unit_name), end with END_TEST
   One must use braces within a START_/END_ pair to declare new variables */
 #define START_TEST(__testname)\
-void __testname (int __msqid)\
+static void __testname (int __msqid)\
 {\
   tcase_fn_start (__msqid,""# __testname, __FILE__, __LINE__);
 
@@ -186,7 +213,7 @@ char *tr_tcname (TestResult *tr);
 SRunner *srunner_create (Suite *s);
 
 /*! Adds a Suite to an SRunner */
-void *srunner_add_suite (SRunner *sr, Suite *s);
+void srunner_add_suite (SRunner *sr, Suite *s);
 
 /*! Frees an SRunner */
 void srunner_free (SRunner *sr);
@@ -208,21 +235,26 @@ int srunner_ntests_failed (SRunner *sr);
 int srunner_ntests_run (SRunner *sr);
 
 /*! \brief Return an array of results for all failures
-   Number of failures is equal to #srunner_nfailed_tests.
-   Memory is alloc'ed and must be freed, but individual
-   TestResults must not */
-  TestResult **srunner_failures (SRunner *sr);
+  
+   Number of failures is equal to #srunner_nfailed_tests.  Memory is
+   alloc'ed and must be freed, but individual TestResults must not */
 
-  /*! \brief Return an array of results for all run tests
-  Number of failrues is equal to #srunner_ntests_run
-  Memory is alloc'ed and must be freed, but individual
-  TestResults must not */
-  TestResult **srunner_results (SRunner *sr);
+TestResult **srunner_failures (SRunner *sr);
+
+/*! \brief Return an array of results for all run tests
+
+Number of failrues is equal to #srunner_ntests_run Memory is alloc'ed
+and must be freed, but individual TestResults must not */
+  
+TestResult **srunner_results (SRunner *sr);
   /* Printing */
 
 /*! Print the results contained in an SRunner
-  \param sr SRunner for which results are printed
-  \param print_mode Specification of print verbosity, constrainted to enum #print_verbosity
+
+\param sr SRunner for which results are printed
+
+\param print_mode Specification of print verbosity, constrainted to
+enum #print_verbosity
 */
   void srunner_print (SRunner *sr, int print_mode);
   

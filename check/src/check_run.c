@@ -58,7 +58,7 @@ SRunner *srunner_create (Suite *s)
   return sr;
 }
 
-void *srunner_add_suite (SRunner *sr, Suite *s)
+void srunner_add_suite (SRunner *sr, Suite *s)
 {
   list_add_end(sr->slst, s);
 }

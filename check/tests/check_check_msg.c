@@ -1,9 +1,10 @@
 #include <stdlib.h>
 #include <check.h>
 #include "check_msg.h"
+#include "check_check.h"
 
 int msq;
-void msg_setup (void)
+static void msg_setup (void)
 {
   /* Note that we are really sharing the same msq
      as check itself, since all msqs created by

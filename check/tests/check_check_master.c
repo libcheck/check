@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <check.h>
 #include "check_check.h"
 
@@ -109,10 +110,27 @@ END_TEST
 START_TEST(test_check_failure_tcnames)
 {
   int i;
+  char *tcnamearr[] = {
+    "Simple Tests",
+    "Simple Tests",
+    "Simple Tests",
+    "Simple Tests",
+    "Signal Tests",
+    "Signal Tests",
+    "Signal Tests",
+    "Limit Tests",
+    "Limit Tests",
+    "Core"};
+  
   for (i = 0; i < sub_nfailed; i++) {
-
-    fail_unless (strcmp(tr_tcname(tr_fail_array[i]), "Check Servant") == 0,
-		 "Bad test case name");
+    char *tcname;   
+    tcname = tr_tcname(tr_all_array[i]);
+    if (strcmp (tcname, tcnamearr[i]) != 0) {
+      char *emsg = malloc (CMAXMSG);
+      snprintf (emsg, CMAXMSG,"Expected %s, got %s", tcnamearr[i], tcname);
+      fail (emsg);
+      free (emsg);
+    }
   }
 }
 END_TEST
@@ -169,7 +187,7 @@ START_TEST(test_check_all_ftypes)
 END_TEST
 
 int test_fixture_val = 0;
-void test_fixture_setup (void)
+static void test_fixture_setup (void)
 {
   test_fixture_val = 1;
 }
@@ -182,7 +200,7 @@ START_TEST(test_setup)
 }
 END_TEST
 
-void test_fixture_teardown (void)
+static void test_fixture_teardown (void)
 {
   test_fixture_val = 3;
 }
@@ -211,6 +229,7 @@ Suite *make_master_suite (void)
   tcase_add_test (tc_core, test_check_failure_ftypes);
   tcase_add_test (tc_core, test_check_failure_lnos);
   tcase_add_test (tc_core, test_check_failure_lfiles);
+  tcase_add_test (tc_core, test_check_failure_tcnames);
   tcase_add_test (tc_core, test_check_all_msgs);
   tcase_add_test (tc_core, test_check_all_ftypes);
   tcase_set_fixture(tc_fixture, test_fixture_setup, test_fixture_teardown);
@@ -229,7 +248,6 @@ Suite *make_master_suite (void)
 
 void setup (void)
 {
-  char *msg;
   Suite *s = make_sub_suite();
   SRunner *sr = srunner_create(s);
   srunner_add_suite(sr, make_sub2_suite());

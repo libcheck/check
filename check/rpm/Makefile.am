@@ -2,7 +2,7 @@ WD=`pwd`
 TOPDIRFLAGS=--define "_topdir ${WD}"
 RPMFLAGS=
 
-EXTRA_DISTS=check.spec
+EXTRA_DIST=check.spec
 
 SOURCE_FILE=${PACKAGE}-${VERSION}.tar.gz
 RPM_I386=./RPMS/i386/${PACKAGE}-$(VERSION)-1.i386.rpm

@@ -1,5 +1,6 @@
 #include <time.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <check.h>
 
 
@@ -20,7 +21,7 @@ START_TEST(test_fail)
 END_TEST
 
 
-void run (int num_iters)
+static void run (int num_iters)
 {
   int i;
   s = suite_create ("Stress");

@@ -22,6 +22,7 @@
 #include "list.h"
 #include "check_impl.h"
 #include "check_print.h"
+#include "error.h"
 
 static void srunner_fprint_summary (FILE *file, SRunner *sr, int print_mode);
 static void srunner_fprint_results (FILE *file, SRunner *sr, int print_mode);
@@ -98,5 +99,8 @@ static char *rtype_to_string (int rtype)
   case CRERROR:
     return "E";
     break;
+  default:
+    eprintf("Bad argument %d to rtype_to_string", rtype);
+    return NULL;
   }
 }

@@ -100,7 +100,6 @@ void stdout_lfun (SRunner *sr, FILE *file, enum print_verbosity printmode,
 {
   TestResult *tr;
   Suite *s;
-  List *trlst;
   
   switch (evt) {
   case CLSTART_SR:
@@ -116,7 +115,6 @@ void stdout_lfun (SRunner *sr, FILE *file, enum print_verbosity printmode,
     break;
   case CLEND_SR:
     if (printmode > CRSILENT) {
-      TestStats *ts = sr->stats;
       fprintf (file, "\n");
       srunner_fprint (file, sr, printmode);
     }
@@ -139,7 +137,6 @@ void lfile_lfun (SRunner *sr, FILE *file, enum print_verbosity printmode,
 {
   TestResult *tr;
   Suite *s;
-  List *trlst;
   
   switch (evt) {
   case CLSTART_SR:

@@ -42,13 +42,13 @@ rm -rf ${RPM_BUILD_ROOT}
 %doc %{_prefix}/share/doc/%{name}-%{version}/NEWS
 %doc %{_prefix}/share/doc/%{name}-%{version}/README
 %doc %{_prefix}/share/doc/%{name}-%{version}/COPYING
-%doc %{_prefix}/share/doc/%{name}-%{version}/example-1.html
-%doc %{_prefix}/share/doc/%{name}-%{version}/example-2.html
-%doc %{_prefix}/share/doc/%{name}-%{version}/example-3.html
-%doc %{_prefix}/share/doc/%{name}-%{version}/example-4.html
-%doc %{_prefix}/share/doc/%{name}-%{version}/example.html
-%doc %{_prefix}/share/doc/%{name}-%{version}/example.lyx
-%doc %{_prefix}/share/doc/%{name}-%{version}/example.sgml 
+%doc %{_prefix}/share/doc/%{name}-%{version}/tutorial.html
+%doc %{_prefix}/share/doc/%{name}-%{version}/tutorial-1.html
+%doc %{_prefix}/share/doc/%{name}-%{version}/tutorial-2.html
+%doc %{_prefix}/share/doc/%{name}-%{version}/tutorial-3.html
+%doc %{_prefix}/share/doc/%{name}-%{version}/tutorial-4.html
+%doc %{_prefix}/share/doc/%{name}-%{version}/tutorial.lyx
+%doc %{_prefix}/share/doc/%{name}-%{version}/tutorial.sgml 
 %dir %{_prefix}/share/doc/%{name}-%{version}/examples
 %doc %{_prefix}/share/doc/%{name}-%{version}/examples/money.h
 %doc %{_prefix}/share/doc/%{name}-%{version}/examples/money.c
@@ -61,6 +61,7 @@ rm -rf ${RPM_BUILD_ROOT}
 - Updated for 0.7.2
 - Moved money example files to example subdirectory, and removed some
   confusing files
+- Renamed the Tutorial files tutorial*.*
 * Tue Jul 30 2001 Arien Malec <arien_malec@yahoo.com>
 - Updated for 0.7.1
 * Tue Jul 10 2001 Arien Malec <arien_malec@yahoo.com>

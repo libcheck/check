@@ -3,3 +3,9 @@ if [ \( "$1" = "upgrade" -o "$1" = "remove" \) -a -L /usr/doc/check ]; then
 	rm -f /usr/doc/check
 fi
 # End automatically added section
+# Automatically added by dh_installdocs
+if [ "$1" = remove -o "$1" = upgrade ] && \
+   command -v install-docs >/dev/null 2>&1; then
+	install-docs -r check-tutorial
+fi
+# End automatically added section

@@ -587,6 +587,18 @@ Most of the money_suite code should be self-explanatory.
  stay relatively clean and simple.
 \layout Standard
 
+Unit tests are internally defined as static functions.
+ This means that the code to add unit tests to test cases must be in the
+ same compilation unit as the unit tests themselves.
+ This provides another reason to put the creation of the test suite in a
+ separate function: you may later want to keep one source file per suite;
+ defining a uniquely named suite creation function allows you later to define
+ a header file giving prototypes for all the suite creation functions, and
+ encapsulate the details of where and how unit tests are defined behind
+ those functions.
+ See the test program defined for Check itself for an example of this strategy.
+\layout Standard
+
 The code in main bears some explanation.
  We are creating a suite runner object from the suite we created in money_suite.
  We then run the suite, using the CRNORMAL flag to specify that we should
@@ -898,12 +910,30 @@ START_TEST(test_create)
 
 END_TEST
 \end_deeper 
+\layout Standard
+
+There are currently some limitations to the setup/teardown functions.
+ They are run outside of the unit tests, and in the same address space as
+ the main test program.
+ This means two things:
+\layout Enumerate
+
+If the setup or teardown functions signal or exit they will take down the
+ entire test program.
+\layout Enumerate
+
+fail and friends can't be used within the setup/teardown functions to test
+ setup code.
+\layout Standard
+
+The setup and teardown functions are always called (unless, of course, setup
+ brings down the whole test program :-).
 \layout Subsection
 
 Multiple suites run through the same SRunner
 \layout Standard
 
-In a large program, it will be convenient to create mutiple suites, each
+In a large program, it will be convenient to create multiple suites, each
  testing a module of the program.
  While one can create several test programs, each running one Suite, it
  may be convenient to create one main test program, and use it to run multiple

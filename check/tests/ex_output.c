@@ -20,7 +20,7 @@ START_TEST(test_exit)
 }
 END_TEST
 
-Suite *make_suite (void)
+static Suite *make_suite (void)
 {
   Suite *s;
   TCase *tc;
@@ -35,7 +35,7 @@ Suite *make_suite (void)
   return s;
 }
 
-void run_tests (int printmode)
+static void run_tests (int printmode)
 {
   SRunner *sr;
   Suite *s;
