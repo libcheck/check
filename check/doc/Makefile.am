@@ -1,5 +1,8 @@
-DOCPKGDIR=${PACKAGE}-${VERSION}
-DOCROOTDIR= $(prefix)/share/doc/$(PACKAGE)-$(VERSION)
+if PLAIN_DOCDIR
+DOCROOTDIR=$(prefix)/share/doc/$(PACKAGE)
+else
+DOCROOTDIR=$(prefix)/share/doc/${PACKAGE}-${VERSION}
+endif
 # Fake out automake to make the money subdirectory...
 afakedir = $(DOCROOTDIR)/money
 docdir = $(DOCROOTDIR)

@@ -66,8 +66,8 @@ RANLIB = @RANLIB@
 VERSION = @VERSION@
 have_lyx = @have_lyx@
 have_sgmltools = @have_sgmltools@
-
-DOCROOTDIR = $(prefix)/share/doc/$(PACKAGE)-$(VERSION)
+@PLAIN_DOCDIR_TRUE@DOCROOTDIR = $(prefix)/share/doc/$(PACKAGE)
+@PLAIN_DOCDIR_FALSE@DOCROOTDIR = $(prefix)/share/doc/${PACKAGE}-${VERSION}
 # Fake out automake to make the money subdirectory...
 afakedir = $(DOCROOTDIR)/money
 docdir = $(DOCROOTDIR)

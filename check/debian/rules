@@ -21,7 +21,7 @@ configure: configure-stamp
 configure-stamp:
 	dh_testdir
 	# Add here commands to configure the package.
-	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info
+	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-plain-docdir
 
 	touch configure-stamp
 
@@ -51,7 +51,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/tmp
-	$(MAKE) install prefix=$(CURDIR)/debian/tmp/usr DOCPKGDIR=check
+	$(MAKE) install prefix=$(CURDIR)/debian/tmp/usr
 
 
 # Build architecture-independent files here.

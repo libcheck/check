@@ -1,9 +1,9 @@
 Summary: A unit test framework for C
 Name: check
-Version: 0.7.1
+Version: 0.7.2
 Release: 1
 Epoch: 1
-Source: http://prdownloads.sourceforge.net/check/check-0.7.1.tar.gz
+Source: http://prdownloads.sourceforge.net/check/check-0.7.2.tar.gz
 Group: Development/Tools
 Copyright: GPL
 URL: http://check.sourceforge.net
@@ -68,6 +68,8 @@ rm -rf ${RPM_BUILD_ROOT}
 %doc %{_prefix}/share/doc/%{name}-%{version}/money/config.h.in
 
 %changelog
+* Mon Aug 6 2001 Arien Malec <arien_malec@yahoo.com>
+- Updated for 0.7.2
 * Tue Jul 30 2001 Arien Malec <arien_malec@yahoo.com>
 - Updated for 0.7.1
 * Tue Jul 10 2001 Arien Malec <arien_malec@yahoo.com>

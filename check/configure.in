@@ -1,6 +1,15 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(src/check.c)
-AM_INIT_AUTOMAKE(check,0.7.1)
+AM_INIT_AUTOMAKE(check,0.7.2)
+AC_ARG_ENABLE(plain_docdir,
+[  --enable-plain-docdir        don't append version information to docdir],
+[case "${enableval}" in
+  yes) plain_docdir=true ;;
+  no)  plain_docdir=false ;;
+  *)   AC_MSG_ERROR(bad value ${enableval} for --enable-plain-docdir) ;;
+esac], [plain_docdir=false ])
+
+AM_CONDITIONAL(PLAIN_DOCDIR, test x"$plain_docdir" = "xtrue")
 
 dnl Checks for programs.
 AC_PROG_AWK
