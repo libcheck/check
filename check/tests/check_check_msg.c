@@ -8,28 +8,30 @@
 #include "check_msg.h"
 #include "check_check.h"
 
-int msq;
+MsgSys *msgsys;
+
+enum {
+  KEY = 1
+};
+
 static void msg_setup (void)
 {
-  msq = msgget(1, 0666 | IPC_CREAT);
-  if (msq == -1)
-    eprintf ("Unable to create message queue (%s):");
+  msgsys = create_msgsys_with_key(KEY);
 }
 
 static void msg_teardown (void)
 {
-  if (msgctl (msq, IPC_RMID, NULL) == -1)
-    eprintf ("Failed to free message queue:");
+  delete_msgsys_with_key(KEY);
 }
 
 START_TEST(test_send_failure)
 {
-  FailureMsg *fmsg;
+  char *fmsg;
   /* Failure message sending and receiving need to be in equal pairs
      otherwise the world may fall off its axis...*/
-  send_failure_msg (msq, "This is a test");
-  fmsg = receive_failure_msg (msq);
-  fail_unless (strcmp (fmsg->msg, "This is a test") == 0,
+  send_failure_msg (msgsys, "This is a test");
+  fmsg = receive_failure_msg (msgsys);
+  fail_unless (strcmp (fmsg, "This is a test") == 0,
 	       "Didn't receive the correct message");
   free(fmsg);
 }
@@ -37,19 +39,16 @@ END_TEST
 
 START_TEST(test_send_lastloc)
 {
-  LastLocMsg *lmsg;
-  char *file;
+  Loc *loc;
 
-  send_last_loc_msg (msq, "abc", 1);
-  send_last_loc_msg (msq, "def", 2);
-  lmsg = receive_last_loc_msg (msq);
-  file = last_loc_file (lmsg);
-  fail_unless (strcmp (file, "def") == 0,
+  send_last_loc_msg (msgsys, "abc", 1);
+  send_last_loc_msg (msgsys, "def", 2);
+  loc = receive_last_loc_msg (msgsys);
+  fail_unless (strcmp (loc->file, "def") == 0,
 	       "Didn't receive the correct file name");
-  fail_unless (last_loc_line(lmsg) == 2,
+  fail_unless (loc->line == 2,
 	       "Didn't receive the correct line number");
-  free(file);
-  free(lmsg);
+  free(loc);
 }
 END_TEST
 

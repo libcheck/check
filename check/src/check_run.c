@@ -29,7 +29,6 @@
 #include "check_impl.h"
 #include "check_msg.h"
 #include "check_log.h"
-#include "check_run.h"
 
 
 static void srunner_run_init (SRunner *sr, enum print_verbosity print_mode);
@@ -39,9 +38,9 @@ static void srunner_iterate_suites (SRunner *sr,
 static void srunner_run_tcase (SRunner *sr, TCase *tc);
 static void srunner_add_failure (SRunner *sr, TestResult *tf);
 static TestResult *tfun_run (char *tcname, TF *tf);
-static TestResult *receive_result_info (int msqid, int status, char *tcname);
-static void receive_last_loc_info (int msqid, TestResult *tr);
-static void receive_failure_info (int msqid, int status, TestResult *tr);
+static TestResult *receive_result_info (MsgSys *msgsys, int status, char *tcname);
+static void receive_last_loc_info (MsgSys *msgsys, TestResult *tr);
+static void receive_failure_info (MsgSys *msgsys, int status, TestResult *tr);
 static List *srunner_resultlst (SRunner *sr);
 
 static char *signal_msg (int sig);
@@ -162,9 +161,9 @@ static void srunner_run_tcase (SRunner *sr, TCase *tc)
   List *tfl;
   TF *tfun;
   TestResult *tr;
-  int msqid;
+  MsgSys *msgsys;
 
-  msqid = init_msq();
+  msgsys = init_msgsys();
 
   if (tc->setup)
     tc->setup();
@@ -178,21 +177,21 @@ static void srunner_run_tcase (SRunner *sr, TCase *tc)
   }
   if (tc->teardown)
     tc->teardown();
-  delete_msq();
+  delete_msgsys();
 }
 
-static void receive_last_loc_info (int msqid, TestResult *tr)
+static void receive_last_loc_info (MsgSys *msgsys, TestResult *tr)
 {
-  LastLocMsg *lmsg;
-  lmsg = receive_last_loc_msg (msqid);
-  tr->file = last_loc_file (lmsg);
-  tr->line = last_loc_line (lmsg);
-  free (lmsg);
+  Loc *loc;
+  loc = receive_last_loc_msg (msgsys);
+  tr->file = loc->file;
+  tr->line = loc->line;
+  free (loc);
 }  
 
-static void receive_failure_info (int msqid, int status, TestResult *tr)
+static void receive_failure_info (MsgSys *msgsys, int status, TestResult *tr)
 {
-  FailureMsg *fmsg;
+  char *fmsg;
 
   if (WIFSIGNALED(status)) {
     tr->rtype = CRERROR;
@@ -210,15 +209,15 @@ static void receive_failure_info (int msqid, int status, TestResult *tr)
     }
     else {
       
-      fmsg = receive_failure_msg (msqid);
+      fmsg = receive_failure_msg (msgsys);
       if (fmsg == NULL) { /* implies early exit */
 	tr->rtype = CRERROR;
 	tr->msg =  exit_msg (WEXITSTATUS(status));
       }
       else {
 	tr->rtype = CRFAILURE;
-	tr->msg = emalloc(strlen(fmsg->msg) + 1);
-	strcpy (tr->msg, fmsg->msg);
+	tr->msg = emalloc(strlen(fmsg) + 1);
+	strcpy (tr->msg, fmsg);
 	free (fmsg);
       }
     }
@@ -227,14 +226,14 @@ static void receive_failure_info (int msqid, int status, TestResult *tr)
   }
 }
 
-static TestResult *receive_result_info (int msqid, int status, char *tcname)
+static TestResult *receive_result_info (MsgSys *msgsys, int status, char *tcname)
 {
   TestResult *tr = emalloc (sizeof(TestResult));
 
-  msqid = get_recv_msq();
+  msgsys = get_recv_msgsys();
   tr->tcname = tcname;
-  receive_last_loc_info (msqid, tr);
-  receive_failure_info (msqid, status, tr);
+  receive_last_loc_info (msgsys, tr);
+  receive_failure_info (msgsys, status, tr);
   return tr;
 }
 
@@ -242,9 +241,9 @@ static TestResult *tfun_run (char *tcname, TF *tfun)
 {
   pid_t pid;
   int status = 0;
-  int  msqid;
+  MsgSys  *msgsys;
 
-  msqid = get_recv_msq();
+  msgsys = get_recv_msgsys();
 
   pid = fork();
   if (pid == -1)
@@ -254,7 +253,7 @@ static TestResult *tfun_run (char *tcname, TF *tfun)
     _exit(EXIT_SUCCESS);
   }
   (void) wait(&status);
-  return receive_result_info(msqid, status, tcname);
+  return receive_result_info(msgsys, status, tcname);
 }
 
 int srunner_ntests_failed (SRunner *sr)

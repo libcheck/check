@@ -102,31 +102,31 @@ void tcase_set_fixture (TCase *tc, SFun setup, SFun teardown)
 
 void tcase_fn_start (char *fname, char *file, int line)
 {
-  int msqid;
+  MsgSys *msgsys;
 
-  msqid = get_send_msq();
-  send_last_loc_msg (msqid, file, line);
+  msgsys = get_send_msgsys();
+  send_last_loc_msg (msgsys, file, line);
 }
 
 void _mark_point (char *file, int line)
 {
-  int msqid;
+  MsgSys *msgsys;
 
-  msqid = get_send_msq();
-  send_last_loc_msg (msqid, file, line);
+  msgsys = get_send_msgsys();
+  send_last_loc_msg (msgsys, file, line);
 }
 
 void _fail_unless (int result, char *file, int line, char * msg)
 {
-  int msqid;
+  MsgSys *msgsys;
 
-  msqid = get_send_msq();
+  msgsys = get_send_msgsys();
   if (line > MAXLINE)
     eprintf ("Line number %d too large to use", line);
 
-  send_last_loc_msg (msqid, file, line);
+  send_last_loc_msg (msgsys, file, line);
   if (!result) {
-    send_failure_msg (msqid, msg);
+    send_failure_msg (msgsys, msg);
     exit(1);
   }
 }

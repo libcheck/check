@@ -31,16 +31,36 @@
 #include "check.h"
 #include "check_impl.h"
 #include "check_msg.h"
-#include "check_run.h"
+
+
+typedef struct LastLocMsg {
+  long int message_type;
+  char msg[CMAXMSG]; /* Format: filename\nlineno\0 */
+} LastLocMsg;
+
+typedef struct FailureMsg {
+  long int message_type;
+  char msg[CMAXMSG];
+} FailureMsg;
+
+struct MsgSys 
+{
+  int msqid;
+};
 
 enum {
   LASTLOCMSG = 1,
   FAILUREMSG = 2
 };
 static LastLocMsg *create_last_loc_msg (char *file, int line);
+static char *last_loc_file (LastLocMsg *msg);
+static int last_loc_line (LastLocMsg *msg);
 static FailureMsg *create_failure_msg (char *msg);
-static int get_msq (key_t key);
 static char *ipcerrstr (int ipcerr);
+static int init_key (void);
+static int send_key (void);
+static int recv_key (void);
+
 
 static FailureMsg *create_failure_msg (char *msg)
 {
@@ -60,7 +80,7 @@ static LastLocMsg *create_last_loc_msg (char *file, int line)
   return m;
 }
 
-char *last_loc_file (LastLocMsg *msg)
+static char *last_loc_file (LastLocMsg *msg)
 {
   int i;
   char *rmsg = emalloc (CMAXMSG); /* caller responsible for freeing */
@@ -76,7 +96,7 @@ char *last_loc_file (LastLocMsg *msg)
   return rmsg;
 }
 
-int last_loc_line (LastLocMsg *msg)
+static int last_loc_line (LastLocMsg *msg)
 {
   char *rmsg;
   if (msg == NULL)
@@ -92,95 +112,127 @@ int last_loc_line (LastLocMsg *msg)
 }
 
 
-void send_last_loc_msg (int msqid, char * file, int line)
+void send_last_loc_msg (MsgSys *msgsys, char *file, int line)
 {
   int rval;
   LastLocMsg *rmsg = create_last_loc_msg(file, line);
-  rval = msgsnd(msqid, (void *) rmsg, CMAXMSG, IPC_NOWAIT);
+  rval = msgsnd(msgsys->msqid, (void *) rmsg, CMAXMSG, IPC_NOWAIT);
   if (rval == -1) {
-    eprintf ("send_last_loc_msg:Failed to send message, msqid = %d:",msqid);
+    eprintf ("send_last_loc_msg:Failed to send message, msqid = %d:",
+	     msgsys->msqid);
   }
   free(rmsg);
 }
 
-int init_msq (void) {
-  int msqid;
+MsgSys *init_msgsys (void) {
+  return create_msgsys_with_key(init_key());
+}
 
-  msqid = msgget(init_key(), 0666 | IPC_CREAT);
-  if (msqid == -1)
+MsgSys *get_recv_msgsys (void)
+{
+  return get_msgsys_with_key (recv_key());
+}
+
+MsgSys *get_send_msgsys (void)
+{
+  return get_msgsys_with_key (send_key());
+}
+
+MsgSys *create_msgsys_with_key (int key)
+{
+  MsgSys *msgsys;
+
+  msgsys = emalloc(sizeof(MsgSys));
+
+  msgsys->msqid = msgget((key_t) key, 0666 | IPC_CREAT);
+  if (msgsys->msqid == -1)
     eprintf ("Unable to create message queue (%s):", ipcerrstr(errno));
-  return msqid;
-}
-
-int get_recv_msq (void)
-{
-  return get_msq ((key_t) recv_key());
-}
-
-int get_send_msq (void)
-{
-  return get_msq ((key_t) send_key());
+  return msgsys;
 }
 
 
-static int get_msq (key_t key)
+MsgSys *get_msgsys_with_key (int key)
 {
-  int msqid;
+  MsgSys *msgsys;
+
+  msgsys = emalloc(sizeof(MsgSys));
   
-  msqid = msgget (key, 0666);
-  if (msqid == -1)
+  msgsys->msqid = msgget ((key_t) key, 0666);
+  if (msgsys->msqid == -1)
     eprintf ("Unable to get message queue (%s):", ipcerrstr(errno));
-  return msqid;
+  return msgsys;
 }
 
-void delete_msq (void)
+void delete_msgsys_with_key (int key)
 {
-  int msqid;
+  MsgSys *msgsys;
 
-  msqid = get_msq((key_t) init_key());
-  if (msgctl (msqid, IPC_RMID, NULL) == -1)
+  msgsys = get_msgsys_with_key ((key_t) key);
+  if (msgctl (msgsys->msqid, IPC_RMID, NULL) == -1)
     eprintf ("Failed to free message queue:");
+  free(msgsys);
+}
+
+void delete_msgsys (void)
+{
+  delete_msgsys_with_key(init_key());
 }
 
 
-void send_failure_msg (int msqid, char *msg)
+void send_failure_msg (MsgSys *msgsys, char *msg)
 {
   int rval;
   
   FailureMsg *rmsg = create_failure_msg(msg);
   
-  rval = msgsnd(msqid, (void *) rmsg, CMAXMSG, IPC_NOWAIT);
+  rval = msgsnd(msgsys->msqid, (void *) rmsg, CMAXMSG, IPC_NOWAIT);
   if (rval == -1)
     eprintf ("send_failure_msg:Failed to send message:");
   free(rmsg);
 }
 
-LastLocMsg *receive_last_loc_msg (int msqid)
+Loc *receive_last_loc_msg (MsgSys *msgsys)
 {
-  LastLocMsg *rmsg = emalloc(sizeof(LastLocMsg)); /* caller responsible for freeing */
+  LastLocMsg *lmsg;
+  Loc *loc;
+
+  lmsg = emalloc(sizeof(LastLocMsg)); /* caller responsible for freeing */
   while (1) {
     int rval;
-    rval = msgrcv(msqid, (void *) rmsg, CMAXMSG, LASTLOCMSG, IPC_NOWAIT);
+    rval = msgrcv(msgsys->msqid,
+		  (void *) lmsg, CMAXMSG, LASTLOCMSG, IPC_NOWAIT);
     if (rval == -1) {
       if (errno == ENOMSG)
 	break;
       eprintf ("receive_last_loc_msg:Failed to receive message:");
     }
   }
-  return rmsg;
+  loc = emalloc(sizeof(Loc));
+  loc->file = last_loc_file(lmsg);
+  loc->line = last_loc_line(lmsg);
+  free(lmsg);
+  
+  return loc;
 }
   
-FailureMsg *receive_failure_msg (int msqid)
+char *receive_failure_msg (MsgSys *msgsys)
 { 
-  FailureMsg *rmsg = emalloc(sizeof(FailureMsg));
+  FailureMsg *fmsg;
+  char *msg;
   int rval;
-  rval = msgrcv(msqid, (void *) rmsg, CMAXMSG, FAILUREMSG, IPC_NOWAIT);
+
+  fmsg = emalloc(sizeof(FailureMsg));
+  rval = msgrcv(msgsys->msqid,
+		(void *) fmsg, CMAXMSG, FAILUREMSG, IPC_NOWAIT);
   if (rval == -1) {
     if (errno == ENOMSG)
       return NULL;
     eprintf ("receive_failure_msg:Failed to receive message:");
   }
-  return rmsg;
+  msg = emalloc(strlen(fmsg->msg) + 1);
+  strcpy(msg,fmsg->msg);
+  free(fmsg);
+  return msg;
 }
 
 int init_key(void)

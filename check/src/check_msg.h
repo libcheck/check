@@ -23,38 +23,34 @@
 /* Functions implementing messaging during test runs */
 /* check.h must be included before this header */
 
+/* Abstract type for a messaging system
+   Hides the details (IPC msg vs. pipes vs...*/
+typedef struct MsgSys MsgSys;
 
-typedef struct LastLocMsg {
-  long int message_type;
-  char msg[CMAXMSG]; /* Format: filename\nlineno\0 */
-} LastLocMsg;
+typedef struct loc 
+{
+  int line;
+  char *file;
+} Loc;
 
-typedef struct FailureMsg {
-  long int message_type;
-  char msg[CMAXMSG];
-} FailureMsg;
-
-
-void send_failure_msg (int msqid, char *msg);
-void send_last_loc_msg (int msqid, char * file, int line);
+void send_failure_msg (MsgSys *msgsys, char *fmsg);
+void send_last_loc_msg (MsgSys *msgsys, char * file, int line);
 
 /* malloc'd return value which caller is responsible for
    freeing in each of the next two functions */
-FailureMsg *receive_failure_msg (int msqid);
-LastLocMsg *receive_last_loc_msg (int msqid);
+char *receive_failure_msg (MsgSys *msgsys);
+Loc *receive_last_loc_msg (MsgSys *msgsys);
 
-/* file name contained in the LastLocMsg */
-/* return value is malloc'd, caller responsible for freeing */
-char *last_loc_file(LastLocMsg *msg);
-int last_loc_line(LastLocMsg *msg);
 
-int init_msq (void);
-void delete_msq (void);
+MsgSys *init_msgsys (void);
+void delete_msgsys (void);
 
-int get_recv_msq (void);
-int get_send_msq (void);
-int init_key (void);
-int send_key (void);
-int recv_key (void);
+MsgSys *get_recv_msgsys (void);
+MsgSys *get_send_msgsys (void);
+
+/* Used externally only for testing */
+MsgSys *create_msgsys_with_key(int key);
+void delete_msgsys_with_key(int key);
+MsgSys *get_msgsys_with_key(int key);
 
 #endif /*CHECK_MSG_H */
