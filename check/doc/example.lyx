@@ -1,0 +1,102 @@
+#LyX 1.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 218
+\textclass linuxdoc
+\language english
+\inputencoding auto
+\fontscheme default
+\graphics default
+\paperfontsize default
+\spacing single 
+\papersize Default
+\paperpackage a4
+\use_geometry 0
+\use_amsmath 0
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\quotes_times 2
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+
+\layout Title
+\added_space_top vfill 
+Check Tutorial
+\layout Author
+
+Arien Malec
+\layout Date
+
+25 May, 2001
+\layout Section
+
+Introduction
+\layout Standard
+
+Check is a unit testing framework for C.
+ It was inspired by similar frameworks that currently exist for most programming
+ languages; the most famous example being JUnit for Java (
+\begin_inset LatexCommand \htmlurl[www.junit.com]{www.junit.com}
+
+\end_inset 
+
+).
+ There is a list of unit test frameworks for multiple languages at 
+\begin_inset LatexCommand \htmlurl[www.xprogramming.com/software.htm]{http://www.xprogramming.com/software.htm}
+
+\end_inset 
+
+.
+ Unit testing has a long history as part of formal quality assurance methodologi
+es, but has recently been associated with the lightweight methodology called
+ Extreme Programming.
+ In that methodology, the characteristic practice involves interspersing
+ unit test writing with coding (
+\begin_inset Quotes eld
+\end_inset 
+
+test a little, code a little
+\begin_inset Quotes erd
+\end_inset 
+
+).
+ While the incremental unit test/code approach is indispensable to Extreme
+ Programming, it is also applicable, and perhaps indispensable, outside
+ of that methodology.
+\layout Standard
+
+The incremental test/code approach provides three main benefits to the developer
+:
+\layout Enumerate
+
+Because the unit tests use the interface to the unit being tested, they
+ allow the developer to think about how the interface should be designed
+ for usage early in the coding process.
+\layout Enumerate
+
+They help the developer think early about aberrant cases, and code accordingly.
+\layout Enumerate
+
+By providing a documented level of correctness, they allow the developer
+ to refactor (see 
+\begin_inset LatexCommand \htmlurl[www.refactoring.com]{http://www.refactoring.com}
+
+\end_inset 
+
+) agressively.
+\layout Standard
+
+That third reason is the reason that turns people into unit testing addicts.
+ There is nothing so satisfying as doing a wholesale replacement of an implement
+ation, and having the unit tests reassure you at each step of that change
+ that all is well.
+ It is like the difference between exploring the wilderness with and without
+ a good map and compass: without the proper gear, you are more likely to
+ proceed cautiously and stick to the marked trails; with the proper gear,
+ you can take the most direct path to where you want to go.
+\layout Section
+
+\the_end

@@ -1,0 +1,1 @@
+A simple library for performing unit tests. See check_check.c and check_list.c for examples of unit tests using this library; do a make check to see some example output.

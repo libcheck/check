@@ -1,0 +1,3 @@
+SUBDIRS=src tests
+
+CLEANFILES=*.*~
