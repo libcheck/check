@@ -555,7 +555,17 @@ Creating a suite
 To run unit tests with Check, we must create some test cases, aggregate
  them into a suite, and run them with a suite runner.
  That's a bit of overhead, but it is mostly one-off.
- Here's the code in check_money.c:
+ Here's the code in check_money.c.
+ Note that we include stdlib.h to get the definitions of EXIT_SUCCESS and
+ EXIT_FAILURE.
+\layout Code
+
+#include <stdlib.h>
+\layout Code
+
+#include <check.h>
+\layout Code
+
 \layout Code
 
 Suite *money_suite (void) 
