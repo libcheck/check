@@ -69,6 +69,8 @@ static char *pass_msg (void);
 static char *exit_msg (int exitstatus);
 static int waserror (int status);
 
+#define MSG_LEN 100
+
 static void srunner_run_init (SRunner *sr, enum print_output print_mode)
 {
   set_fork_status(srunner_fork_status(sr));
@@ -323,10 +325,10 @@ static TestResult *tcase_run_tfun_fork (TCase *tc, TF *tfun)
   if (pid == -1)
      eprintf ("Unable to fork:",__FILE__,__LINE__);
   if (pid == 0) {
-    tcase_run_checked_setup(tc);
+    tcase_run_checked_setup (tc);
     tfun->fn();
-    tcase_run_checked_teardown(tc);
-    _exit(EXIT_SUCCESS);
+    tcase_run_checked_teardown (tc);
+    _exit (EXIT_SUCCESS);
   }
   (void) wait(&status);
   return receive_result_info_fork (tc->name, status);
@@ -334,16 +336,16 @@ static TestResult *tcase_run_tfun_fork (TCase *tc, TF *tfun)
 
 static char *signal_msg (int signal)
 {
-  char *msg = emalloc (CMAXMSG); /* free'd by caller */
-  snprintf(msg, CMAXMSG, "Received signal %d", signal);
+  char *msg = emalloc (MSG_LEN); /* free'd by caller */
+  snprintf (msg, MSG_LEN, "Received signal %d", signal);
   return msg;
 }
 
 static char *exit_msg (int exitval)
 {
-  char *msg = emalloc(CMAXMSG); /* free'd by caller */
-  snprintf(msg, CMAXMSG,
-	   "Early exit with return value %d", exitval);
+  char *msg = emalloc(MSG_LEN); /* free'd by caller */
+  snprintf (msg, MSG_LEN,
+            "Early exit with return value %d", exitval);
   return msg;
 }
 
@@ -357,10 +359,10 @@ static char *pass_msg (void)
 enum fork_status srunner_fork_status (SRunner *sr)
 {
   if (sr->fstat == CK_FORK_UNSPECIFIED) {
-    char *env = getenv("CK_FORK");
+    char *env = getenv ("CK_FORK");
     if (env == NULL)
       return CK_FORK;
-    if (strcmp(env,"no") == 0)
+    if (strcmp (env,"no") == 0)
       return CK_NOFORK;
     else
       return CK_FORK;
@@ -375,9 +377,9 @@ void srunner_set_fork_status (SRunner *sr, enum fork_status fstat)
 
 static int waserror (int status)
 {
-  int was_sig = WIFSIGNALED(status);
-  int was_exit = WIFEXITED(status);
-  int exit_status = WEXITSTATUS(status);
+  int was_sig = WIFSIGNALED (status);
+  int was_exit = WIFEXITED (status);
+  int exit_status = WEXITSTATUS (status);
 
   return (was_sig || (was_exit && exit_status != 0));
 }

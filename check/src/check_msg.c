@@ -66,10 +66,10 @@ void send_failure_info (MsgKey *key, const char *msg)
   Pipe *p;
 
   fmsg.msg = (char *) msg;
-  p = get_pipe_by_key(key);
+  p = get_pipe_by_key (key);
   if (p == NULL)
-    eprintf("Couldn't find pipe with key %d",__FILE__, __LINE__, key);
-  ppack(p->sendfd, CK_MSG_FAIL, &fmsg);
+    eprintf ("Couldn't find pipe with key %d",__FILE__, __LINE__, key);
+  ppack (p->sendfd, CK_MSG_FAIL, (CheckMsg *) &fmsg);
 }
 
 void send_loc_info (MsgKey *key, const char * file, int line)
@@ -79,10 +79,10 @@ void send_loc_info (MsgKey *key, const char * file, int line)
 
   lmsg.file = (char *) file;
   lmsg.line = line;
-  p = get_pipe_by_key(key);
+  p = get_pipe_by_key (key);
   if (p == NULL)
-    eprintf("Couldn't find pipe with key %d",__FILE__, __LINE__, key);
-  ppack(p->sendfd, CK_MSG_LOC, &lmsg);
+    eprintf ("Couldn't find pipe with key %d",__FILE__, __LINE__, key);
+  ppack (p->sendfd, CK_MSG_LOC, (CheckMsg *) &lmsg);
 }
 
 void send_ctx_info (MsgKey *key,enum ck_result_ctx ctx)
@@ -91,11 +91,11 @@ void send_ctx_info (MsgKey *key,enum ck_result_ctx ctx)
   Pipe *p;
 
   cmsg.ctx = ctx;
-  p = get_pipe_by_key(key);
+  p = get_pipe_by_key (key);
   if (p == NULL)
-    eprintf("Couldn't find pipe with key %d",__FILE__, __LINE__, key);
+    eprintf ("Couldn't find pipe with key %d",__FILE__, __LINE__, key);
 
-  ppack(p->sendfd, CK_MSG_CTX, &cmsg);
+  ppack (p->sendfd, CK_MSG_CTX, (CheckMsg *) &cmsg);
 }
 
 TestResult *receive_test_result (MsgKey *key, int waserror)
@@ -103,13 +103,14 @@ TestResult *receive_test_result (MsgKey *key, int waserror)
   Pipe *p;
   RcvMsg *rmsg;
 
-  p = get_pipe_by_key(key);
+  p = get_pipe_by_key (key);
   if (p == NULL)
-    eprintf("Couldn't find pipe with key %d",__FILE__, __LINE__, key);
-  close(p->sendfd);
-  rmsg = punpack(p->recvfd);
-  close(p->recvfd);
-  setup_pipe(p);
+    eprintf ("Couldn't find pipe with key %d",__FILE__, __LINE__, key);
+  close (p->sendfd);
+  rmsg = punpack (p->recvfd);
+  close (p->recvfd);
+  setup_pipe (p);
+
   return construct_test_result (rmsg, waserror);
 }
 
@@ -132,81 +133,81 @@ static TestResult *construct_test_result (RcvMsg *rmsg, int waserror)
   if (rmsg == NULL)
     return NULL;
 
-  tr = emalloc (sizeof(TestResult));
+  tr = emalloc (sizeof (TestResult));
 
   if (rmsg->msg != NULL || waserror) {
     tr->ctx = rmsg->lastctx;
     tr->msg = rmsg->msg;
-    tr_set_loc_by_ctx(tr, rmsg->lastctx, rmsg);
+    tr_set_loc_by_ctx (tr, rmsg->lastctx, rmsg);
   } else if (rmsg->lastctx == CK_CTX_SETUP) {
     tr->ctx = CK_CTX_SETUP;
     tr->msg = NULL;
-    tr_set_loc_by_ctx(tr, CK_CTX_SETUP, rmsg);  
+    tr_set_loc_by_ctx (tr, CK_CTX_SETUP, rmsg);  
   } else {
     tr->ctx = CK_CTX_TEST;
     tr->msg = NULL;
-    tr_set_loc_by_ctx(tr, CK_CTX_TEST, rmsg);
+    tr_set_loc_by_ctx (tr, CK_CTX_TEST, rmsg);
   }
 
   return tr;  
   
 }
 
-void setup_messaging(void)
+void setup_messaging (void)
 {
-  setup_messaging_with_key(get_recv_key());
+  setup_messaging_with_key (get_recv_key());
 }
 
-MsgKey *get_send_key(void)
+MsgKey *get_send_key (void)
 {
-  MsgKey *key = emalloc(sizeof(MsgKey));
+  MsgKey *key = emalloc (sizeof (MsgKey));
   
-  if (cur_fork_status() == CK_FORK)
-    key->key = getppid();
+  if (cur_fork_status () == CK_FORK)
+    key->key = getppid ();
   else
-    key->key = getpid();
+    key->key = getpid ();
 
   return key;
 }
 
-MsgKey *get_recv_key(void)
+MsgKey *get_recv_key (void)
 {
-  MsgKey *key = emalloc(sizeof(MsgKey));
+  MsgKey *key = emalloc (sizeof (MsgKey));
 
-  key->key = getpid();
+  key->key = getpid ();
   return key;
 }
 
 static MsgKey *get_setup_key (void)
 {
-  return get_recv_key();
+  return get_recv_key ();
 }
 
-void teardown_messaging(void)
+void teardown_messaging (void)
 {
-  teardown_messaging_with_key(get_setup_key());
+  teardown_messaging_with_key (get_setup_key ());
 }
 
 /* for testing only */
-void setup_test_messaging(void)
+void setup_test_messaging (void)
 {
-  setup_messaging_with_key(get_test_key());
+  setup_messaging_with_key (get_test_key ());
 }
 
-MsgKey *get_test_key(void)
+MsgKey *get_test_key (void)
 {
-  MsgKey *key = emalloc(sizeof(MsgKey));
+  MsgKey *key = emalloc (sizeof (MsgKey));
   key->key = -1;
   return key;
 
 }
 
-void teardown_test_messaging(void)
+void teardown_test_messaging (void)
 {
-  teardown_messaging_with_key(get_test_key());
+  teardown_messaging_with_key (get_test_key ());
 }
 
-static PipeEntry *get_pe_by_key(MsgKey *key)
+static PipeEntry *get_pe_by_key (MsgKey *key)
 {
   PipeEntry *pe = NULL;
   
@@ -221,10 +222,10 @@ static PipeEntry *get_pe_by_key(MsgKey *key)
   return pe;
 }
 
-static Pipe *get_pipe_by_key(MsgKey *key)
+static Pipe *get_pipe_by_key (MsgKey *key)
 {
   Pipe *pr = NULL;
-  PipeEntry *pe = get_pe_by_key(key);
+  PipeEntry *pe = get_pe_by_key (key);
 
   if (pe == NULL || pe->cur == 0)
       eprintf ("No messaging setup", __FILE__, __LINE__);
@@ -253,39 +254,37 @@ void setup_messaging_with_key (MsgKey *key)
   if (plst == NULL)
     plst = list_create();
 
-  pe = get_pe_by_key(key);
+  pe = get_pe_by_key (key);
   if (pe == NULL) {
-    pe = emalloc(sizeof(PipeEntry));
+    pe = emalloc (sizeof (PipeEntry));
     pe->cur = 0;
     pe->key = key->key;
-    list_add_end(plst, pe);
+    list_add_end (plst, pe);
   }
   if (pe->cur == 0) {
-    pe->p1 = emalloc(sizeof(Pipe));
+    pe->p1 = emalloc (sizeof(Pipe));
     pe->cur = 1;
     setup_pipe (pe->p1);
   } else if (pe->cur == 1) {
     pe->cur = 2;
-    pe->p2 = emalloc(sizeof(Pipe));
+    pe->p2 = emalloc (sizeof(Pipe));
     setup_pipe (pe->p2);
   } else
-    eprintf("Only one nesting of suite runs supported", __FILE__, __LINE__);
-
+    eprintf ("Only one nesting of suite runs supported", __FILE__, __LINE__);
 }
 
 void teardown_messaging_with_key (MsgKey *key)
 {
-  PipeEntry *pe = get_pe_by_key(key);
+  PipeEntry *pe = get_pe_by_key (key);
 
   if (pe == NULL || pe->cur == 0)
-    eprintf("Messaging not setup", __FILE__, __LINE__);
+    eprintf ("Messaging not setup", __FILE__, __LINE__);
   else if (pe->cur == 1) {
     pe->cur = 0;
-    free(pe->p1);
+    free (pe->p1);
   } else if (pe->cur == 2) {
     pe->cur = 1;
-    free(pe->p2);
+    free (pe->p2);
   }
-  
 }
 

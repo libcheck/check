@@ -5,7 +5,8 @@
 #include "check_error.h"
 #include "check_str.h"
 #include "check_check.h"
-#include "check_magic.h"
+
+static char errm[200];
 
 static void fixture_sub_setup (void)
 {
@@ -59,15 +60,13 @@ START_TEST(test_setup_failure_msg)
 {
   TestResult **tra;
   char *trm;
-  const char *trmexp = "check_check_fixture.c:12:S:Core: Test failure in fixture";
+  const char *trmexp = "check_check_fixture.c:13:S:Core: Test failure in fixture";
 
   tra = srunner_failures(fixture_sr);
   trm = tr_str(tra[0]);
 
   if (strcmp(trm, trmexp) != 0) {
-    char *errm = emalloc(CK_MAXMSG);
-
-    snprintf(errm,CK_MAXMSG,
+    snprintf(errm, sizeof(errm),
 	     "Bad setup tr msg (%s)", trm);
     
     fail (errm);
@@ -181,11 +180,9 @@ START_TEST(test_ch_setup_fail)
   trm = tr_str(srunner_failures(sr)[0]);
 
   if (strcmp(trm,
-	     "check_check_fixture.c:127:S:Core: Failed setup")
+	     "check_check_fixture.c:126:S:Core: Failed setup")
       != 0) {
-    char *errm = emalloc(CK_MAXMSG);
-    
-    snprintf(errm,CK_MAXMSG,
+    snprintf(errm, sizeof(errm),
 	     "Bad failed checked setup tr msg (%s)", trm);
     
     fail (errm);
@@ -224,12 +221,10 @@ START_TEST(test_ch_setup_sig)
   trm = tr_str(srunner_failures(sr)[0]);
 
   if (strcmp(trm,
-	     "check_check_fixture.c:137:S:Core: "
+	     "check_check_fixture.c:136:S:Core: "
 	     "(after this point) Received signal 8")
       != 0) {
-    char *errm = emalloc(CK_MAXMSG);
-    
-    snprintf(errm,CK_MAXMSG,
+    snprintf(errm, sizeof(errm),
 	     "Msg was (%s)", trm);
     
     fail (errm);
@@ -268,11 +263,9 @@ START_TEST(test_ch_teardown_fail)
   trm = tr_str(srunner_failures(sr)[0]);
 
   if (strcmp(trm,
-	     "check_check_fixture.c:132:S:Core: Failed teardown")
+	     "check_check_fixture.c:131:S:Core: Failed teardown")
       != 0) {
-    char *errm = emalloc(CK_MAXMSG);
-    
-    snprintf(errm,CK_MAXMSG,
+    snprintf(errm, sizeof(errm),
 	     "Bad failed checked teardown tr msg (%s)", trm);
     
     fail (errm);
@@ -312,12 +305,10 @@ START_TEST(test_ch_teardown_sig)
   trm = tr_str(srunner_failures(sr)[0]);
 
   if (strcmp(trm,
-	     "check_check_fixture.c:143:S:Core: "
+	     "check_check_fixture.c:142:S:Core: "
 	     "(after this point) Received signal 8")
       != 0) {
-    char *errm = emalloc(CK_MAXMSG);
-    
-    snprintf(errm,CK_MAXMSG,
+    snprintf(errm, sizeof(errm),
 	     "Bad msg (%s)", trm);
     
     fail (errm);

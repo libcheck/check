@@ -19,7 +19,10 @@
  */
 
 #include <stdio.h>
+#include <stdarg.h>
+
 #include <check.h>
+
 #include "list.h"
 #include "check_error.h"
 #include "check_impl.h"
@@ -34,12 +37,11 @@ char *tr_str (TestResult *tr)
   char *rstr;
   
   exact_msg = (tr->rtype == CK_ERROR) ? "(after this point) ": "";
-  rstr = emalloc(CMAXMSG);
   
-  snprintf (rstr, CMAXMSG, "%s:%d:%s:%s: %s%s",
-	    tr->file, tr->line,
-	    tr_type_str(tr),  tr->tcname,
-	    exact_msg, tr->msg);
+  rstr = ck_strdup_printf ("%s:%d:%s:%s: %s%s",
+                           tr->file, tr->line,
+                           tr_type_str(tr),  tr->tcname,
+                           exact_msg, tr->msg);
 
   return rstr;
 }
@@ -50,14 +52,42 @@ char *sr_stat_str (SRunner *sr)
   TestStats *ts;
   
   ts = sr->stats;
-  str = emalloc (CMAXMSG);
   
-  snprintf (str, CMAXMSG, "%d%%: Checks: %d, Failures: %d, Errors: %d",
-	    percent_passed (ts), ts->n_checked, ts->n_failed,
-	    ts->n_errors);
+  str = ck_strdup_printf ("%d%%: Checks: %d, Failures: %d, Errors: %d",
+                          percent_passed (ts), ts->n_checked, ts->n_failed,
+                          ts->n_errors);
+
   return str;
 }
 
+char *ck_strdup_printf (const char *fmt, ...)
+{
+  /* Guess we need no more than 100 bytes. */
+  int n, size = 100;
+  char *p;
+  va_list ap;
+
+  p = emalloc (size);
+
+  while (1)
+    {
+      /* Try to print in the allocated space. */
+      va_start(ap, fmt);
+      n = vsnprintf (p, size, fmt, ap);
+      va_end(ap);
+      /* If that worked, return the string. */
+      if (n > -1 && n < size)
+        return p;
+
+      /* Else try again with more space. */
+      if (n > -1)   /* C99 conform vsnprintf() */
+        size = n+1; /* precisely what is needed */
+      else          /* glibc 2.0 */
+        size *= 2;  /* twice the old size */
+
+      p = erealloc (p, size);
+    }
+}
 
 static const char *tr_type_str (TestResult *tr)
 {

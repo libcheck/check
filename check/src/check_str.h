@@ -31,4 +31,6 @@ char *tr_str (TestResult *tr);
 */ 
 char *sr_stat_str (SRunner *sr);
 
+char *ck_strdup_printf (const char *fmt, ...);
+
 #endif /* CHECK_STR_H */

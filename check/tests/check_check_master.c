@@ -7,9 +7,9 @@
 TestResult **tr_fail_array;
 TestResult **tr_all_array;
 
-enum {
-  MAXSTR = 100
-};
+
+#define MAXSTR 100
+
 
 START_TEST(test_check_nfailures)
 {

@@ -29,13 +29,9 @@
 
 /* magic values */
 
-enum {
-  MAXLINE = 9999 , /* maximum line no */
-  CMAXMSG = 100, /* maximum length of a message, including terminating
-		    nul */
-  CK_FORK_UNSPECIFIED = -1 /* Unspecified fork status, used only
-			      internally */
-};
+/* Unspecified fork status, used only internally */
+#define  CK_FORK_UNSPECIFIED -1
+
 
 typedef struct TF {
   TFun fn;

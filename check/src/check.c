@@ -166,9 +166,6 @@ void _fail_unless (int result, const char *file, int line, const char * msg)
   if (msg == NULL)
     eprintf ("_fail_unless() called with NULL msg",__FILE__,__LINE__);
 
-  if (line > MAXLINE)
-    eprintf ("Line number %d too large to use",__FILE__,__LINE__, line);
-
   send_loc_info (get_send_key(), file, line);
   if (!result) {
     send_failure_info (get_send_key(), msg);

@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <check.h>
 #include "error.h"
-#include "check_magic.h"
 #include "check_msg.h"
 #include "check_check.h"
 

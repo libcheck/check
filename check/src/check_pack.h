@@ -29,7 +29,6 @@ enum ck_msg_type {
   CK_MSG_LAST
 };
 
-
 typedef struct CtxMsg
 {
   enum ck_result_ctx ctx;
@@ -46,6 +45,13 @@ typedef struct FailMsg
   char *msg;
 } FailMsg;
 
+typedef union
+{
+  CtxMsg  ctx_msg;
+  FailMsg fail_msg;
+  LocMsg  loc_msg;
+} CheckMsg;
+
 typedef struct RcvMsg
 {
   enum ck_result_ctx lastctx;
@@ -57,11 +63,11 @@ typedef struct RcvMsg
 } RcvMsg;
 
   
-int pack (enum ck_msg_type type, char *buf, void *data);
-int upack (char *buf, void *data, enum ck_msg_type *type);
+int pack (enum ck_msg_type type, char **buf, CheckMsg *msg);
+int upack (char *buf, CheckMsg *msg, enum ck_msg_type *type);
 
-void ppack (int fdes, enum ck_msg_type type, void *data);
-RcvMsg *punpack(int fdes);
+void ppack (int fdes, enum ck_msg_type type, CheckMsg *msg);
+RcvMsg *punpack (int fdes);
 
 
 #endif /*CHECK_PACK_H */
