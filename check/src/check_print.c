@@ -19,16 +19,16 @@
 
 #include <stdio.h>
 #include <check.h>
+#include <stdlib.h>
 #include "list.h"
-#include "check_impl.h"
-#include "check_print.h"
 #include "error.h"
+#include "check_impl.h"
+#include "check_str.h"
+#include "check_print.h"
 
 static void srunner_fprint_summary (FILE *file, SRunner *sr, int print_mode);
 static void srunner_fprint_results (FILE *file, SRunner *sr, int print_mode);
 
-static int percent_passed (TestStats *t);
-static char *rtype_to_string (int rtype);
 
 void srunner_print (SRunner *sr, int print_mode)
 {
@@ -43,11 +43,12 @@ void srunner_fprint (FILE *file, SRunner *sr, int print_mode)
 
 static void srunner_fprint_summary (FILE *file, SRunner *sr, int print_mode)
 {
-  TestStats *ts = sr->stats;
   if (print_mode >= CRMINIMAL) {
-    fprintf (file, "%d%%: Checks: %d, Failures: %d, Errors: %d\n",
-	     percent_passed (ts), ts->n_checked, ts->n_failed,
-	     ts->n_errors);
+    char *str;
+
+    str = sr_stat_str (sr);
+    fprintf (file, str);
+    free(str);
   }
   return;
 }
@@ -67,40 +68,10 @@ static void srunner_fprint_results (FILE *file, SRunner *sr, int print_mode)
 
 void tr_fprint (FILE *file, TestResult *tr, int print_mode)
 {
-  char *exact_msg;
-  exact_msg = (tr->rtype == CRERROR) ? "(after this point) ": "";
   if ((print_mode >= CRVERBOSE && tr->rtype == CRPASS) ||
       (tr->rtype != CRPASS && print_mode >= CRNORMAL)) {
-    fprintf (file, "%s:%d:%s:%s: %s%s\n",
-	     tr->file, tr->line,
-	     rtype_to_string(tr->rtype),  tr->tcname,
-	     exact_msg, tr->msg);
-  }
-}
-
-static int percent_passed (TestStats *t)
-{
-  if (t->n_failed == 0 && t->n_errors == 0)
-    return 100;
-  else
-    return (int) ( (float) (t->n_checked - (t->n_failed + t->n_errors)) /
-		   (float) t->n_checked * 100);
-}
-
-static char *rtype_to_string (int rtype)
-{
-  switch (rtype) {
-  case CRPASS:
-    return "P";
-    break;
-  case CRFAILURE:
-    return "F";
-    break;
-  case CRERROR:
-    return "E";
-    break;
-  default:
-    eprintf("Bad argument %d to rtype_to_string", rtype);
-    return NULL;
+    char *trstr = tr_str (tr);
+    fprintf (file, trstr);
+    free(trstr);
   }
 }

@@ -7,6 +7,10 @@
 TestResult **tr_fail_array;
 TestResult **tr_all_array;
 
+enum {
+  MAXSTR = 100
+};
+
 START_TEST(test_check_nfailures)
 {
   fail_unless (sub_nfailed == 9, "Unexpected number of failures received");
@@ -38,8 +42,8 @@ START_TEST(test_check_failure_msgs)
     char *msg;   
     msg = tr_msg(tr_fail_array[i]);
     if (strcmp (msg, msgar[i]) != 0) {
-      char *emsg = malloc (CMAXMSG);
-      snprintf (emsg, CMAXMSG,"Expected %s, got %s", msgar[i], msg);
+      char *emsg = malloc (MAXSTR);
+      snprintf (emsg, MAXSTR,"Expected %s, got %s", msgar[i], msg);
       fail (emsg);
       free (emsg);
     }
@@ -64,8 +68,8 @@ START_TEST(test_check_failure_lnos)
   for (i = 0; i < sub_nfailed; i++) {
 
     if (lnos[i] > 0 && tr_lno(tr_fail_array[i]) != lnos[i]) {
-      char *emsg = malloc (CMAXMSG);
-      snprintf (emsg, CMAXMSG, "Expected lno %d, got %d",
+      char *emsg = malloc (MAXSTR);
+      snprintf (emsg, MAXSTR, "Expected lno %d, got %d",
 		lnos[i], tr_lno(tr_fail_array[i]));
       fail (emsg);
       free (emsg);
@@ -126,8 +130,8 @@ START_TEST(test_check_failure_tcnames)
     char *tcname;   
     tcname = tr_tcname(tr_all_array[i]);
     if (strcmp (tcname, tcnamearr[i]) != 0) {
-      char *emsg = malloc (CMAXMSG);
-      snprintf (emsg, CMAXMSG,"Expected %s, got %s", tcnamearr[i], tcname);
+      char *emsg = malloc (MAXSTR);
+      snprintf (emsg, MAXSTR,"Expected %s, got %s", tcnamearr[i], tcname);
       fail (emsg);
       free (emsg);
     }
@@ -155,8 +159,8 @@ START_TEST(test_check_all_msgs)
     char *msg;   
     msg = tr_msg(tr_all_array[i]);
     if (strcmp (msg, msgar[i]) != 0) {
-      char *emsg = malloc (CMAXMSG);
-      snprintf (emsg, CMAXMSG,"Expected %s, got %s", msgar[i], msg);
+      char *emsg = malloc (MAXSTR);
+      snprintf (emsg, MAXSTR,"Expected %s, got %s", msgar[i], msg);
       fail (emsg);
       free (emsg);
     }

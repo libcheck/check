@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <check.h>
+#include "check_magic.h"
 #include "check_msg.h"
 #include "check_check.h"
 

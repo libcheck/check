@@ -76,10 +76,6 @@ Use #srunner_run_all to run a suite and print results.
 extern "C" { 
 #endif 
 
-/*! Magic values */
-enum {
-  CMAXMSG = 100 /*!< maximum length of a message, including terminating nul */
-};
 
 /*! \defgroup check_core Check Core
   Core suite/test case types and functions
