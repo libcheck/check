@@ -1,3 +1,19 @@
+Mon, May 17, 2004: Released Check 0.8.5
+
+Run fixture teardowns in reverse order to setup
+Plugged some memory leaks.
+Added test name to log outputs.
+Applied patch (802160) for distcheck bug (579604).
+Fixed log printouts for nofork mode.
+Updated documentation and converted to DocBook.
+
+Added a new print mode, CK_ENV, that gets the print mode from the
+environment variable CK_VERBOSITY.
+
+Made tcase_free and suite_free static. Everything is now freed when
+srunner_free is called.
+
+
 Mon Oct 21, 2002: Released Check 0.8.4
 
 Fixed pipe issues.
