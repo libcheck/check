@@ -5,14 +5,14 @@ ex_log_output.c:7:P:Core: Test passed
 ex_log_output.c:13:F:Core: Failure
 ex_log_output.c:17:E:Core: (after this point) Early exit with return value 1
 Running suite S2
-ex_log_output.c:21:P:Core: Test passed
+ex_log_output.c:25:P:Core: Test passed
 Results for all suites run:
-25%: Checks: 4, Failures: 1, Errors: 1"
+50%: Checks: 4, Failures: 1, Errors: 1"
 
 
 test_log_output ( ) {
     
-    ./ex_log_output "${1}"
+    ./ex_log_output "${1}" > /dev/null
     actual=`cat test_logfile`
     if [ x"${expected}" != x"${actual}" ]; then
 	echo "Problem with ex_log_output ${3}";

@@ -62,12 +62,30 @@ struct TestResult {
   char *msg;     /* Failure message */
 };
 
+enum cl_event {
+  CLSTART_SR,
+  CLSTART_S,
+  CLEND_SR,
+  CLEND_S,
+  CLEND_T
+};
+
+typedef void (*LFun) (SRunner *, FILE*, enum print_verbosity,
+		      void *, enum cl_event);
+
+typedef struct Log {
+  FILE *lfile;
+  LFun lfun;
+  int close;
+  enum print_verbosity mode;
+} Log;
+
 struct SRunner {
   List *slst;
   TestStats *stats;
   List *resultlst;
   char *log_fname;
-  FILE *log_file;
+  List *loglst;
 };
 
 

@@ -28,9 +28,9 @@
 #include "check.h"
 #include "check_impl.h"
 #include "check_msg.h"
+#include "check_log.h"
 
 
-static int percent_passed (TestStats *t);
 static void srunner_run_tcase (SRunner *sr, TCase *tc);
 static void srunner_add_failure (SRunner *sr, TestResult *tf);
 static TestResult *tfun_run (int msqid, char *tcname, TF *tf);
@@ -40,13 +40,6 @@ static void receive_failure_info (int msqid, int status, TestResult *tr);
 static List *srunner_resultlst (SRunner *sr);
 
 
-static void srunner_open_log (SRunner *sr);
-static void srunner_close_log (SRunner *sr);
-static void srunner_printf (SRunner *sr, int target_mode,
-			    int print_mode, char *fmt, ...);
-static void srunner_print_summary (SRunner *sr, int print_mode);
-static void srunner_print_results (SRunner *sr, int print_mode);
-static void tr_print (SRunner *sr, TestResult *tr, int print_mode);
 static char *signal_msg (int sig);
 static char *exit_msg (int exitstatus);
 static int non_pass (int val);
@@ -61,7 +54,7 @@ SRunner *srunner_create (Suite *s)
   sr->stats->n_checked = sr->stats->n_failed = sr->stats->n_errors = 0;
   sr->resultlst = list_create();
   sr->log_fname = NULL;
-  sr->log_file = NULL;
+  sr->loglst = NULL;
   return sr;
 }
 
@@ -89,8 +82,11 @@ void srunner_free (SRunner *sr)
     free(tr);
   }
   list_free (sr->resultlst);
+
   free (sr);
 } 
+
+
 
 void srunner_run_all (SRunner *sr, int print_mode)
 {
@@ -102,18 +98,16 @@ void srunner_run_all (SRunner *sr, int print_mode)
   if (print_mode < 0 || print_mode >= CRLAST)
     eprintf("Bad print_mode argument to srunner_run_all: %d", print_mode);
 
-  srunner_open_log (sr);
+  srunner_init_logging (sr, print_mode);
+
+  log_srunner_start (sr);
 
   slst = sr->slst;
-
-  srunner_printf (sr, CRMINIMAL, print_mode,
-		  "Running suite(s):");
   
   for (list_front(slst); !list_at_end(slst); list_advance(slst)) {
     Suite *s = list_val(slst);
     
-    srunner_printf (sr, CRMINIMAL, print_mode,
-		    " %s", s->name);
+    log_suite_start (sr, s);
 
     tcl = s->tclst;
   
@@ -123,10 +117,9 @@ void srunner_run_all (SRunner *sr, int print_mode)
     }
   }
 
-  srunner_printf (sr, CRMINIMAL, print_mode,
-		  "\n");
-  srunner_print (sr, print_mode);
-  srunner_close_log (sr);
+  log_srunner_end (sr);
+
+  srunner_end_logging (sr);
 }
 
 static void srunner_add_failure (SRunner *sr, TestResult *tr)
@@ -145,6 +138,7 @@ static void srunner_add_failure (SRunner *sr, TestResult *tr)
     return;
   }
 }
+
   
 static void srunner_run_tcase (SRunner *sr, TCase *tc)
 {
@@ -162,6 +156,7 @@ static void srunner_run_tcase (SRunner *sr, TCase *tc)
     tfun = list_val (tfl);
     tr = tfun_run (msqid, tc->name, tfun);
     srunner_add_failure (sr, tr);
+    log_test_end(sr, tr);
   }
   delete_msq(msqid);
   if (tc->teardown)
@@ -241,75 +236,6 @@ static TestResult *tfun_run (int msqid, char *tcname, TF *tfun)
 }
 
 
-/* Printing */
-
-static void srunner_printf (SRunner *sr, int target_mode,
-			    int print_mode, char *fmt, ...)
-{
-  va_list args;
-
-  fflush(stdout);
-
-  va_start(args, fmt);
-  if (print_mode >= target_mode) {
-    vfprintf(stdout, fmt, args);
-    fflush(stdout);
-  }
-  if (srunner_has_log (sr)) {
-    vfprintf(sr->log_file, fmt, args);
-    fflush(sr->log_file);
-  }
-  va_end(args);
-}
-
-void srunner_print (SRunner *sr, int print_mode)
-{
-  srunner_print_summary (sr, print_mode);
-  srunner_print_results (sr, print_mode);
-}
-
-static void srunner_print_summary (SRunner *sr, int print_mode)
-{
-  TestStats *ts = sr->stats;
-  srunner_printf (sr, CRMINIMAL, print_mode,
-		  "%d%%: Checks: %d, Failures: %d, Errors: %d\n",
-		  percent_passed (ts), ts->n_checked, ts->n_failed,
-		  ts->n_errors);
-  return;
-}
-
-static void srunner_print_results (SRunner *sr, int print_mode)
-{
-  List *resultlst;
-  
-  resultlst = sr->resultlst;
-  
-  for (list_front(resultlst); !list_at_end(resultlst); list_advance(resultlst)) {
-    TestResult *tr = list_val(resultlst);
-    tr_print (sr, tr, print_mode);
-  }
-  return;
-}
-
-static void srunner_open_log (SRunner *sr)
-{
-  if (srunner_has_log (sr)) {
-    sr->log_file = fopen(sr->log_fname, "w");
-    if (sr->log_file == NULL)
-      eprintf ("Could not open log file %s:", sr->log_file);
-  }
-}
-
-static void srunner_close_log (SRunner *sr)
-{
-  int rval;
-  if (sr->log_file != NULL) {
-    rval = fclose (sr->log_file);
-    if (rval == EOF)
-      eprintf ("Failed to close log file %s:", sr->log_fname);
-    sr->log_file = NULL;
-  }
-}
 
 
 int srunner_ntests_failed (SRunner *sr)
@@ -384,45 +310,6 @@ char *tr_tcname (TestResult *tr)
   return tr->tcname;
 }
 
-static int percent_passed (TestStats *t)
-{
-  if (t->n_failed == 0 && t->n_errors == 0)
-    return 100;
-  else
-    return (int) ( (float) (t->n_checked - (t->n_failed + t->n_errors)) /
-		   (float) t->n_checked * 100);
-}
-
-static char *rtype_to_string (int rtype)
-{
-  switch (rtype) {
-  case CRPASS:
-    return "P";
-    break;
-  case CRFAILURE:
-    return "F";
-    break;
-  case CRERROR:
-    return "E";
-    break;
-  }
-}
-
-static void tr_print (SRunner *sr, TestResult *tr, int print_mode)
-{
-  char *exact_msg;
-  exact_msg = (tr->rtype == CRERROR) ? "(after this point) ": "";
-  if (tr->rtype == CRPASS)
-    srunner_printf (sr, CRVERBOSE, print_mode,
-		    "%s:%d:%s:%s: %s%s\n", tr->file, tr->line,
-		    rtype_to_string(tr->rtype),  tr->tcname,
-		    exact_msg, tr->msg);
-  else
-    srunner_printf (sr, CRNORMAL, print_mode,
-		    "%s:%d:%s:%s: %s%s\n", tr->file, tr->line,
-		    rtype_to_string(tr->rtype),  tr->tcname,
-		    exact_msg, tr->msg);
-}
 
 static char *signal_msg (int signal)
 {
