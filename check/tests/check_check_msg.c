@@ -1,5 +1,9 @@
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
 #include <stdlib.h>
 #include <check.h>
+#include "error.h"
 #include "check_magic.h"
 #include "check_msg.h"
 #include "check_check.h"
@@ -7,12 +11,15 @@
 int msq;
 static void msg_setup (void)
 {
-  msq = create_msq(1);
+  msq = msgget(1, 0666 | IPC_CREAT);
+  if (msq == -1)
+    eprintf ("Unable to create message queue (%s):");
 }
 
 static void msg_teardown (void)
 {
-  delete_msq(msq);
+  if (msgctl (msq, IPC_RMID, NULL) == -1)
+    eprintf ("Failed to free message queue:");
 }
 
 START_TEST(test_send_failure)

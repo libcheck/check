@@ -95,7 +95,7 @@ suite
 typedef struct TCase TCase; 
 
 /*! type for a test function */
-typedef void (*TFun) (int);
+typedef void (*TFun) (void);
 
 /*! type for a setup/teardown function */
 typedef void (*SFun) (void);
@@ -134,33 +134,33 @@ test functions, and so must not exit or signal (e.g., segfault)
 void tcase_set_fixture(TCase *tc, SFun setup, SFun teardown);
 
 /*! Internal function to mark the start of a test function */
-void tcase_fn_start (int msqid, char *fname, char *file, int line);
+void tcase_fn_start (char *fname, char *file, int line);
 
 /*! Start a unit test with START_TEST(unit_name), end with END_TEST
   One must use braces within a START_/END_ pair to declare new variables */
 #define START_TEST(__testname)\
-static void __testname (int __msqid)\
+static void __testname (void)\
 {\
-  tcase_fn_start (__msqid,""# __testname, __FILE__, __LINE__);
+  tcase_fn_start (""# __testname, __FILE__, __LINE__);
 
 /*! End a unit test */
 #define END_TEST }
 
 
 /*! Fail the test case unless result is true */
-#define fail_unless(result,msg) _fail_unless(__msqid,result,__FILE__,__LINE__,msg)
+#define fail_unless(result,msg) _fail_unless(result,__FILE__,__LINE__,msg)
   
 /*! Non macro version of #fail_unless, with more complicated interface */
-void _fail_unless (int msqid, int result, char *file, int line, char *msg);
+void _fail_unless (int result, char *file, int line, char *msg);
 
 /*! Always fail */
-#define fail(msg) _fail_unless(__msqid,0,__FILE__,__LINE__,msg)
+#define fail(msg) _fail_unless(0,__FILE__,__LINE__,msg)
 
 /*! Mark the last point reached in a unit test
    (useful for tracking down where a segfault, etc. occurs */
-#define mark_point() _mark_point(__msqid,__FILE__,__LINE__)
+#define mark_point() _mark_point(__FILE__,__LINE__)
 /*! Non macro version of #mark_point */
-void _mark_point (int msqid, char *file, int line);
+void _mark_point (char *file, int line);
 
 /*! @} */
 

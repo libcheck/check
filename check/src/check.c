@@ -100,18 +100,27 @@ void tcase_set_fixture (TCase *tc, SFun setup, SFun teardown)
 }
 
 
-void tcase_fn_start (int msqid, char *fname, char *file, int line)
+void tcase_fn_start (char *fname, char *file, int line)
 {
+  int msqid;
+
+  msqid = get_msq();
   send_last_loc_msg (msqid, file, line);
 }
 
-void _mark_point (int msqid, char *file, int line)
+void _mark_point (char *file, int line)
 {
+  int msqid;
+
+  msqid = get_msq();
   send_last_loc_msg (msqid, file, line);
 }
 
-void _fail_unless (int msqid, int result, char *file, int line, char * msg)
+void _fail_unless (int result, char *file, int line, char * msg)
 {
+  int msqid;
+
+  msqid = get_msq();
   if (line > MAXLINE)
     eprintf ("Line number %d too large to use", line);
 

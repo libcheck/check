@@ -29,6 +29,7 @@
 #include "check_impl.h"
 #include "check_msg.h"
 #include "check_log.h"
+#include "check_run.h"
 
 
 static void srunner_run_tcase (SRunner *sr, TCase *tc);
@@ -38,7 +39,7 @@ static TestResult *receive_result_info (int msqid, int status, char *tcname);
 static void receive_last_loc_info (int msqid, TestResult *tr);
 static void receive_failure_info (int msqid, int status, TestResult *tr);
 static List *srunner_resultlst (SRunner *sr);
-
+int _is_child = 0;
 
 static char *signal_msg (int sig);
 static char *exit_msg (int exitstatus);
@@ -147,7 +148,7 @@ static void srunner_run_tcase (SRunner *sr, TCase *tc)
   TestResult *tr;
   int msqid;
 
-  msqid = create_msq((int) getpid());
+  msqid = init_msq();
 
   if (tc->setup)
     tc->setup();
@@ -161,7 +162,7 @@ static void srunner_run_tcase (SRunner *sr, TCase *tc)
   }
   if (tc->teardown)
     tc->teardown();
-  delete_msq(msqid);
+  delete_msq();
 }
 
 static void receive_last_loc_info (int msqid, TestResult *tr)
@@ -214,6 +215,7 @@ static TestResult *receive_result_info (int msqid, int status, char *tcname)
 {
   TestResult *tr = emalloc (sizeof(TestResult));
 
+  msqid = get_msq();
   tr->tcname = tcname;
   receive_last_loc_info (msqid, tr);
   receive_failure_info (msqid, status, tr);
@@ -224,21 +226,21 @@ static TestResult *tfun_run (char *tcname, TF *tfun)
 {
   pid_t pid;
   int status = 0;
-  int  msqid = get_msq((int) getpid());
+  int  msqid;
+
+  msqid = get_msq();
 
   pid = fork();
   if (pid == -1)
      eprintf ("Unable to fork:");
   if (pid == 0) {
-    tfun->fn(msqid);
+    _is_child = 1;
+    tfun->fn();
     _exit(EXIT_SUCCESS);
   }
   (void) wait(&status);
   return receive_result_info(msqid, status, tcname);
 }
-
-
-
 
 int srunner_ntests_failed (SRunner *sr)
 {
@@ -333,3 +335,7 @@ static int non_pass (int val)
   return val == CRFAILURE || val == CRERROR;
 }
 
+int is_child (void)
+{
+  return _is_child;
+}

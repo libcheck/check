@@ -17,19 +17,21 @@
   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
 #include <errno.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/types.h>
-#include <sys/ipc.h>
-#include <sys/msg.h>
+#include <unistd.h>
 #include <error.h>
 #include "list.h"
 #include "error.h"
 #include "check.h"
 #include "check_impl.h"
 #include "check_msg.h"
+#include "check_run.h"
 
 enum {
   LASTLOCMSG = 1,
@@ -37,6 +39,7 @@ enum {
 };
 static LastLocMsg *create_last_loc_msg (char *file, int line);
 static FailureMsg *create_failure_msg (char *msg);
+static key_t get_key(void);
 
 static FailureMsg *create_failure_msg (char *msg)
 {
@@ -113,25 +116,30 @@ static char *ipcerrstr (int ipcerr)
 }
 
 
-int create_msq (int key) {
+int init_msq (void) {
   int msqid;
-  msqid = msgget((key_t) key, 0666 | IPC_CREAT);
+
+  msqid = msgget(get_key(), 0666 | IPC_CREAT);
   if (msqid == -1)
     eprintf ("Unable to create message queue (%s):", ipcerrstr(errno));
   return msqid;
 }
 
-int get_msq (int key) 
+int get_msq (void) 
 {
   int msqid;
-  msqid = msgget ((key_t) key, 0666);
+  
+  msqid = msgget (get_key(), 0666);
   if (msqid == -1)
     eprintf ("Unable to create message queue (%s):", ipcerrstr(errno));
   return msqid;
 }
 
-void delete_msq (int msqid)
+void delete_msq (void)
 {
+  int msqid;
+
+  msqid = get_msq();
   if (msgctl (msqid, IPC_RMID, NULL) == -1)
     eprintf ("Failed to free message queue:");
 }
@@ -177,3 +185,10 @@ FailureMsg *receive_failure_msg (int msqid)
   return rmsg;
 }
 
+static key_t get_key (void)
+{
+  if (is_child())
+    return (key_t) getppid();
+  else
+    return (key_t) getpid();
+}
