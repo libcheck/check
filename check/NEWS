@@ -1,3 +1,26 @@
+Fri Aug 17, 2001:
+Released Check 0.7.2
+
+Automated RPM packaging, and included debian packaging. The makefiles
+now has an rpm target (the RPMFLAGS variable can be set to add
+additional flags to RPM). Debian packages are built the ordinary way
+(dpkg-buildpackage).
+
+Moved the example*.* files to tutorial*.*, since the docs really are
+tutorials. Beefed up the tutorial docs to add clarity to the behavior
+of fixture setup/teardown (based on a helpful critique by Fred Drake),
+and to document the static nature of unit tests demanded by the bug
+fix below.
+
+Many bugfixes: added -Wall to the CCFLAGS for gcc, and fixed a mess of
+warnings that resulted. Changed a bizarre naming mismatch in
+tcase_set_fixture (masked by the lack of compile warnings), and made
+unit tests static (both bugfixes suggested by Fred Drake). Also added
+a more sophisticated test of Lyx to (hopefully) ensure that Lyx
+supports linuxdoc (but it's not clear to me how to test that for
+sure).
+
+
 Wed Jul 30, 2001:
 Released Check 0.7.1
 

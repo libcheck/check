@@ -1,8 +1,6 @@
 Basic Installation
 ==================
 
-   These are generic installation instructions.
-
    The `configure' shell script attempts to guess correct values for
 various system-dependent variables used during compilation.  It uses
 those values to create a `Makefile' in each directory of the package.
@@ -50,6 +48,11 @@ The simplest way to compile this package is:
      for the package's developers.  If you use it, you may have to get
      all sorts of other programs in order to regenerate files that came
      with the distribution.
+
+If you have an RPM or debian-based system, there are automated builds
+for both RPMs and .debs. The rpm target to make (make rpm) will build
+RPMs (set RPMFLAGS if you need control over the
+build). dpkg-buildpackage will build the .deb.
 
 Compilers and Options
 =====================
@@ -114,10 +117,6 @@ is something like `gnu-as' or `x' (for the X Window System).  The
 `README' should mention any `--enable-' and `--with-' options that the
 package recognizes.
 
-   For packages that use the X Window System, `configure' can usually
-find the X include and library files automatically, but if it doesn't,
-you can use the `configure' options `--x-includes=DIR' and
-`--x-libraries=DIR' to specify their locations.
 
 Specifying the System Type
 ==========================
