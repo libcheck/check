@@ -20,7 +20,7 @@
 
 #include <stdlib.h>
 #include "list.h"
-#include "error.h"
+#include "check_error.h"
 
 enum {
   LINIT = 1,

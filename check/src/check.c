@@ -21,7 +21,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "error.h"
+#include "check_error.h"
 #include "list.h"
 #include "check.h"
 #include "check_impl.h"

@@ -9,7 +9,7 @@ libcheck_a_SOURCES=\
 	check_log.h check_log.c\
 	check_str.h check_str.c\
 	check_print.h check_print.c\
-	error.h error.c\
+	check_error.h check_error.c\
 	list.h list.c
 
 

@@ -23,7 +23,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
-#include "error.h"
+#include "check_error.h"
 
 
 void eprintf (char *fmt, char *file, int line, ...)

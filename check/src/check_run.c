@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
-#include "error.h"
+#include "check_error.h"
 #include "list.h"
 #include "check.h"
 #include "check_impl.h"
@@ -307,7 +307,9 @@ static void set_nofork_info (TestResult *tr)
 
 static TestResult *tcase_run_tfun_nofork (TCase *tc, TF *tfun)
 {
+  tcase_run_checked_setup(tc);
   tfun->fn();
+  tcase_run_checked_teardown(tc);
   return receive_result_info_nofork (tc->name);
 }
 

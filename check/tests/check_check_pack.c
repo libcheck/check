@@ -6,7 +6,7 @@
 #include <check.h>
 #include "check_magic.h"
 #include "check_pack.h"
-#include "error.h"
+#include "check_error.h"
 #include "check_check.h"
 
 START_TEST(test_pack_fmsg)

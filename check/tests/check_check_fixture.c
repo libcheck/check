@@ -2,7 +2,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <check.h>
-#include "error.h"
+#include "check_error.h"
 #include "check_str.h"
 #include "check_check.h"
 #include "check_magic.h"

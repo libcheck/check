@@ -24,7 +24,7 @@
 #include <unistd.h>
 
 #include "list.h"
-#include "error.h"
+#include "check_error.h"
 #include "check.h"
 #include "check_magic.h"
 #include "check_impl.h"
