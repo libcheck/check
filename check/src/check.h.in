@@ -164,14 +164,20 @@ static void __testname (void)\
 #define END_TEST }
 
 /* Fail the test case unless expr is true */
+/* The space before the comma sign before ## is essential to be compatible
+   with gcc 2.95.3 and earlier.
+*/
 #define fail_unless(expr, ...)\
         _fail_unless(expr, __FILE__, __LINE__,\
         "Assertion '"#expr"' failed" , ## __VA_ARGS__, NULL)
 
 /* Fail the test case if expr is true */
+/* The space before the comma sign before ## is essential to be compatible
+   with gcc 2.95.3 and earlier.
+*/
 #define fail_if(expr, ...)\
         _fail_unless(!(expr), __FILE__, __LINE__,\
-        "Failure '"#expr"' occured", ## __VA_ARGS__, NULL)
+        "Failure '"#expr"' occured" , ## __VA_ARGS__, NULL)
 
 /* Always fail */
 #define fail(...) _fail_unless(0, __FILE__, __LINE__, "Failed" , ## __VA_ARGS__, NULL)
