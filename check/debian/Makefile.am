@@ -7,7 +7,6 @@ EXTRA_DIST =\
 	control\
 	copyright\
 	dirs\
-	files\
 	rules\
 	check.postinst.debhelper \
 	check.prerm.debhelper

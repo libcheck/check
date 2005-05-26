@@ -1,3 +1,7 @@
+2005-05-26 hugo303
+
+	* debian/Makefile.am: Removed 'files' file from DIST
+
 2005-03-29 hugo303
 
 	* src/check.h.in: Fixed compatibility with gcc 2.95.3 according
