@@ -20,7 +20,7 @@ int main (void)
   srunner_add_suite(sr, make_pack_suite());
   
   setup();
-  printf ("Ran %d tests in subordinate suite\n", sub_nfailed);
+  printf ("Ran %d tests in subordinate suite\n", sub_ntests);
   srunner_run_all (sr, CK_NORMAL);
   cleanup();
   fork_teardown();
