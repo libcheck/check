@@ -80,13 +80,20 @@ static int waserror (int status, int expected_signal);
 
 #define MSG_LEN 100
 
-static pid_t current_test;
 static int alarm_received;
+static pid_t group_pid;
 
 static void sig_handler(int sig_nr)
 {
-  alarm_received = 1;
-  kill(current_test, SIGKILL);
+  switch (sig_nr) {
+   case SIGALRM:
+    alarm_received = 1;
+    killpg(group_pid, SIGKILL);
+    break;
+   default:
+    eprintf("Unhandled signal: %d", __FILE__, __LINE__, sig_nr);
+    break;
+  }
 }
 
 static void srunner_run_init (SRunner *sr, enum print_output print_mode)
@@ -201,7 +208,7 @@ static int srunner_run_unchecked_setup (SRunner *sr, TCase *tc)
   l = tc->unch_sflst;
 
   for (list_front(l); !list_at_end(l); list_advance(l)) {
-    send_ctx_info(get_send_key(),CK_CTX_SETUP);
+    send_ctx_info(CK_CTX_SETUP);
     f = list_val(l);
     f->fun();
 
@@ -230,12 +237,12 @@ static TestResult * tcase_run_checked_setup (SRunner *sr, TCase *tc)
   
   l = tc->ch_sflst;
   if (fstat == CK_FORK) {
-    send_ctx_info(get_send_key(),CK_CTX_SETUP);
+    send_ctx_info(CK_CTX_SETUP);
   }
   
   for (list_front(l); !list_at_end(l); list_advance(l)) {
     if (fstat == CK_NOFORK) {
-      send_ctx_info(get_send_key(),CK_CTX_SETUP);
+      send_ctx_info(CK_CTX_SETUP);
     }
     f = list_val(l);
     f->fun();
@@ -264,7 +271,7 @@ static void tcase_run_checked_teardown (TCase *tc)
 
   l = tc->ch_tflst;
   
-  send_ctx_info(get_send_key(),CK_CTX_TEARDOWN);
+  send_ctx_info(CK_CTX_TEARDOWN);
 
   for (list_front(l); !list_at_end(l); list_advance(l)) {
     f = list_val(l);
@@ -283,7 +290,7 @@ static void srunner_run_unchecked_teardown (SRunner *sr, TCase *tc)
   for (list_front(l); !list_at_end(l); list_advance(l)) {
     
     f = list_val(l);
-    send_ctx_info(get_send_key(),CK_CTX_TEARDOWN);
+    send_ctx_info(CK_CTX_TEARDOWN);
     f->fun ();
   }
   set_fork_status(srunner_fork_status(sr));
@@ -303,8 +310,7 @@ static TestResult *receive_result_info_fork (const char *tcname,
 {
   TestResult *tr;
 
-  tr = receive_test_result(get_recv_key(),
-                           waserror(status, expected_signal));
+  tr = receive_test_result(waserror(status, expected_signal));
   if (tr == NULL)
     eprintf("Failed to receive test result", __FILE__, __LINE__);
   tr->tcname = tcname;
@@ -319,7 +325,7 @@ static TestResult *receive_result_info_nofork (const char *tcname,
 {
   TestResult *tr;
 
-  tr = receive_test_result(get_recv_key(), 0);
+  tr = receive_test_result(0);
   if (tr == NULL)
     eprintf("Failed to receive test result", __FILE__, __LINE__);
   tr->tcname = tcname;
@@ -405,6 +411,7 @@ static TestResult *tcase_run_tfun_nofork (SRunner *sr, TCase *tc, TF *tfun)
   
 static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun)
 {
+  pid_t pid_w;
   pid_t pid;
   int status = 0;
 
@@ -412,18 +419,23 @@ static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun)
   if (pid == -1)
      eprintf("Unable to fork:",__FILE__,__LINE__);
   if (pid == 0) {
+    setpgid(0, 0);
+    group_pid = getpgid(0);
     tcase_run_checked_setup(sr, tc);
     tfun->fn();
     tcase_run_checked_teardown(tc);
     exit(EXIT_SUCCESS);
+  } else {
+    group_pid = getpgid(pid);
   }
 
-  current_test = pid;
   alarm_received = 0;
   alarm(tc->timeout);
   do {
-    pid = wait(&status);
-  } while (pid == -1);
+    pid_w = waitpid(pid, &status, 0);
+  } while (pid_w == -1);
+  
+  killpg(pid, SIGKILL); /* Kill remaining processes. */
 
   return receive_result_info_fork(tc->name, tfun->name, status, tfun->signal);
 }
@@ -492,6 +504,29 @@ void srunner_set_fork_status (SRunner *sr, enum fork_status fstat)
 {
   sr->fstat = fstat;
 }
+
+pid_t check_fork (void)
+{
+  pid_t pid = fork();
+  /* Set the process to a process group to be able to kill it easily. */
+  setpgid(pid, group_pid);
+  return pid;
+}
+
+void check_waitpid_and_exit (pid_t pid)
+{
+  pid_t pid_w;
+  int status;
+
+  if (pid > 0) {
+    do {
+      pid_w = waitpid(pid, &status, 0);
+    } while (pid_w == -1);
+    if (waserror(status, 0))
+      exit(EXIT_FAILURE);
+  }
+  exit(EXIT_SUCCESS);
+}  
 
 static int waserror (int status, int signal_expected)
 {

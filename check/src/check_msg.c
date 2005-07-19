@@ -53,82 +53,69 @@
  * This scheme may break down if the usage changes to asynchronous
  * reading and writing.
  */
-typedef struct Pipe 
-{
-  FILE *fp;
-} Pipe;
 
-typedef struct PipeEntry
-{
-  int key;
-  Pipe *p1;
-  Pipe *p2;
-  int cur;
-} PipeEntry;
+FILE *send_file1;
+FILE *send_file2;
 
-List *plst = NULL;
-
-static PipeEntry *get_pe_by_key(MsgKey key);
-static Pipe *get_pipe_by_key(MsgKey key);
-static MsgKey get_setup_key (void);
-static void setup_pipe (Pipe *p);
-static void setup_messaging_with_key (MsgKey key);
-static void teardown_messaging_with_key (MsgKey key);
+static FILE * get_pipe(void);
+static void setup_pipe (void);
+static void teardown_pipe (void);
 static TestResult *construct_test_result (RcvMsg *rmsg, int waserror);
 static void tr_set_loc_by_ctx (TestResult *tr, enum ck_result_ctx ctx,
 			       RcvMsg *rmsg);
-
-void send_failure_info (MsgKey key, const char *msg)
+static FILE * get_pipe(void)
 {
-  FailMsg fmsg;
-  Pipe *p;
+  if (send_file2 != 0) {
+    return send_file2;
+  }
+  
+  if (send_file1 != 0) {
+    return send_file1;
+  }
+  
+  eprintf("No messaging setup", __FILE__, __LINE__);
 
-  fmsg.msg = (char *) msg;
-  p = get_pipe_by_key (key);
-  if (p == NULL)
-    eprintf ("Couldn't find pipe with key %d",__FILE__, __LINE__, key);
-  ppack (fileno(p->fp), CK_MSG_FAIL, (CheckMsg *) &fmsg);
+  return NULL;
 }
 
-void send_loc_info (MsgKey key, const char * file, int line)
+void send_failure_info(const char *msg)
+{
+  FailMsg fmsg;
+
+  fmsg.msg = (char *) msg;
+  ppack(fileno(get_pipe()), CK_MSG_FAIL, (CheckMsg *) &fmsg);
+}
+
+void send_loc_info(const char * file, int line)
 {
   LocMsg lmsg;
-  Pipe *p;
 
   lmsg.file = (char *) file;
   lmsg.line = line;
-  p = get_pipe_by_key (key);
-  if (p == NULL)
-    eprintf ("Couldn't find pipe with key %d",__FILE__, __LINE__, key);
-  ppack (fileno(p->fp), CK_MSG_LOC, (CheckMsg *) &lmsg);
+  ppack(fileno(get_pipe()), CK_MSG_LOC, (CheckMsg *) &lmsg);
 }
 
-void send_ctx_info (MsgKey key,enum ck_result_ctx ctx)
+void send_ctx_info(enum ck_result_ctx ctx)
 {
   CtxMsg cmsg;
-  Pipe *p;
 
   cmsg.ctx = ctx;
-  p = get_pipe_by_key (key);
-  if (p == NULL)
-    eprintf ("Couldn't find pipe with key %d",__FILE__, __LINE__, key);
-
-  ppack (fileno(p->fp), CK_MSG_CTX, (CheckMsg *) &cmsg);
+  ppack(fileno(get_pipe()), CK_MSG_CTX, (CheckMsg *) &cmsg);
 }
 
-TestResult *receive_test_result (MsgKey key, int waserror)
+TestResult *receive_test_result (int waserror)
 {
-  Pipe *p;
+  FILE *fp;
   RcvMsg *rmsg;
   TestResult *result;
 
-  p = get_pipe_by_key (key);
-  if (p == NULL)
-    eprintf ("Couldn't find pipe with key %d",__FILE__, __LINE__, key);
-  rewind(p->fp);
-  rmsg = punpack (fileno(p->fp));
-  fclose (p->fp);
-  setup_pipe (p);
+  fp = get_pipe();
+  if (fp == NULL)
+    eprintf ("Couldn't find pipe",__FILE__, __LINE__);
+  rewind(fp);
+  rmsg = punpack (fileno(fp));
+  teardown_pipe();
+  setup_pipe();
 
   result = construct_test_result (rmsg, waserror);
   rcvmsg_free(rmsg);
@@ -178,134 +165,37 @@ static TestResult *construct_test_result (RcvMsg *rmsg, int waserror)
   return tr;
 }
 
-void setup_messaging (void)
+void setup_messaging(void)
 {
-  setup_messaging_with_key (get_recv_key());
+  setup_pipe();
 }
 
-MsgKey get_send_key (void)
+void teardown_messaging(void)
 {
-  MsgKey key;
-  
-  if (cur_fork_status () == CK_FORK)
-    key.key = getppid ();
-  else
-    key.key = getpid ();
-
-  return key;
+  teardown_pipe();
 }
 
-MsgKey get_recv_key (void)
+static void setup_pipe(void)
 {
-  MsgKey key;
-
-  key.key = getpid ();
-  return key;
-}
-
-static MsgKey get_setup_key (void)
-{
-  return get_recv_key ();
-}
-
-void teardown_messaging (void)
-{
-  teardown_messaging_with_key (get_setup_key ());
-}
-
-/* for testing only */
-void setup_test_messaging (void)
-{
-  setup_messaging_with_key (get_test_key ());
-}
-
-MsgKey get_test_key (void)
-{
-  MsgKey key;
-  key.key = -1;
-  return key;
-
-}
-
-void teardown_test_messaging (void)
-{
-  teardown_messaging_with_key (get_test_key ());
-}
-
-static PipeEntry *get_pe_by_key (MsgKey key)
-{
-  PipeEntry *pe = NULL;
-  
-  for (list_front(plst); !list_at_end(plst); list_advance(plst)) {
-    PipeEntry *p = list_val(plst);
-    if (p->key == key.key) {
-      pe = p;
-      break;
-    }
+  if (send_file1 != 0) {
+    if (send_file2 != 0)
+      eprintf("Only one nesting of suite runs supported", __FILE__, __LINE__);
+    send_file2 = tmpfile();
+  } else {
+    send_file1 = tmpfile();
   }
-
-  return pe;
 }
 
-static Pipe *get_pipe_by_key (MsgKey key)
+static void teardown_pipe(void)
 {
-  Pipe *pr = NULL;
-  PipeEntry *pe = get_pe_by_key (key);
-
-  if (pe == NULL || pe->cur == 0)
-      eprintf ("No messaging setup", __FILE__, __LINE__);
-  
-  if (pe->cur == 1)
-    pr = pe->p1;
-  else if (pe->cur == 2)
-    pr = pe->p2;
-  
-  return pr;
-}
-
-static void setup_pipe (Pipe *p)
-{
-  p->fp = tmpfile();
-}
-
-static void setup_messaging_with_key (MsgKey key)
-{
-  PipeEntry *pe;
-
-  if (plst == NULL)
-    plst = check_list_create();
-
-  pe = get_pe_by_key (key);
-  if (pe == NULL) {
-    pe = emalloc (sizeof (PipeEntry));
-    pe->cur = 0;
-    pe->key = key.key;
-    list_add_end (plst, pe);
-  }
-  if (pe->cur == 0) {
-    pe->p1 = emalloc (sizeof(Pipe));
-    pe->cur = 1;
-    setup_pipe (pe->p1);
-  } else if (pe->cur == 1) {
-    pe->cur = 2;
-    pe->p2 = emalloc (sizeof(Pipe));
-    setup_pipe (pe->p2);
-  } else
-    eprintf ("Only one nesting of suite runs supported", __FILE__, __LINE__);
-}
-
-static void teardown_messaging_with_key (MsgKey key)
-{
-  PipeEntry *pe = get_pe_by_key (key);
-
-  if (pe == NULL || pe->cur == 0)
-    eprintf ("Messaging not setup", __FILE__, __LINE__);
-  else if (pe->cur == 1) {
-    pe->cur = 0;
-    free (pe->p1);
-  } else if (pe->cur == 2) {
-    pe->cur = 1;
-    free (pe->p2);
+  if (send_file2 != 0) {
+    fclose(send_file2);
+    send_file2 = 0;
+  } else if (send_file1 != 0) {
+    fclose(send_file1);
+    send_file1 = 0;
+  } else {
+    eprintf("No messaging setup", __FILE__, __LINE__);
   }
 }
 

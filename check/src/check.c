@@ -183,13 +183,13 @@ void tcase_set_timeout (TCase *tc, int timeout)
 
 void tcase_fn_start (const char *fname, const char *file, int line)
 {
-  send_ctx_info (get_send_key(),CK_CTX_TEST);
-  send_loc_info (get_send_key(),file, line);
+  send_ctx_info (CK_CTX_TEST);
+  send_loc_info (file, line);
 }
 
 void _mark_point (const char *file, int line)
 {
-  send_loc_info (get_send_key(), file, line);
+  send_loc_info (file, line);
 }
 
 void _fail_unless (int result, const char *file,
@@ -197,7 +197,7 @@ void _fail_unless (int result, const char *file,
 {
   const char *msg;
     
-  send_loc_info (get_send_key(), file, line);
+  send_loc_info (file, line);
   if (!result) {
     va_list ap;
     char buf[BUFSIZ];
@@ -208,7 +208,7 @@ void _fail_unless (int result, const char *file,
       msg = expr;
     vsnprintf(buf, BUFSIZ, msg, ap);
     va_end(ap);
-    send_failure_info (get_send_key(), buf);
+    send_failure_info (buf);
     if (cur_fork_status() == CK_FORK)
       exit(1);
   }

@@ -19,8 +19,8 @@ typedef struct {
 } master_test_t;
 
 static master_test_t master_tests[] = {
-  { "Simple Tests",  11, CK_FAILURE, "Failure expected" },
-  { "Simple Tests",  17, CK_ERROR,   "Early exit with return value 1" },
+  { "Simple Tests",  18, CK_FAILURE, "Failure expected" },
+  { "Simple Tests",  24, CK_ERROR,   "Early exit with return value 1" },
   { "Simple Tests",  -1, CK_PASS,    "Passed" },
   { "Simple Tests",  -1, CK_FAILURE, "This test should fail" },
   { "Simple Tests",  -1, CK_PASS,    "Passed" },
@@ -33,29 +33,40 @@ static master_test_t master_tests[] = {
   { "Simple Tests",  -1, CK_FAILURE, "5 != 6" },
   { "Simple Tests",  -1, CK_FAILURE, "7 == 7" },
   { "Simple Tests",  -1, CK_FAILURE, "Failed" },
+
   { "Signal Tests",  -1, CK_ERROR,   "Received signal 11 (Segmentation fault)" },
   { "Signal Tests",  -1, CK_PASS,    "Passed" },
-  { "Signal Tests", 104, CK_ERROR,   "Received signal 11 (Segmentation fault), expected 8 (Floating point exception)" },
+  { "Signal Tests", 111, CK_ERROR,   "Received signal 11 (Segmentation fault), expected 8 (Floating point exception)" },
   { "Signal Tests",  -1, CK_FAILURE, "Early exit with return value 0" },
   { "Signal Tests",  -1, CK_FAILURE, "Early exit with return value 1" },
   { "Signal Tests",  -1, CK_ERROR,   "Received signal 8 (Floating point exception)" },
   { "Signal Tests",  -1, CK_ERROR,   "Received signal 8 (Floating point exception)" },
-  { "Timeout Tests", 132, CK_ERROR,  "Test timeout expired" },
+
+  { "Timeout Tests", 139, CK_ERROR,  "Test timeout expired" },
   { "Timeout Tests",  -1, CK_PASS,   "Passed" },
-  { "Timeout Tests", 145, CK_ERROR,  "Test timeout expired" },
-  { "Timeout Tests", 151, CK_ERROR,  "Test timeout expired" },
-  { "Extended Timeout Tests", 132, CK_ERROR,  "Test timeout expired" },
+  { "Timeout Tests", 152, CK_ERROR,  "Test timeout expired" },
+  { "Timeout Tests", 158, CK_ERROR,  "Test timeout expired" },
+  { "Extended Timeout Tests", 139, CK_ERROR,  "Test timeout expired" },
   { "Extended Timeout Tests",  -1, CK_PASS,   "Passed" },
   { "Extended Timeout Tests",  -1, CK_PASS,   "Passed" },
-  { "Extended Timeout Tests", 151, CK_ERROR,  "Test timeout expired" },
+  { "Extended Timeout Tests", 158, CK_ERROR,  "Test timeout expired" },
   /* Timeout tests are run twice , see check_check_sub.c:make_sub_suite() */
-  { "Timeout Tests", 132, CK_ERROR,  "Test timeout expired" },
+  { "Timeout Tests", 139, CK_ERROR,  "Test timeout expired" },
   { "Timeout Tests",  -1, CK_PASS,   "Passed" },
-  { "Timeout Tests", 145, CK_ERROR,  "Test timeout expired" },
-  { "Timeout Tests", 151, CK_ERROR,  "Test timeout expired" },
+  { "Timeout Tests", 152, CK_ERROR,  "Test timeout expired" },
+  { "Timeout Tests", 158, CK_ERROR,  "Test timeout expired" },
+
   { "Limit Tests",   -1, CK_ERROR,   "Early exit with return value 1" },
   { "Limit Tests",   -1, CK_FAILURE, "Completed properly" },
   { "Limit Tests",   -1, CK_FAILURE, "Completed properly" },
+
+  { "Msg and fork Tests",  -1, CK_PASS,       "Passed" },
+  { "Msg and fork Tests",  -1, CK_FAILURE,    "Expected fail" },
+  { "Msg and fork Tests",  -1, CK_PASS,       "Passed" },
+  { "Msg and fork Tests",  -1, CK_FAILURE,    "Expected fail" },
+  { "Msg and fork Tests",  -1, CK_PASS,       "Passed" },
+  { "Msg and fork Tests",  -1, CK_FAILURE,    "Expected fail" },
+
   { "Core",          -1, CK_FAILURE, "We failed" }
 };
 
@@ -71,7 +82,8 @@ START_TEST(test_check_nfailures)
     }
   }
   fail_unless (sub_nfailed == failed,
-               "Unexpected number of failures received, %d.", sub_nfailed);
+               "Unexpected number of failures received, %d, expected %d.",
+               sub_nfailed, failed);
 }
 END_TEST
 
@@ -88,6 +100,7 @@ START_TEST(test_check_failure_msgs)
   int passed = 0;
   const char *got_msg;
   const char *expected_msg;
+  TestResult *tr;
 
   for (i = 0; i < sub_ntests; i++) {
     if (master_tests[i].failure_type == CK_PASS) {
@@ -95,9 +108,12 @@ START_TEST(test_check_failure_msgs)
       continue;
     }
 
-    got_msg = tr_msg(tr_fail_array[i - passed]);
+    fail_if(i - passed > sub_nfailed);
+    tr = tr_fail_array[i - passed];
+    fail_unless(tr != NULL);
+    got_msg = tr_msg(tr);
     expected_msg = master_tests[i].msg;
-    if (strcmp(got_msg, expected_msg) != 0) {
+    if (strcmp(got_msg, expected_msg) != 0) {      
       char *emsg = malloc(MAXSTR);
       snprintf(emsg, MAXSTR,"For test %d: Expected %s, got %s",
                i, expected_msg, got_msg);
@@ -113,6 +129,7 @@ START_TEST(test_check_failure_lnos)
   int i;
   int line_no;
   int passed = 0;
+  TestResult *tr;
   
   for (i = 0; i < sub_ntests; i++) {
     if (master_tests[i].failure_type == CK_PASS) {
@@ -120,11 +137,14 @@ START_TEST(test_check_failure_lnos)
       continue;
     }
 
+    fail_if(i - passed > sub_nfailed);
+    tr = tr_fail_array[i - passed];
+    fail_unless(tr != NULL);
     line_no = master_tests[i].line_nos;
-    if (line_no > 0 && tr_lno(tr_fail_array[i - passed]) != line_no) {
+    if (line_no > 0 && tr_lno(tr) != line_no) {
       char *emsg = malloc(MAXSTR);
       snprintf(emsg, MAXSTR, "For test %d: Expected lno %d, got %d",
-               i, line_no, tr_lno(tr_fail_array[i - passed]));
+               i, line_no, tr_lno(tr));
       fail(emsg);
       free(emsg);
     }    
@@ -136,14 +156,18 @@ START_TEST(test_check_failure_ftypes)
 {
   int i;
   int passed = 0;
+  TestResult *tr;
   
   for (i = 0; i < sub_ntests; i++) {
     if (master_tests[i].failure_type == CK_PASS) {
       passed++;
       continue;
     }
-    fail_unless(master_tests[i].failure_type ==
-                tr_rtype(tr_fail_array[i - passed]),
+
+    fail_if(i - passed > sub_nfailed);
+    tr = tr_fail_array[i - passed];
+    fail_unless(tr != NULL);
+    fail_unless(master_tests[i].failure_type == tr_rtype(tr),
                 "Failure type wrong for test %d", i);
   }
 }
@@ -153,7 +177,10 @@ START_TEST(test_check_failure_lfiles)
 {
   int i;
   for (i = 0; i < sub_nfailed; i++) {
-    fail_unless(strstr(tr_lfile(tr_fail_array[i]), "check_check_sub.c") != 0,
+    TestResult *tr = tr_fail_array[i];
+    fail_unless(tr != NULL);
+    fail_unless(tr_lfile(tr) != NULL, "Bad file name for test %d", i);
+    fail_unless(strstr(tr_lfile(tr), "check_check_sub.c") != 0,
                 "Bad file name for test %d", i);
   }
 }

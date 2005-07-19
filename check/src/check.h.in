@@ -59,6 +59,7 @@
 CK_CPPSTART
 #endif
 
+#include <sys/types.h>
 
 /* check version numbers */
 
@@ -329,6 +330,12 @@ enum fork_status srunner_fork_status (SRunner *sr);
 /* Set the current fork status */
 void srunner_set_fork_status (SRunner *sr, enum fork_status fstat); 
   
+/* Fork in a test and make sure messaging and tests work. */
+pid_t check_fork(void);
+
+/* Wait for the pid and exit. If pid is zero, just exit. */
+void check_waitpid_and_exit(pid_t pid);
+
 #ifdef __cplusplus 
 #define CK_CPPEND }
 CK_CPPEND

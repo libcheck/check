@@ -22,29 +22,15 @@
 #define CHECK_MSG_NEW_H
 
 
-struct MsgKey
-{
-  int key;
-};
-
-typedef struct MsgKey MsgKey;
-
 /* Functions implementing messaging during test runs */
 
-void send_failure_info (MsgKey key, const char *msg);
-void send_loc_info (MsgKey key, const char *file, int line);
-void send_ctx_info (MsgKey key, enum ck_result_ctx ctx);
+void send_failure_info(const char *msg);
+void send_loc_info(const char *file, int line);
+void send_ctx_info(enum ck_result_ctx ctx);
 
-TestResult *receive_test_result (MsgKey key, int waserror);
+TestResult *receive_test_result(int waserror);
 
 void setup_messaging(void);
-MsgKey get_send_key(void);
-MsgKey get_recv_key(void);
 void teardown_messaging(void);
-
-/* for testing only */
-void setup_test_messaging(void);
-MsgKey get_test_key(void);
-void teardown_test_messaging(void);
 
 #endif /*CHECK_MSG_NEW_H */

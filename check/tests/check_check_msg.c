@@ -9,15 +9,15 @@
 START_TEST(test_send)
 {
   TestResult *tr;
-  setup_test_messaging();
-  send_ctx_info(get_test_key(),CK_CTX_SETUP);
-  send_loc_info(get_test_key(),"abc123.c", 10);
-  send_ctx_info(get_test_key(),CK_CTX_TEST);
-  send_loc_info(get_test_key(),"abc124.c", 22);
-  send_loc_info(get_test_key(),"abc125.c", 25);
-  send_failure_info(get_test_key(),"Oops");
-  tr = receive_test_result(get_test_key(), 0);
-  teardown_test_messaging();
+  setup_messaging();
+  send_ctx_info(CK_CTX_SETUP);
+  send_loc_info("abc123.c", 10);
+  send_ctx_info(CK_CTX_TEST);
+  send_loc_info("abc124.c", 22);
+  send_loc_info("abc125.c", 25);
+  send_failure_info("Oops");
+  tr = receive_test_result(0);
+  teardown_messaging();
 
   fail_unless (tr != NULL,
 	       "No test result received");
@@ -39,16 +39,16 @@ START_TEST(test_send_big)
   TestResult *tr;
   int i;
   
-  setup_test_messaging();
-  send_ctx_info(get_test_key(),CK_CTX_SETUP);
-  send_loc_info(get_test_key(),"abc123.c", 10);
+  setup_messaging();
+  send_ctx_info(CK_CTX_SETUP);
+  send_loc_info("abc123.c", 10);
   for (i = 0; i < 10000; i++) {
-    send_ctx_info(get_test_key(),CK_CTX_TEST);
-    send_loc_info(get_test_key(),"abc124.c", i);
+    send_ctx_info(CK_CTX_TEST);
+    send_loc_info("abc124.c", i);
   }
 
-  tr = receive_test_result(get_test_key(), 0);
-  teardown_test_messaging();
+  tr = receive_test_result(0);
+  teardown_messaging();
 
   fail_unless (tr != NULL,
 	       "No test result received");
@@ -67,14 +67,14 @@ END_TEST
 START_TEST(test_send_test_error)
 {
   TestResult *tr;
-  setup_test_messaging();
-  send_ctx_info(get_test_key(),CK_CTX_SETUP);
-  send_loc_info(get_test_key(),"abc123.c", 10);
-  send_ctx_info(get_test_key(),CK_CTX_TEST);
-  send_loc_info(get_test_key(),"abc124.c", 22);
-  send_loc_info(get_test_key(),"abc125.c", 25);
-  tr = receive_test_result(get_test_key(), 1);
-  teardown_test_messaging();
+  setup_messaging();
+  send_ctx_info(CK_CTX_SETUP);
+  send_loc_info("abc123.c", 10);
+  send_ctx_info(CK_CTX_TEST);
+  send_loc_info("abc124.c", 22);
+  send_loc_info("abc125.c", 25);
+  tr = receive_test_result(1);
+  teardown_messaging();
 
   fail_unless (tr != NULL,
 	       "No test result received");
@@ -92,16 +92,16 @@ END_TEST
 START_TEST(test_send_with_passing_teardown)
 {
   TestResult *tr;
-  setup_test_messaging();
-  send_ctx_info(get_test_key(),CK_CTX_SETUP);
-  send_loc_info(get_test_key(),"abc123.c", 10);
-  send_ctx_info(get_test_key(),CK_CTX_TEST);
-  send_loc_info(get_test_key(),"abc124.c", 22);
-  send_loc_info(get_test_key(),"abc125.c", 25);
-  send_ctx_info(get_test_key(),CK_CTX_TEARDOWN);
-  send_loc_info(get_test_key(),"abc126.c", 54);
-  tr = receive_test_result(get_test_key(), 0);
-  teardown_test_messaging();
+  setup_messaging();
+  send_ctx_info(CK_CTX_SETUP);
+  send_loc_info("abc123.c", 10);
+  send_ctx_info(CK_CTX_TEST);
+  send_loc_info("abc124.c", 22);
+  send_loc_info("abc125.c", 25);
+  send_ctx_info(CK_CTX_TEARDOWN);
+  send_loc_info("abc126.c", 54);
+  tr = receive_test_result(0);
+  teardown_messaging();
 
   fail_unless (tr != NULL,
 	       "No test result received");
@@ -121,16 +121,16 @@ END_TEST
 START_TEST(test_send_with_error_teardown)
 {
   TestResult *tr;
-  setup_test_messaging();
-  send_ctx_info(get_test_key(),CK_CTX_SETUP);
-  send_loc_info(get_test_key(),"abc123.c", 10);
-  send_ctx_info(get_test_key(),CK_CTX_TEST);
-  send_loc_info(get_test_key(),"abc124.c", 22);
-  send_loc_info(get_test_key(),"abc125.c", 25);
-  send_ctx_info(get_test_key(),CK_CTX_TEARDOWN);
-  send_loc_info(get_test_key(),"abc126.c", 54);
-  tr = receive_test_result(get_test_key(), 1);
-  teardown_test_messaging();
+  setup_messaging();
+  send_ctx_info(CK_CTX_SETUP);
+  send_loc_info("abc123.c", 10);
+  send_ctx_info(CK_CTX_TEST);
+  send_loc_info("abc124.c", 22);
+  send_loc_info("abc125.c", 25);
+  send_ctx_info(CK_CTX_TEARDOWN);
+  send_loc_info("abc126.c", 54);
+  tr = receive_test_result(1);
+  teardown_messaging();
 
   fail_unless (tr != NULL,
 	       "No test result received");
