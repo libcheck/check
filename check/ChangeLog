@@ -1,3 +1,15 @@
+2005-07-19 hugo303
+
+	* tests/check_check_master.c, tests/check_check_msg.c,
+	tests/check_check_sub.c, src/check.c, src/check.h.in,
+	src/check_msg.c, src/check_msg.h, src/check_run.c:
+	
+	Refactored messaging to use the new tmpfile() method all the way,
+	removing the message keys, pipes, pipe entries and pipe list. This
+	makes the messaging work with forking tests, and also with threading
+	tests on linux 2.4 (on 2.6 it already worked). Added check_fork and
+	check_waitpid_and_exit to be used for forking tests.
+
 2005-05-26 hugo303
 
 	* debian/Makefile.am: Removed 'files' file from DIST
