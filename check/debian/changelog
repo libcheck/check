@@ -1,46 +1,137 @@
+check (0.9.2-6) unstable; urgency=low
+
+  * Rebuild for g++ transition
+  * Updated to newer standards version
+
+ -- Robert Lemmen <robertle@semistable.com>  Tue, 19 Jul 2005 10:53:23 +0200
+
+check (0.9.2-5) unstable; urgency=low
+
+  * fixed documentation (Closes: #301214)
+  * added include to check.h (Closes: #301319)
+
+ -- Robert Lemmen <robertle@semistable.com>  Wed,  8 Jun 2005 14:50:11 +0200
+
+check (0.9.2-4) unstable; urgency=low
+
+  * added an upgrade notice that was missing
+
+ -- Robert Lemmen <robertle@semistable.com>  Mon, 14 Mar 2005 19:12:09 +0100
+
+check (0.9.2-3) unstable; urgency=low
+
+  * fixed some problems with upstream files in debian/
+
+ -- Robert Lemmen <robertle@semistable.com>  Tue, 15 Feb 2005 16:11:59 +0100
+
 check (0.9.2-2) unstable; urgency=low
 
-  * Fixed building with gcc3
-  * Removed empty money dir from docs
+  * fixed FTBFS error when trying to copy the example data
 
- -- Fredrik Hugosson <hugo303@users.sourceforge.net>  Fri, 12 Nov 2004 11:54:00 +0000
+ -- Robert Lemmen <robertle@semistable.com>  Thu, 13 Jan 2005 13:46:25 +0100
 
 check (0.9.2-1) unstable; urgency=low
 
-  * See upstream changelog
+  * New upstream release (Closes: #261420)
+  * Took over maintenance (Closes: #288213)
+  * Updated to new policy version
+  * Fixed copyright files (Closes: #187986)
+  * General cleanups in debian/
+  * Added watch file
 
- -- Fredrik Hugosson <hugo303@users.sourceforge.net>  Wed, 10 Nov 2004 11:43:00 +0000
+ -- Robert Lemmen <robertle@semistable.com>  Sat,  8 Jan 2005 20:22:17 +0100
+
+check (0.8.4-1) unstable; urgency=low
+
+  * Changed Author(s): to Author: in copyright file to keep lintian
+    happy.
+
+ -- Britton Leo Kerin <bkerin@debian.org>  Tue, 10 Dec 2002 21:05:40 -0900
+
+  * Removed erroneous check directory from check.dirs.
+
+  * Added lines to check.install to install check.lintian_overrides as
+    /usr/share/lintian/overrides/check.
+
+  * Moved override to check.lintian_overrides.
+
+  * Added lines to check.install to install examples, added invocation
+    of dh_install to rules.   
+
+  * Added check.install to install tutorial documentation.
+
+  * The install target of rules now removes a doc/check-0.8.4
+    directory that upstream installs.
+
+  * Removed useless (now that distclean is used) clean of src
+    directory.
+
+  * Removed README from check.docs.
+
+  * Made BASE variable in rules simply expanded and changed it to
+    absolute path, reformatted slightly.
+
+  * Change clean to distclean in rules/clean target.
+
+  * Removed reference to debian subdirector from Makefile.in.
+
+  * Updated copyright file.
+
+  * Removed obsolete /usr/doc sym linking code from postinst and
+    prerm, added set -e to prerm.
+
+  * Added comment in rules explaining why strip should not be
+    performed on this library.
+
+  * I (Britton Leo Kerin) am now listed as the maintainer in the
+    control file.
+
+ -- Britton Leo Kerin <bkerin@debian.org>  Mon, 09 Dec 2002 20:28:51 -0900
+
+  * debian/rules now uses upstream configure, DH_COMPAT=4, install
+    target is simplified by additional use of debhelper, irrelevant
+    dh_ program calls commented out.
+
+  * New upstream release.  Closes: bug#85195.
+
+ -- Britton Leo Kerin <bkerin@debian.org>  Sun, 08 Dec 2002 23:53:02 -0900
+
+check (0.8.3-2) unstable; urgency=low
+
+  * Corrected typos in check.h. closes: #151599
+
+ -- Muhammad Hussain Yusuf <yusuf@debian.org>  Mon,  1 Jul 2002 16:21:57 +0100
 
 check (0.8.3-1) unstable; urgency=low
 
-  * See upstream changelog
+  * New Upstream release
+  * Added check.m4 to /usr/share/aclocal. Closes: #148044
 
- -- Arien Malec <arien_malec@yahoo.com>  Tue, 28 May 2002 20:59:00 +0000
+ -- Muhammad Hussain Yusuf <yusuf@debian.org>  Sat, 25 May 2002 10:59:11 +0100
+
+check (0.8.2-1) unstable; urgency=low
+
+  * New Upstream Release. Closes: #144186
+
+ -- Muhammad Hussain Yusuf <yusuf@debian.org>  Fri, 26 Apr 2002 10:54:45 +0100
+
+check (0.8.1-2) unstable; urgency=low
+
+  * Changed copyright details to LGPL. Closes: #141952
+
+ -- Muhammad Hussain Yusuf <yusuf@debian.org>  Wed, 10 Apr 2002 12:55:49 +0100
 
 check (0.8.1-1) unstable; urgency=low
 
-  * See upstream changelog
+  * New Upstream Release. Closes: #138898
 
- -- Arien Malec <arien_malec@yahoo.com>  Wed, 27 Feb 2002 18:25:00 +0000
+ -- Muhammad Hussain Yusuf <yusuf@debian.org>  Fri, 22 Mar 2002 12:41:16 +0000
 
 check (0.8.0-1) unstable; urgency=low
 
-  * See upstream changelog
+  * Initial Release. Closes: #132568
 
- -- Arien Malec <arien_malec@yahoo.com>  Wed, 24 Oct 2001 10:17:24 +0000
-
-check (0.7.3-1) unstable; urgency=low
-
-  * Bug fix to Autoconf macro for shell portability & to debian doc-base
-    file
-
- -- Arien Malec <arien_malec@yahoo.com>  Tue, 21 Aug 2001 17:44:24 +0000
-
-check (0.7.2-1) unstable; urgency=low
-
-  * Initial Release.
-
- -- Arien Malec <arien_malec@yahoo.com>  Fri,  3 Aug 2001 09:06:29 -0700
+ -- Muhammad Hussain Yusuf <yusuf@debian.org>  Sun, 10 Feb 2002 15:55:59 +0000
 
 Local variables:
 mode: debian-changelog

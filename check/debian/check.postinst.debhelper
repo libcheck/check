@@ -1,12 +1,5 @@
 # Automatically added by dh_installdocs
-if [ "$1" = "configure" ]; then
-	if [ -d /usr/doc -a ! -e /usr/doc/check -a -d /usr/share/doc/check ]; then
-		ln -sf ../share/doc/check /usr/doc/check
-	fi
-fi
-# End automatically added section
-# Automatically added by dh_installdocs
-if [ "$1" = configure ] && command -v install-docs >/dev/null 2>&1; then
+if [ "$1" = configure ] && which install-docs >/dev/null 2>&1; then
 	install-docs -i /usr/share/doc-base/check-tutorial
 fi
 # End automatically added section
