@@ -154,7 +154,7 @@ TESTS=check_money
 noinst_PROGRAMS=check_money
 check_money_SOURCES=  money.h money.c check_money.c
 check_money_INCLUDES= @CHECK_CFLAGS@
-check_money_LIBS= @CHECK_LIBS@</programlisting>
+check_money_LDADD= @CHECK_LIBS@</programlisting>
    <para>
 Special mumbo jumbo to use in configure.in is:
    </para>
