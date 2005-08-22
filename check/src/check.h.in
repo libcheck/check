@@ -22,6 +22,8 @@
 #ifndef CHECK_H
 #define CHECK_H
 
+#include <stddef.h>
+
 /* Check: a unit test framework for C
 
    Check is a unit test framework for C. It features a simple
