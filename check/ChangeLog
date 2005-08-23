@@ -1,3 +1,20 @@
+2005-08-22 hugo303
+
+	* debian/changelog, debian/check.doc-base.tut, debian/check.docs,
+	debian/check.postinst.debhelper, debian/check.prerm.debhelper,
+	debian/control, debian/copyright, debian/dirs, debian/rules:
+
+	Applied patch for debian files received from check debian
+	maintainer Robert Lemmen.
+
+2005-08-22 hugo303
+
+	* src/check.h.in: Added include of stddef.h for NULL definition
+
+2005-08-22 hugo303
+
+	* doc/tutorial.sgml: Fixed sourceforge bug #1216502
+
 2005-07-19 hugo303
 
 	* tests/check_check_master.c, tests/check_check_msg.c,
