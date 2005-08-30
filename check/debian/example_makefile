@@ -1,0 +1,11 @@
+# this is a very simple makefile for the 
+# check examples. in a real-world situation 
+# you would have to modify your make setup accordingly.
+
+LDFLAGS=-lcheck
+
+check_example: check_money.o money.o
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) 
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $<
