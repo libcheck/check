@@ -2,6 +2,10 @@ lib_LIBRARIES=libcheck.a
 
 include_HEADERS=check.h
 
+if ENABLE_GCOV
+libcheck_a_CFLAGS=-fprofile-arcs -ftest-coverage
+endif
+
 libcheck_a_SOURCES=\
 	check_impl.h	\
 	check.h		\
@@ -23,3 +27,34 @@ libcheck_a_SOURCES=\
 	check_str.c
 
 EXTRA_DIST=check.h.in
+
+CLEANFILES=*~ *.bb *.bbg *.da
+
+LCOV_OUTPUT  = lcov.info
+LCOV_HTML    = lcov_html
+LCOV_LCOV    = @LCOV@
+LCOV_GENHTML = @GENHTML@
+TEST_PROG    = ../tests/check_check
+
+lcov: $(LCOV_HTML)
+
+$(TEST_PROG): force
+	@$(MAKE) -C ../tests
+
+$(LCOV_OUTPUT): $(TEST_PROG)
+	$(TEST_PROG)
+	$(LCOV_LCOV) --capture --directory . --output-file $(LCOV_OUTPUT)
+
+$(LCOV_HTML): $(LCOV_OUTPUT)
+	-$(RM) -r $(LCOV_HTML)
+	LANG=C $(LCOV_GENHTML) --output-directory $(LCOV_HTML) --title "Check Code Coverage" --show-details $(LCOV_OUTPUT)
+	@echo "Point a web browser at $(LCOV_HTML)/index.html to see results."
+
+clean-local: lcov-clean
+
+.PHONY: lcov-clean
+lcov-clean:
+	-$(RM) -r $(LCOV_HTML) $(LCOV_OUTPUT)
+
+.PHONY: force
+force:

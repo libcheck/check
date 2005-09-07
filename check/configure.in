@@ -13,6 +13,16 @@ AC_SUBST(CHECK_MAJOR_VERSION)
 AC_SUBST(CHECK_MINOR_VERSION)
 AC_SUBST(CHECK_MICRO_VERSION)
 
+AC_ARG_ENABLE(gcov,
+AC_HELP_STRING([--enable-gcov],[turn on code coverage analysis tools]),
+[case "${enableval}" in
+  yes) enable_gcov=true ;;
+  no)  enable_gcov=false ;;
+  *)   AC_MSG_ERROR(bad value ${enableval} for --enable-gcov) ;;
+esac], [enable_gcov=false ])
+
+AM_CONDITIONAL(ENABLE_GCOV, test x"$enable_gcov" = "xtrue")
+
 AC_ARG_ENABLE(plain_docdir,
 [  --enable-plain-docdir        don't append version information to docdir],
 [case "${enableval}" in
@@ -32,11 +42,15 @@ AC_PROG_RANLIB
 if test -n "$GCC"; then
    CFLAGS="$CFLAGS -Wall -Wstrict-prototypes -Wmissing-prototypes -Wwrite-strings"
 fi
+AC_CHECK_PROGS(GCOV, gcov, false)
+AC_CHECK_PROGS(LCOV, lcov, false)
+AC_CHECK_PROGS(GENHTML, genhtml, false)
 AC_CHECK_PROG(have_docbook2html,docbook2html,yes)
 if test x"$have_docbook2html" != "xyes" ; then
    AC_MSG_WARN([required tools not found, not building docs])
 fi
 AM_CONDITIONAL(MAKE_DOC, test x"$have_docbook2html" = "xyes")
+
 dnl Checks for libraries.
 
 dnl Checks for header files.

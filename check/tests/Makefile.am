@@ -34,8 +34,11 @@ ex_log_output_SOURCES = ex_log_output.c
 
 ex_xml_output_SOURCES = ex_xml_output.c
 
-
+LIBCHECK_A=../src/libcheck.a
 INCLUDES = -I$(srcdir)/../src
-LDADD = ../src/libcheck.a
+LDADD = $(LIBCHECK_A)
 
 CLEANFILES = *~ *.log test_logfile
+
+$(LIBCHECK_A):
+	$(MAKE) -C ../src
