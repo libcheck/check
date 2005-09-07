@@ -38,4 +38,4 @@ ex_xml_output_SOURCES = ex_xml_output.c
 INCLUDES = -I$(srcdir)/../src
 LDADD = ../src/libcheck.a
 
-CLEANFILES = *.log test_logfile
+CLEANFILES = *~ *.log test_logfile
