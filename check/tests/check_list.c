@@ -7,7 +7,10 @@
 
 START_TEST(test_create)
 {
-  List *lp;
+  List *lp = NULL;
+
+  fail_unless (list_val(lp) == NULL,
+	       "Current list value should be NULL for NULL list");
 
   lp = check_list_create();
 
