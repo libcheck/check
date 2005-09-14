@@ -1,3 +1,9 @@
+2005-09-07 hugo303
+
+	*configure.in, src/Makefile.am, tests/Makefile.am: Added gcov/lcov 
+	support. Enable with 'autogen.sh --enable-gcov'.
+	Run with 'cd src && make lcov'.
+
 2005-08-30 hugo303
 
 	* debian/README.Debian, debian/compat, debian/docs,
