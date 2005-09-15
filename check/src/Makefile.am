@@ -34,15 +34,13 @@ LCOV_OUTPUT  = lcov.info
 LCOV_HTML    = lcov_html
 LCOV_LCOV    = @LCOV@
 LCOV_GENHTML = @GENHTML@
-TEST_PROG    = ../tests/check_check
 
 lcov: $(LCOV_HTML)
 
-$(TEST_PROG): force
-	@$(MAKE) -C ../tests
-
-$(LCOV_OUTPUT): $(TEST_PROG)
-	$(TEST_PROG)
+# Running the tests twice is a fix for a bug in gcc3.3 coverage support.
+$(LCOV_OUTPUT): libcheck.a
+	@$(MAKE) -C ../tests check &> /dev/null
+	@$(MAKE) -C ../tests check
 	$(LCOV_LCOV) --capture --directory . --output-file $(LCOV_OUTPUT)
 
 $(LCOV_HTML): $(LCOV_OUTPUT)
@@ -55,6 +53,3 @@ clean-local: lcov-clean
 .PHONY: lcov-clean
 lcov-clean:
 	-$(RM) -r $(LCOV_HTML) $(LCOV_OUTPUT)
-
-.PHONY: force
-force:
