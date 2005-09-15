@@ -1,3 +1,13 @@
+2005-09-15 hugo303
+
+	* src/Makefile.am: Improved coverage analysis by running all tests
+	before compiling result. Added gcc3.3 coverage bug workaround.
+		
+2005-09-15 hugo303
+
+	* tests/check_check_sub.c, tests/check_check_master.c:
+	Added testing of timeout set through environment variable.
+
 2005-09-07 hugo303
 
 	*configure.in, src/Makefile.am, tests/Makefile.am: Added gcov/lcov 
