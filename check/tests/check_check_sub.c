@@ -316,19 +316,33 @@ Suite *make_sub2_suite(void)
 
 Suite *make_sub_suite(void)
 {
-  Suite *s = suite_create("Check Servant");
+  Suite *s;
 
-  TCase *tc_simple = tcase_create("Simple Tests");
-  TCase *tc_signal = tcase_create("Signal Tests");
-  TCase *tc_timeout = tcase_create("Timeout Tests");
-  TCase *tc_timeout_ext = tcase_create("Extended Timeout Tests");
-  TCase *tc_limit = tcase_create("Limit Tests");
-  TCase *tc_messaging_and_fork = tcase_create("Msg and fork Tests");
+  TCase *tc_simple;
+  TCase *tc_signal;
+  TCase *tc_timeout_env;
+  TCase *tc_timeout;
+  TCase *tc_timeout_usr;
+  TCase *tc_limit;
+  TCase *tc_messaging_and_fork;
+
+  s = suite_create("Check Servant");
+
+  tc_simple = tcase_create("Simple Tests");
+  tc_signal = tcase_create("Signal Tests");
+  setenv("CK_DEFAULT_TIMEOUT", "6", 1);
+  tc_timeout_env = tcase_create("Environment Timeout Tests");
+  unsetenv("CK_DEFAULT_TIMEOUT");
+  tc_timeout = tcase_create("Timeout Tests");
+  tc_timeout_usr = tcase_create("User Timeout Tests");
+  tc_limit = tcase_create("Limit Tests");
+  tc_messaging_and_fork = tcase_create("Msg and fork Tests");
 
   suite_add_tcase (s, tc_simple);
   suite_add_tcase (s, tc_signal);
+  suite_add_tcase (s, tc_timeout_env);
   suite_add_tcase (s, tc_timeout);
-  suite_add_tcase (s, tc_timeout_ext);
+  suite_add_tcase (s, tc_timeout_usr);
   /* Add a second time to make sure tcase_set_timeout doesn't contaminate it. */
   suite_add_tcase (s, tc_timeout);
   suite_add_tcase (s, tc_limit);
@@ -357,16 +371,21 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_signal, test_fpe);
   tcase_add_test (tc_signal, test_mark_point);
 
+  tcase_add_test (tc_timeout_env, test_eternal);
+  tcase_add_test (tc_timeout_env, test_sleep2);
+  tcase_add_test (tc_timeout_env, test_sleep5);
+  tcase_add_test (tc_timeout_env, test_sleep8);
+
   tcase_add_test (tc_timeout, test_eternal);
   tcase_add_test (tc_timeout, test_sleep2);
   tcase_add_test (tc_timeout, test_sleep5);
   tcase_add_test (tc_timeout, test_sleep8);
 
-  tcase_set_timeout (tc_timeout_ext, 6);
-  tcase_add_test (tc_timeout_ext, test_eternal);
-  tcase_add_test (tc_timeout_ext, test_sleep2);
-  tcase_add_test (tc_timeout_ext, test_sleep5);
-  tcase_add_test (tc_timeout_ext, test_sleep8);
+  tcase_set_timeout (tc_timeout_usr, 6);
+  tcase_add_test (tc_timeout_usr, test_eternal);
+  tcase_add_test (tc_timeout_usr, test_sleep2);
+  tcase_add_test (tc_timeout_usr, test_sleep5);
+  tcase_add_test (tc_timeout_usr, test_sleep8);
 
   tcase_add_test (tc_limit, test_early_exit);
   tcase_add_test (tc_limit, test_null);
