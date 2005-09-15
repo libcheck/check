@@ -42,6 +42,7 @@ static master_test_t master_tests[] = {
   { "Signal Tests",  -1, CK_ERROR,   "Received signal 8 (Floating point exception)" },
   { "Signal Tests",  -1, CK_ERROR,   "Received signal 8 (Floating point exception)" },
 
+#if TIMEOUT_TESTS_ENABLED
   { "Environment Timeout Tests", 139, CK_ERROR,  "Test timeout expired" },
   { "Environment Timeout Tests",  -1, CK_PASS,   "Passed" },
   { "Environment Timeout Tests",  -1, CK_PASS,   "Passed" },
@@ -59,6 +60,7 @@ static master_test_t master_tests[] = {
   { "Timeout Tests",  -1, CK_PASS,   "Passed" },
   { "Timeout Tests", 152, CK_ERROR,  "Test timeout expired" },
   { "Timeout Tests", 158, CK_ERROR,  "Test timeout expired" },
+#endif
 
   { "Limit Tests",   -1, CK_ERROR,   "Early exit with return value 1" },
   { "Limit Tests",   -1, CK_FAILURE, "Completed properly" },

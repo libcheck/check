@@ -1,5 +1,12 @@
 2005-09-15 hugo303
 
+	* configure.in, tests/check_check_sub.c, tests/check_check.h,
+	tests/check_check_master.c, tests/Makefile.am:
+	Added possibility to turn off timeout tests through configure option
+	--enable-timeout-tests=no
+
+2005-09-15 hugo303
+
 	* src/Makefile.am: Improved coverage analysis by running all tests
 	before compiling result. Added gcc3.3 coverage bug workaround.
 		

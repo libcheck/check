@@ -1,6 +1,10 @@
 #ifndef CHECK_CHECK_H
 #define CHECK_CHECK_H
 
+#ifndef TIMEOUT_TESTS_ENABLED
+#define TIMEOUT_TESTS_ENABLED 1
+#endif
+
 int sub_nfailed;
 int sub_ntests;
 

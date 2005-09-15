@@ -136,6 +136,7 @@ START_TEST(test_mark_point)
 }
 END_TEST
 
+#if TIMEOUT_TESTS_ENABLED
 START_TEST(test_eternal) /* line 139 */
 {
   for (;;)
@@ -160,7 +161,7 @@ START_TEST(test_sleep8) /* line 158 */
   sleep(8);
 }
 END_TEST
-
+#endif
 
 START_TEST(test_early_exit)
 {
@@ -320,9 +321,11 @@ Suite *make_sub_suite(void)
 
   TCase *tc_simple;
   TCase *tc_signal;
+#if TIMEOUT_TESTS_ENABLED
   TCase *tc_timeout_env;
   TCase *tc_timeout;
   TCase *tc_timeout_usr;
+#endif
   TCase *tc_limit;
   TCase *tc_messaging_and_fork;
 
@@ -330,21 +333,25 @@ Suite *make_sub_suite(void)
 
   tc_simple = tcase_create("Simple Tests");
   tc_signal = tcase_create("Signal Tests");
+#if TIMEOUT_TESTS_ENABLED
   setenv("CK_DEFAULT_TIMEOUT", "6", 1);
   tc_timeout_env = tcase_create("Environment Timeout Tests");
   unsetenv("CK_DEFAULT_TIMEOUT");
   tc_timeout = tcase_create("Timeout Tests");
   tc_timeout_usr = tcase_create("User Timeout Tests");
+#endif
   tc_limit = tcase_create("Limit Tests");
   tc_messaging_and_fork = tcase_create("Msg and fork Tests");
 
   suite_add_tcase (s, tc_simple);
   suite_add_tcase (s, tc_signal);
+#if TIMEOUT_TESTS_ENABLED
   suite_add_tcase (s, tc_timeout_env);
   suite_add_tcase (s, tc_timeout);
   suite_add_tcase (s, tc_timeout_usr);
   /* Add a second time to make sure tcase_set_timeout doesn't contaminate it. */
   suite_add_tcase (s, tc_timeout);
+#endif
   suite_add_tcase (s, tc_limit);
   suite_add_tcase (s, tc_messaging_and_fork);
 
@@ -371,6 +378,7 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_signal, test_fpe);
   tcase_add_test (tc_signal, test_mark_point);
 
+#if TIMEOUT_TESTS_ENABLED
   tcase_add_test (tc_timeout_env, test_eternal);
   tcase_add_test (tc_timeout_env, test_sleep2);
   tcase_add_test (tc_timeout_env, test_sleep5);
@@ -386,6 +394,7 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_timeout_usr, test_sleep2);
   tcase_add_test (tc_timeout_usr, test_sleep5);
   tcase_add_test (tc_timeout_usr, test_sleep8);
+#endif
 
   tcase_add_test (tc_limit, test_early_exit);
   tcase_add_test (tc_limit, test_null);

@@ -13,6 +13,10 @@ noinst_PROGRAMS = \
 
 EXTRA_DIST = test_output.sh test_log_output.sh test_xml_output.sh
 
+if NO_TIMEOUT_TESTS
+check_check_CFLAGS = -DTIMEOUT_TESTS_ENABLED=0
+endif
+
 check_check_SOURCES = \
 	check_check.h		\
 	check_list.c		\
