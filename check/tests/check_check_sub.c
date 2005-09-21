@@ -121,7 +121,6 @@ START_TEST(test_fpe)
 }
 END_TEST
 
-
 /* TODO:
    unit test running the same suite in succession */
 
