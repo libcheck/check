@@ -1,5 +1,9 @@
 2005-09-30 hugo303
 
+	* doc/tutorial.sgml: Updated with a section about looping tests.
+
+2005-09-30 hugo303
+
 	* src/check.c, src/check.h.in, src/check_impl.h, src/check_print.c,
 	src/check_run.c, src/check_str.c, tests/Makefile.am,
 	tests/check_check_fixture.c, tests/check_check_master.c,

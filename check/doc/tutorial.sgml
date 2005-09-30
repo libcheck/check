@@ -689,6 +689,29 @@ The signal handling functionality only works in CK_FORK mode.
 
    <section>
     <title>
+Looping tests
+   </title>
+   <para>
+Looping tests are tests that are called with a new context for each loop iteration. This makes them ideal for table based tests. With the loop in the test itself, only the first error is shown and then the test exits. Using looping tests, all errors will be shown at once which should help in debugging.
+   </para>
+   <para>
+Adding a normal test with tcase_add_loop_test() instead of tcase_add_test() will make the test function the body of a for loop, with the addition of a fork before each call. The loop variable i is available to be used as index into tables etc. inside the test function. For failures, the iteration for the failure is available in the error messages and logs. Start and end values for the loop are supplied when adding the test. The values are used as in a normal for loop. Below is a chunk of pseudo-code to show the concept.
+   <programlisting>
+for (i = tfun->loop_start; i < tfun->loop_end; i++)
+{
+  fork();      /* New context */
+  tfun->f(i);  /* Call test function */
+  wait();      /* Wait for child to terminate */
+}</programlisting>
+   </para>
+   <para>
+Note: Looping tests work in CK_NOFORK mode as well, but without the forking. This means of course that only the first error will be shown.
+   </para>
+   </section>
+
+
+   <section>
+    <title>
 Test timeouts
    </title>
    <para>
