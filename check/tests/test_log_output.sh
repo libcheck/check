@@ -7,11 +7,11 @@ else
 fi
 
 expected="Running suite S1
-${lsrc}ex_log_output.c:8:P:Core:test_pass: Passed
-${lsrc}ex_log_output.c:14:F:Core:test_fail: Failure
-${lsrc}ex_log_output.c:18:E:Core:test_exit: (after this point) Early exit with return value 1
+${lsrc}ex_log_output.c:8:P:Core:test_pass:0: Passed
+${lsrc}ex_log_output.c:14:F:Core:test_fail:0: Failure
+${lsrc}ex_log_output.c:18:E:Core:test_exit:0: (after this point) Early exit with return value 1
 Running suite S2
-${lsrc}ex_log_output.c:26:P:Core:test_pass2: Passed
+${lsrc}ex_log_output.c:26:P:Core:test_pass2:0: Passed
 Results for all suites run:
 50%: Checks: 4, Failures: 1, Errors: 1"
 

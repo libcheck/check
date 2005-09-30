@@ -61,7 +61,7 @@ START_TEST(test_setup_failure_msg)
 {
   TestResult **tra;
   char *trm;
-  const char *trmexp = "check_check_fixture.c:14:S:Core:unchecked_setup: Test failure in fixture";
+  const char *trmexp = "check_check_fixture.c:14:S:Core:unchecked_setup:0: Test failure in fixture";
 
   tra = srunner_failures(fixture_sr);
   trm = tr_str(tra[0]);
@@ -187,7 +187,7 @@ START_TEST(test_ch_setup_fail)
   trm = tr_str(srunner_failures(sr)[0]);
 
   if (strstr(trm,
-	     "check_check_fixture.c:127:S:Core:test_sub_fail: Failed setup")
+	     "check_check_fixture.c:127:S:Core:test_sub_fail:0: Failed setup")
       == 0) {
     snprintf(errm, sizeof(errm),
 	     "Bad failed checked setup tr msg (%s)", trm);
@@ -297,7 +297,7 @@ START_TEST(test_ch_setup_sig)
   trm = tr_str(srunner_failures(sr)[0]);
 
   if (strstr(trm,
-	     "check_check_fixture.c:137:S:Core:test_sub_fail: "
+	     "check_check_fixture.c:137:S:Core:test_sub_fail:0: "
 	     "(after this point) Received signal 8")
       == 0) {
     snprintf(errm, sizeof(errm),
@@ -339,7 +339,7 @@ START_TEST(test_ch_teardown_fail)
   trm = tr_str(srunner_failures(sr)[0]);
 
   if (strstr(trm,
-	     "check_check_fixture.c:132:S:Core:test_sub_pass: Failed teardown")
+	     "check_check_fixture.c:132:S:Core:test_sub_pass:0: Failed teardown")
       == 0) {
     snprintf(errm, sizeof(errm),
 	     "Bad failed checked teardown tr msg (%s)", trm);
@@ -381,7 +381,7 @@ START_TEST(test_ch_teardown_sig)
   trm = tr_str(srunner_failures(sr)[0]);
 
   if (strstr(trm,
-	     "check_check_fixture.c:143:S:Core:test_sub_pass: "
+	     "check_check_fixture.c:143:S:Core:test_sub_pass:0: "
 	     "(after this point) Received signal 8")
       == 0) {
     snprintf(errm, sizeof(errm),

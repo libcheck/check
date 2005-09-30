@@ -1,3 +1,17 @@
+2005-09-30 hugo303
+
+	* src/check.c, src/check.h.in, src/check_impl.h, src/check_print.c,
+	src/check_run.c, src/check_str.c, tests/Makefile.am,
+	tests/check_check_fixture.c, tests/check_check_master.c,
+	tests/ex_xml_output.c, tests/test_log_output.sh, tests/test_output.sh,
+	tests/test_xml_output.sh:
+	
+	Added a new kind of test, looping tests, which are called with a new
+	context for each loop iteration. This makes them ideal for table based
+	tests. Previously, with the loop in the test itself, only the first
+	error was caught and then the test would exit. Now all errors are
+	shown at once which should help in debugging.
+
 2005-09-15 hugo303
 
 	* configure.in, tests/check_check_sub.c, tests/check_check.h,

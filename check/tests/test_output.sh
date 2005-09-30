@@ -11,13 +11,13 @@ t1="xRunning suite(s): Master
 33%: Checks: 3, Failures: 1, Errors: 1"
 t2="xRunning suite(s): Master
 33%: Checks: 3, Failures: 1, Errors: 1
-${lsrc}ex_output.c:14:F:Core:test_fail: Failure
-${lsrc}ex_output.c:18:E:Core:test_exit: (after this point) Early exit with return value 1"
+${lsrc}ex_output.c:14:F:Core:test_fail:0: Failure
+${lsrc}ex_output.c:18:E:Core:test_exit:0: (after this point) Early exit with return value 1"
 t3="xRunning suite(s): Master
 33%: Checks: 3, Failures: 1, Errors: 1
-${lsrc}ex_output.c:8:P:Core:test_pass: Passed
-${lsrc}ex_output.c:14:F:Core:test_fail: Failure
-${lsrc}ex_output.c:18:E:Core:test_exit: (after this point) Early exit with return value 1"
+${lsrc}ex_output.c:8:P:Core:test_pass:0: Passed
+${lsrc}ex_output.c:14:F:Core:test_fail:0: Failure
+${lsrc}ex_output.c:18:E:Core:test_exit:0: (after this point) Early exit with return value 1"
 
 op0=`./ex_output CK_SILENT`
 op1=`./ex_output CK_MINIMAL`

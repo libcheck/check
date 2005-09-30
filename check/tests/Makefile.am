@@ -42,7 +42,7 @@ LIBCHECK_A=../src/libcheck.a
 INCLUDES = -I$(srcdir)/../src
 LDADD = $(LIBCHECK_A)
 
-CLEANFILES = *~ *.log test_logfile
+CLEANFILES = *~ *.log *.xml test_logfile
 
 $(LIBCHECK_A):
 	$(MAKE) -C ../src

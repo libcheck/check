@@ -86,7 +86,7 @@ extern int check_micro_version;
 typedef struct TCase TCase; 
 
 /* type for a test function */
-typedef void (*TFun) (void);
+typedef void (*TFun) (int);
 
 /* type for a setup/teardown function */
 typedef void (*SFun) (void);
@@ -108,12 +108,21 @@ TCase *tcase_create (const char *name);
 
 /* Add a test function with signal handling to a test case (macro version) */
 #define tcase_add_test_raise_signal(tc,tf,signal) \
-   _tcase_add_test((tc),(tf),"" # tf "",(signal))
+   _tcase_add_test((tc),(tf),"" # tf "",(signal), 0, 1)
 
+/* Add a looping test function to a test case (macro version)
+
+   The test will be called in a for(i = s; i < e; i++) loop with each
+   iteration being executed in a new context. The loop variable 'i' is
+   available in the test.
+ */
+#define tcase_add_loop_test(tc,tf,s,e) \
+   _tcase_add_test((tc),(tf),"" # tf "",0,(s),(e))
+ 
 /* Add a test function to a test case
   (function version -- use this when the macro won't work
 */
-void _tcase_add_test (TCase *tc, TFun tf, const char *fname, int signal);
+void _tcase_add_test (TCase *tc, TFun tf, const char *fname, int signal, int start, int end);
 
 /* Add unchecked fixture setup/teardown functions to a test case
 
@@ -159,7 +168,7 @@ void tcase_fn_start (const char *fname, const char *file, int line);
    One must use braces within a START_/END_ pair to declare new variables
 */ 
 #define START_TEST(__testname)\
-static void __testname (void)\
+static void __testname (int i)\
 {\
   tcase_fn_start (""# __testname, __FILE__, __LINE__);
 

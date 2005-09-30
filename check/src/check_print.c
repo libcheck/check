@@ -126,6 +126,7 @@ void tr_xmlprint (FILE *file, TestResult *tr, enum print_output print_mode)
   fprintf(file, "      <path>%s</path>\n", path_name);
   fprintf(file, "      <fn>%s:%d</fn>\n", file_name, tr->line);
   fprintf(file, "      <id>%s</id>\n", tr->tname);
+  fprintf(file, "      <iteration>%d</iteration>\n", tr->iter);
   fprintf(file, "      <description>%s</description>\n", tr->tcname);
   fprintf(file, "      <message>%s</message>\n", tr->msg);
   fprintf(file, "    </test>\n");

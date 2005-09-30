@@ -1,11 +1,30 @@
+Added a new kind of test, looping tests, which are called with a new
+context for each loop iteration. This makes them ideal for table based
+tests. Previously, with the loop in the test itself, only the first
+error was caught and then the test would exit. Now all errors are
+shown at once which should help in debugging
+
+Added possibility to turn off timeout tests in check's own unit tests
+through configure option --enable-timeout-tests=no.
+
+Added coverage analysis for check's own unit tests.
+
+
 Thu, Aug 25, 2005: Released Check 0.9.3
 
 Applied debian patches from debian maintainer.
+
 Fixed documentation bug #1216502.
+
 gcc 2.95.3 compatibility fixed (patch #1161654, bug #1211672).
-Messaging refactored to make it  work with forking tests, and also with threading tests on linux 2.4. Added check_fork and check_waitpid_and_exit to be used for forking tests. (bug # 1233585)
+
+Messaging refactored to make it  work with forking tests, and also with
+threading tests on linux 2.4. Added check_fork and check_waitpid_and_exit
+to be used for forking tests. (bug # 1233585)
+
 Timeout error message changed (feature request #1121452, bug #1160305).
-fix check.spec for fc3 x86_64 (patch #1111782)
+
+Fix check.spec for fc3 x86_64 (patch #1111782)
 
 
 Fri, Nov 12, 2004: Released Check 0.9.2

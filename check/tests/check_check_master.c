@@ -76,13 +76,14 @@ static master_test_t master_tests[] = {
   { "Core",          -1, CK_FAILURE, "We failed" }
 };
 
+static int nr_of_master_tests = sizeof master_tests /sizeof master_tests[0];
 
 START_TEST(test_check_nfailures)
 {
   int i;
   int failed = 0;
   
-  for (i = 0; i < sizeof master_tests /sizeof master_tests[0]; i++) {
+  for (i = 0; i < nr_of_master_tests; i++) {
     if (master_tests[i].failure_type != CK_PASS) {
       failed++;
     }
@@ -95,7 +96,7 @@ END_TEST
 
 START_TEST(test_check_ntests_run)
 {
-  fail_unless (sub_ntests == (sizeof master_tests /sizeof master_tests[0]),
+  fail_unless (sub_ntests == nr_of_master_tests,
                "Unexpected number of tests run, %d.", sub_ntests);
 }
 END_TEST
@@ -231,11 +232,8 @@ END_TEST
 
 START_TEST(test_check_all_ftypes)
 {
-  int i;
-  for (i = 0; i < sub_ntests; i++) {
-    fail_unless(master_tests[i].failure_type == tr_rtype(tr_all_array[i]),
-		"Failure type wrong for test %d", i);
-  }
+  fail_unless(master_tests[i].failure_type == tr_rtype(tr_all_array[i]),
+              "Failure type wrong for test %d", i);
 }
 END_TEST
 
@@ -285,7 +283,7 @@ Suite *make_master_suite (void)
   tcase_add_test (tc_core, test_check_failure_lfiles);
   tcase_add_test (tc_core, test_check_tcnames);
   tcase_add_test (tc_core, test_check_all_msgs);
-  tcase_add_test (tc_core, test_check_all_ftypes);
+  tcase_add_loop_test (tc_core, test_check_all_ftypes, 0, nr_of_master_tests);
   tcase_add_unchecked_fixture(tc_fixture, test_fixture_setup,
 			      test_fixture_teardown);
   /* add the test 3 times to make sure we adequately test

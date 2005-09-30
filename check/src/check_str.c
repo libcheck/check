@@ -39,9 +39,9 @@ char *tr_str (TestResult *tr)
   
   exact_msg = (tr->rtype == CK_ERROR) ? "(after this point) ": "";
   
-  rstr = ck_strdup_printf ("%s:%d:%s:%s:%s: %s%s",
+  rstr = ck_strdup_printf ("%s:%d:%s:%s:%s:%d: %s%s",
                            tr->file, tr->line,
-                           tr_type_str(tr), tr->tcname, tr->tname,
+                           tr_type_str(tr), tr->tcname, tr->tname, tr->iter,
                            exact_msg, tr->msg);
 
   return rstr;

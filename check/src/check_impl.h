@@ -35,6 +35,8 @@
 
 typedef struct TF {
   TFun fn;
+  int loop_start;
+  int loop_end;
   const char *name;
   int signal;
 } TF;
@@ -71,6 +73,7 @@ struct TestResult {
   enum ck_result_ctx ctx;     /* When the result occurred */
   char *file;    /* File where the test occured */
   int line;      /* Line number where the test occurred */
+  int iter;      /* The iteration value for looping tests */
   const char *tcname;  /* Test case that generated the result */
   const char *tname;  /* Test that generated the result */
   char *msg;     /* Failure message */

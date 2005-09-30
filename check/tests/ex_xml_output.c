@@ -27,6 +27,12 @@ START_TEST(test_pass2)
 }
 END_TEST
 
+START_TEST(test_loop)
+{
+  fail_unless (i==1, "Iteration %d failed", i);
+}
+END_TEST
+
 static Suite *make_s1_suite (void)
 {
   Suite *s;
@@ -51,6 +57,7 @@ static Suite *make_s2_suite (void)
   tc = tcase_create ("Core");
   suite_add_tcase(s, tc);
   tcase_add_test (tc, test_pass2);
+  tcase_add_loop_test(tc, test_loop, 0, 3);
 
   return s;
 }
