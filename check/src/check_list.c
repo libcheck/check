@@ -64,8 +64,7 @@ void list_add_front (List *lp, const void *val)
   if (lp == NULL)
     return;
   maybe_grow(lp);
-  memmove(lp->data + sizeof lp->data[0], lp->data,
-          lp->n_elts * sizeof lp->data[0]);
+  memmove(lp->data + 1, lp->data, lp->n_elts * sizeof lp->data[0]);
   lp->last++;
   lp->n_elts++;
   lp->current = 0;
