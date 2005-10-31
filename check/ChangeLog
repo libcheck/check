@@ -1,3 +1,10 @@
+2005-10-31 hugo303
+
+	* src/check_list.c, tests/check_list.c, tests/check_check_fixture.c:
+	Fixed sourceforge bug #1327225, Two teardown checked fixtures
+	segfaults. Originated in a pointer arithmetic bug in a memmove()
+	call in list_add_front() in src/check_list.c.
+
 2005-09-30 hugo303
 
 	* doc/tutorial.sgml: Updated with a section about looping tests.

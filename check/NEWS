@@ -1,3 +1,5 @@
+Fixed sourceforge bug #1327225, Two teardown checked fixtures segfaults.
+
 Added a new kind of test, looping tests, which are called with a new
 context for each loop iteration. This makes them ideal for table based
 tests. Previously, with the loop in the test itself, only the first
