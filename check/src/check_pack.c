@@ -247,7 +247,7 @@ static void upack_fail (char **buf, FailMsg *fmsg)
 static void check_type (int type, const char *file, int line)
 {
   if (type < 0 || type >= CK_MSG_LAST)
-    eprintf ("%s:%d:Bad message type arg", file, line);
+    eprintf ("Bad message type arg", file, line);
 }
 
 void ppack (int fdes, enum ck_msg_type type, CheckMsg *msg)
