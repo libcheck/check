@@ -1,3 +1,7 @@
+2005-12-16 hugo303
+
+	* src/check_pack.c: Fixed buggy eprintf string.
+
 2005-10-31 hugo303
 
 	* src/check_list.c, tests/check_list.c, tests/check_check_fixture.c:
