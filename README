@@ -9,7 +9,14 @@ See http://check.sourceforge.net/ for more information, including a
 tutorial.
 
 If you get Check out of CVS, you will need a working setup of automake
-(at least version 1.4) and autoconf (at least version 2.13) in order
-to successfully build Check. There's a script called autogen.sh that
-calls autoconf and automake for you and then runs the generated 
-configure script.
+(at least version 1.9.6) and autoconf (at least version 2.59) in order
+to successfully build Check.
+
+Just do
+
+$ autoreconf --install
+
+in this directory to set everything up, and then call configure.
+
+autoreconf calls all of the necessary tools for you, like autoconf,
+automake, autoheader, etc.
