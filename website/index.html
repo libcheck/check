@@ -1,220 +1,99 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-  <HEAD>
-    <TITLE>Check: A unit test framework for C</TITLE>
-  </HEAD>
-  <BODY>
-    <H1>Check: A unit test framework for C</H1>
-    
-    <P>Check is a unit test framework for C. It features a simple
-    interface for defining unit tests, putting little in the way of
-    the developer. Tests are run in a separate address space, so Check
-    can catch both assertion failures and code errors that cause
-    segmentation faults or other signals. The output from unit tests
-    can be used within source code editors and IDEs..</P>
-    
-    <P>Check was inspired by similar frameworks that currently exist
-    for most programming languages; the most famous example being
-    JUnit for Java (<A HREF="http://www.junit.org">www.junit.org</A>). There
-    is a list of unit test frameworks for multiple languages at <A
-    HREF="http://www.xprogramming.com/software.htm">www.xprogramming.com/software.htm</A>
-    . Unit testing has a long history as part of formal quality
-    assurance methodologies, but has recently been associated with the
-    lightweight methodology called Extreme Programming. In that
-    methodology, the characteristic practice involves interspersing
-    unit test writing with coding (" test a little, code a
-    little"). While the incremental unit test/code approach is
-    indispensable to Extreme Programming, it is also applicable, and
-    perhaps indispensable, outside of that methodology.
-
-    <P>The incremental test/code approach provides three main benefits
-    to the developer:<P>
-      
-    <OL>
-      <LI>Because the unit tests use the interface to the unit being
-      tested, they allow the developer to think about how the
-      interface should be designed for usage early in the coding
-      process.</LI>
-      
-      <LI>They help the developer think early about aberrant cases,
-      and code accordingly.</LI>
-
-      <LI>By providing a documented level of correctness, they allow
-      the developer to refactor (see <A
-      HREF="http://www.refactoring.com">www.refactoring.com</A> )
-      aggressively.</LI>
-      
-    </OL>
-    
-    <P>That third reason is the one that turns people into unit
-    testing addicts. There is nothing so satisfying as doing a
-    wholesale replacement of an implementation, and having the unit
-    tests reassure you at each step of that change that all is
-    well. It is like the difference between exploring the wilderness
-    with and without a good map and compass: without the proper gear,
-    you are more likely to proceed cautiously and stick to the marked
-    trails; with it, you can take the most direct path to where you
-    want to go.<P>
-
-    <H2>Information about Check</H2>
-
-    <P>Look at the Check homepage for the latest
-    information on Check: <A
-    HREF="http://check.sourceforge.net">http://check.sourceforge.net</A>
-    </P>
-
-    <P>The Check project page is at <A
-    HREF="http://sourceforge.net/projects/check/">http://sourceforge.net/projects/check/</A>
-    </P>
-
-    <P>A tutorial introduction to Check can be found <A
-    HREF="doc/index.html">here</A>.</P>
-
-    <H2>Getting Check</H2>
-    <P>Check can be dowloaded from <A HREF="http://sourceforge.net/project/showfiles.php?group_id=28255&release_id=37982">here</A>.</P>
-
-    <H2>Contributing</H2>
-
-    <P>The author welcomes any and all help with Check, whether
-    through enhancement requests, bug reports, patches, documentation,
-    etc. Please visit the Check project page at <A
-    HREF="http://sourceforge.net/projects/check/">http://sourceforge.net/projects/check/</A></P>
-
-    <p>Patches to Check, unless trivial, should be against latest CVS,
-    and should include a full set of unit tests testing the new
-    behavior. No functionality goes into Check without unit tests, and
-    submitting a patch without automated testing guarantees that it
-    will go into the request queue, not the "to be applied soon"
-    pool.</p>
-
-    <h3>TODO</h3>
-
-    The following enhancements are being considered for Check. Please
-    let the author know if you would like to assist in any of these,
-    or if you would like to suggest additional enhancements:
-
-    <ul>
-      <li>Printing and Logging
-	<ul>
-	  <li>Allow unit test output (stdout and stderr) to be
-	  captured and logged</li>
-
-	  <li>Add XML as option for test output (done in 0.9.1)</li>
-
-	  <li>Open the API for printing/logging customization</li>
-
-	  <li>JUnit-style UI?</li>
-	</ul>
-      </li>
-      <li>Unit test writing
-	<ul>
-
-	  <li>Allow fail and friends to be used within fixture
-	  setup/teardown functions (done in 0.8.0)</li>
-
-	  <li>Allow forkless running of suites, to allow
-	  debugging (done in 0.8.0)</li>
-
-	  <li>Allow unit tests that expect signals (done in 0.9.2)</li>
-
-	  <li>Allow unit tests to write to the log</li>
-	  
-	  <li>Allow unit tests that expect output (see stdout logging
-	  above) (but maybe perl/sh/expect/dejagnu are better
-	  tools)</li>
-
-	  <li>Autoproduce unit test framework from header files</li>
-	  
-	</ul>
-      </li>
-      <li>Check tests
-	<ul>
-	  <li>Use gcov to test and expand coverage of existing unit
-	  tests (done in 0.9.3)</li>
-
-	  <li>Increase tests for more non-public modules</li>
-
-	  <li>Refactor to allow better unit testing of printing
-	  functionality. (done in 0.8.0)</li>
-	</ul>
-      </li>
-      <li>Internals
-	<ul>
-	    <li>Implement message passing between unit test and test
-	    programs using pipes, rather than SysV IPC, to allow
-	    support under cygwin. (done in 0.8.0)</li>
-
-	    <li> Abstract the forking and message passing
-	    implementation to allow Win32 compatibility.</li>
-	</ul>
-      </li>
-      <li>Packaging
-	<ul>
-	  <li>Automate RPM production (done in 0.7.2)</li>
-
-	  <li>Debian packaging (done in 0.7.2)</li>
-
-	  <li>Get Check into Debian Sid (done in 0.9.2)</li>
-	</ul>
-      </li>
-    </ul>
-	
-    
-    <h3>CVS access</h3>
-    <P>To contribute to Check, you should download the source through
-    anonymous CVS, following these simple instructions:</P>
-    
-    <OL>
-      <LI>Navigate to the directory below which you want the new check
-      directory to be formed. That is, if you navigate to
-      /home/luser/foo/bar, the check files will be in
-      /home/luser/foo/bar/check.</LI>
-
-      <LI>Issue the following command to login to CVS. When prompted
-      to supply the anonymous password, simply hit return.
-	<HR>
-<PRE>
-$ cvs -d:pserver:anonymous@cvs.check.sourceforge.net:/cvsroot/check login
-</PRE>
-	<HR>
-      </LI>
-      <LI>Issue the following command to setup the check subdirectory
-	<HR>
-<PRE>
-$ cvs -z3 -d:pserver:anonymous@cvs.check.sourceforge.net:/cvsroot/check co check
-</PRE>
-	<HR>
-      </LI>
-
-      <LI>To keep current with CVS, use the following command within the
-check directory
-	<HR>
-<PRE>
-$ cvs -z3 update -dP 
-</PRE>
-	<HR>
- 
-	<P>Note that you do not have to supply the server directory
-	path or the user name (it is all kept in the CVS local
-	directory.)
-      </LI>
-    </OL>
-    
-    <P>From that point on, using Check should simply be a matter of
-      the standard:
-    <P>
-    <HR>
-    <PRE>
-$ ./configure
-$ make
-$ make install
-</PRE>
-    <HR>
-    <P>Of course, since Check comes with its own unit tests, you can (and should)
-    substitute "make check" for "make" in the above.</P>
-
-      <A href="http://sourceforge.net"> <IMG
-      src="http://sourceforge.net/sflogo.php?group_id=28255"
-      width="88" height="31" border="0" alt="SourceForge Logo"></A>
-</BODY>
-</HTML>
+<html>
+<head>
+  <title>Check: A unit test framework for C</title>
+</head>
+<body>
+<h1>Check: A unit test framework for C</h1>
+<p>Check is a unit test framework for C. It features a simple interface
+for defining unit tests, putting little in the way of the developer.
+Tests are run in a separate address space, so Check can catch both
+assertion failures and code errors that cause segmentation faults or
+other signals. The output from unit tests can be used within source
+code editors and IDEs..</p>
+<p>Check was inspired by similar frameworks that currently exist for
+most programming languages; the most famous example being JUnit for
+Java (<a href="http://www.junit.org">www.junit.org</a>). There is a
+list of unit test frameworks for multiple languages at <a
+ href="http://www.xprogramming.com/software.htm">www.xprogramming.com/software.htm</a>
+. Unit testing has a long history as part of formal quality assurance
+methodologies, but has recently been associated with the lightweight
+methodology called Extreme Programming. In that methodology, the
+characteristic practice involves interspersing unit test writing with
+coding (" test a little, code a little"). While the incremental unit
+test/code approach is indispensable to Extreme Programming, it is also
+applicable, and perhaps indispensable, outside of that methodology. </p>
+<p>The incremental test/code approach provides three main benefits to
+the developer:</p>
+<p> </p>
+<ol>
+  <li>Because the unit tests use the interface to the unit being
+tested, they allow the developer to think about how the interface
+should be designed for usage early in the coding process.</li>
+  <li>They help the developer think early about aberrant cases, and
+code accordingly.</li>
+  <li>By providing a documented level of correctness, they allow the
+developer to refactor (see <a href="http://www.refactoring.com">www.refactoring.com</a>
+) aggressively.</li>
+</ol>
+<p>That third reason is the one that turns people into unit testing
+addicts. There is nothing so satisfying as doing a wholesale
+replacement of an implementation, and having the unit tests reassure
+you at each step of that change that all is well. It is like the
+difference between exploring the wilderness with and without a good map
+and compass: without the proper gear, you are more likely to proceed
+cautiously and stick to the marked trails; with it, you can take the
+most direct path to where you want to go.</p>
+<p> </p>
+<h2>Information about Check</h2>
+<p>The Check project page is at <a
+ href="http://sourceforge.net/projects/check/">http://sourceforge.net/projects/check/</a>
+</p>
+<p>A tutorial introduction to Check can be found <a
+ href="doc/index.html">here</a>.<br>
+</p>
+<p>This project is at the moment only sporadically maintained, but it
+works well and there are packages in Fedora and Debian.<br>
+</p>
+<h2>Getting Check</h2>
+<p>Check can be dowloaded from <a
+ href="http://sourceforge.net/project/showfiles.php?group_id=28255&amp;release_id=37982">here</a>.</p>
+<h2>Contributing</h2>
+<p>The authors welcome any and all help with Check, whether through
+enhancement requests, bug reports, patches, or documentation.&nbsp;
+Mailing lists are preferred to forums as they're easier to
+monitor.&nbsp; Please visit the Check project page at <a
+ href="http://sourceforge.net/projects/check/">http://sourceforge.net/projects/check/<br>
+</a></p>
+<p>Patches to Check, unless trivial, should be against the latest SVN
+trunk, and should include a full set of unit tests testing the new
+behavior. No functionality goes into Check without unit tests, and
+submitting a patch without automated testing guarantees that it will go
+into the request queue, not the "to be applied soon" pool.<br>
+</p>
+<h2>Projects Using Check</h2>
+We know of the following projects using Check:<br>
+<br>
+GStreamer: <a href="http://gstreamer.freedesktop.org/">http://gstreamer.freedesktop.org/</a><br>
+Expat: <a href="http://expat.sourceforge.net/">http://expat.sourceforge.net/</a><br>
+GNOME BuildBrigade: <a href="http://live.gnome.org/BuildBrigade">http://live.gnome.org/BuildBrigade</a><br>
+<br>
+If you're using Check for an open source project and you're not listed
+here, please subscribe to check-users@lists.sourceforge.net, send us an
+email, and we'll list you promptly.<br>
+<h2>Todo<br>
+</h2>
+<a href="../TODO">Current bugs and feature requests</a>.<br>
+<h2>SVN access</h2>
+See the project's <a href="http://sourceforge.net/svn/?group_id=28255">Subversion
+page</a> for instructions.&nbsp; You do want to append '/trunk' to that
+URL so that you don't end up checking out all tags and branches as
+well.&nbsp; The CVS repository is now obsolete.<br>
+--<br>
+Last updated 2006-10-13 by cpickett.<br>
+<br>
+<a href="http://sourceforge.net"><img
+ src="http://sourceforge.net/sflogo.php?group_id=28255"
+ alt="SourceForge Logo" border="0" height="31" width="88"></a>
+</body>
+</html>
