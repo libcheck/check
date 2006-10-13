@@ -193,6 +193,9 @@ static void __testname (int i __attribute__((unused)))\
 /* The space before the comma sign before ## is essential to be compatible
    with gcc 2.95.3 and earlier.
 */
+
+/* FIXME: these macros may conflict with C89 if expr is 
+   FIXME:   strcmp (str1, str2) due to excessive string length. */
 #define fail_if(expr, ...)\
         _fail_unless(!(expr), __FILE__, __LINE__,\
         "Failure '"#expr"' occured" , ## __VA_ARGS__, NULL)
