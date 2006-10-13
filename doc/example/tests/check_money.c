@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <check.h>
-#include "money.h"
+#include "../src/money.h"
 
 Money *five_dollars;
 void

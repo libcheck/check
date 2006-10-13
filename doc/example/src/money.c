@@ -10,9 +10,17 @@ struct Money
 Money *
 money_create (int amount, char *currency)
 {
+  if (amount < 0)
+    {
+      return NULL;
+    }
+
   Money *m = malloc (sizeof (Money));
   if (m == NULL)
-    return NULL;
+    {
+      return NULL;
+    }
+
   m->amount = amount;
   m->currency = currency;
   return m;

@@ -16,6 +16,8 @@ AM_INIT_AUTOMAKE([-Wall -Werror foreign 1.9.6])
 
 # Checks for programs.
 AC_PROG_CC
+AC_PROG_LIBTOOL
+AC_PROG_RANLIB
 
 # Checks for libraries.
 
