@@ -58,6 +58,7 @@ entitled ``@acronym{GNU} Free Documentation License.''
 * Introduction::                
 * Unit Testing in C::           
 * Tutorial::                    
+* Advanced Features::           
 * AM_PATH_CHECK::               
 * Copying This Manual::         
 * Index::                       
@@ -76,7 +77,10 @@ Tutorial: Basic Unit Testing
 * Test a Little::               
 * Creating a Suite::            
 * SRunner Output::              
-* Advanced Features::           
+
+Advanced Features
+
+* Running Multiple Cases::      
 * Test Logging::                
 
 Copying This Manual
@@ -241,7 +245,7 @@ word, and make one a standard.  Languages such as Java and Python are
 fortunate to have standard unit test frameworks; it would be desirable
 that C have one as well.
 
-@node Tutorial, AM_PATH_CHECK, Unit Testing in C, Top
+@node Tutorial, Advanced Features, Unit Testing in C, Top
 @chapter Tutorial: Basic Unit Testing
 
 This tutorial will use the JUnit
@@ -259,8 +263,6 @@ sure we are constantly thinking about how to test our code.
 * Test a Little::               
 * Creating a Suite::            
 * SRunner Output::              
-* Advanced Features::           
-* Test Logging::                
 @end menu
 
 @node How to Write a Test, Setting Up the Money Build, Tutorial, Tutorial
@@ -584,7 +586,7 @@ Note that we @code{#include <stdlib.h>} to get the definition of
 check}, but our unit test fails.  Still, this is progress, and we can
 focus on making the test pass.
 
-@node SRunner Output, Advanced Features, Creating a Suite, Tutorial
+@node SRunner Output,  , Creating a Suite, Tutorial
 @section SRunner Output
 
 @findex srunner_run_all
@@ -622,7 +624,7 @@ parameter @code{print_mode} can assume are as follows:
 @item CK_SILENT
 Specifies that no output is to be generated. If you use this flag, you
 either need to programmatically examine the SRunner object, print
-separately, or use test logging (described below: Test Logging).
+separately, or use test logging (@pxref{Test Logging}.)
 
 @vindex CK_MINIMAL
 @item CK_MINIMAL
@@ -701,7 +703,7 @@ point''; This means that somewhere after the point noted
 (@file{check_money.c}, line 5) there was a problem: signal 11 (a.k.a.
 segmentation fault).  The last point reached is set on entry to the
 unit test, and after every call to @code{fail_unless()},
-@code{fail()}, or the special function @code{mark_point}.  For
+@code{fail()}, or the special function @code{mark_point()}.  For
 example, if we wrote some test code as follows:
 @example
 @verbatim
@@ -711,24 +713,56 @@ stuff_that_dies ();
 @end verbatim
 @end example
 
-then the point returned will be that marked by @code{mark_point}.
+then the point returned will be that marked by @code{mark_point()}.
 
 The reason our test failed so horribly is that we haven't implemented
-@code{money_create} to create any @code{Money}.  We'll go ahead and
-implement that, the symmetric @code{money_free}, and
-@code{money_currency} too, in order to make our unit test pass again:
+@code{money_create()} to create any @code{Money}.  We'll go ahead and
+implement that, the symmetric @code{money_free()}, and
+@code{money_currency()} too, in order to make our unit test pass again:
 
 @example
 @verbatiminclude example/src/money.4-5.c.diff
 @end example
 
-@node Advanced Features, Test Logging, SRunner Output, Tutorial
-@section Advanced Features
+@node Advanced Features, AM_PATH_CHECK, Tutorial, Top
+@chapter Advanced Features
 
-@node Test Logging,  , Advanced Features, Tutorial
+What you've seen so far is all you need for basic unit testing.  The
+features described in this section are additions to Check that make it
+easier for the developer to write, run, and analyse tests.
+
+@menu
+* Running Multiple Cases::      
+* Test Logging::                
+@end menu
+
+@node Running Multiple Cases, Test Logging, Advanced Features, Advanced Features
+@section Running Multiple Cases
+
+What happens if we pass @code{-1} as the @code{amount} in
+@code{money_create()}?  What should happen?  Let's write a unit test.
+Since we are now testing limits, we should also test what happens when
+we create @code{Money} where @code{amount == 0}.  Let's put these in a
+separate test case called ``Limits'' so that @code{money_suite} is
+changed like so:
+
+@example
+@verbatiminclude example/tests/check_money.3-6.c.diff
+@end example
+
+Now we can rerun our suite, and fix the problem(s). Note that errors
+in the ``Core'' test case will be reported as ``Core'', and errors in
+the ``Limits'' test case will be reported as ``Limits'', giving you
+additional information about where things broke.
+
+@example
+@verbatiminclude example/src/money.5-6.c.diff
+@end example
+
+@node Test Logging,  , Running Multiple Cases, Advanced Features
 @section Test Logging
 
-@node AM_PATH_CHECK, Copying This Manual, Tutorial, Top
+@node AM_PATH_CHECK, Copying This Manual, Advanced Features, Top
 @chapter AM_PATH_CHECK
 @findex AM_PATH_CHECK()
 
