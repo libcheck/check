@@ -119,6 +119,12 @@ TCase *tcase_create (const char *name);
 #define tcase_add_loop_test(tc,tf,s,e) \
    _tcase_add_test((tc),(tf),"" # tf "",0,(s),(e))
  
+/* Signal version of loop test.  
+   FIXME: add a test case; this is untested as part of Check's tests.
+ */
+#define tcase_add_loop_test_raise_signal(tc,tf,signal,s,e) \
+   _tcase_add_test((tc),(tf),"" # tf "",(signal),(s),(e))
+
 /* Add a test function to a test case
   (function version -- use this when the macro won't work
 */
