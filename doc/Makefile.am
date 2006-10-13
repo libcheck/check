@@ -32,7 +32,7 @@ EXTRA_DIST = $(sgml_docs) $(example_docs)
 
 ## what to install
 
-docdir = $(prefix)/share/doc/$(PACKAGE)
+docdir = $(datadir)/doc/$(PACKAGE)
 
 # install money example
 
