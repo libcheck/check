@@ -13,8 +13,8 @@ This manual is for Check
 (version @value{VERSION}, @value{UPDATED}),
 a unit test framework for C programs.
 
-Copyright @copyright{} 2001--2006 Fredrik Hugosson, Robert Lemmen,
-Arien Malec, and Chris Pickett.
+Copyright @copyright{} 2001--2006 Arien Malec, Chris Pickett, Fredrik
+Hugosson, and Robert Lemmen.
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
@@ -37,6 +37,8 @@ entitled ``@acronym{GNU} Free Documentation License.''
 @subtitle for version @value{VERSION}, @value{UPDATED}
 @author Arien Malec 
 @author Chris Pickett
+@author Fredrik Hugosson
+@author Robert Lemmen
 
 @c The following two commands start the copyright page.
 @page
@@ -52,6 +54,12 @@ entitled ``@acronym{GNU} Free Documentation License.''
 @top Check
 
 @insertcopying
+
+Please send corrections to this manual to
+@email{check-devel@@lists.sourceforge.net}.  We'd prefer it if you can
+send a unified diff (@command{diff -u}) against the
+@file{doc/check.texi} file that ships with Check, but something is
+still better than nothing if you can't manage that.
 @end ifnottex
 
 @menu
@@ -59,6 +67,7 @@ entitled ``@acronym{GNU} Free Documentation License.''
 * Unit Testing in C::           
 * Tutorial::                    
 * Advanced Features::           
+* Conclusion and References::   
 * AM_PATH_CHECK::               
 * Copying This Manual::         
 * Index::                       
@@ -83,12 +92,21 @@ Advanced Features
 * Running Multiple Cases::      
 * No Fork Mode::                
 * Test Fixtures::               
+* Multiple Suites in one SRunner::  
+* Testing Signal Handling::     
+* Looping Tests::               
+* Test Timeouts::               
+* Determining Test Coverage::   
 * Test Logging::                
 
 Test Fixtures
 
 * Test Fixture Examples::       
 * Checked vs Unchecked Fixtures::  
+
+Test Logging
+
+* XML Logging::                 
 
 Copying This Manual
 
@@ -450,7 +468,7 @@ Here are the changes to @file{check_money.c} for our first unit test:
 @verbatiminclude example/tests/check_money.1-2.c.diff
 @end example
 
-@findex fail_unless ()
+@findex fail_unless()
 A unit test should just chug along and complete.  If it exits early,
 or is signaled, it will fail with a generic error message.  (Note: it
 is conceivable that you expect an early exit, or a signal.  There is
@@ -461,28 +479,28 @@ to use the @code{fail_unless()} function.  The function (actually a
 macro) takes a first Boolean argument, and an error message to send if
 the condition is not true.
 
-@findex fail ()
+@findex fail()
 If the Boolean argument is too complicated to elegantly express within
 @code{fail_unless()}, there is an alternate function @code{fail()}
 that unconditionally fails.  The second test inside
 @code{test_money_create} above could be rewritten as follows:
 @example
 @verbatim
-   if (strcmp (money_currency (m), "USD") != 0) 
-     {
-       fail ("Currency not set correctly on creation");
-     }
+if (strcmp (money_currency (m), "USD") != 0) 
+  {
+    fail ("Currency not set correctly on creation");
+  }
 @end verbatim
 @end example
 
-@findex fail_if ()
+@findex fail_if()
 There is also a @code{fail_if()} function, which is the
 inverse of @code{fail_unless()}.  Using it, the above test then
 looks like this:
 @example
 @verbatim
-   fail_if (strcmp (money_currency (m), "USD") != 0,
-            "Currency not set correctly on creation");
+fail_if (strcmp (money_currency (m), "USD") != 0,
+         "Currency not set correctly on creation");
 @end verbatim
 @end example
 
@@ -491,15 +509,15 @@ argument and substitutes a suitable message for you.  So you could also
 write a test as follows:
 @example
 @verbatim
-   fail_unless (money_amount (m) == 5, NULL);
+fail_unless (money_amount (m) == 5, NULL);
 @end verbatim
 @end example
 
 This is equivalent to:
 @example
 @verbatim
-   fail_unless (money_amount (m) == 5, 
-                "Assertion 'money_amount (m) == 5' failed");
+fail_unless (money_amount (m) == 5, 
+             "Assertion 'money_amount (m) == 5' failed");
 @end verbatim
 @end example
 
@@ -596,7 +614,7 @@ focus on making the test pass.
 @node SRunner Output,  , Creating a Suite, Tutorial
 @section SRunner Output
 
-@findex srunner_run_all
+@findex srunner_run_all()
 The function to run tests in an @code{SRunner} is defined as follows:
 @example
 @verbatim
@@ -731,7 +749,7 @@ implement that, the symmetric @code{money_free()}, and
 @verbatiminclude example/src/money.4-5.c.diff
 @end example
 
-@node Advanced Features, AM_PATH_CHECK, Tutorial, Top
+@node Advanced Features, Conclusion and References, Tutorial, Top
 @chapter Advanced Features
 
 What you've seen so far is all you need for basic unit testing.  The
@@ -742,6 +760,11 @@ easier for the developer to write, run, and analyse tests.
 * Running Multiple Cases::      
 * No Fork Mode::                
 * Test Fixtures::               
+* Multiple Suites in one SRunner::  
+* Testing Signal Handling::     
+* Looping Tests::               
+* Test Timeouts::               
+* Determining Test Coverage::   
 * Test Logging::                
 @end menu
 
@@ -799,7 +822,7 @@ assume the following values: @code{CK_FORK} and @code{CK_NOFORK}.  An
 explicit call to @code{srunner_set_fork_status()} overrides the
 @code{CK_FORK} environment variable.
 
-@node Test Fixtures, Test Logging, No Fork Mode, Advanced Features
+@node Test Fixtures, Multiple Suites in one SRunner, No Fork Mode, Advanced Features
 @section Test Fixtures
 
 We may want multiple tests that all use the same Money.  In such
@@ -906,10 +929,306 @@ unchecked fixtures, the unit tests for the test case, and the teardown
 function for the fixture will not be run.  A fixture error will be
 created and reported to the @code{SRunner}.
 
-@node Test Logging,  , Test Fixtures, Advanced Features
+@node Multiple Suites in one SRunner, Testing Signal Handling, Test Fixtures, Advanced Features
+@section Multiple Suites in one SRunner
+
+In a large program, it will be convenient to create multiple suites,
+each testing a module of the program.  While one can create several
+test programs, each running one @code{Suite}, it may be convenient to
+create one main test program, and use it to run multiple suites.  The
+Check test suite provides an example of how to do this. The main
+testing program is called @code{check_check}, and has a header file
+that declares suite creation functions for all the module tests:
+@example
+@verbatim
+Suite *make_sub_suite (void);
+Suite *make_sub2_suite (void);
+Suite *make_master_suite (void);
+Suite *make_list_suite (void);
+Suite *make_msg_suite (void);
+Suite *make_log_suite (void);
+Suite *make_limit_suite (void);
+Suite *make_fork_suite (void);
+Suite *make_fixture_suite (void);
+Suite *make_pack_suite (void);
+@end verbatim
+@end example
+
+@findex srunner_add_suite()
+The function @code{srunner_add_suite()} is used to add additional
+suites to an @code{SRunner}.  Here is the code that sets up and runs
+the @code{SRunner} in the @code{main()} function in
+@file{check_check_main.c}:
+@example
+@verbatim
+SRunner *sr;
+sr = srunner_create (make_master_suite ());
+srunner_add_suite (sr, make_list_suite ());
+srunner_add_suite (sr, make_msg_suite ());
+srunner_add_suite (sr, make_log_suite ());
+srunner_add_suite (sr, make_limit_suite ());
+srunner_add_suite (sr, make_fork_suite ());
+srunner_add_suite (sr, make_fixture_suite ());
+srunner_add_suite (sr, make_pack_suite ());
+@end verbatim
+@end example
+
+@node Testing Signal Handling, Looping Tests, Multiple Suites in one SRunner, Advanced Features
+@section Testing Signal Handling
+
+@findex tcase_add_test_raise_signal()
+
+To enable testing of signal handling, there is a function
+@code{tcase_add_test_raise_signal()} which is used instead of
+@code{tcase_add_test()}.  This function takes an additional signal
+argument, specifying a signal that the test expects to receive.  If no
+signal is received this is logged as a failure.  If a different signal
+is received this is logged as an error.
+
+The signal handling functionality only works in CK_FORK mode.
+
+@node Looping Tests, Test Timeouts, Testing Signal Handling, Advanced Features
+@section Looping Tests
+
+Looping tests are tests that are called with a new context for each
+loop iteration.  This makes them ideal for table based tests.  If
+loops are used inside ordinary tests to test multiple values, only the
+first error will be shown before the test exits.  However, looping
+tests allow for all errors to be shown at once, which can help out
+with debugging.
+
+@findex tcase_add_loop_test()
+Adding a normal test with @code{tcase_add_loop_test()} instead of
+@code{tcase_add_test()} will make the test function the body of a
+@code{for} loop, with the addition of a fork before each call.  The
+loop variable @code{i} is available for use inside the test function;
+for example, it could serve as an index into a table.  For failures,
+the iteration which caused the failure is available in error messages
+and logs.  
+
+Start and end values for the loop are supplied when adding the test.
+The values are used as in a normal @code{for} loop.  Below is some
+pseudo-code to show the concept:
+@example
+@verbatim
+for (i = tfun->loop_start; i < tfun->loop_end; i++)
+{
+  fork();      /* New context */
+  tfun->f(i);  /* Call test function */
+  wait();      /* Wait for child to terminate */
+}
+@end verbatim
+@end example
+
+Looping tests work in @code{CK_NOFORK} mode as well, but without the
+forking.  This means that only the first error will be shown.
+
+@node Test Timeouts, Determining Test Coverage, Looping Tests, Advanced Features
+@section Test Timeouts
+
+@findex tcase_set_timeout()
+@vindex CK_DEFAULT_TIMEOUT
+To be certain that a test won't hang indefinitely, all tests are run
+with a timeout, the default being 3 seconds.  If the test is not
+finished within that time, it is killed and logged as an error.
+
+The timeout for a specific test case, which may contain multiple unit
+tests, can be changed with the @code{tcase_set_timeout()} function.
+The default timeout used for all test cases can be changed with the
+environment variable @code{CK_DEFAULT_TIMEOUT}, but this will not
+override an explicitly set timeout.  All timeout arguments are in
+seconds and a timeout of 0 seconds turns off the timeout
+functionality.
+
+Test timeouts are only available in CK_FORK mode.
+
+@node Determining Test Coverage, Test Logging, Test Timeouts, Advanced Features
+@section Determining Test Coverage
+
+The term @dfn{code coverage} refers to the extent that the statements
+of a program are executed during a run.  Thus, @dfn{test coverage}
+refers to code coverage when executing unit tests.  This information
+can help you to do two things:
+
+@itemize
+@item 
+Write better tests that more fully exercise your code, thereby
+improving confidence in it.
+
+@item
+Detect dead code that could be factored away.
+@end itemize
+  
+Check itself does not provide any means to determine this test
+coverage; rather, this is the job of the compiler and its related
+tools.  In the case of @command{gcc} this information is easy to
+obtain, and other compilers should provide similar facilities.
+
+Using @command{gcc}, first enable test coverage profiling when
+building your source by specifying the @option{-fprofile-arcs} and
+@option{-ftest-coverage} switches:
+@example
+@verbatim
+$ gcc -g -Wall -fprofile-arcs -ftest-coverage -o foo foo.c foo_check.c
+@end verbatim
+@end example
+
+You will see that an additional @file{.gcno} file is created for each
+@file{.c} input file.  After running your tests the normal way, a
+@file{.gcda} file is created for each @file{.gcno} file.  These
+contain the coverage data in a raw format.  To combine this
+information and a source file into a more readable format you can use
+the @command{gcov} utility:
+@example
+@verbatim
+$ gcov foo.c
+@end verbatim
+@end example
+
+This will produce the file @file{foo.c.gcov} which looks like this:
+@example
+@verbatim
+     -:   41:     * object */
+    18:   42:    if (ht->table[p] != NULL) {
+     -:   43:        /* replaces the current entry */
+ #####:   44:        ht->count--;
+ #####:   45:        ht->size -= ht->table[p]->size +
+ #####:   46:          sizeof(struct hashtable_entry);   
+@end verbatim
+@end example
+
+As you can see this is an annotated source file with three columns:
+usage information, line numbers, and the original source.  The usage
+information in the first column can either be '-', which means that
+this line does not contain code that could be executed; '#####', which
+means this line was never executed altough it does contain
+code---these are the lines that are probably most interesting for you;
+or a number, which indicates how often that line was executed.
+
+This is of course only a very brief overview, but it should illustrate
+how determining test coverage generally works, and how it can help
+you.  For more information or help with other compilers, please refer
+to the relevant manuals.
+
+@node Test Logging,  , Determining Test Coverage, Advanced Features
 @section Test Logging
 
-@node AM_PATH_CHECK, Copying This Manual, Advanced Features, Top
+@findex srunner_set_log()
+Check supports an operation to log the results of a test run.  To use
+test logging, call the @code{srunner_set_log()} function with the name
+of the log file you wish to create:
+@example
+@verbatim
+SRunner *sr;
+sr = srunner_create (make_s1_suite ());
+srunner_add_suite (sr, make_s2_suite ());
+srunner_set_log (sr, "test.log");
+srunner_run_all (sr, CK_NORMAL);
+@end verbatim
+@end example
+
+In this example, Check will write the results of the run to
+@file{test.log}.  The @code{print_mode} argument to
+@code{srunner_run_all()} is ignored during test logging; the log will
+contain a result entry, organized by suite, for every test run.  Here
+is an example of test log output:
+@example
+@verbatim
+Running suite S1 
+ex_log_output.c:8:P:Core:test_pass: Test passed
+ex_log_output.c:14:F:Core:test_fail: Failure
+ex_log_output.c:18:E:Core:test_exit: (after this point) Early exit
+with return value 1
+Running suite S2 
+ex_log_output.c:26:P:Core:test_pass2: Test passed
+Results for all suites run:
+50%: Checks: 4, Failures: 1, Errors: 1
+@end verbatim
+@end example
+
+@menu
+* XML Logging::                 
+@end menu
+
+@node XML Logging,  , Test Logging, Test Logging
+@subsection XML Logging
+
+@findex srunner_set_xml()
+@findex srunner_has_xml()
+@findex srunner_xml_fname()
+The log can also be written in XML.  The following functions define
+the interface for XML logs:
+@example
+@verbatim
+void srunner_set_xml (SRunner *sr, const char *fname);
+int srunner_has_xml (SRunner *sr);
+const char *srunner_xml_fname (SRunner *sr);
+@end verbatim
+@end example
+
+The only thing you need to do to get XML output is call
+@code{srunner_set_xml()} before the tests are run.  Here is an example
+of the same log output as before but in XML:
+@example
+@verbatim
+<?xml version="1.0"?>
+<testsuites xmlns="http://check.sourceforge.net/ns">
+  <datetime>2004-08-20 12:53:32</datetime>
+  <suite>
+    <title>S1</title>
+    <test result="success">
+      <path>.</path>
+      <fn>ex_xml_output.c:8</fn>
+      <id>test_pass</id>
+      <description>Core</description>
+      <message>Passed</message>
+    </test>
+    <test result="failure">
+      <path>.</path>
+      <fn>ex_xml_output.c:14</fn>
+      <id>test_fail</id>
+      <description>Core</description>
+      <message>Failure</message>
+    </test>
+    <test result="error">
+      <path>.</path>
+      <fn>ex_xml_output.c:18</fn>
+      <id>test_exit</id>
+      <description>Core</description>
+      <message>Early exit with return value 1</message>
+    </test>
+  </suite>
+  <suite>
+    <title>S2</title>
+    <test result="success">
+      <path>.</path>
+      <fn>ex_xml_output.c:26</fn>
+      <id>test_pass2</id>
+      <description>Core</description>
+      <message>Passed</message>
+    </test>
+  </suite>
+  <duration>0.304875</duration>
+</testsuites>
+@end verbatim
+@end example
+
+@node Conclusion and References, AM_PATH_CHECK, Advanced Features, Top
+@chapter Conclusion and References
+The tutorial and description of advanced features has provided an
+introduction to all of the functionality available in Check.
+Hopefully, this is enough to get you started writing unit tests with
+Check.  All the rest is simply application of what has been learned so
+far with repeated application of the ``test a little, code a little''
+strategy.
+
+For further reference, see Kent Beck, ``Test-Driven Development: By
+Example'', 1st ed., Addison-Wesley, 2003.  ISBN 0-321-14653-0.
+
+If you know of other authoritative references to unit testing and
+test-driven development, please send us a patch to this manual.
+
+@node AM_PATH_CHECK, Copying This Manual, Conclusion and References, Top
 @chapter AM_PATH_CHECK
 @findex AM_PATH_CHECK()
 
@@ -973,7 +1292,6 @@ include @option{-I DIR} with @code{DIR} being the location of
 @end menu
 
 @include fdl.texi
-
 
 @node Index,  , Copying This Manual, Top
 @unnumbered Index
