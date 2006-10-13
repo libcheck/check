@@ -148,12 +148,15 @@ void stdout_lfun (SRunner *sr, FILE *file, enum print_output printmode,
   case CLSTART_S:
     s = obj;
     if (printmode > CK_SILENT) {
-      fprintf(file, " %s", s->name);
+      fprintf(file, " %s\n", s->name);
     }
     break;
   case CLEND_SR:
     if (printmode > CK_SILENT) {
-      fprintf (file, "\n");
+      /* we don't want a newline before printing here, newlines should
+	 come after printing a string, not before.  it's better to add
+	 the newline above in CLSTART_S.
+      */
       srunner_fprint (file, sr, printmode);
     }
     break;
