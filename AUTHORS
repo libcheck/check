@@ -10,7 +10,3 @@ Patches:     Bernhard Reiter (configure issues)
              Gilgamesh Nootebos (bug fixes)
 	     Frederic Peters (XML output)
 	     Lucas Di Pentima and Cesar Ballardini (signals)
-
-Design suggestions:
-             Fred Drake (checked fixture functions)
-             Jim O'Leary (forkless mode)
