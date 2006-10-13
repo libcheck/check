@@ -1,3 +1,5 @@
+## Process this file with automake to produce Makefile.in
+
 lib_LIBRARIES=libcheck.a
 
 include_HEADERS=check.h

@@ -1,3 +1,5 @@
+## Process this file with automake to produce Makefile.in
+
 if PLAIN_DOCDIR
 DOCROOTDIR=$(prefix)/share/doc/$(PACKAGE)
 else

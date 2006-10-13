@@ -1,3 +1,5 @@
+## Process this file with automake to produce Makefile.in
+
 WD=`pwd`
 TOPDIRFLAGS=--define "_topdir ${WD}"
 RPMFLAGS=

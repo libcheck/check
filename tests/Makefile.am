@@ -1,3 +1,5 @@
+## Process this file with automake to produce Makefile.in
+
 TESTS = \
 	check_check		\
 	test_output.sh		\

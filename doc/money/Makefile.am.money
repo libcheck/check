@@ -1,3 +1,5 @@
+## Process this file with automake to produce Makefile.in
+
 TESTS=check_money
 
 noinst_PROGRAMS=check_money
