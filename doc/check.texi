@@ -378,19 +378,20 @@ defined by the @code{AM_PATH_CHECK} macro.
 Now that all this infrastructure is out of the way, we can get on with
 development.  @file{src/money.h} should only contain standard C header
 boilerplate:
-@example
-@verbatim
-#ifndef MONEY_H
-#define MONEY_H
 
-#endif /* MONEY_H */
-@end verbatim
+@example
+@verbatiminclude example/src/money.1.h
 @end example
 
 @file{src/money.c} should be empty, and @file{tests/check_money.c}
-should only contain an empty @code{main()} function.  Create the GNU
-Build System for the project and then build @file{main} and
-@file{libmoney.la} as follows:
+should only contain an empty @code{main()} function:
+
+@example
+@verbatiminclude example/tests/check_money.1.c
+@end example
+
+Create the GNU Build System for the project and then build @file{main}
+and @file{libmoney.la} as follows:
 @example
 @verbatim
 $ autoreconf --install
@@ -427,21 +428,10 @@ authors of Test Infected (who clearly don't really get this stuff,
 only being some of the originators of the Patterns approach to
 software development and OO design).
 
-Here is our first unit test:
+Here are the changes to @file{check_money.c} for our first unit test:
+
 @example
-@verbatim
-START_TEST (test_money_create)
-{
-  Money *m;
-  m = money_create (5, "USD");
-  fail_unless (money_amount (m) == 5,
-               "Amount not set correctly on creation");
-  fail_unless (strcmp (money_currency (m), "USD") == 0,
-               "Currency not set correctly on creation");
-  money_free(m);
-}
-END_TEST
-@end verbatim
+@verbatiminclude example/tests/check_money.1-2.c.diff
 @end example
 
 @findex fail_unless()
@@ -462,10 +452,10 @@ that unconditionally fails.  The second test inside
 @code{test_money_create} above could be rewritten as follows:
 @example
 @verbatim
-  if (strcmp (money_currency (m), "USD") != 0) 
-    {
-      fail ("Currency not set correctly on creation");
-    }
+   if (strcmp (money_currency (m), "USD") != 0) 
+     {
+       fail ("Currency not set correctly on creation");
+     }
 @end verbatim
 @end example
 
@@ -475,8 +465,8 @@ inverse of @code{fail_unless()}.  Using it, the above test then
 looks like this:
 @example
 @verbatim
-  fail_if (strcmp (money_currency (m), "USD") != 0,
-           "Currency not set correctly on creation");
+   fail_if (strcmp (money_currency (m), "USD") != 0,
+            "Currency not set correctly on creation");
 @end verbatim
 @end example
 
@@ -485,15 +475,15 @@ argument and substitutes a suitable message for you.  So you could also
 write a test as follows:
 @example
 @verbatim
-  fail_unless (money_amount (m) == 5, NULL);
+   fail_unless (money_amount (m) == 5, NULL);
 @end verbatim
 @end example
 
 This is equivalent to:
 @example
 @verbatim
-  fail_unless (money_amount (m) == 5, 
-               "Assertion 'money_amount (m) == 5' failed");
+   fail_unless (money_amount (m) == 5, 
+                "Assertion 'money_amount (m) == 5' failed");
 @end verbatim
 @end example
 
@@ -503,8 +493,8 @@ useful while debugging.  With @code{printf}-style formatting the
 message could look like this:
 @example
 @verbatim
-  fail_unless(money_amount (m) == 5,
-              "Amount was %d, instead of 5", money_amount (m));
+fail_unless(money_amount (m) == 5,
+            "Amount was %d, instead of 5", money_amount (m));
 @end verbatim
 @end example
 
@@ -518,81 +508,74 @@ implementation does not match the specification.  If all we do is edit
 the sources so that the unit test compiles, we are actually making
 progress, guided by the unit tests, so that's what we will now do.
 
-We will add the following to our header @file{money.h}:
+We will patch our header @file{money.h} as follows:
+
 @example
-@verbatim
-typedef struct Money Money;
- 
-Money *money_create (int amount, char *currency); 
-
-int money_amount (Money * m); 
-
-char *money_currency (Money * m); 
-
-void money_free (Money * m);
-@end verbatim
+@verbatiminclude example/src/money.1-2.h.diff
 @end example
 
-and the following to the top of @file{check_money.c}:
-@example
-@verbatim
-#include <check.h>
-#include "../src/money.h"
-@end verbatim
-@end example
-
-@c FIXME: this should be introduced after something fails, like main()
 Our code compiles now, and again passes all of the tests.  However,
 once we try to @emph{use} the functions in @code{libmoney} in the
 @code{main()} of @code{check_money}, we'll run into more problems, as
 they haven't actually been implemented yet.
 
 @node Creating a Suite,  , Test a Little, Tutorial
-@section Create a Suite
+@section Creating a Suite
 
-@c FIXME: should come after the bit where we try to call them and
-@c FIXME: it fails.
-The tests aren't actually being run by @command{check_money}, and if
-we did try to run them we would encounter further errors; the
-@file{money.c} implementation of the @file{money.h} interface hasn't
-been defined yet.  Let's create the @code{Money} type and stubs for
-each of the functions:
+To run unit tests with Check, we must create some test cases,
+aggregate them into a suite, and run them with a suite runner. That's
+a bit of overhead, but it is mostly one-off.  Here's a diff for the
+new version of @file{check_money.c}.  Note that we include stdlib.h to
+get the definitions of @code{EXIT_SUCCESS} and @code{EXIT_FAILURE}.
+
 @example
-@verbatim
-#include <stdlib.h>
-#include "money.h"
-
-struct Money
-{
-  int amount;
-  char *currency;
-};
-
-Money *
-money_create (int amount, char *currency) 
-{ 
-  return NULL; 
-}
-
-int
-money_amount (Money * m) 
-{ 
-  return 0; 
-}
-
-char *
-money_currency (Money * m) 
-{ 
-  return NULL; 
-}
-
-void
-money_free (Money * m) 
-{ 
-  return; 
-}
-@end verbatim
+@verbatiminclude example/tests/check_money.2-3.c.diff
 @end example
+
+Most of the @code{money_suite()} code should be self-explanatory.  We are
+creating a suite, creating a test case, adding the test case to the
+suite, and adding the unit test we created above to the test case.
+Why separate this off into a separate function, rather than inline it
+in @code{main()}?  Because any new tests will get added in
+@code{money_suite()}, but nothing will need to change in @code{main()}
+for the rest of this example, so main will stay relatively clean and
+simple.
+
+Unit tests are internally defined as static functions.  This means
+that the code to add unit tests to test cases must be in the same
+compilation unit as the unit tests themselves.  This provides another
+reason to put the creation of the test suite in a separate function:
+you may later want to keep one source file per suite; defining a
+uniquely named suite creation function allows you later to define a
+header file giving prototypes for all the suite creation functions,
+and encapsulate the details of where and how unit tests are defined
+behind those functions.  See the test program defined for Check itself
+for an example of this strategy.
+
+The code in @code{main()} bears some explanation.  We are creating a
+suite runner object of type @code{SRunner} from the @code{Suite} we
+created in @code{money_suite()}.  We then run the suite, using the
+@code{CK_NORMAL} flag to specify that we should print a summary of the
+run, and list any failures that may have occurred.  We capture the
+number of failures that occurred during the run, and use that to
+decide how to return.  The @code{check} target created by Automake
+uses the return value to decide whether the tests passed or failed.
+
+Now that the tests are actually being run by @command{check_money}, we
+encounter linker errors again we try out @code{make check}.  Try it
+for yourself and see.  The reason is that the @file{money.c}
+implementation of the @file{money.h} interface hasn't been created
+yet.  Let's go with the fastest solution possible and implement stubs
+for each of the functions in @code{money.c}:
+
+@example
+@verbatiminclude example/src/money.1-3.c.diff
+@end example
+
+Note that we @code{#include <stdlib.h>} to get the definition of
+@code{NULL}.  Now, the code compiles and links when we run @code{make
+check}, but our unit test fails.  Still, this is progress, and we can
+focus on making the test pass.
 
 @node AM_PATH_CHECK, Copying This Manual, Tutorial, Top
 @chapter AM_PATH_CHECK
