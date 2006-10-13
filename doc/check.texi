@@ -82,7 +82,13 @@ Advanced Features
 
 * Running Multiple Cases::      
 * No Fork Mode::                
+* Test Fixtures::               
 * Test Logging::                
+
+Test Fixtures
+
+* Test Fixture Examples::       
+* Checked vs Unchecked Fixtures::  
 
 Copying This Manual
 
@@ -735,6 +741,7 @@ easier for the developer to write, run, and analyse tests.
 @menu
 * Running Multiple Cases::      
 * No Fork Mode::                
+* Test Fixtures::               
 * Test Logging::                
 @end menu
 
@@ -761,7 +768,7 @@ additional information about where things broke.
 @verbatiminclude example/src/money.5-6.c.diff
 @end example
 
-@node No Fork Mode, Test Logging, Running Multiple Cases, Advanced Features
+@node No Fork Mode, Test Fixtures, Running Multiple Cases, Advanced Features
 @section No Fork Mode
 
 Check normally forks to create a separate address space.  This allows
@@ -792,7 +799,114 @@ assume the following values: @code{CK_FORK} and @code{CK_NOFORK}.  An
 explicit call to @code{srunner_set_fork_status()} overrides the
 @code{CK_FORK} environment variable.
 
-@node Test Logging,  , No Fork Mode, Advanced Features
+@node Test Fixtures, Test Logging, No Fork Mode, Advanced Features
+@section Test Fixtures
+
+We may want multiple tests that all use the same Money.  In such
+cases, rather than setting up and tearing down objects for each unit
+test, it may be convenient to add some setup that is constant across
+all the tests in a test case.  In the Extreme Programming (XP)
+approach to unit tests, each such setup is called a @dfn{test
+fixture}.
+
+A fixture is created by defining a setup and/or a teardown function,
+and associating it with a test case.  There are two kinds of test
+fixtures in Check: checked and unchecked fixtures. These are defined
+as follows:
+
+@table @asis
+@item Checked fixtures
+are run inside the address space created by the fork to create the
+unit test.  Before each unit test in a test case, the @code{setup()}
+function is run, if defined. After each unit test, the @code{teardown()}
+function is run, if defined.  Since they run inside the forked address
+space, if checked fixtures signal or otherwise fail, they will be
+caught and reported by the @code{SRunner}.
+
+@item Unchecked fixtures
+are run in the same address space as the test program. Therefore they
+may not signal or exit, but may use the fail functions. The unchecked
+@code{setup()}, if defined, is run before the test case is
+started. The unchecked @code{teardown()}, if defined, is run after the
+test case is done.
+@end table
+
+@menu
+* Test Fixture Examples::       
+* Checked vs Unchecked Fixtures::  
+@end menu
+
+@node Test Fixture Examples, Checked vs Unchecked Fixtures, Test Fixtures, Test Fixtures
+@subsection Test Fixture Examples
+
+We create a test fixture in Check as follows:
+
+@enumerate
+@item
+Define global variables, and functions to setup and teardown the
+globals.  The functions both take @code{void} and return @code{void}.
+In our example, we'll make @code{five_dollars} be a global created and
+freed by @code{setup()} and @code{teardown()} respectively.
+
+@findex tcase_add_checked_fixture()     
+@item
+Add the @code{setup()} and @code{teardown()} functions to the test
+case with @code{tcase_add_checked_fixture()}.  In our example, this
+belongs in the suite setup function @code{money_suite}.
+
+@item
+Rewrite tests to use the globals.  We'll rewrite our first to use
+@code{five_dollars}.
+@end enumerate
+
+Note that the functions used for setup and teardown do not need to be
+named @code{setup()} and @code{teardown()}, but they must take
+@code{void} and return @code{void}.  We'll update @file{check_money.c}
+as follows:
+
+@example
+@verbatiminclude example/tests/check_money.6-7.c.diff
+@end example
+
+@node Checked vs Unchecked Fixtures,  , Test Fixture Examples, Test Fixtures
+@subsection Checked vs Unchecked Fixtures
+
+Checked fixtures run once for each unit test in a test case, and so
+they should not be used for expensive setup.  On the other hand, since
+unchecked fixtures may take down the entire test program, they should
+only be used if they are known to be safe.  Recall that unchecked
+fixtures run once per test case, as opposed to once per unit test.
+
+Additionally, checked and unchecked fixtures may behave differently in
+@code{CK_NOFORK} mode:
+
+@itemize
+@item
+Normally, in @code{CK_FORK} mode, unit tests may abuse the objects
+created in an unchecked fixture with impunity, without affecting other
+unit tests in the same test case, because the fork creates a separate
+address space.
+
+@item
+However, in @code{CK_NOFORK} mode, all tests live in the same address
+space, and side effects in one test will affect the unchecked fixture
+for the other tests.
+@end itemize
+
+A checked fixture will generally not be affected by unit test side
+effects, since the @code{setup()} is run before each unit test.  There
+is an exception for side effects to the total environment in which the
+test program lives: for example, if the @code{setup()} function
+initializes a file that a unit test then changes, the combination of
+the @code{teardown()} function and @code{setup} fuction must be able
+to restore the environment for the next unit test.
+
+If the @code{setup} function in a fixture fails, in either checked or
+unchecked fixtures, the unit tests for the test case, and the teardown
+function for the fixture will not be run.  A fixture error will be
+created and reported to the @code{SRunner}.
+
+@node Test Logging,  , Test Fixtures, Advanced Features
 @section Test Logging
 
 @node AM_PATH_CHECK, Copying This Manual, Advanced Features, Top
