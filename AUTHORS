@@ -11,3 +11,8 @@ Patches:     Bernhard Reiter (configure issues)
 	     Frederic Peters (XML output)
 	     Lucas Di Pentima and Cesar Ballardini (signals)
 	     Chris Pickett (GNU Build System update)
+             Robert Lemmen (gcov description in manual)
+
+Anybody who contributed more than a couple lines of code to Check is
+considered an author.  Send patches to this file to
+<check-devel@lists.sourceforge.net>.
