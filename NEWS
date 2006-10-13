@@ -1,22 +1,29 @@
-The following changes will be in Check 0.9.4
+Fri, Oct 13, 2006: Released Check 0.9.4
 
-Got rid of debian/ directory for building .debs.  We should let Debian
-handle this.
+* Updated manual and converted from DocBook to Texinfo.
 
-Updated GNU Build System to use modern Autotools.
+* Added pkg-config support.
 
-Fixed sourceforge bug #1327225, Two teardown checked fixtures segfaults.
+* Added Libtool support to build both static and shared libraries.
 
-Added a new kind of test, looping tests, which are called with a new
-context for each loop iteration. This makes them ideal for table based
-tests. Previously, with the loop in the test itself, only the first
-error was caught and then the test would exit. Now all errors are
-shown at once which should help in debugging
+* Removed debian/ and rpm/ directories for building packages.
+  Downstream maintainers can easily handle this.
 
-Added possibility to turn off timeout tests in check's own unit tests
-through configure option --enable-timeout-tests=no.
+* Updated GNU Build System to use modern Autotools.
 
-Added coverage analysis for check's own unit tests.
+* Fixed sourceforge bug #1327225, two teardown checked fixtures
+  segfaults.
+
+* Added a new kind of test, looping tests, which are called with a new
+  context for each loop iteration. This makes them ideal for table
+  based tests. Previously, with the loop in the test itself, only the
+  first error was caught and then the test would exit. Now all errors
+  are shown at once which should help in debugging
+
+* Added possibility to turn off timeout tests in check's own unit tests
+  through configure option --disable-timeout-tests.
+
+* Added coverage analysis for check's own unit tests.
 
 Thu, Aug 25, 2005: Released Check 0.9.3
 
