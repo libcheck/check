@@ -1,13 +1,3 @@
 ## Process this file with automake to produce Makefile.in
 
-TESTS=check_money
-
-noinst_PROGRAMS=check_money
-
-check_money_SOURCES=\
-	money.h\
-	money.c\
-	check_money.c
-
-check_money_INCLUDES = @CHECK_CFLAGS@
-check_money_LDADD = @CHECK_LIBS@
+SUBDIRS = src . tests
