@@ -1,3 +1,5 @@
+Updated GNU Build System to use modern Autotools.
+
 Fixed sourceforge bug #1327225, Two teardown checked fixtures segfaults.
 
 Added a new kind of test, looping tests, which are called with a new
