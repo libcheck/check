@@ -25,3 +25,8 @@ will cause lib/ to be built before src/, then the current directory
 will be built, finally the test/ directory will be built. It is
 customary to arrange test directories to be built after everything
 else since they are meant to test what has been constructed.
+
+Documentation
+-------------
+* Convert to info format.
+* Create initial and final versions of money example.
