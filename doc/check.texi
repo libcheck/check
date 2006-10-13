@@ -26,7 +26,7 @@ entitled ``@acronym{GNU} Free Documentation License.''
 
 @dircategory Software development
 @direntry
-* Check: (check)Overview.
+* Check: (check)Introduction.
 @end direntry
 
 @titlepage
@@ -46,14 +46,14 @@ entitled ``@acronym{GNU} Free Documentation License.''
 @contents
 
 @ifnottex
-@node Top, Overview, (dir), (dir)
+@node Top, Introduction, (dir), (dir)
 @top Check
 
 @insertcopying
 @end ifnottex
 
 @menu
-* Overview::                    
+* Introduction::                
 * Copying This Manual::         
 * Index::                       
 
@@ -67,26 +67,58 @@ Copying This Manual
 @end detailmenu
 @end menu
 
-@node Overview, Copying This Manual, Top, Top
-@chapter Overview
-@cindex overview
+@node Introduction, Copying This Manual, Top, Top
+@chapter Introduction
+@cindex introduction
 
-This is a sample manual.  There is no sample program to
-invoke, but if there was, you could see its basic usage
-and command line options here.
+Check is a unit testing framework for C.  It was inspired by similar
+frameworks that currently exist for most programming languages; the
+most famous example being @uref{http://www.junit.org, JUnit} for Java.
+There is a list of unit test frameworks for multiple languages at
+@uref{http://www.xprogramming.com/software.htm}.  Unit testing has a
+long history as part of formal quality assurance methodologies, but
+has recently been associated with the lightweight methodology called
+Extreme Programming.  In that methodology, the characteristic practice
+involves interspersing unit test writing with coding (``test a
+little, code a little'').  While the incremental unit test/code
+approach is indispensable to Extreme Programming, it is also
+applicable, and perhaps indispensable, outside of that methodology.
 
-Here is a numbered list.
+The incremental test/code approach provides three main benefits to the
+developer:
 
 @enumerate
 @item
-This is the first item.
+Because the unit tests use the interface to the unit being tested,
+they allow the developer to think about how the interface should be
+designed for usage early in the coding process.
 
 @item
-This is the second item.
+They help the developer think early about aberrant cases, and code
+accordingly.
+
+@item
+By providing a documented level of correctness, they allow the
+developer to refactor (see @uref{http://www.refactoring.com})
+aggressively.
 @end enumerate
 
+That third reason is the one that turns people into unit testing
+addicts.  There is nothing so satisfying as doing a wholesale
+replacement of an implementation, and having the unit tests reassure
+you at each step of that change that all is well.  It is like the
+difference between exploring the wilderness with and without a good
+map and compass: without the proper gear, you are more likely to
+proceed cautiously and stick to the marked trails; with it, you can
+take the most direct path to where you want to go.
 
-@node Copying This Manual, Index, Overview, Top
+Look at the Check homepage for the latest information on Check:
+@uref{http://check.sourceforge.net}.
+
+The Check project page is at:
+@uref{http://sourceforge.net/projects/check/}.
+
+@node Copying This Manual, Index, Introduction, Top
 @appendix Copying This Manual
 
 @menu
