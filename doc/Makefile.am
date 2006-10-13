@@ -31,7 +31,10 @@ CLEANFILES = *~
 
 ## what to distribute
 
-EXTRA_DIST = $(sgml_docs) $(example_docs)
+EXTRA_DIST = $(sgml_docs) \
+             $(example_docs) \
+             $(example_src_docs) \
+             $(example_tests_docs)
 
 ## what to install
 
