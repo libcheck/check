@@ -1,0 +1,95 @@
+\input texinfo   @c -*-texinfo-*-
+@c %**start of header
+@setfilename check.info
+@include version.texi
+@settitle Check @value{VERSION}
+@syncodeindex pg cp
+@c %**end of header
+
+@copying
+This manual is for Check
+(version @value{VERSION}, @value{UPDATED}),
+a unit test framework for C programs.
+
+Copyright @copyright{} 2001--2006 Arien Malec and Chris Pickett
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the @acronym{GNU} Free Documentation License,
+Version 1.2 or any later version published by the Free Software
+Foundation; with no Invariant Sections, no Front-Cover texts, and no
+Back-Cover Texts.  A copy of the license is included in the section
+entitled ``@acronym{GNU} Free Documentation License.''
+@end quotation
+@end copying
+
+@dircategory Software development
+@direntry
+* Check: (check)Using Check.
+@end direntry
+
+@titlepage
+@title Check
+@subtitle A Unit Test Framework for C
+@subtitle for version @value{VERSION}, @value{UPDATED}
+@author Arien Malec 
+@author Chris Pickett
+
+@c The following two commands start the copyright page.
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@c Output the table of contents at the beginning.
+@contents
+
+@ifnottex
+@node Top
+@top Check
+
+@insertcopying
+@end ifnottex
+
+@menu
+* Using Check::
+* Copying This Manual::
+* Index::
+@end menu
+
+@node Using Check
+@chapter Using Check
+
+@pindex Check
+@cindex Using @command{libcheck}
+
+This is a sample manual.  There is no sample program to
+invoke, but if there was, you could see its basic usage
+and command line options here.
+
+Here is a numbered list.
+
+@enumerate
+@item
+This is the first item.
+
+@item
+This is the second item.
+@end enumerate
+
+@node Copying This Manual
+@appendix Copying This Manual
+
+@menu
+* GNU Free Documentation License::  License for copying this manual.
+@end menu
+
+@include fdl.texi
+
+
+@node Index
+@unnumbered Index
+
+@printindex cp
+
+@bye
