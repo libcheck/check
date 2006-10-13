@@ -4,6 +4,8 @@
 
 SUBDIRS = src doc . tests
 
+## FIXME: maybe we don't need this line
+
 AM_MAKEINFOFLAGS = -I$(top_srcdir)/doc/example
 
 ## what to clean
@@ -14,7 +16,7 @@ CLEANFILES = *~\
 
 ## what additional things to distribute
 
-EXTRA_DIST = ChangeLogOld $(m4data_DATA) $(pcdata_DATA)
+EXTRA_DIST = ChangeLogOld check.pc.in $(m4data_DATA)
 
 ## install docs
 docdir = $(datadir)/doc/$(PACKAGE)
@@ -25,8 +27,8 @@ m4datadir = $(datadir)/aclocal
 m4data_DATA = check.m4
 
 ## install check.pc
-pcdata_DATA = check.pc
 pcdatadir = $(libdir)/pkgconfig
+pcdata_DATA = check.pc
 
 SVNChangeLog:
 	svn log -v @abs_top_srcdir@ > $@
