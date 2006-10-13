@@ -55,6 +55,7 @@ entitled ``@acronym{GNU} Free Documentation License.''
 @menu
 * Introduction::                
 * Unit Testing in C::           
+* Tutorial::                    
 * Copying This Manual::         
 * Index::                       
 
@@ -63,7 +64,12 @@ entitled ``@acronym{GNU} Free Documentation License.''
 
 Unit Testing in C 
 
-* Other Unit Testing Frameworks for C::  
+* Other Frameworks for C::      
+
+Tutorial: Basic Unit Testing
+
+* How to Write a Test::         
+* Setting Up the @code{libmoney} Tests::  
 
 Copying This Manual
 
@@ -123,7 +129,7 @@ Look at the Check homepage for the latest information on Check:
 The Check project page is at:
 @uref{http://sourceforge.net/projects/check/}.
 
-@node Unit Testing in C, Copying This Manual, Introduction, Top
+@node Unit Testing in C, Tutorial, Introduction, Top
 @chapter Unit Testing in C 
 @ C unit testing
 
@@ -155,11 +161,11 @@ allows one to quickly navigate to the location of the unit test that
 failed; presumably that also works in VI and IDEs.
 
 @menu
-* Other Unit Testing Frameworks for C::  
+* Other Frameworks for C::      
 @end menu
 
-@node Other Unit Testing Frameworks for C,  , Unit Testing in C, Unit Testing in C
-@section Other Unit Testing Frameworks for C
+@node Other Frameworks for C,  , Unit Testing in C, Unit Testing in C
+@section Other Frameworks for C
 @cindex other frameworks
 @cindex frameworks
 
@@ -227,7 +233,172 @@ word, and make one a standard.  Languages such as Java and Python are
 fortunate to have standard unit test frameworks; it would be desirable
 that C have one as well.
 
-@node Copying This Manual, Index, Unit Testing in C, Top
+@node Tutorial, Copying This Manual, Unit Testing in C, Top
+@chapter Tutorial: Basic Unit Testing
+
+This tutorial will use the JUnit
+@uref{http://junit.sourceforge.net/doc/testinfected/testing.htm, Test
+Infected} article as a starting point.  We will be creating a library
+to represent money, @code{libmoney}, that allows conversions between
+different currency types.  The development style will be ``test a
+little, code a little'', with unit test writing preceding coding.
+This constantly gives us insights into module usage, and also makes
+sure we are constantly thinking about how to test our code.
+
+@menu
+* How to Write a Test::         
+* Setting Up the @code{libmoney} Tests::  
+@end menu
+
+@node How to Write a Test, Setting Up the @code{libmoney} Tests, Tutorial, Tutorial
+@section How to Write a Test
+
+Test writing using Check is very simple. The file in which the checks
+are defined must include @file{check.h} as so:
+
+@verbatim
+#include <check.h>
+@end verbatim
+
+The basic unit test looks as follows:
+
+@verbatim
+START_TEST (test_name)
+{
+  /* unit test code */
+}
+END_TEST
+@end verbatim
+
+The @code{START_TEST}/@code{END_TEST} pair are macros that setup basic
+structures to permit testing.  It is a mistake to leave off the
+@code{END_TEST} marker; doing so produces all sorts of strange errors
+when the check is compiled.
+
+@node Setting Up the @code{libmoney} Tests,  , How to Write a Test, Tutorial
+@section Setting Up the @code{libmoney} Tests
+
+The examples in this section are part of the Check distribution; you
+don't need to spend time cutting and pasting or (worse) retyping.
+Locate the Check documentation on your system and look in the
+@samp{example} directory.  The standard directory for GNU/Linux
+distributions is @samp{/usr/share/doc/check/example}.  There is an
+initial skeleton, in which our unit tests fail, and a final version in
+which all tests pass.
+@c FIXME: create initial version of tutorial example
+
+Since we are creating a library to handle money, we will first create
+a header @file{money.h}, and a file to contain our unit tests,
+@file{check_money.c}.  To manage everything we'll use Autoconf,
+Automake, and friends (collectively known as Autotools) for this
+example.  One could do something similar with ordinary Makefiles, but
+in the authors' opinion, it is generally easier to use Autotools than
+bare Makefiles, and they provide built-in support for running tests.  
+
+Note that this is not the place to explain how Autotools works.  If
+you need help understanding what's going on beyond the explanations
+here, the best place to start is probably Alexandre Duret-Lutz's
+excellent
+@uref{http://www-src.lip6.fr/homepages/Alexandre.Duret-Lutz/autotools.html,
+Autotools tutorial}.
+
+We set up a directory structure as follows:
+
+@verbatim
+.
+|-- Makefile.am
+|-- README
+|-- configure.ac
+|-- src
+|   |-- Makefile.am
+|   |-- main.c
+|   |-- money.c
+|   `-- money.h
+`-- tests
+    |-- Makefile.am
+    `-- check_money.c
+@end verbatim
+
+Note that this is the output of @command{tree}, a great directory
+visualization tool.
+
+The top-level @file{Makefile.am} is simple; it merely tells Automake
+how to process subdirectories:
+
+@verbatim
+SUBDIRS = src . tests
+@end verbatim
+
+@file{configure.ac} is standard Autoconf boilerplate, as specified by
+the Autotools tutorial and as suggested by @command{autoscan}.  The
+@code{AM_PATH_CHECK()} line does three things:
+
+@enumerate
+@item 
+Ensure check.h is available
+
+@item 
+Ensure a compatible version of Check is installed
+
+@item 
+Set @env{CHECK_CFLAGS} and @env{CHECK_LIBS} for use by Automake.
+@end enumerate
+
+@file{src/Makefile.am} builds @samp{libmoney} as a Libtool archive,
+and links it to an application simply called @command{main}.  The
+application's behaviour is not important to this tutorial; what's
+important is that none of the functions we want to unit test appear in
+@file{main.c}; this probably means that the only function in
+@file{main.c} should be @code{main()} itself.  In order to test the
+whole application, unit testing is not appropriate: we should use a
+system testing tool like Autotest.
+
+Here is the @file{Makefile.am}:
+
+@verbatim
+   </para>
+   <programlisting>
+TESTS=check_money
+noinst_PROGRAMS=check_money
+check_money_SOURCES=  money.h money.c check_money.c
+check_money_INCLUDES= @CHECK_CFLAGS@
+check_money_LDADD= @CHECK_LIBS@</programlisting>
+   <para>
+
+ The money.h header should only contain the standard &num;ifndef MONEY_H stuff, money.c should be empty, and check_money.c should only contain an empty main function. Run this with make -k check, after going through the setups to get autoconf and friends working. If all goes well, make should report that our tests passed. No surprise, because there aren't any tests to fail.
+   </para>
+   <para>
+The AM_PATH_CHECK() macro is defined in the file check.m4 which is installed by Check. If you see warnings from automake or aclocal this most certainly means that you forgot to call aclocal or that aclocal can't find check.m4. AM_PATH_CHECK() has some optional parameters that you might find useful:
+   </para>
+   <programlisting>
+AM_PATH_CHECK([MINIMUM-VERSION,[ACTION-IF-FOUND[,ACTION-IF-NOT-FOUND]]])</programlisting>
+
+   <para>
+One way to run the autoconf/automake tools is shown below in a simple
+shell script. The variable CHECK_DIR should point to the directory
+where check.m4 is installed. If you install it in a standard location,
+e.g. /usr/share/aclocal, then you won't need the variable defined.
+   </para>
+   <programlisting>
+#!/bin/sh
+if [ -n "$CHECK_DIR" ]; then
+    aclocal -I $CHECK_DIR
+else
+    aclocal
+fi
+autoconf
+autoheader
+automake --add-missing</programlisting>
+
+This 
+
+This shell script and the above configure.in were run on a Red Hat 9
+box with Autoconf version 2.13 and automake (GNU automake) 1.4-p6. As
+the saying goes, &quot;Your mileage may vary...&quot;
+@end verbatim
+
+
+@node Copying This Manual, Index, Tutorial, Top
 @appendix Copying This Manual
 
 @menu
