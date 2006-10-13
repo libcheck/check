@@ -5,6 +5,7 @@
 @settitle Check @value{VERSION}
 @syncodeindex fn cp
 @syncodeindex tp cp
+@syncodeindex vr cp
 @c %**end of header
 
 @copying
@@ -74,6 +75,9 @@ Tutorial: Basic Unit Testing
 * Setting Up the Money Build::  
 * Test a Little::               
 * Creating a Suite::            
+* SRunner Output::              
+* Advanced Features::           
+* Test Logging::                
 
 Copying This Manual
 
@@ -254,6 +258,9 @@ sure we are constantly thinking about how to test our code.
 * Setting Up the Money Build::  
 * Test a Little::               
 * Creating a Suite::            
+* SRunner Output::              
+* Advanced Features::           
+* Test Logging::                
 @end menu
 
 @node How to Write a Test, Setting Up the Money Build, Tutorial, Tutorial
@@ -434,7 +441,7 @@ Here are the changes to @file{check_money.c} for our first unit test:
 @verbatiminclude example/tests/check_money.1-2.c.diff
 @end example
 
-@findex fail_unless()
+@findex fail_unless ()
 A unit test should just chug along and complete.  If it exits early,
 or is signaled, it will fail with a generic error message.  (Note: it
 is conceivable that you expect an early exit, or a signal.  There is
@@ -445,7 +452,7 @@ to use the @code{fail_unless()} function.  The function (actually a
 macro) takes a first Boolean argument, and an error message to send if
 the condition is not true.
 
-@findex fail()
+@findex fail ()
 If the Boolean argument is too complicated to elegantly express within
 @code{fail_unless()}, there is an alternate function @code{fail()}
 that unconditionally fails.  The second test inside
@@ -459,7 +466,7 @@ that unconditionally fails.  The second test inside
 @end verbatim
 @end example
 
-@findex fail_if()
+@findex fail_if ()
 There is also a @code{fail_if()} function, which is the
 inverse of @code{fail_unless()}.  Using it, the above test then
 looks like this:
@@ -519,7 +526,7 @@ once we try to @emph{use} the functions in @code{libmoney} in the
 @code{main()} of @code{check_money}, we'll run into more problems, as
 they haven't actually been implemented yet.
 
-@node Creating a Suite,  , Test a Little, Tutorial
+@node Creating a Suite, SRunner Output, Test a Little, Tutorial
 @section Creating a Suite
 
 To run unit tests with Check, we must create some test cases,
@@ -577,9 +584,153 @@ Note that we @code{#include <stdlib.h>} to get the definition of
 check}, but our unit test fails.  Still, this is progress, and we can
 focus on making the test pass.
 
+@node SRunner Output, Advanced Features, Creating a Suite, Tutorial
+@section SRunner Output
+
+@findex srunner_run_all
+The function to run tests in an @code{SRunner} is defined as follows:
+@example
+@verbatim
+void srunner_run_all (SRunner * sr, enum print_output print_mode);
+@end verbatim
+@end example
+
+This function does two things:
+
+@enumerate
+@item
+It runs all of the unit tests for all of the test cases defined for all
+of the suites in the SRunner, and collects the results in the SRunner
+
+@item
+It prints the results according to the @code{print_mode} specified.
+@end enumerate
+
+For SRunners that have already been run, there is also a separate
+printing function defined as follows:
+@example
+@verbatim
+void srunner_print (SRunner *sr, enum print_output print_mode);
+@end verbatim
+@end example
+
+The enumeration values of @code{print_output} defined in Check that
+parameter @code{print_mode} can assume are as follows:
+
+@table @code
+@vindex CK_SILENT
+@item CK_SILENT
+Specifies that no output is to be generated. If you use this flag, you
+either need to programmatically examine the SRunner object, print
+separately, or use test logging (described below: Test Logging).
+
+@vindex CK_MINIMAL
+@item CK_MINIMAL
+Only a summary of the test run will be printed (number run, passed,
+failed, errors).
+
+@vindex CK_NORMAL
+@item CK_NORMAL
+Prints the summary of the run, and prints one message per failed
+test.
+
+@vindex CK_VERBOSE
+@item CK_VERBOSE
+Prints the summary, and one message per test (passed or failed)
+
+@vindex CK_ENV
+@vindex CK_VERBOSITY
+@item CK_ENV
+Gets the print mode from the environment variable @code{CK_VERBOSITY},
+which can have the values "silent", "minimal", "normal", "verbose". If
+the variable is not found or the value is not recognized, the print
+mode is set to @code{CK_NORMAL}.
+@end table
+
+With the @code{CK_NORMAL} flag specified in our @code{main()}, let's
+rerun make check now. As before, we get the following satisfying
+output:
+@example
+@verbatim
+Running suite(s): Money
+0%: Checks: 1, Failures: 1, Errors: 0 
+check_money.c:10:F:Core:test_money_create: Amount not set correctly on
+creation
+FAIL: check_money
+==================================================
+1 of 1 tests failed
+Please report to check-devel@lists.sourceforge.net
+==================================================
+@end verbatim
+@end example
+
+The first number in the summary line tells us that 0% of our tests
+passed, and the rest of the line tells us that there was one check in
+total, and of those checks, one failure and zero errors.  The next
+line tells us exactly where that failure occurred, and what kind of
+failure it was (P for pass, F for failure, E for error).
+
+After that we have some higher level output generated by Automake: the
+@code{check_money} program failed, and the bug-report address given in
+@file{configure.ac} is printed.
+
+Let's implement the @code{money_amount} function, so that it will pass
+its tests.  We first have to create a Money structure to hold the
+amount, and then implement the function to return the correct amount:
+
+@example
+@verbatiminclude example/src/money.3-4.c.diff
+@end example
+
+We will now rerun make check and@dots{} what's this?  The output is
+now as follows:
+@example
+@verbatim
+Running suite(s): Money
+0%: Checks: 1, Failures: 0, Errors: 1
+check_money.c:5:E:Core:test_money_create: (after this point) Received
+signal 11 (Segmentation fault)
+@end verbatim
+@end example
+
+@findex mark_point()
+What does this mean?  Note that we now have an error, rather than a
+failure.  This means that our unit test either exited early, or was
+signaled.  Next note that the failure message says ``after this
+point''; This means that somewhere after the point noted
+(@file{check_money.c}, line 5) there was a problem: signal 11 (a.k.a.
+segmentation fault).  The last point reached is set on entry to the
+unit test, and after every call to @code{fail_unless()},
+@code{fail()}, or the special function @code{mark_point}.  For
+example, if we wrote some test code as follows:
+@example
+@verbatim
+stuff_that_works ();
+mark_point ();
+stuff_that_dies ();
+@end verbatim
+@end example
+
+then the point returned will be that marked by @code{mark_point}.
+
+The reason our test failed so horribly is that we haven't implemented
+@code{money_create} to create any @code{Money}.  We'll go ahead and
+implement that, the symmetric @code{money_free}, and
+@code{money_currency} too, in order to make our unit test pass again:
+
+@example
+@verbatiminclude example/src/money.4-5.c.diff
+@end example
+
+@node Advanced Features, Test Logging, SRunner Output, Tutorial
+@section Advanced Features
+
+@node Test Logging,  , Advanced Features, Tutorial
+@section Test Logging
+
 @node AM_PATH_CHECK, Copying This Manual, Tutorial, Top
 @chapter AM_PATH_CHECK
-@findex AM_PATH_CHECK
+@findex AM_PATH_CHECK()
 
 The @code{AM_PATH_CHECK()} macro is defined in the file
 @file{check.m4} which is installed by Check.  It has some optional
