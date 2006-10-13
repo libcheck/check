@@ -48,16 +48,6 @@ esac], [enable_timeout_tests=true ])
 
 AM_CONDITIONAL(NO_TIMEOUT_TESTS, test x"$enable_timeout_tests" = "xfalse")
 
-AC_ARG_ENABLE(plain_docdir,
-[  --enable-plain-docdir        don't append version information to docdir],
-[case "${enableval}" in
-  yes) plain_docdir=true ;;
-  no)  plain_docdir=false ;;
-  *)   AC_MSG_ERROR(bad value ${enableval} for --enable-plain-docdir) ;;
-esac], [plain_docdir=false ])
-
-AM_CONDITIONAL(PLAIN_DOCDIR, test x"$plain_docdir" = "xtrue")
-
 # Checks for programs.
 AC_PROG_AWK
 AC_PROG_CC

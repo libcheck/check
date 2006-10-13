@@ -2,14 +2,6 @@
 
 SUBDIRS=src tests doc rpm debian
 
-## decide on appending version to installed doc dir
-if PLAIN_DOCDIR
-DOCROOTDIR=$(prefix)/share/doc/$(PACKAGE)
-else
-DOCROOTDIR=$(prefix)/share/doc/${PACKAGE}-${VERSION}
-endif
-docdir = $(DOCROOTDIR)
-
 ## install the following extra data with docs
 doc_DATA = ChangeLog ChangeLogOld NEWS README COPYING.LESSER
 

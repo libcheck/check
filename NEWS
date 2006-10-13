@@ -1,5 +1,8 @@
 The following changes will be in Check 0.9.4
 
+Got rid of debian/ directory for building .debs.  We should let Debian
+handle this.
+
 Updated GNU Build System to use modern Autotools.
 
 Fixed sourceforge bug #1327225, Two teardown checked fixtures segfaults.

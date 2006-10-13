@@ -1,12 +1,5 @@
 ## Process this file with automake to produce Makefile.in
 
-if PLAIN_DOCDIR
-DOCROOTDIR=$(prefix)/share/doc/$(PACKAGE)
-else
-DOCROOTDIR=$(prefix)/share/doc/${PACKAGE}-${VERSION}
-endif
-exampledocdir=$(DOCROOTDIR)/examples
-
 example_docs =\
 	money.h\
 	money.c\
