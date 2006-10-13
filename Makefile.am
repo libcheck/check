@@ -28,5 +28,5 @@ m4data_DATA = check.m4
 pcdata_DATA = check.pc
 pcdatadir = $(libdir)/pkgconfig
 
-ChangeLog:
-	svn log -v $(top_srcdir) > SVNChangeLog
+SVNChangeLog:
+	svn log -v @abs_top_srcdir@ > $@
