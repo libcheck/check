@@ -1,14 +1,14 @@
 ## Process this file with automake to produce Makefile.in
 
-lib_LIBRARIES=libcheck.a
+lib_LTLIBRARIES=libcheck.la
 
 include_HEADERS=check.h
 
 if ENABLE_GCOV
-libcheck_a_CFLAGS=-fprofile-arcs -ftest-coverage
+libcheck_la_CFLAGS=-fprofile-arcs -ftest-coverage
 endif
 
-libcheck_a_SOURCES=\
+libcheck_la_SOURCES=\
 	check.h		\
 	check.c		\
 	check_error.h	\
@@ -40,7 +40,7 @@ LCOV_GENHTML = @GENHTML@
 lcov: $(LCOV_HTML)
 
 # Running the tests twice is a fix for a bug in gcc3.3 coverage support.
-$(LCOV_OUTPUT): libcheck.a
+$(LCOV_OUTPUT): libcheck.la
 	@$(MAKE) -C $(top_builddir)/tests check &> /dev/null
 	@$(MAKE) -C $(top_builddir)/tests check
 	$(LCOV_LCOV) --capture --directory . --output-file $(LCOV_OUTPUT)

@@ -31,3 +31,10 @@ Documentation
 -------------
 * Convert to info format.
 * Create initial and final versions of money example.
+
+Interface
+---------
+* Change check not to clobber things in the global namespace.
+  Prepend CHECK_ to all constants, check_ to all exported symbols, 
+  and _check to all internal functions.  Currently fail() is 
+  causing a problem.

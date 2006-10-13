@@ -38,6 +38,6 @@ ex_log_output_SOURCES = ex_log_output.c
 ex_xml_output_SOURCES = ex_xml_output.c
 
 AM_CPPFLAGS = -I$(top_srcdir)/src
-LDADD = $(top_builddir)/src/libcheck.a
+LDADD = $(top_builddir)/src/libcheck.la
 
 CLEANFILES = *~ *.log *.xml test_logfile

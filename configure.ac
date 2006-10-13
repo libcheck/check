@@ -53,7 +53,7 @@ AC_PROG_AWK
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LN_S
-AC_PROG_RANLIB
+AC_PROG_LIBTOOL
 if test -n "$GCC"; then
    CFLAGS="$CFLAGS -Wall -Wstrict-prototypes -Wmissing-prototypes -Wwrite-strings"
 fi
