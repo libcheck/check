@@ -16,4 +16,6 @@ So far, the only intentional deviation from the standards is the use
 of `svn log -v > SVNChangeLog' to generate an SVNChangeLog, rather
 than manual editing.  Subversion solves many of the problems in CVS,
 for which the GNU ChangeLog rules are written, the lack of atomic
-commits being one of them.
+commits being one of them.  However, this doesn't work for make
+distcheck because it never reaches the SVN working copy, so perhaps a
+better mechanism is needed.

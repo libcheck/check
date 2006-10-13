@@ -68,17 +68,6 @@ check_money.6-7.c.diff: $(eg_tests)/check_money.6.c $(eg_tests)/check_money.7.c
 	diff -u tests/check_money.6.c tests/check_money.7.c > @abs_builddir@/$@; \
 	cd -;
 
-## source files
-
-sgml_docs = tutorial.sgml
-
-## built files
-
-html_docs = tutorial/*.html
-
-$(html_docs): $(sgml_docs)
-	docbook2html -o tutorial $<
-
 # explicitly list every file in the example.
 
 example_docs = example/Makefile.am \
@@ -111,8 +100,7 @@ CLEANFILES = *~ *.diff
 
 ## what to distribute
 
-EXTRA_DIST = $(sgml_docs) \
-             $(example_docs) \
+EXTRA_DIST = $(example_docs) \
              $(example_src_docs) \
              $(example_tests_docs)
 
@@ -130,12 +118,3 @@ examplesrc_DATA = $(example_src_docs)
 
 exampletestsdir = $(docdir)/example/tests
 exampletests_DATA = $(example_tests_docs)
-
-
-# install tutorial docs
-
-if HAVE_DOCBOOK2HTML
-  tutorialdir = $(docdir)/tutorial
-  tutorial_DATA = $(html_docs)
-  CLEANFILES += $(html_docs)
-endif

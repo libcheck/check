@@ -61,14 +61,6 @@ AC_CHECK_PROGS(GCOV, gcov, false)
 AC_CHECK_PROGS(LCOV, lcov, false)
 AC_CHECK_PROGS(GENHTML, genhtml, false)
 
-# check for docbook2html, and if we don't have it issue a warning,
-# otherwise define HAVE_DOCBOOK2HTML to enable building docs
-AC_CHECK_PROG(have_docbook2html,docbook2html,yes)
-if test x"$have_docbook2html" != "xyes" ; then
-   AC_MSG_WARN([docbook2html missing, not building docs; install docbook-utils or sgml2x])
-fi
-AM_CONDITIONAL(HAVE_DOCBOOK2HTML, test x"$have_docbook2html" = "xyes")
-
 # Checks for libraries.
 
 # Checks for header files.

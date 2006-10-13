@@ -32,10 +32,6 @@ automake, autoheader, etc.  If you ever change something during
 development, run autoreconf again (without --install), and it will
 perform the minimum set of actions necessary.
 
-If you want to build the documentation, you need a docbook2html
-script, which is provided by either docbook-utils or sgml2x.  It is
-also available online at check.sourceforge.net.
-
 Debian rationale for not having upstream build packages (.deb files)
 --------------------------------------------------------------------
 
