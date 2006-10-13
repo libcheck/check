@@ -12,7 +12,7 @@ START_TEST (test_money_create)
 	       "Currency not set correctly on creation");
   money_free (m);
 }
-END_TEST 
+END_TEST
 
 START_TEST (test_money_create_neg)
 {
