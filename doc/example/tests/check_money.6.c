@@ -14,6 +14,23 @@ START_TEST (test_money_create)
 }
 END_TEST 
 
+START_TEST (test_money_create_neg)
+{
+  Money *m = money_create (-1, "USD");
+  fail_unless (m == NULL,
+	       "NULL should be returned on attempt to create with "
+	       "a negative amount");
+}
+END_TEST
+
+START_TEST (test_money_create_zero)
+{
+  Money *m = money_create (0, "USD");
+  fail_unless (money_amount (m) == 0, 
+	       "Zero is a valid amount of money");
+}
+END_TEST
+
 Suite * money_suite (void)
 {
   Suite *s = suite_create ("Money");
@@ -22,6 +39,12 @@ Suite * money_suite (void)
   TCase *tc_core = tcase_create ("Core");
   tcase_add_test (tc_core, test_money_create);
   suite_add_tcase (s, tc_core);
+
+  /* Limits test case */
+  TCase *tc_limits = tcase_create ("Limits");
+  tcase_add_test (tc_limits, test_money_create_neg);
+  tcase_add_test (tc_limits, test_money_create_zero);
+  suite_add_tcase (s, tc_limits);
 
   return s;
 }
