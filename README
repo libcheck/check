@@ -8,6 +8,8 @@ source code editors and IDEs.
 See http://check.sourceforge.net/ for more information, including a
 tutorial.
 
+To install, read the directions in INSTALL.
+
 If you get Check out of CVS, you will need a working setup of automake
 (at least version 1.9.6) and autoconf (at least version 2.59) in order
 to successfully build Check.
@@ -16,7 +18,14 @@ Just do
 
 $ autoreconf --install
 
-in this directory to set everything up, and then call configure.
+in this directory to set everything up, and then call configure as
+usual.
 
 autoreconf calls all of the necessary tools for you, like autoconf,
-automake, autoheader, etc.
+automake, autoheader, etc.  If you ever change something during
+development, run autoreconf again (without --install), and it will
+perform the minimum set of actions necessary.
+
+If you want to build the documentation, you need a docbook2html
+script, which is provided by either docbook-utils or sgml2x.  It is
+also available online at check.sourceforge.net.
