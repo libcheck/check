@@ -12,7 +12,8 @@ This manual is for Check
 (version @value{VERSION}, @value{UPDATED}),
 a unit test framework for C programs.
 
-Copyright @copyright{} 2001--2006 Arien Malec and Chris Pickett
+Copyright @copyright{} 2001--2006 Fredrik Hugosson, Robert Lemmen,
+Arien Malec, and Chris Pickett.
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
@@ -71,7 +72,8 @@ Tutorial: Basic Unit Testing
 
 * How to Write a Test::         
 * Setting Up the Money Build::  
-* Setting Up the Money Tests::  
+* Test a Little::               
+* Creating a Suite::            
 
 Copying This Manual
 
@@ -250,7 +252,8 @@ sure we are constantly thinking about how to test our code.
 @menu
 * How to Write a Test::         
 * Setting Up the Money Build::  
-* Setting Up the Money Tests::  
+* Test a Little::               
+* Creating a Suite::            
 @end menu
 
 @node How to Write a Test, Setting Up the Money Build, Tutorial, Tutorial
@@ -280,7 +283,7 @@ structures to permit testing.  It is a mistake to leave off the
 @code{END_TEST} marker; doing so produces all sorts of strange errors
 when the check is compiled.
 
-@node Setting Up the Money Build, Setting Up the Money Tests, How to Write a Test, Tutorial
+@node Setting Up the Money Build, Test a Little, How to Write a Test, Tutorial
 @section Setting Up the Money Build
 
 Since we are creating a library to handle money, we will first create
@@ -411,8 +414,185 @@ GNU/Linux (etch) in March 2006, using Autoconf 2.59, Automake 1.9.6,
 and Libtool 1.5.22.  Please report any problems to
 @email{check-devel@@lists.sourceforge.net}.
 
-@node Setting Up the Money Tests,  , Setting Up the Money Build, Tutorial
-@section Setting Up the Money Tests
+@node Test a Little, Creating a Suite, Setting Up the Money Build, Tutorial
+@section Test a Little, Code a Little
+
+The @uref{http://junit.sourceforge.net/doc/testinfected/testing.htm,
+Test Infected} article starts out with a @code{Money} class, and so
+will we.  Of course, we can't do classes with C, but we don't really
+need to.  The Test Infected approach to writing code says that we
+should write the unit test @emph{before} we write the code, and in
+this case, we will be even more dogmatic and doctrinaire than the
+authors of Test Infected (who clearly don't really get this stuff,
+only being some of the originators of the Patterns approach to
+software development and OO design).
+
+Here is our first unit test:
+@example
+@verbatim
+START_TEST (test_money_create)
+{
+  Money *m;
+  m = money_create (5, "USD");
+  fail_unless (money_amount (m) == 5,
+               "Amount not set correctly on creation");
+  fail_unless (strcmp (money_currency (m), "USD") == 0,
+               "Currency not set correctly on creation");
+  money_free(m);
+}
+END_TEST
+@end verbatim
+@end example
+
+@findex fail_unless()
+A unit test should just chug along and complete.  If it exits early,
+or is signaled, it will fail with a generic error message.  (Note: it
+is conceivable that you expect an early exit, or a signal.  There is
+currently nothing in Check to specifically assert that we should
+expect either --- if that is valuable, it may be worth while adding to
+Check.)  If we want to get some information about what failed, we need
+to use the @code{fail_unless()} function.  The function (actually a
+macro) takes a first Boolean argument, and an error message to send if
+the condition is not true.
+
+@findex fail()
+If the Boolean argument is too complicated to elegantly express within
+@code{fail_unless()}, there is an alternate function @code{fail()}
+that unconditionally fails.  The second test inside
+@code{test_money_create} above could be rewritten as follows:
+@example
+@verbatim
+  if (strcmp (money_currency (m), "USD") != 0) 
+    {
+      fail ("Currency not set correctly on creation");
+    }
+@end verbatim
+@end example
+
+@findex fail_if()
+There is also a @code{fail_if()} function, which is the
+inverse of @code{fail_unless()}.  Using it, the above test then
+looks like this:
+@example
+@verbatim
+  fail_if (strcmp (money_currency (m), "USD") != 0,
+           "Currency not set correctly on creation");
+@end verbatim
+@end example
+
+For your convenience all fail functions also accepts NULL as the msg
+argument and substitutes a suitable message for you.  So you could also
+write a test as follows:
+@example
+@verbatim
+  fail_unless (money_amount (m) == 5, NULL);
+@end verbatim
+@end example
+
+This is equivalent to:
+@example
+@verbatim
+  fail_unless (money_amount (m) == 5, 
+               "Assertion 'money_amount (m) == 5' failed");
+@end verbatim
+@end example
+
+All fail functions also support @code{varargs} and accept
+@code{printf}-style format strings and arguments.  This is especially
+useful while debugging.  With @code{printf}-style formatting the
+message could look like this:
+@example
+@verbatim
+  fail_unless(money_amount (m) == 5,
+              "Amount was %d, instead of 5", money_amount (m));
+@end verbatim
+@end example
+
+When we try to compile and run the test suite now using @command{make
+check}, we get a whole host of compilation errors.  It may seem a bit
+strange to deliberately write code that won't compile, but notice what
+we are doing: in creating the unit test, we are also defining
+requirements for the money interface.  Compilation errors are, in a
+way, unit test failures of their own, telling us that the
+implementation does not match the specification.  If all we do is edit
+the sources so that the unit test compiles, we are actually making
+progress, guided by the unit tests, so that's what we will now do.
+
+We will add the following to our header @file{money.h}:
+@example
+@verbatim
+typedef struct Money Money;
+ 
+Money *money_create (int amount, char *currency); 
+
+int money_amount (Money * m); 
+
+char *money_currency (Money * m); 
+
+void money_free (Money * m);
+@end verbatim
+@end example
+
+and the following to the top of @file{check_money.c}:
+@example
+@verbatim
+#include <check.h>
+#include "../src/money.h"
+@end verbatim
+@end example
+
+@c FIXME: this should be introduced after something fails, like main()
+Our code compiles now, and again passes all of the tests.  However,
+once we try to @emph{use} the functions in @code{libmoney} in the
+@code{main()} of @code{check_money}, we'll run into more problems, as
+they haven't actually been implemented yet.
+
+@node Creating a Suite,  , Test a Little, Tutorial
+@section Create a Suite
+
+@c FIXME: should come after the bit where we try to call them and
+@c FIXME: it fails.
+The tests aren't actually being run by @command{check_money}, and if
+we did try to run them we would encounter further errors; the
+@file{money.c} implementation of the @file{money.h} interface hasn't
+been defined yet.  Let's create the @code{Money} type and stubs for
+each of the functions:
+@example
+@verbatim
+#include <stdlib.h>
+#include "money.h"
+
+struct Money
+{
+  int amount;
+  char *currency;
+};
+
+Money *
+money_create (int amount, char *currency) 
+{ 
+  return NULL; 
+}
+
+int
+money_amount (Money * m) 
+{ 
+  return 0; 
+}
+
+char *
+money_currency (Money * m) 
+{ 
+  return NULL; 
+}
+
+void
+money_free (Money * m) 
+{ 
+  return; 
+}
+@end verbatim
+@end example
 
 @node AM_PATH_CHECK, Copying This Manual, Tutorial, Top
 @chapter AM_PATH_CHECK
