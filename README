@@ -9,28 +9,37 @@ faults or other signals. The output from unit tests can be used within
 source code editors and IDEs.
 
 See http://check.sourceforge.net/ for more information, including a
-tutorial.
+tutorial.  The tutorial is also available as `info check'.
 
 Installation
 ------------
 
-To install, read the directions in INSTALL.
+Check has the following dependencies:
 
-If you get Check out of CVS, you will need a working setup of automake
-(at least version 1.9.6) and autoconf (at least version 2.59) in order
-to successfully build Check.
+  automake-1.9.6
+  autoconf-2.59
+  libtool-1.5.22
+  pkg-config-0.20
 
-Just do
+First, do
 
 $ autoreconf --install
 
-in this directory to set everything up, and then call configure as
-usual.
+in this directory to set everything up.  autoreconf calls all of the
+necessary tools for you, like autoconf, automake, autoheader, etc.  If
+you ever change something during development, run autoreconf again
+(without --install), and it will perform the minimum set of actions
+necessary.
 
-autoreconf calls all of the necessary tools for you, like autoconf,
-automake, autoheader, etc.  If you ever change something during
-development, run autoreconf again (without --install), and it will
-perform the minimum set of actions necessary.
+Then, read the directions in INSTALL if you need more information.
+
+Linking against Check
+---------------------
+
+Check uses variadic macros in check.h, and the strict C90 options for
+gcc will complain about this.  In gcc 4.0 and above you can turn this
+off explicitly with -Wno-variadic-macros.  In a future API it would be
+nice to eliminate these macros.
 
 Debian rationale for not having upstream build packages (.deb files)
 --------------------------------------------------------------------
