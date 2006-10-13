@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS=src tests doc rpm debian
+SUBDIRS=src tests doc rpm
 
 ## install the following extra data with docs
 doc_DATA = ChangeLog ChangeLogOld NEWS README COPYING.LESSER
@@ -18,6 +18,3 @@ CLEANFILES=*~\
 
 rpm: dist
 	(cd rpm && ${MAKE} ${AM_MAKEFLAGS} rpm)
-
-debian: dist
-	dpkg-buildpackage -rfakeroot

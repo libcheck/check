@@ -97,7 +97,6 @@ AC_CHECK_FUNCS([alarm gettimeofday localtime_r memmove memset putenv setenv strd
 AC_CONFIG_HEADERS([config.h])
 
 AC_CONFIG_FILES([Makefile
-                 debian/Makefile
                  doc/Makefile
                  doc/money/Makefile
                  rpm/check.spec
