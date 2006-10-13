@@ -30,7 +30,7 @@ AC_SUBST(CHECK_VERSION)
 
 AC_ARG_ENABLE(gcov,
 AC_HELP_STRING([--enable-gcov],
-	       [turn on test coverage @<:@default=yes@:>@]),
+	       [turn on test coverage @<:@default=no@:>@]),
 [case "${enableval}" in
   yes) enable_gcov=true ;;
   no)  enable_gcov=false ;;
