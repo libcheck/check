@@ -3,7 +3,8 @@
 @setfilename check.info
 @include version.texi
 @settitle Check @value{VERSION}
-@syncodeindex pg cp
+@syncodeindex fn cp
+@syncodeindex tp cp
 @c %**end of header
 
 @copying
@@ -25,7 +26,7 @@ entitled ``@acronym{GNU} Free Documentation License.''
 
 @dircategory Software development
 @direntry
-* Check: (check)Using Check.
+* Check: (check)Overview.
 @end direntry
 
 @titlepage
@@ -52,16 +53,15 @@ entitled ``@acronym{GNU} Free Documentation License.''
 @end ifnottex
 
 @menu
-* Using Check::
-* Copying This Manual::
-* Index::
+* Overview::                    
+* Copying This Manual::         
+* Index::                       
 @end menu
 
-@node Using Check
-@chapter Using Check
+@node Overview
+@chapter Overview
 
-@pindex Check
-@cindex Using @command{libcheck}
+@cindex overview
 
 This is a sample manual.  There is no sample program to
 invoke, but if there was, you could see its basic usage

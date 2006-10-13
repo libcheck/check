@@ -1,5 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
+info_TEXINFOS = check.texi
+check_TEXINFOS = fdl.texi
+
 ## source files
 
 sgml_docs = tutorial.sgml
