@@ -14,7 +14,8 @@ $(html_docs): $(sgml_docs)
 # example files
 
 example_docs = example/Makefile.am \
-	       example/configure.ac \
+               example/README \
+               example/configure.ac \
                example/src/Makefile.am \
                example/src/main.c \
                example/src/money.c \
