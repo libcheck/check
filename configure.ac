@@ -29,7 +29,8 @@ AC_SUBST(CHECK_VERSION)
 # Configure options.
 
 AC_ARG_ENABLE(gcov,
-AC_HELP_STRING([--enable-gcov],[turn on code coverage analysis tools]),
+AC_HELP_STRING([--enable-gcov],
+	       [turn on test coverage @<:@default=yes@>:@]),
 [case "${enableval}" in
   yes) enable_gcov=true ;;
   no)  enable_gcov=false ;;
@@ -39,7 +40,8 @@ esac], [enable_gcov=false ])
 AM_CONDITIONAL(ENABLE_GCOV, test x"$enable_gcov" = "xtrue")
 
 AC_ARG_ENABLE(timeout-tests,
-AC_HELP_STRING([--enable-timeout-tests],[turn off timeout tests]),
+AC_HELP_STRING([--enable-timeout-tests],
+	       [turn on timeout tests @<:@default=yes@>:@]),
 [case "${enableval}" in
   yes) enable_timeout_tests=true ;;
   no)  enable_timeout_tests=false ;;
