@@ -26,7 +26,7 @@ void setup_fixture (void)
   tcase_add_unchecked_fixture(tc, fixture_sub_setup, NULL);
   suite_add_tcase (fixture_s, tc);
   fixture_sr = srunner_create(fixture_s);
-  srunner_run_all(fixture_sr,CK_SILENT);
+  srunner_run_all(fixture_sr,CK_VERBOSE);
 }
 
 void teardown_fixture (void)
@@ -113,7 +113,7 @@ START_TEST(test_ch_setup)
   tcase_add_test(tc,test_sub_ch_setup_norm);
   tcase_add_test(tc,test_sub_ch_setup_norm);
   tcase_add_checked_fixture(tc,sub_ch_setup_norm,sub_ch_teardown_norm);
-  srunner_run_all(sr, CK_SILENT);
+  srunner_run_all(sr, CK_VERBOSE);
 
   fail_unless(srunner_ntests_failed(sr) == 0,
 	      "Checked setup not being run correctly");
@@ -170,7 +170,7 @@ START_TEST(test_ch_setup_fail)
   tcase_add_test(tc,test_sub_fail);
   tcase_add_checked_fixture(tc,setup_sub_fail, NULL);
   sr = srunner_create(s);
-  srunner_run_all(sr,CK_SILENT);
+  srunner_run_all(sr,CK_VERBOSE);
 
   fail_unless (srunner_ntests_run(sr) == 0,
 	       "Test run counts not correct for checked setup failure");
@@ -210,7 +210,7 @@ START_TEST(test_ch_setup_fail_nofork)
   tcase_add_checked_fixture(tc, setup_sub_fail, NULL);
   sr = srunner_create(s);
   srunner_set_fork_status(sr, CK_NOFORK);
-  srunner_run_all(sr, CK_SILENT);
+  srunner_run_all(sr, CK_VERBOSE);
 
   fail_unless (srunner_ntests_run(sr) == 0,
 	       "Test run counts not correct for checked setup failure");
@@ -233,7 +233,7 @@ START_TEST(test_ch_setup_fail_nofork_2)
   tcase_add_checked_fixture(tc, setup_sub_fail, NULL);
   sr = srunner_create(s);
   srunner_set_fork_status(sr, CK_NOFORK);
-  srunner_run_all(sr, CK_SILENT);
+  srunner_run_all(sr, CK_VERBOSE);
 
   fail_unless (srunner_ntests_run(sr) == 0,
 	       "Test run counts not correct for checked setup failure");
@@ -259,7 +259,7 @@ START_TEST(test_ch_setup_pass_nofork)
   srunner_set_fork_status(sr, CK_NOFORK);
   testval_up = 1;
   testval_down = 1;
-  srunner_run_all(sr, CK_SILENT);
+  srunner_run_all(sr, CK_VERBOSE);
   fail_unless(testval_up == 7, "Multiple setups failed");
   fail_unless(testval_down == 7, "Multiple teardowns failed");
 
@@ -284,7 +284,7 @@ START_TEST(test_ch_setup_sig)
   tcase_add_test(tc,test_sub_fail);
   tcase_add_checked_fixture(tc,setup_sub_signal, NULL);
   sr = srunner_create(s);
-  srunner_run_all(sr,CK_SILENT);
+  srunner_run_all(sr,CK_VERBOSE);
 
   fail_unless (srunner_ntests_failed(sr) == 1,
 	       "Failure counts not correct for checked setup signal");
@@ -344,7 +344,7 @@ START_TEST(test_ch_setup_two_setups_fork)
   tcase_add_checked_fixture(tc,sub_ch_setup_dual_1,NULL);
   tcase_add_checked_fixture(tc,sub_ch_setup_dual_2,NULL);
   testval_up = 1;
-  srunner_run_all(sr, CK_SILENT);
+  srunner_run_all(sr, CK_VERBOSE);
 
   fail_unless(srunner_ntests_failed(sr) == 0,
 	      "Problem with several setups");
@@ -367,7 +367,7 @@ START_TEST(test_ch_teardown_fail)
   tcase_add_test(tc,test_sub_pass);
   tcase_add_checked_fixture(tc,NULL, teardown_sub_fail);
   sr = srunner_create(s);
-  srunner_run_all(sr,CK_SILENT);
+  srunner_run_all(sr,CK_VERBOSE);
 
   fail_unless (srunner_ntests_failed(sr) == 1,
 	       "Failure counts not correct for checked teardown failure");
@@ -409,7 +409,7 @@ START_TEST(test_ch_teardown_sig)
   tcase_add_test(tc,test_sub_pass);
   tcase_add_checked_fixture(tc,NULL, teardown_sub_signal);
   sr = srunner_create(s);
-  srunner_run_all(sr,CK_SILENT);
+  srunner_run_all(sr,CK_VERBOSE);
 
   fail_unless (srunner_ntests_failed(sr) == 1,
 	       "Failure counts not correct for checked teardown signal");
@@ -472,7 +472,7 @@ START_TEST(test_ch_teardown_two_teardowns_fork)
   tcase_add_checked_fixture(tc,NULL,sub_ch_teardown_dual_1);
   tcase_add_checked_fixture(tc,NULL,sub_ch_teardown_dual_2);
   testval_down = 1;
-  srunner_run_all(sr, CK_SILENT);
+  srunner_run_all(sr, CK_VERBOSE);
   
   nr_of_failures = srunner_ntests_failed(sr);
   if (nr_of_failures > 0) {

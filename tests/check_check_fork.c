@@ -60,7 +60,7 @@ void fork_setup (void)
   fork_sr = srunner_create(make_fork_sub_suite());
   fork_dummy_sr = srunner_create (make_fork_sub_suite());
   srunner_set_fork_status(fork_sr,CK_NOFORK);
-  srunner_run_all(fork_sr,CK_SILENT);
+  srunner_run_all(fork_sr,CK_VERBOSE);
 }
 
 void fork_teardown (void)

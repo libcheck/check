@@ -1,40 +1,113 @@
-Build issues:
--------------
+TODO
+====
 
-convert check to use libtool
-figure out if we need stamp-h.in or not
-use AC_CONFIG_MACRO_DIR([m4]) and create an m4/ dir for check.m4
-  aclocaldir = $(datadir)/aclocal
-  aclocal_DATA = mymacro.m4 myothermacro.m4
-
-  ACLOCAL_AMFLAGS = -I m4  # put in top-level Makefile.am
-
-fix overriding CFLAGS in configure.ac
-use AC_DEFINE to define version number stuff?
-change MICRO to ALPHA?
-add std-options to AM_INIT_AUTOMAKE
-investigate subdir-objects option to AM_INIT_AUTOMAKE
-use filename-length-max=99 in AM_INIT_AUTOMAKE
-
-just make sure libcheck.a works as a dependency, don't call $(MAKE)
-
-Using
-
-     SUBDIRS = lib src . test
-
-will cause lib/ to be built before src/, then the current directory
-will be built, finally the test/ directory will be built. It is
-customary to arrange test directories to be built after everything
-else since they are meant to test what has been constructed.
+The following are considered bugs in Check.  If you have a fix, please
+send it to <check-devel@lists.sourceforge.net>.  Bug fixing is
+considered more important than feature requests at this point.  Also
+please check the Sourceforge trackers.
 
 Documentation
--------------
-* Convert to info format.
-* Create initial and final versions of money example.
+=============
+
+[0.9.4] * Convert to info format and update.
+[     ] * Fix building of documentation that relies on diff
+[     ] * Add html generation of Texinfo docs. 
+[0.9.4] * Create initial and final versions of money example.
+[0.9.4] * Update tutorial so that it works with modern tools.
+[     ] * Clarify looping tests and give example of usage.
 
 Interface
----------
-* Change check not to clobber things in the global namespace.
-  Prepend CHECK_ to all constants, check_ to all exported symbols, 
-  and _check to all internal functions.  Currently fail() is 
-  causing a problem.
+=========
+
+[     ] * Change check not to clobber things in the global namespace.
+          Prepend CHECK_ to all constants, check_ to all exported symbols, 
+  	  and _check to all internal functions.  Currently fail() is
+	  causing a problem.  Deprecate the old API in a nice way.
+
+Build issues:
+=============
+
+[0.9.4] * Convert Check to use Libtool 
+[     ] * Figure out if we need stamp-h.in or not
+[     ] * use AC_CONFIG_MACRO_DIR([m4]) and create an m4/ dir for check.m4
+	    aclocaldir = $(datadir)/aclocal
+	    aclocal_DATA = mymacro.m4 myothermacro.m4
+	    ACLOCAL_AMFLAGS = -I m4  # put in top-level Makefile.am
+[     ] * Fix overriding CFLAGS in configure.ac
+[     ] * Use AC_DEFINE to define version number stuff?
+[     ] * Change MICRO to ALPHA? probably not
+[     ] * Add std-options to AM_INIT_AUTOMAKE
+[     ] * Investigate subdir-objects option to AM_INIT_AUTOMAKE
+[     ] * Use filename-length-max=99 in AM_INIT_AUTOMAKE
+[0.9.4] * Make sure libcheck.(l)a works as a dependency, don't call $(MAKE)
+[0.9.4] * Build tests/ dirs after everything else
+[     ] * Fix AM_PATH_CHECK totally; use pkg-config
+[     ] * make Check pass its own unit tests: make distcheck fails
+[     ] * use stricter CFLAGS for compiling Check
+[     ] * deprecate the old API: Check clobbers things, e.g. fail() in C++ 
+
+Check source code:
+============
+
+[     ] * Eliminate abbreviations like nf for number_failed
+[     ] * Run indent on everything, make sure it works well.
+[     ] * Fix START_TEST/END_TEST to look like valid C code.
+[     ] * Document things way more.
+[     ] * Create check.h automatically using makeheaders.c (not sure)
+[     ] * Eliminate check_ prefix from files in src/ ... not needed
+
+Internal Check tests
+======================
+
+[0.9.3] * Use gcov to test and expand coverage of existing unit tests
+[     ] * Increase tests for more non-public modules
+[0.8.0] * Refactor to allow better unit testing of printing functionality.
+[     ] * Document things way more.
+[     ] * Clarify what all the different tests mean, whether they are
+          meant to fail or not --- setting all CK_SILENT to CK_VERBOSE
+          makes it seem like there are lots of errors being produced!
+
+Packaging
+=========
+
+[0.7.2] * Automate RPM production
+[0.7.2] * Debian packaging 
+[0.9.2] * Get Check into Debian Sid
+[0.9.4] * Eliminate .deb and .rpm packaging for vendors --- not necessary
+
+
+
+The following enhancements are being considered for Check.  Please
+send an email to <check-devel@lists.sourceforge.net> if you would like
+to assist in any of these, or if you would like to suggest additional
+enhancements.  Also please check the various trackers at the Check
+project website.
+
+Printing and Logging
+====================
+
+[     ] * Allow unit test output (stdout and stderr) to be captured and logged
+[0.9.1] * Add XML as option for test output
+[     ] * Open the API for printing/logging customization
+[     ] * JUnit-style UI?
+    
+Unit test writing
+=================
+
+[0.8.0] * Allow fail and friends to be used within fixture
+          setup/teardown functions
+[0.8.0] * Allow forkless running of suites, to allow debugging
+[0.9.2] * Allow unit tests that expect signals
+[     ] * Allow unit tests to write to the log
+[     ] * Allow unit tests that expect output (see stdout logging above) (but
+          maybe perl/sh/expect/dejagnu are better tools)
+[     ] * Autoproduce unit test framework from header files
+    
+Check Internals
+===============
+
+[0.8.0] * Implement message passing between unit test and test
+          programs using pipes, rather than SysV IPC, to allow support
+          under cygwin.
+[     ] * Abstract the forking and message passing implementation to
+          allow Win32 compatibility.
