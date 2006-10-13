@@ -6,7 +6,7 @@ AC_PREREQ([2.59])
 AC_INIT([Check], [0.9.4], [check-devel@lists.sourceforge.net])
 
 # unique source file --- primitive safety check 
-AC_CONFIG_SRCDIR([doc/money/check_money.c])
+AC_CONFIG_SRCDIR([src/check.c])
 
 # place to put some extra build scripts installed
 AC_CONFIG_AUX_DIR([build-aux])
