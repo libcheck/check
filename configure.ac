@@ -30,7 +30,7 @@ AC_SUBST(CHECK_VERSION)
 
 AC_ARG_ENABLE(gcov,
 AC_HELP_STRING([--enable-gcov],
-	       [turn on test coverage @<:@default=yes@>:@]),
+	       [turn on test coverage @<:@default=yes@:>@]),
 [case "${enableval}" in
   yes) enable_gcov=true ;;
   no)  enable_gcov=false ;;
@@ -41,7 +41,7 @@ AM_CONDITIONAL(ENABLE_GCOV, test x"$enable_gcov" = "xtrue")
 
 AC_ARG_ENABLE(timeout-tests,
 AC_HELP_STRING([--enable-timeout-tests],
-	       [turn on timeout tests @<:@default=yes@>:@]),
+	       [turn on timeout tests @<:@default=yes@:>@]),
 [case "${enableval}" in
   yes) enable_timeout_tests=true ;;
   no)  enable_timeout_tests=false ;;
