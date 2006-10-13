@@ -81,6 +81,7 @@ Tutorial: Basic Unit Testing
 Advanced Features
 
 * Running Multiple Cases::      
+* No Fork Mode::                
 * Test Logging::                
 
 Copying This Manual
@@ -733,10 +734,11 @@ easier for the developer to write, run, and analyse tests.
 
 @menu
 * Running Multiple Cases::      
+* No Fork Mode::                
 * Test Logging::                
 @end menu
 
-@node Running Multiple Cases, Test Logging, Advanced Features, Advanced Features
+@node Running Multiple Cases, No Fork Mode, Advanced Features, Advanced Features
 @section Running Multiple Cases
 
 What happens if we pass @code{-1} as the @code{amount} in
@@ -759,7 +761,38 @@ additional information about where things broke.
 @verbatiminclude example/src/money.5-6.c.diff
 @end example
 
-@node Test Logging,  , Running Multiple Cases, Advanced Features
+@node No Fork Mode, Test Logging, Running Multiple Cases, Advanced Features
+@section No Fork Mode
+
+Check normally forks to create a separate address space.  This allows
+a signal or early exit to be caught and reported, rather than taking
+down the entire test program, and is normally very useful.  However,
+when you are trying to debug why the segmentation fault or other
+program error occurred, forking makes it difficult to use debugging
+tools.  To define fork mode for an @code{SRunner} object, you can do
+one of the following:
+
+@vindex CK_FORK
+@findex srunner_set_fork_status()
+@enumerate
+@item
+Define the CK_FORK environment variable to equal ``no''.
+
+@item
+Explicitly define the fork status through the use of the following
+function:
+
+@verbatim
+void srunner_set_fork_status (SRunner * sr, enum fork_status fstat);
+@end verbatim
+@end enumerate
+
+The enum @code{fork_status} allows the @code{fstat} parameter to
+assume the following values: @code{CK_FORK} and @code{CK_NOFORK}.  An
+explicit call to @code{srunner_set_fork_status()} overrides the
+@code{CK_FORK} environment variable.
+
+@node Test Logging,  , No Fork Mode, Advanced Features
 @section Test Logging
 
 @node AM_PATH_CHECK, Copying This Manual, Advanced Features, Top
