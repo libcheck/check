@@ -127,3 +127,5 @@ Check Internals
           under cygwin.
 [     ] * Abstract the forking and message passing implementation to
           allow Win32 compatibility.
+[     ] * Incorporate existing Win32 support as mentioned here:
+          http://opendarwin.org/pipermail/cvs-libfoundation-all/2005-March/000177.html
