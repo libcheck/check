@@ -1,6 +1,7 @@
 Build issues:
 -------------
 
+figure out if we need stamp-h.in or not
 use AC_CONFIG_MACRO_DIR([m4]) and create an m4/ dir for check.m4
   aclocaldir = $(datadir)/aclocal
   aclocal_DATA = mymacro.m4 myothermacro.m4

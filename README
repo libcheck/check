@@ -1,3 +1,6 @@
+About Check
+-----------
+
 Check is a unit test framework for C. It features a simple interface
 for defining unit tests, putting little in the way of the
 developer. Tests are run in a separate address space, so Check can
@@ -7,6 +10,9 @@ source code editors and IDEs.
 
 See http://check.sourceforge.net/ for more information, including a
 tutorial.
+
+Installation
+------------
 
 To install, read the directions in INSTALL.
 
@@ -29,3 +35,30 @@ perform the minimum set of actions necessary.
 If you want to build the documentation, you need a docbook2html
 script, which is provided by either docbook-utils or sgml2x.  It is
 also available online at check.sourceforge.net.
+
+Debian rationale for not having upstream build packages (.deb files)
+--------------------------------------------------------------------
+
+For debian, it is highly undesirable if the upstream source contains a
+debian directory as this one will never be the same as the "official"
+Debian one, and patching is easier if it's not around.
+
+Sometimes upstream insists on having the possibility to build Debian
+packages themselves, in which case it is best to have a debian
+directory in the CVS, but not ship it when doing "make dist".
+
+Sometimes upstream insists on shipping the debian directory to their
+users so these can easily build a .deb, which is really bad because
+they usually don't remmeber to change the Debian changelog and version
+accordingly, and generally don't know enough about Debian policy to
+make conforming packages.
+
+So in the end you will have different broken packages compiled on
+various systems floating around which all have the same version number
+and look like offical packages.
+
+  -- Robert Lemmen, 2006
+
+The same holds for .rpm packages.  The Check maintainer for Fedora
+Extras, Tom 'spot' Callaway, confirmed that they do not depend on an
+upstream rpm target in Check.

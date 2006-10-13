@@ -101,8 +101,6 @@ AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile
                  doc/Makefile
                  doc/money/Makefile
-                 rpm/check.spec
-                 rpm/Makefile
                  src/check.h
                  src/Makefile
                  tests/Makefile])

@@ -1,3 +1,7 @@
 Design suggestions:
              Fred Drake (checked fixture functions)
              Jim O'Leary (forkless mode)
+
+Downstream maintainers:
+             Robert Lemmen (Debian)
+             Tom 'spot' Callaway (Fedora Extras)
