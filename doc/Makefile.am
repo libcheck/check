@@ -6,7 +6,7 @@ sgml_docs = tutorial.sgml
 
 ## built files
 
-html_docs = *.html
+html_docs = tutorial/*.html
 
 $(html_docs): $(sgml_docs)
 	docbook2html -o tutorial $<
@@ -15,13 +15,15 @@ $(html_docs): $(sgml_docs)
 
 example_docs = example/Makefile.am \
                example/README \
-               example/configure.ac \
-               example/src/Makefile.am \
-               example/src/main.c \
-               example/src/money.c \
-               example/src/money.h \
-               example/tests/Makefile.am \
-               example/tests/check_money.c
+               example/configure.ac
+
+example_src_docs = example/src/Makefile.am \
+                   example/src/main.c \
+                   example/src/money.c \
+                   example/src/money.h
+
+example_tests_docs = example/tests/Makefile.am \
+                     example/tests/check_money.c
 
 ## what to clean
 
@@ -39,6 +41,13 @@ docdir = $(datadir)/doc/$(PACKAGE)
 
 exampledir = $(docdir)/example
 example_DATA = $(example_docs)
+
+examplesrcdir = $(docdir)/example/src
+examplesrc_DATA = $(example_src_docs)
+
+exampletestsdir = $(docdir)/example/tests
+exampletests_DATA = $(example_tests_docs)
+
 
 # install tutorial docs
 
