@@ -31,7 +31,8 @@ START_TEST (test_money_create_zero)
 }
 END_TEST
 
-Suite * money_suite (void)
+Suite *
+money_suite (void)
 {
   Suite *s = suite_create ("Money");
 
