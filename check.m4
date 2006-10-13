@@ -30,10 +30,7 @@ AC_DEFUN([AM_PATH_CHECK],
     LIBS="$CHECK_LIBS $LIBS"
 
     rm -f conf.check-test
-    AC_TRY_RUN([
-#include <stdio.h>
-#include <stdlib.h>
-
+    AC_COMPILE_IFELSE([AC_LANG_SOURCE([AC_INCLUDES_DEFAULT([])
 #include <check.h>
 
 int main ()
@@ -81,7 +78,7 @@ int main ()
 
   return 1;
 }
-],, no_check=yes, [echo $ac_n "cross compiling; assumed OK... $ac_c"])
+])],, no_check=yes, [echo $ac_n "cross compiling; assumed OK... $ac_c"])
 
     CFLAGS="$ac_save_CFLAGS"
     LIBS="$ac_save_LIBS"
