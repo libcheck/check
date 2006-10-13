@@ -9,11 +9,11 @@ libcheck_a_CFLAGS=-fprofile-arcs -ftest-coverage
 endif
 
 libcheck_a_SOURCES=\
-	check_impl.h	\
 	check.h		\
 	check.c		\
 	check_error.h	\
 	check_error.c	\
+	check_impl.h	\
 	check_list.h	\
 	check_list.c	\
 	check_log.h	\
@@ -41,8 +41,8 @@ lcov: $(LCOV_HTML)
 
 # Running the tests twice is a fix for a bug in gcc3.3 coverage support.
 $(LCOV_OUTPUT): libcheck.a
-	@$(MAKE) -C ../tests check &> /dev/null
-	@$(MAKE) -C ../tests check
+	@$(MAKE) -C $(top_builddir)/tests check &> /dev/null
+	@$(MAKE) -C $(top_builddir)/tests check
 	$(LCOV_LCOV) --capture --directory . --output-file $(LCOV_OUTPUT)
 
 $(LCOV_HTML): $(LCOV_OUTPUT)

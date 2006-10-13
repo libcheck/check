@@ -1,3 +1,5 @@
+The following changes will be in Check 0.9.4
+
 Updated GNU Build System to use modern Autotools.
 
 Fixed sourceforge bug #1327225, Two teardown checked fixtures segfaults.
@@ -12,7 +14,6 @@ Added possibility to turn off timeout tests in check's own unit tests
 through configure option --enable-timeout-tests=no.
 
 Added coverage analysis for check's own unit tests.
-
 
 Thu, Aug 25, 2005: Released Check 0.9.3
 

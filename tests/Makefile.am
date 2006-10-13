@@ -40,11 +40,11 @@ ex_log_output_SOURCES = ex_log_output.c
 
 ex_xml_output_SOURCES = ex_xml_output.c
 
-LIBCHECK_A=$(srcdir)/../src/libcheck.a
-AM_CPPFLAGS = -I$(srcdir)/../src
+LIBCHECK_A=$(top_builddir)/src/libcheck.a
+AM_CPPFLAGS = -I$(top_srcdir)/src
 LDADD = $(LIBCHECK_A)
 
-CLEANFILES = *~ *.log *.xml test_logfile
+CLEANFILES = *~ *.log *.xml test_logfile core
 
 $(LIBCHECK_A):
-	$(MAKE) -C ../src
+	$(MAKE) -C $(top_builddir)/src

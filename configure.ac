@@ -3,7 +3,7 @@
 
 # Prelude.
 AC_PREREQ([2.59])
-AC_INIT([Check], [0.9.3], [check-devel@lists.sourceforge.net])
+AC_INIT([Check], [0.9.4], [check-devel@lists.sourceforge.net])
 
 # unique source file --- primitive safety check 
 AC_CONFIG_SRCDIR([doc/money/check_money.c])
@@ -18,7 +18,7 @@ AM_INIT_AUTOMAKE([-Wall -Werror gnits 1.9.6])
 
 CHECK_MAJOR_VERSION=0
 CHECK_MINOR_VERSION=9
-CHECK_MICRO_VERSION=3
+CHECK_MICRO_VERSION=4
 CHECK_VERSION=$CHECK_MAJOR_VERSION.$CHECK_MINOR_VERSION.$CHECK_MICRO_VERSION
 
 AC_SUBST(CHECK_MAJOR_VERSION)
