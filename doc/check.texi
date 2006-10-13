@@ -56,6 +56,7 @@ entitled ``@acronym{GNU} Free Documentation License.''
 * Introduction::                
 * Unit Testing in C::           
 * Tutorial::                    
+* AM_PATH_CHECK::               
 * Copying This Manual::         
 * Index::                       
 
@@ -69,7 +70,8 @@ Unit Testing in C
 Tutorial: Basic Unit Testing
 
 * How to Write a Test::         
-* Setting Up the @code{libmoney} Tests::  
+* Setting Up the Money Build::  
+* Setting Up the Money Tests::  
 
 Copying This Manual
 
@@ -233,7 +235,7 @@ word, and make one a standard.  Languages such as Java and Python are
 fortunate to have standard unit test frameworks; it would be desirable
 that C have one as well.
 
-@node Tutorial, Copying This Manual, Unit Testing in C, Top
+@node Tutorial, AM_PATH_CHECK, Unit Testing in C, Top
 @chapter Tutorial: Basic Unit Testing
 
 This tutorial will use the JUnit
@@ -247,21 +249,23 @@ sure we are constantly thinking about how to test our code.
 
 @menu
 * How to Write a Test::         
-* Setting Up the @code{libmoney} Tests::  
+* Setting Up the Money Build::  
+* Setting Up the Money Tests::  
 @end menu
 
-@node How to Write a Test, Setting Up the @code{libmoney} Tests, Tutorial, Tutorial
+@node How to Write a Test, Setting Up the Money Build, Tutorial, Tutorial
 @section How to Write a Test
 
 Test writing using Check is very simple. The file in which the checks
 are defined must include @file{check.h} as so:
-
+@example
 @verbatim
 #include <check.h>
 @end verbatim
+@end example
 
 The basic unit test looks as follows:
-
+@example
 @verbatim
 START_TEST (test_name)
 {
@@ -269,31 +273,25 @@ START_TEST (test_name)
 }
 END_TEST
 @end verbatim
+@end example
 
 The @code{START_TEST}/@code{END_TEST} pair are macros that setup basic
 structures to permit testing.  It is a mistake to leave off the
 @code{END_TEST} marker; doing so produces all sorts of strange errors
 when the check is compiled.
 
-@node Setting Up the @code{libmoney} Tests,  , How to Write a Test, Tutorial
-@section Setting Up the @code{libmoney} Tests
-
-The examples in this section are part of the Check distribution; you
-don't need to spend time cutting and pasting or (worse) retyping.
-Locate the Check documentation on your system and look in the
-@samp{example} directory.  The standard directory for GNU/Linux
-distributions is @samp{/usr/share/doc/check/example}.  There is an
-initial skeleton, in which our unit tests fail, and a final version in
-which all tests pass.
-@c FIXME: create initial version of tutorial example
+@node Setting Up the Money Build, Setting Up the Money Tests, How to Write a Test, Tutorial
+@section Setting Up the Money Build
 
 Since we are creating a library to handle money, we will first create
-a header @file{money.h}, and a file to contain our unit tests,
-@file{check_money.c}.  To manage everything we'll use Autoconf,
+an interface in @file{money.h}, an implementation in @file{money.c},
+and a place to store our unit tests, @file{check_money.c}.  We want to
+integrate these core files into our build system, and will need some
+additional structure. To manage everything we'll use Autoconf,
 Automake, and friends (collectively known as Autotools) for this
 example.  One could do something similar with ordinary Makefiles, but
 in the authors' opinion, it is generally easier to use Autotools than
-bare Makefiles, and they provide built-in support for running tests.  
+bare Makefiles, and they provide built-in support for running tests.
 
 Note that this is not the place to explain how Autotools works.  If
 you need help understanding what's going on beyond the explanations
@@ -302,8 +300,17 @@ excellent
 @uref{http://www-src.lip6.fr/homepages/Alexandre.Duret-Lutz/autotools.html,
 Autotools tutorial}.
 
-We set up a directory structure as follows:
+The examples in this section are part of the Check distribution; you
+don't need to spend time cutting and pasting or (worse) retyping them.
+Locate the Check documentation on your system and look in the
+@samp{example} directory.  The standard directory for GNU/Linux
+distributions should be @samp{/usr/share/doc/check/example}.  This
+directory contains the final version reached the end of the tutorial.  If
+you want to follow along, create backups of @file{money.h},
+@file{money.c}, and @file{check_money.c}, and then delete the originals.
 
+We set up a directory structure as follows:
+@example
 @verbatim
 .
 |-- Makefile.am
@@ -318,31 +325,22 @@ We set up a directory structure as follows:
     |-- Makefile.am
     `-- check_money.c
 @end verbatim
+@end example
 
 Note that this is the output of @command{tree}, a great directory
-visualization tool.
-
-The top-level @file{Makefile.am} is simple; it merely tells Automake
-how to process subdirectories:
-
+visualization tool.  The top-level @file{Makefile.am} is simple; it
+merely tells Automake how to process subdirectories:
+@example
 @verbatim
 SUBDIRS = src . tests
 @end verbatim
+@end example
 
-@file{configure.ac} is standard Autoconf boilerplate, as specified by
-the Autotools tutorial and as suggested by @command{autoscan}.  The
-@code{AM_PATH_CHECK()} line does three things:
-
-@enumerate
-@item 
-Ensure check.h is available
-
-@item 
-Ensure a compatible version of Check is installed
-
-@item 
-Set @env{CHECK_CFLAGS} and @env{CHECK_LIBS} for use by Automake.
-@end enumerate
+Note that @code{tests} comes last, because the code should be testing
+an already compiled library.  @file{configure.ac} is standard Autoconf
+boilerplate, as specified by the Autotools tutorial and as suggested
+by @command{autoscan}.  The @code{AM_PATH_CHECK()} is the only line
+particular to Check @pxref{AM_PATH_CHECK}.
 
 @file{src/Makefile.am} builds @samp{libmoney} as a Libtool archive,
 and links it to an application simply called @command{main}.  The
@@ -350,55 +348,129 @@ application's behaviour is not important to this tutorial; what's
 important is that none of the functions we want to unit test appear in
 @file{main.c}; this probably means that the only function in
 @file{main.c} should be @code{main()} itself.  In order to test the
-whole application, unit testing is not appropriate: we should use a
-system testing tool like Autotest.
+whole application, unit testing is not appropriate: you should use a
+system testing tool like Autotest.  If you really want to test
+@code{main()} using Check, rename it to something like
+@code{_myproject_main()} and write a wrapper around it.
 
-Here is the @file{Makefile.am}:
+The primary build instructions for our unit tests are in
+@file{tests/Makefile.am}:
 
+@example
+@verbatiminclude example/tests/Makefile.am
+@end example
+
+@code{TESTS} tells Automake which test programs to run for
+@command{make check}.  Similarly, the @code{check_} prefix in
+@code{check_PROGRAMS} actually comes from Automake; it says to build
+these programs only when @command{make check} is run.  (Recall that
+Automake's @code{check} target is the origin of Check's name.)  The
+@command{check_money} test is a program that we will build from
+@file{tests/check_money.c}, linking it against both
+@file{src/libmoney.la} and the installed @file{libcheck.la} on our
+system.  The appropriate compiler and linker flags for using Check are
+found in @code{@@CHECK_CFLAGS@@} and @code{@@CHECK_LIBS@@}, values
+defined by the @code{AM_PATH_CHECK} macro.
+
+Now that all this infrastructure is out of the way, we can get on with
+development.  @file{src/money.h} should only contain standard C header
+boilerplate:
+@example
 @verbatim
-   </para>
-   <programlisting>
-TESTS=check_money
-noinst_PROGRAMS=check_money
-check_money_SOURCES=  money.h money.c check_money.c
-check_money_INCLUDES= @CHECK_CFLAGS@
-check_money_LDADD= @CHECK_LIBS@</programlisting>
-   <para>
+#ifndef MONEY_H
+#define MONEY_H
 
- The money.h header should only contain the standard &num;ifndef MONEY_H stuff, money.c should be empty, and check_money.c should only contain an empty main function. Run this with make -k check, after going through the setups to get autoconf and friends working. If all goes well, make should report that our tests passed. No surprise, because there aren't any tests to fail.
-   </para>
-   <para>
-The AM_PATH_CHECK() macro is defined in the file check.m4 which is installed by Check. If you see warnings from automake or aclocal this most certainly means that you forgot to call aclocal or that aclocal can't find check.m4. AM_PATH_CHECK() has some optional parameters that you might find useful:
-   </para>
-   <programlisting>
-AM_PATH_CHECK([MINIMUM-VERSION,[ACTION-IF-FOUND[,ACTION-IF-NOT-FOUND]]])</programlisting>
+#endif /* MONEY_H */
+@end verbatim
+@end example
 
-   <para>
-One way to run the autoconf/automake tools is shown below in a simple
-shell script. The variable CHECK_DIR should point to the directory
-where check.m4 is installed. If you install it in a standard location,
-e.g. /usr/share/aclocal, then you won't need the variable defined.
-   </para>
-   <programlisting>
-#!/bin/sh
-if [ -n "$CHECK_DIR" ]; then
-    aclocal -I $CHECK_DIR
-else
-    aclocal
-fi
-autoconf
-autoheader
-automake --add-missing</programlisting>
+@file{src/money.c} should be empty, and @file{tests/check_money.c}
+should only contain an empty @code{main()} function.  Create the GNU
+Build System for the project and then build @file{main} and
+@file{libmoney.la} as follows:
+@example
+@verbatim
+$ autoreconf --install
+$ ./configure
+$ make
+@end verbatim
+@end example
 
-This 
+(@command{autoreconf} determines which commands are needed in order
+for @command{configure} to be created or brought up to date.
+Previously one would use a script called @command{autogen.sh} or
+@command{bootstrap}, but that practice is unnecessary now.)
 
-This shell script and the above configure.in were run on a Red Hat 9
-box with Autoconf version 2.13 and automake (GNU automake) 1.4-p6. As
-the saying goes, &quot;Your mileage may vary...&quot;
+Now build and run the @command{check_money} test with @command{make
+check}.  If all goes well, @command{make} should report that our tests
+passed.  No surprise, because there aren't any tests to fail.  If you
+have problems, make sure to see @ref{AM_PATH_CHECK}.
+
+This was tested on the i386 ``testing'' distribution of Debian
+GNU/Linux (etch) in March 2006, using Autoconf 2.59, Automake 1.9.6,
+and Libtool 1.5.22.  Please report any problems to
+@email{check-devel@@lists.sourceforge.net}.
+
+@node Setting Up the Money Tests,  , Setting Up the Money Build, Tutorial
+@section Setting Up the Money Tests
+
+@node AM_PATH_CHECK, Copying This Manual, Tutorial, Top
+@chapter AM_PATH_CHECK
+@findex AM_PATH_CHECK
+
+The @code{AM_PATH_CHECK()} macro is defined in the file
+@file{check.m4} which is installed by Check.  It has some optional
+parameters that you might find useful in your @file{configure.ac}:
+@verbatim
+AM_PATH_CHECK([MINIMUM-VERSION,
+               [ACTION-IF-FOUND[,ACTION-IF-NOT-FOUND]]])
 @end verbatim
 
+@code{AM_PATH_CHECK} does several things:
 
-@node Copying This Manual, Index, Tutorial, Top
+@enumerate
+@item 
+It ensures check.h is available
+
+@item 
+It ensures a compatible version of Check is installed
+
+@item 
+It sets @env{CHECK_CFLAGS} and @env{CHECK_LIBS} for use by Automake.
+@end enumerate
+
+If you include @code{AM_PATH_CHECK()} in @file{configure.ac} and
+subsequently see warnings when attempting to create
+@command{configure}, it probably means one of the following things:
+
+@enumerate
+@item 
+You forgot to call @command{aclocal}.  @command{autoreconf} will do
+this for you.
+
+@item
+@command{aclocal} can't find  @file{check.m4}.  Here are some possible
+solutions:
+
+@enumerate a
+@item
+Call @command{aclocal} with @option{-I} set to the location of
+@file{check.m4}.  This means you have to call both @command{aclocal} and
+@command{autoreconf}.
+
+@item
+Add the location of @file{check.m4} to the @samp{dirlist} used by
+@command{aclocal} and then call @command{autoreconf}.  This means you
+need permission to modify the @samp{dirlist}.
+
+@item
+Set @code{ACLOCAL_AMFLAGS} in your top-level @file{Makefile.am} to
+include @option{-I DIR} with @code{DIR} being the location of
+@file{check.m4}.  Then call @command{autoreconf}.
+@end enumerate
+@end enumerate
+
+@node Copying This Manual, Index, AM_PATH_CHECK, Top
 @appendix Copying This Manual
 
 @menu
