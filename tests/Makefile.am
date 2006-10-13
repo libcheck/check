@@ -33,18 +33,11 @@ check_check_SOURCES = \
 	check_check_main.c
 
 check_stress_SOURCES = check_stress.c
-
 ex_output_SOURCES = ex_output.c
-
 ex_log_output_SOURCES = ex_log_output.c
-
 ex_xml_output_SOURCES = ex_xml_output.c
 
-LIBCHECK_A=$(top_builddir)/src/libcheck.a
 AM_CPPFLAGS = -I$(top_srcdir)/src
-LDADD = $(LIBCHECK_A)
+LDADD = $(top_builddir)/src/libcheck.a
 
-CLEANFILES = *~ *.log *.xml test_logfile core
-
-$(LIBCHECK_A):
-	$(MAKE) -C $(top_builddir)/src
+CLEANFILES = *~ *.log *.xml test_logfile

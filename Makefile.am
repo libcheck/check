@@ -1,6 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS=src tests doc rpm
+## run tests after everything else
+
+SUBDIRS = src doc rpm . tests
 
 ## what to clean
 
@@ -21,7 +23,6 @@ doc_DATA = ChangeLog ChangeLogOld NEWS README COPYING.LESSER
 ## install check.m4 with AM_PATH_CHECK in it
 m4datadir = $(datadir)/aclocal
 m4data_DATA = check.m4
-
 
 rpm: dist
 	(cd rpm && ${MAKE} ${AM_MAKEFLAGS} rpm)
