@@ -409,7 +409,8 @@ The enumeration values defined in Check to control print output are as follows:
 
      <varlistentry>
        <term>CK_ENV</term>
-       <listitem><para>Gets the print mode from the environment variable CK_VERBOSITY, which can have the values "silent", "minimal", "normal, "verbose". If the variable is not found or the value is not recognized, the print mode is set to CK_NORMAL.
+       <listitem><para>Gets the print mode from the environment
+       variable CK_VERBOSITY, which can have the values "silent", "minimal", "normal", "verbose". If the variable is not found or the value is not recognized, the print mode is set to CK_NORMAL.
        </para></listitem>
      </varlistentry>
    </variablelist>
