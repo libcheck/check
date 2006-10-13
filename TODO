@@ -24,11 +24,6 @@ Interface
           Prepend CHECK_ to all constants, check_ to all exported symbols, 
   	  and _check to all internal functions.  Currently fail() is
 	  causing a problem.  Deprecate the old API in a nice way.
-[     ] * Better macro for START_TEST.  It would be nice to pass in
-	  three separate arguments, something like: 
-            1) a numeric ID for the tests function
-            2) the exact name of the function being tested
-            3) the name of the feature in (2) being tested for                       
 
 Build issues:
 =============
@@ -113,6 +108,16 @@ Unit test writing
           table as its defined, and then remove it once its added
           somewhere.  Then, when finished, print out what remains on the list /
           in the table.  This might require some ugly macro hackery...
+[     ] * Better macro for START_TEST.  It would be nice to pass in
+	  three separate arguments, something like: 
+            1) a numeric ID for the tests function
+            2) the exact name of the function being tested
+            3) the name of the feature in (2) being tested for                       
+[     ] * Find a way to create setup/teardown macros such that global
+	  variables aren't necessary, and they're really just blocks
+	  that get added at the beginning and ending of tests.
+[     ] * Some mechanism to profile execution times, and assert that the time
+	  a test takes to complete scales according to some big-O notation.
     
 Check Internals
 ===============
