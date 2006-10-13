@@ -18,8 +18,11 @@ EXTRA_DIST= ChangeLogOld $(m4data_DATA)
 
 ## install docs
 docdir = $(datadir)/doc/$(PACKAGE)
-doc_DATA = ChangeLog ChangeLogOld NEWS README COPYING.LESSER
+doc_DATA = SVNChangeLog ChangeLog ChangeLogOld NEWS README COPYING.LESSER
 
 ## install check.m4 with AM_PATH_CHECK in it
 m4datadir = $(datadir)/aclocal
 m4data_DATA = check.m4
+
+ChangeLog:
+	svn log -v $(top_srcdir) > SVNChangeLog

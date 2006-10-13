@@ -1,0 +1,19 @@
+Please try and stick to the GNU coding standards.  A lot of hard work
+went into making Check compatible with the standards, and would be
+nice if that work didn't erode.  I decided on the standards because
+they work well for a lot of programs much bigger than Check.  Ok,
+since you're wondering, the advantages of sticking to the standards
+are three-fold:
+
+  1) consistent style within the project
+
+  2) being familiar with the standards lets you work on lots of
+     different GNU standards-compliant projects pretty easily
+
+  3) it reduces the number of decisions that must be made
+
+So far, the only intentional deviation from the standards is the use
+of `svn log -v > SVNChangeLog' to generate an SVNChangeLog, rather
+than manual editing.  Subversion solves many of the problems in CVS,
+for which the GNU ChangeLog rules are written, the lack of atomic
+commits being one of them.
