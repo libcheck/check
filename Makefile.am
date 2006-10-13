@@ -5,7 +5,7 @@ DOCROOTDIR=$(prefix)/share/doc/${PACKAGE}-${VERSION}
 endif
 docdir = $(DOCROOTDIR)
 
-doc_DATA = ChangeLog ChangeLogOld NEWS README COPYING
+doc_DATA = ChangeLog ChangeLogOld NEWS README COPYING.LESSER
 
 SUBDIRS=src tests doc rpm debian
 
