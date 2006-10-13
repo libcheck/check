@@ -54,11 +54,16 @@ entitled ``@acronym{GNU} Free Documentation License.''
 
 @menu
 * Introduction::                
+* Unit Testing in C::           
 * Copying This Manual::         
 * Index::                       
 
 @detailmenu
  --- The Detailed Node Listing ---
+
+Unit Testing in C 
+
+* Other Unit Testing Frameworks for C::  
 
 Copying This Manual
 
@@ -67,7 +72,7 @@ Copying This Manual
 @end detailmenu
 @end menu
 
-@node Introduction, Copying This Manual, Top, Top
+@node Introduction, Unit Testing in C, Top, Top
 @chapter Introduction
 @cindex introduction
 
@@ -118,7 +123,111 @@ Look at the Check homepage for the latest information on Check:
 The Check project page is at:
 @uref{http://sourceforge.net/projects/check/}.
 
-@node Copying This Manual, Index, Introduction, Top
+@node Unit Testing in C, Copying This Manual, Introduction, Top
+@chapter Unit Testing in C 
+@ C unit testing
+
+The approach to unit testing frameworks used for Check originated with
+Smalltalk, which is a late binding object-oriented language supporting
+reflection.  Writing a framework for C requires solving some special
+problems that frameworks for Smalltalk, Java or Python don't have to
+face.  In all of those language, the worst that a unit test can do is
+fail miserably, throwing an exception of some sort.  In C, a unit test
+is just as likely to trash its address space as it is to fail to meet
+its test requirements, and if the test framework sits in the same
+address space, goodbye test framework.  
+
+To solve this problem, Check uses the @code{fork()} system call to
+create a new address space in which to run each unit test, and then
+uses message queues to send information on the testing process back to
+the test framework.  That way, your unit test can do all sorts of
+nasty things with pointers, and throw a segmentation fault, and the
+test framework will happily note a unit test error, and chug along.
+
+The Check framework is also designed to play happily with common
+development environments for C programming.  The author designed Check
+around Autoconf/Automake (thus the name Check: @command{make check} is
+the idiom used for testing with Autoconf/Automake), and the test
+failure messages thrown up by Check use the common idiom of
+@samp{filename:linenumber:message} used by @command{gcc} and family to
+report problems in source code.  With (X)Emacs, the output of Check
+allows one to quickly navigate to the location of the unit test that
+failed; presumably that also works in VI and IDEs.
+
+@menu
+* Other Unit Testing Frameworks for C::  
+@end menu
+
+@node Other Unit Testing Frameworks for C,  , Unit Testing in C, Unit Testing in C
+@section Other Unit Testing Frameworks for C
+@cindex other frameworks
+@cindex frameworks
+
+The authors know of the following additional unit testing frameworks
+for C:
+
+@table @asis
+
+@item GNU Autounit
+Much along the same lines as Check, including forking to run unit
+tests in a separate address space (in fact, the original author of
+Check borrowed the idea from @acronym{GNU} Autounit).  @acronym{GNU}
+Autounit uses GLib extensively, which means that linking and such need
+special options, but this may not be a big problem to you, especially
+if you are already using GTK or GLib.  See the
+@uref{http://www.recursism.com/s2004/zp/products/gnu+autounit, GNU
+Autounit homepage}.
+
+@item cUnit
+Also uses GLib, but does not fork to protect the address space of unit
+tests.  See the
+@uref{http://web.archive.org/web/*/http://people.codefactory.se/~spotty/cunit/,
+archived cUnit homepage}.
+
+@item CUnit
+Standard C, with plans for a Win32 GUI implementation.  Does not
+currently fork or otherwise protect the address space of unit tests.
+In early development.  See the @uref{http://cunit.sourceforge.net,
+CUnit homepage}.
+
+@item CppUnit
+The premier unit test framework for C++; you can also use it to test C
+code.  It is stable, actively developed, and has a GUI interface.  The
+primary reasons not to use CppUnit for C are first that it is quite
+big, and second you have to write your tests in C++, which means you
+need a C++ compiler.  If these don't sound like concerns, it is
+definitely worth considering, along with other C++ unit testing
+frameworks.  See the
+@uref{http://cppunit.sourceforge.net/cppunit-wikie, CppUnit homepage}.
+
+@item MinUnit
+A minimal set of macros and that's it!  The point is to
+show how easy it is to unit test your code.  See the
+@uref{http://www.jera.com/techinfo/jtns/jtn002.html, MinUnit
+homepage}.
+
+@item CUnit for Mr. Ando
+A CUnit implementation that is fairly new, and apparently still in
+early development.  See the 
+@uref{http://park.ruru.ne.jp/ando/work/CUnitForAndo/html/, CUnit for
+Mr. Ando homepage}.
+@end table
+
+This list was last updated in March 2006.  If you know of other C unit
+test frameworks, please send an email plus description to
+@email{check-devel@@lists.sourceforge.net} and we will add the entry
+to this list.
+
+It is the authors' considered opinion that forking or otherwise
+trapping and reporting signals is indispensable for unit testing (but
+it probably wouldn't be hard to add that to frameworks without that
+feature).  Try 'em all out: adapt this tutorial to use all of the
+frameworks above, and use whichever you like.  Contribute, spread the
+word, and make one a standard.  Languages such as Java and Python are
+fortunate to have standard unit test frameworks; it would be desirable
+that C have one as well.
+
+@node Copying This Manual, Index, Unit Testing in C, Top
 @appendix Copying This Manual
 
 @menu
