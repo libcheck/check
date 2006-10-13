@@ -12,7 +12,9 @@ Patches:     Bernhard Reiter (configure issues)
 	     Lucas Di Pentima and Cesar Ballardini (signals)
 	     Chris Pickett (GNU Build System update)
              Robert Lemmen (gcov description in manual)
+	     Loic Martin (AM_PATH_CHECK patch)
+	     Ross Burton (pkg-config patch)
 
-Anybody who contributed more than a couple lines of code to Check is
+Anybody who has contributed code to Check or Check's build system is
 considered an author.  Send patches to this file to
 <check-devel@lists.sourceforge.net>.

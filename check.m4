@@ -4,6 +4,8 @@ dnl
 
 AC_DEFUN([AM_PATH_CHECK],
 [
+  AC_MSG_WARN([[AM_PATH_CHECK() is deprecated]])
+  AC_MSG_WARN([[use PKG_CHECK_MODULES([CHECK], [check >= 0.9.4]) instead]])
   AC_ARG_WITH([check],
   [  --with-check=PATH       prefix where check is installed [default=auto]])
  
