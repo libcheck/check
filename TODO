@@ -1,0 +1,26 @@
+Build issues:
+-------------
+
+use AC_CONFIG_MACRO_DIR([m4]) and create an m4/ dir for check.m4
+  aclocaldir = $(datadir)/aclocal
+  aclocal_DATA = mymacro.m4 myothermacro.m4
+
+  ACLOCAL_AMFLAGS = -I m4  # put in top-level Makefile.am
+
+fix overriding CFLAGS in configure.ac
+use AC_DEFINE to define version number stuff?
+change MICRO to ALPHA?
+add std-options to AM_INIT_AUTOMAKE
+investigate subdir-objects option to AM_INIT_AUTOMAKE
+use filename-length-max=99 in AM_INIT_AUTOMAKE
+
+just make sure libcheck.a works as a dependency, don't call $(MAKE)
+
+Using
+
+     SUBDIRS = lib src . test
+
+will cause lib/ to be built before src/, then the current directory
+will be built, finally the test/ directory will be built. It is
+customary to arrange test directories to be built after everything
+else since they are meant to test what has been constructed.
