@@ -728,6 +728,64 @@ The timeout functionality is only available in CK_FORK mode.
 
 
    <section>
+   <title>
+Determining test coverage
+   </title>
+   <para>
+In most cases it will be quite interesting to see what parts of your code are
+tested to what extent. This information can then be used to write more tests
+specifically for the areas of your program that are not tested well enough
+and therefore improve confidence in the code, or to detect dead code that could
+be factored away. Check itself does not provide any means to determine this test
+coverage, this is the job of the compiler (and related tools). In the case of
+gcc this is pretty easy, other compilers should provide similar facilities. 
+   </para>
+   <para>
+   First enable test coverage profiling when building your source with the
+   <emphasis>-fprofile-arcs</emphasis> and <emphasis>-ftest-coverage</emphasis>
+   switches:
+   </para>
+   <programlisting>
+   gcc -g -Wall -fprofile-arcs -ftest-coverage -o foo foo.c foo_check.c
+   </programlisting>
+   <para>
+   You will see that an additional .gcno file is created for each .c input 
+   file. After running your tests the normal way, a .gcda file is created for
+   each .gcno file. These contain the coverage data in a raw format. To combine
+   this information and a source file into a more readable format you can use
+   the <emphasis>gcov</emphasis> utility:
+   </para>
+   <programlisting>
+   gcov foo.c
+   </programlisting>
+   <para>
+   This will result in a file called foo.c.gcov which looks like this:
+   </para>
+   <programlisting>
+        -:   41:     * object */
+       18:   42:    if (ht->table[p] != NULL) {
+        -:   43:        /* replaces the current entry */
+    #####:   44:        ht->count--;
+    #####:   45:        ht->size -= ht->table[p]->size + sizeof(struct hashtable_entry);   
+   </programlisting>
+   <para>
+   As you can see this is an annotated source file with three columns, usage
+   information, line numbers and the original source. The usage information in
+   the first column can either be '-', which means that this line does not
+   contain code that could be executed, '#####', which means this line was never
+   executed altough it does contain code (these are the lines that are most
+   interesting for you), or a number which indicates how often that line was
+   executed.
+   </para>
+   <para>
+   This is of course only a very brief overview, but it should illustrate how
+   determining test coverage generally works, and why you should do it.
+   For more information or help with other compilers, please refer to the
+   relevant manual pages and other documentation. 
+   </para>
+   </section>
+
+   <section>
     <title>
 Test Logging<anchor id="TestLogging">
    </title>
