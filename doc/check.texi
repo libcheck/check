@@ -46,7 +46,7 @@ entitled ``@acronym{GNU} Free Documentation License.''
 @contents
 
 @ifnottex
-@node Top
+@node Top, Overview, (dir), (dir)
 @top Check
 
 @insertcopying
@@ -56,11 +56,19 @@ entitled ``@acronym{GNU} Free Documentation License.''
 * Overview::                    
 * Copying This Manual::         
 * Index::                       
+
+@detailmenu
+ --- The Detailed Node Listing ---
+
+Copying This Manual
+
+* GNU Free Documentation License::  License for copying this manual.
+
+@end detailmenu
 @end menu
 
-@node Overview
+@node Overview, Copying This Manual, Top, Top
 @chapter Overview
-
 @cindex overview
 
 This is a sample manual.  There is no sample program to
@@ -77,7 +85,8 @@ This is the first item.
 This is the second item.
 @end enumerate
 
-@node Copying This Manual
+
+@node Copying This Manual, Index, Overview, Top
 @appendix Copying This Manual
 
 @menu
@@ -87,7 +96,7 @@ This is the second item.
 @include fdl.texi
 
 
-@node Index
+@node Index,  , Copying This Manual, Top
 @unnumbered Index
 
 @printindex cp
