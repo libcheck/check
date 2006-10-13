@@ -4,6 +4,8 @@
 
 SUBDIRS = src doc . tests
 
+AM_MAKEINFOFLAGS = -I$(top_srcdir)/doc/example
+
 ## what to clean
 
 CLEANFILES=*~\
