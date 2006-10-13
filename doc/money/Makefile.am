@@ -1,12 +1,24 @@
 ## Process this file with automake to produce Makefile.in
 
-example_docs =\
+## source files
+
+examples =\
 	money.h\
 	money.c\
 	check_money.c\
 	configure.in.money\
 	Makefile.am.money
 
-EXTRA_DIST = $(example_docs)
+## what to clean
 
-exampledoc_DATA = $(example_docs)
+CLEANFILES = *~
+
+## what to distribute
+
+EXTRA_DIST = $(examples)
+
+## what to install
+
+datarootdir = $(prefix)/share
+examplesdir = $(datarootdir)/doc/$(PACKAGE)/examples
+examples_DATA = $(examples)
