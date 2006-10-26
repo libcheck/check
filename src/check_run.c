@@ -430,13 +430,13 @@ static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun, int i)
     eprintf("Unable to fork:",__FILE__,__LINE__);
   if (pid == 0) {
     setpgid(0, 0);
-    group_pid = getpgid(0);
+    group_pid = getpgrp();
     tcase_run_checked_setup(sr, tc);
     tfun->fn(i);
     tcase_run_checked_teardown(tc);
     exit(EXIT_SUCCESS);
   } else {
-    group_pid = getpgid(pid);
+    group_pid = pid;
   }
 
   alarm_received = 0;
