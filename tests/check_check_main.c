@@ -10,6 +10,7 @@ int main (void)
 
   fork_setup();
   setup_fixture();
+  setup();
   sr = srunner_create (make_master_suite());
   srunner_add_suite(sr, make_list_suite());
   srunner_add_suite(sr, make_msg_suite());
@@ -19,7 +20,6 @@ int main (void)
   srunner_add_suite(sr, make_fixture_suite());
   srunner_add_suite(sr, make_pack_suite());
   
-  setup();
   printf ("Ran %d tests in subordinate suite\n", sub_ntests);
   srunner_run_all (sr, CK_VERBOSE);
   cleanup();

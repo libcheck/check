@@ -1,7 +1,10 @@
+#define _GNU_SOURCE
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <check.h>
+#include <assert.h>
 #include "check_check.h"
 
 
@@ -17,6 +20,11 @@ typedef struct {
   int failure_type;
   const char *msg;
 } master_test_t;
+
+#define SIG_STR_LEN 128
+static char signal_11_str[SIG_STR_LEN];
+static char signal_11_8_str[SIG_STR_LEN];
+static char signal_8_str[SIG_STR_LEN];
 
 static master_test_t master_tests[] = {
   { "Simple Tests",  18, CK_FAILURE, "Failure expected" },
@@ -34,13 +42,13 @@ static master_test_t master_tests[] = {
   { "Simple Tests",  -1, CK_FAILURE, "7 == 7" },
   { "Simple Tests",  -1, CK_FAILURE, "Failed" },
 
-  { "Signal Tests",  -1, CK_ERROR,   "Received signal 11 (Segmentation fault)" },
+  { "Signal Tests",  -1, CK_ERROR,   signal_11_str },
   { "Signal Tests",  -1, CK_PASS,    "Passed" },
-  { "Signal Tests", 111, CK_ERROR,   "Received signal 11 (Segmentation fault), expected 8 (Floating point exception)" },
+  { "Signal Tests", 111, CK_ERROR,   signal_11_8_str },
   { "Signal Tests",  -1, CK_FAILURE, "Early exit with return value 0" },
   { "Signal Tests",  -1, CK_FAILURE, "Early exit with return value 1" },
-  { "Signal Tests",  -1, CK_ERROR,   "Received signal 8 (Floating point exception)" },
-  { "Signal Tests",  -1, CK_ERROR,   "Received signal 8 (Floating point exception)" },
+  { "Signal Tests",  -1, CK_ERROR,   signal_8_str },
+  { "Signal Tests",  -1, CK_ERROR,   signal_8_str },
 
 #if TIMEOUT_TESTS_ENABLED
   { "Environment Timeout Tests", 139, CK_ERROR,  "Test timeout expired" },
@@ -195,18 +203,14 @@ END_TEST
 
 START_TEST(test_check_tcnames)
 {
-  int i;
-  
-  for (i = 0; i < sub_ntests; i++) {
-    const char *tcname;   
-    tcname = tr_tcname(tr_all_array[i]);
-    if (strcmp(tcname, master_tests[i].tcname) != 0) {
-      char *emsg = malloc (MAXSTR);
-      snprintf(emsg, MAXSTR,"For test %d: Expected %s, got %s",
-               i, master_tests[i].tcname, tcname);
-      fail(emsg);
-      free(emsg);
-    }
+  const char *tcname;   
+  tcname = tr_tcname(tr_all_array[i]);
+  if (strcmp(tcname, master_tests[i].tcname) != 0) {
+    char *emsg = malloc (MAXSTR);
+    snprintf(emsg, MAXSTR,"Expected %s, got %s",
+             master_tests[i].tcname, tcname);
+    fail(emsg);
+    free(emsg);
   }
 }
 END_TEST
@@ -214,18 +218,14 @@ END_TEST
 
 START_TEST(test_check_all_msgs)
 {
-  int i;
-
-  for (i = 0; i < sub_ntests; i++) {
-    const char *msg;   
-    msg = tr_msg(tr_all_array[i]);
-    if (strcmp(msg, master_tests[i].msg) != 0) {
-      char *emsg = malloc (MAXSTR);
-      snprintf(emsg, MAXSTR,"For test %d: Expected %s, got %s",
-               i, master_tests[i].msg, msg);
-      fail(emsg);
-      free(emsg);
-    }
+  const char *msg;
+  msg = tr_msg(tr_all_array[i]);
+  if (strcmp(msg, master_tests[i].msg) != 0) {
+    char *emsg = malloc (MAXSTR);
+    snprintf(emsg, MAXSTR,"Expected %s, got %s",
+             master_tests[i].msg, msg);
+    fail(emsg);
+    free(emsg);
   }
 }
 END_TEST  
@@ -281,8 +281,8 @@ Suite *make_master_suite (void)
   tcase_add_test (tc_core, test_check_failure_ftypes);
   tcase_add_test (tc_core, test_check_failure_lnos);
   tcase_add_test (tc_core, test_check_failure_lfiles);
-  tcase_add_test (tc_core, test_check_tcnames);
-  tcase_add_test (tc_core, test_check_all_msgs);
+  tcase_add_loop_test (tc_core, test_check_tcnames, 0, sub_ntests);
+  tcase_add_loop_test (tc_core, test_check_all_msgs, 0, sub_ntests);
   tcase_add_loop_test (tc_core, test_check_all_ftypes, 0, nr_of_master_tests);
   tcase_add_unchecked_fixture(tc_fixture, test_fixture_setup,
 			      test_fixture_teardown);
@@ -299,10 +299,24 @@ Suite *make_master_suite (void)
   return s;
 }
 
+static void init_signal_strings(void)
+{
+  int n;
+  n = snprintf(signal_11_str, SIG_STR_LEN, "Received signal 11 (%s)", strsignal(11));
+  assert(n < SIG_STR_LEN);
+  n = snprintf(signal_11_8_str, SIG_STR_LEN, "Received signal 11 (%s), expected 8 (%s)", strsignal(11), strsignal(8));
+  assert(n < SIG_STR_LEN);
+  n = snprintf(signal_8_str, SIG_STR_LEN, "Received signal 8 (%s)", strsignal(8));
+  assert(n < SIG_STR_LEN);
+}
+
 void setup (void)
 {
   Suite *s = make_sub_suite();
   SRunner *sr = srunner_create(s);
+
+  init_signal_strings();
+
   srunner_add_suite(sr, make_sub2_suite());
   srunner_run_all(sr, CK_VERBOSE);
   tr_fail_array = srunner_failures(sr);
@@ -313,5 +327,4 @@ void setup (void)
 
 void cleanup (void)
 {
-  return;
 }
