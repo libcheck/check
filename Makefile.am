@@ -16,7 +16,7 @@ CLEANFILES = *~\
 
 ## what additional things to distribute
 
-EXTRA_DIST = ChangeLogOld check.pc.in $(m4data_DATA)
+EXTRA_DIST = SVNChangeLog ChangeLogOld check.pc.in $(m4data_DATA)
 
 ## install docs
 docdir = $(datadir)/doc/$(PACKAGE)
