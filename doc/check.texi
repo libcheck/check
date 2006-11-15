@@ -1001,7 +1001,7 @@ with debugging.
 Adding a normal test with @code{tcase_add_loop_test()} instead of
 @code{tcase_add_test()} will make the test function the body of a
 @code{for} loop, with the addition of a fork before each call.  The
-loop variable @code{i} is available for use inside the test function;
+loop variable @code{_i} is available for use inside the test function;
 for example, it could serve as an index into a table.  For failures,
 the iteration which caused the failure is available in error messages
 and logs.  
@@ -1011,12 +1011,29 @@ The values are used as in a normal @code{for} loop.  Below is some
 pseudo-code to show the concept:
 @example
 @verbatim
-for (i = tfun->loop_start; i < tfun->loop_end; i++)
+for (_i = tfun->loop_start; _i < tfun->loop_end; _i++)
 {
   fork();      /* New context */
-  tfun->f(i);  /* Call test function */
+  tfun->f(_i);  /* Call test function */
   wait();      /* Wait for child to terminate */
 }
+@end verbatim
+@end example
+
+An example of looping test usage follows:
+@example
+@verbatim
+static const int primes[5] = {2,3,5,7,11};
+
+START_TEST (check_is_prime)
+{
+  fail_unless (is_prime(_i));
+}
+END_TEST
+
+...
+
+tcase_add_loop_test (tcase, check_is_prime, 0, 5);
 @end verbatim
 @end example
 

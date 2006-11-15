@@ -204,14 +204,14 @@ END_TEST
 START_TEST(test_check_tcnames)
 {
   const char *tcname;   
-  tcname = tr_tcname(tr_all_array[i]);
-  if (strcmp(tcname, master_tests[i].tcname) != 0) {
+  tcname = tr_tcname(tr_all_array[_i]);
+  if (strcmp(tcname, master_tests[_i].tcname) != 0) {
     char *emsg = malloc (MAXSTR);
     snprintf(emsg, MAXSTR,"Expected %s, got %s",
-             master_tests[i].tcname, tcname);
+             master_tests[_i].tcname, tcname);
     fail(emsg);
     free(emsg);
-  }
+  } 
 }
 END_TEST
 
@@ -219,11 +219,11 @@ END_TEST
 START_TEST(test_check_all_msgs)
 {
   const char *msg;
-  msg = tr_msg(tr_all_array[i]);
-  if (strcmp(msg, master_tests[i].msg) != 0) {
+  msg = tr_msg(tr_all_array[_i]);
+  if (strcmp(msg, master_tests[_i].msg) != 0) {
     char *emsg = malloc (MAXSTR);
     snprintf(emsg, MAXSTR,"Expected %s, got %s",
-             master_tests[i].msg, msg);
+             master_tests[_i].msg, msg);
     fail(emsg);
     free(emsg);
   }
@@ -232,8 +232,8 @@ END_TEST
 
 START_TEST(test_check_all_ftypes)
 {
-  fail_unless(master_tests[i].failure_type == tr_rtype(tr_all_array[i]),
-              "Failure type wrong for test %d", i);
+  fail_unless(master_tests[_i].failure_type == tr_rtype(tr_all_array[_i]),
+              "Failure type wrong for test %d", _i);
 }
 END_TEST
 

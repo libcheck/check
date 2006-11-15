@@ -29,7 +29,7 @@ END_TEST
 
 START_TEST(test_loop)
 {
-  fail_unless (i==1, "Iteration %d failed", i);
+  fail_unless (_i==1, "Iteration %d failed", _i);
 }
 END_TEST
 
