@@ -1,3 +1,5 @@
+* Changed loop test iteration variable from i to _i.
+
 Fri, Oct 13, 2006: Released Check 0.9.4
 
 * Updated manual and converted from DocBook to Texinfo.
