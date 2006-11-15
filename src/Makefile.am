@@ -4,9 +4,9 @@ lib_LTLIBRARIES=libcheck.la
 
 include_HEADERS=check.h
 
-if ENABLE_GCOV
-libcheck_la_CFLAGS=-fprofile-arcs -ftest-coverage
-endif
+AM_CFLAGS=@GCOV_CFLAGS@
+
+libcheck_la_LIBADD=@GCOV_LIBS@
 
 libcheck_la_SOURCES=\
 	check.h		\
@@ -30,7 +30,7 @@ libcheck_la_SOURCES=\
 
 EXTRA_DIST=check.h.in
 
-CLEANFILES=*~ *.bb *.bbg *.da
+CLEANFILES=*~ *.gcno
 
 LCOV_OUTPUT  = lcov.info
 LCOV_HTML    = lcov_html
@@ -39,11 +39,9 @@ LCOV_GENHTML = @GENHTML@
 
 lcov: $(LCOV_HTML)
 
-# Running the tests twice is a fix for a bug in gcc3.3 coverage support.
 $(LCOV_OUTPUT): libcheck.la
-	@$(MAKE) -C $(top_builddir)/tests check &> /dev/null
 	@$(MAKE) -C $(top_builddir)/tests check
-	$(LCOV_LCOV) --capture --directory . --output-file $(LCOV_OUTPUT)
+	$(LCOV_LCOV) --capture --directory . --base-directory . --output-file $(LCOV_OUTPUT)
 
 $(LCOV_HTML): $(LCOV_OUTPUT)
 	-$(RM) -r $(LCOV_HTML)
