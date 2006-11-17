@@ -12,10 +12,10 @@ Documentation
 [0.9.4] * Convert to info format and update.
 [0.9.4] * Remove old SGML documentation.
 [0.9.4] * Fix building of documentation that relies on diff
-[     ] * Add html generation of Texinfo docs. 
+[0.9.4] * Add html generation of Texinfo docs. 
 [0.9.4] * Create initial and final versions of money example.
 [0.9.4] * Update tutorial so that it works with modern tools.
-[     ] * Clarify looping tests and give example of usage.
+[0.9.5] * Clarify looping tests and give example of usage.
 
 Interface
 =========
