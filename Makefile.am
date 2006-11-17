@@ -30,5 +30,7 @@ m4data_DATA = check.m4
 pcdatadir = $(libdir)/pkgconfig
 pcdata_DATA = check.pc
 
+# Always regenerate SVNChangeLog
+.PHONY: SVNChangeLog
 SVNChangeLog:
 	svn log -v @abs_top_srcdir@ > $@
