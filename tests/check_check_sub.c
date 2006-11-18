@@ -58,23 +58,9 @@ START_TEST(test_fail_null_msg)
 }
 END_TEST
 
-
-START_TEST(test_fail_no_msg)
-{
-  fail_unless(4 == 5);
-}
-END_TEST
-
 START_TEST(test_fail_if_null_msg)
 {
   fail_if(2 != 3, NULL);
-}
-END_TEST
-
-
-START_TEST(test_fail_if_no_msg)
-{
-  fail_if(4 != 5);
 }
 END_TEST
 
@@ -102,9 +88,9 @@ START_TEST(test_fail_vararg_msg_3)
 }
 END_TEST
 
-START_TEST(test_fail_empty)
+START_TEST(test_fail_empty_null_msg)
 {
-  fail();
+  fail(NULL);
 }
 END_TEST
 
@@ -201,7 +187,7 @@ START_TEST(test_fork1p_pass)
   if((pid = fork()) < 0) {
     fail("Failed to fork new process");
   } else if (pid > 0) {
-    fail_unless(1);
+    fail_unless(1, NULL);
     kill(pid, SIGKILL);
   } else {
     for (;;) {
@@ -237,7 +223,7 @@ START_TEST(test_fork1c_pass)
   } else if (pid > 0) {
     check_waitpid_and_exit(pid);
   } else {
-    fail_unless(1);
+    fail_unless(1, NULL);
     check_waitpid_and_exit(0);
   }
 }
@@ -268,7 +254,7 @@ START_TEST(test_fork2_pass)
     if((pid2 = check_fork()) < 0) {
       fail("Failed to fork new process");
     } else if (pid2 == 0) {
-      fail_unless(1);
+      fail_unless(1, NULL);
       check_waitpid_and_exit(0);
     }
     check_waitpid_and_exit(pid2);
@@ -361,13 +347,11 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_simple, test_fail_if_pass);
   tcase_add_test (tc_simple, test_fail_if_fail);
   tcase_add_test (tc_simple, test_fail_null_msg);
-  tcase_add_test (tc_simple, test_fail_no_msg);
   tcase_add_test (tc_simple, test_fail_if_null_msg);
-  tcase_add_test (tc_simple, test_fail_if_no_msg);
   tcase_add_test (tc_simple, test_fail_vararg_msg_1);
   tcase_add_test (tc_simple, test_fail_vararg_msg_2);
   tcase_add_test (tc_simple, test_fail_vararg_msg_3);
-  tcase_add_test (tc_simple, test_fail_empty);
+  tcase_add_test (tc_simple, test_fail_empty_null_msg);
 
   tcase_add_test (tc_signal, test_segv);
   tcase_add_test_raise_signal (tc_signal, test_segv, 11); /* pass  */
