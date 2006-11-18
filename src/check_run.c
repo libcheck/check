@@ -147,10 +147,11 @@ void srunner_run_all (SRunner *sr, enum print_output print_mode)
   
   if (sr == NULL)
     return;
-  if (print_mode < 0 || print_mode >= CK_LAST)
-    eprintf("Bad print_mode argument to srunner_run_all: %d",
-	    __FILE__, __LINE__, print_mode);
-  
+  if (print_mode >= CK_LAST)
+    {
+      eprintf ("Bad print_mode argument to srunner_run_all: %d",
+	      __FILE__, __LINE__, print_mode);
+    }
   memset(&new_action, 0, sizeof new_action);
   new_action.sa_handler = sig_handler;
   sigaction(SIGALRM, &new_action, &old_action);
