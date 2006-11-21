@@ -2,9 +2,10 @@ TODO
 ====
 
 The following are considered bugs in Check.  If you have a fix, please
-send it to <check-devel@lists.sourceforge.net>.  Bug fixing is
-considered more important than feature requests at this point.  Also
-please check the Sourceforge trackers.
+post it in the patch tracker on http://sourceforge.net/projects/check
+or send it to <check-devel@lists.sourceforge.net>.  Bug fixing is
+considered more important than feature requests at this point. Please
+check the Sourceforge trackers before submitting.
 
 Documentation
 =============
