@@ -1,4 +1,17 @@
-* Changed loop test iteration variable from i to _i.
+Tue, Nov 21, 2006: Released Check 0.9.5
+
+* Fixed code coverage support to work with gcc4 and buggy libtool.
+
+* Changed loop test iteration variable from i to _i.  Added example of
+  loop test usage to documentation.
+
+* Fixed distcheck target by adding SVNChangeLog to EXTRA_DIST.
+
+* Fixed signal string problem in tests.  Strings differed between
+  OSes, now we use strsignal().  Fixes Sourceforge bug #1539828. 
+
+* Fixed problem with process group ID, especially visible on Solaris
+  and LynxOS.  Fixes Sourceforge bugs #1407360 and #1539828.
 
 Fri, Oct 13, 2006: Released Check 0.9.4
 
