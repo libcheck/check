@@ -122,6 +122,10 @@ Unit test writing
 	  that get added at the beginning and ending of tests.
 [     ] * Some mechanism to profile execution times, and assert that the time
 	  a test takes to complete scales according to some big-O notation.
+[     ] * Fork entire test cases, and then fork individual tests from
+          within each test case, so that unchecked fixtures can in
+          fact do unsafe things without bringing down the entire test
+          program.
     
 Check Internals
 ===============
