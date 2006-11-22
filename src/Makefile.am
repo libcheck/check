@@ -7,7 +7,7 @@ include_HEADERS		= check.h
 
 EXTRA_DIST		= check.h.in
 
-AM_CFLAGS		= @GCOV_CFLAGS@
+AM_CFLAGS		= @GCOV_CFLAGS@ -ansi -pedantic 
 
 
 CFILES =\
