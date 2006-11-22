@@ -1,3 +1,6 @@
+Coding Standards
+================
+
 Please try and stick to the GNU coding standards.  A lot of hard work
 went into making Check compatible with the standards, and would be
 nice if that work didn't erode.  I decided on the standards because
@@ -19,3 +22,60 @@ for which the GNU ChangeLog rules are written, the lack of atomic
 commits being one of them.  However, this doesn't work for make
 distcheck because it never reaches the SVN working copy, so perhaps a
 better mechanism is needed.
+
+Release Process
+===============
+
+1.  Decide on revision suitable for release.
+2.  svn cp -rXXX https://svn.sourceforge.net/svnroot/check/trunk https://svn.sourceforge.net/svnroot/check/tags/check-X.Y.Z
+3.  cd ~/check
+4.  svn up
+5.  cd check-X.Y.Z
+6.  Update NEWS with info from `svn log | less`.
+7.  Update TODO and make sure version numbers match appropriately.
+8.  Update configure.ac with new version numbers.
+9.  svn ci
+10.  autoreconf --install
+11. ./configure
+12. make
+13. ulimit -c 0
+14. make distcheck
+15. rsync -av . USERNAME@shell.sourceforge.net:/home/groups/c/ch/check/htdocs
+16. ftp upload.sourceforge.net
+> anonymous
+> username@domain
+> bin
+> cd /incoming
+> put check-X.Y.Z.tar.gz
+> quit
+17. Locally copy NEWS to NEWS-release, cut out old release news.
+18. Copy SVNChangeLog to SVNChangeLog-release, cut out old release log.
+19. Go to: http://sourceforge.net/project/admin/newrelease.php?package_id=20116&group_id=28255
+20. Enter X.Y.Z as new release name, hit "Create this release"
+21. Upload NEWS-release, SVNChangeLog-release
+22. Tick "Preserve my pre-formatted text", hit "Submit/Refresh"
+23. Tick "check-0.9.5.tar.gz" in list, hit "Add Files and/or Refresh View"
+24. Choose "Platform-Independent" for Processor
+25. Choose "Source .gz" for File Type
+26. Hit "Update/Refresh"
+27. In a new tab or window go to: http://sourceforge.net/project/showfiles.php?group_id=28255
+28. Check project notes, verify NEWS-release and SVNChangeLog-release uploads look OK.
+29. Back in the old tab, tick "I'm sure" and hit "Send Notice".
+30. Send the following email to check-devel@lists.sourceforge.net:
+Subject: check-X.Y.Z released
+Hi,
+
+<some sentence about the release, e.g. "This is a bug fix release."> 
+Please test it out and report any problems you might have!
+
+http://sourceforge.net/project/showfiles.php?group_id=28255
+
+Thanks,
+`whoami`
+
+<paste contents of NEWS-release here>
+31. cd ~/check/trunk
+32. svn up
+33. svn merge -r(rev. in step #4):(rev. in step #9) ../tags/check-X.Y.Z .
+34. svn resolve any conflicts, check everything looks fine.
+35. svn ci
