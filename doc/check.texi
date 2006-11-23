@@ -56,7 +56,7 @@ entitled ``@acronym{GNU} Free Documentation License.''
 @insertcopying
 
 Please send corrections to this manual to
-@email{check-devel@@lists.sourceforge.net}.  We'd prefer it if you can
+@email{check-devel AT lists.sourceforge.net}.  We'd prefer it if you can
 send a unified diff (@command{diff -u}) against the
 @file{doc/check.texi} file that ships with Check, but something is
 still better than nothing if you can't manage that.
@@ -258,7 +258,7 @@ Mr. Ando homepage}.
 
 This list was last updated in March 2006.  If you know of other C unit
 test frameworks, please send an email plus description to
-@email{check-devel@@lists.sourceforge.net} and we will add the entry
+@email{check-devel AT lists.sourceforge.net} and we will add the entry
 to this list.
 
 It is the authors' considered opinion that forking or otherwise
@@ -447,7 +447,7 @@ have problems, make sure to see @ref{AM_PATH_CHECK}.
 This was tested on the i386 ``testing'' distribution of Debian
 GNU/Linux (etch) in March 2006, using Autoconf 2.59, Automake 1.9.6,
 and Libtool 1.5.22.  Please report any problems to
-@email{check-devel@@lists.sourceforge.net}.
+@email{check-devel AT lists.sourceforge.net}.
 
 @node Test a Little, Creating a Suite, Setting Up the Money Build, Tutorial
 @section Test a Little, Code a Little

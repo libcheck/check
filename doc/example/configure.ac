@@ -2,7 +2,7 @@
 
 # Prelude.
 AC_PREREQ([2.59])
-AC_INIT([Money], [0.3], [check-devel@lists.sourceforge.net])
+AC_INIT([Money], [0.3], [check-devel AT lists.sourceforge.net])
 
 # unique source file --- primitive safety check 
 AC_CONFIG_SRCDIR([src/money.c])

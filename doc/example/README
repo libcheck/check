@@ -21,4 +21,4 @@ money.c and money.h are built as a library.  src/main.c:main() is a
 client of libmoney.la, just as tests/check_money.c:main() is a client
 of libmoney.la
 
-Please send bug reports to check-devel@lists.sourceforge.net.
+Please send bug reports to check-devel AT lists.sourceforge.net.

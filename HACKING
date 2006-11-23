@@ -61,7 +61,7 @@ Release Process
 27. In a new tab or window go to: http://sourceforge.net/project/showfiles.php?group_id=28255
 28. Check project notes, verify NEWS-release and SVNChangeLog-release uploads look OK.
 29. Back in the old tab, tick "I'm sure" and hit "Send Notice".
-30. Send the following email to check-devel@lists.sourceforge.net:
+30. Send the following email to check-devel AT lists.sourceforge.net:
 Subject: check-X.Y.Z released
 Hi,
 

@@ -1,20 +1,20 @@
-Author:      Arien Malec <arien_malec@yahoo.com>
+Maintainers:     Fredrik Hugosson <hugo303 AT users.sourceforge.net>
+	         Chris Pickett <chris.pickett AT mail.mcgill.ca>
 
-Maintainers: Fredrik Hugosson <hugo303@users.sourceforge.net>
-             Sven Neumann <sven@convergence.de>
+Ex-Maintainer:   Sven Neumann <sven AT convergence.de>
+Original Author: Arien Malec <arien_malec AT yahoo.com>
 
-Patches:     Bernhard Reiter (configure issues)
-             Neil Spring (const fixes)
-             Rick Poyner (pipe handling, bug fixes)
-             Dietmar Petras (bug fixes)
-             Gilgamesh Nootebos (bug fixes)
-	     Frederic Peters (XML output)
-	     Lucas Di Pentima and Cesar Ballardini (signals)
-	     Chris Pickett (GNU Build System update)
-             Robert Lemmen (gcov description in manual)
-	     Loic Martin (AM_PATH_CHECK patch)
-	     Ross Burton (pkg-config patch)
+Patches:         Bernhard Reiter (configure issues)
+                 Neil Spring (const fixes)
+                 Rick Poyner (pipe handling, bug fixes)
+                 Dietmar Petras (bug fixes)
+                 Gilgamesh Nootebos (bug fixes)
+	         Frederic Peters (XML output)
+	         Lucas Di Pentima and Cesar Ballardini (signals)
+                 Robert Lemmen (gcov description in manual)
+	         Loic Martin (AM_PATH_CHECK patch)
+	         Ross Burton (pkg-config patch)
 
 Anybody who has contributed code to Check or Check's build system is
-considered an author.  Send patches to this file to
-<check-devel@lists.sourceforge.net>.
+considered an author.  Send patches to this file to 
+<check-devel AT lists.sourceforge.net>.

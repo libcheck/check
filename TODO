@@ -3,7 +3,7 @@ TODO
 
 The following are considered bugs in Check.  If you have a fix, please
 post it in the patch tracker on http://sourceforge.net/projects/check
-or send it to <check-devel@lists.sourceforge.net>.  Bug fixing is
+or send it to <check-devel AT lists.sourceforge.net>.  Bug fixing is
 considered more important than feature requests at this point. Please
 check the Sourceforge trackers before submitting.
 
@@ -87,7 +87,7 @@ Packaging
 
 
 The following enhancements are being considered for Check.  Please
-send an email to <check-devel@lists.sourceforge.net> if you would like
+send an email to <check-devel AT lists.sourceforge.net> if you would like
 to assist in any of these, or if you would like to suggest additional
 enhancements.  Also please check the various trackers at the Check
 project website.
