@@ -70,6 +70,11 @@ Internal Check tests
 [     ] * Clarify what all the different tests mean, whether they are
           meant to fail or not --- setting all CK_SILENT to CK_VERBOSE
           makes it seem like there are lots of errors being produced!
+[     ] * Fix timeout tests.  Currently, on some processors, a test that
+          asserts no timeout within 2 seconds fails unless the default
+          timeout is set to 4 or more seconds.  A higher resolution 
+          might help, and there could also be issues with multiple
+          processes on SMP machines.
 
 Packaging
 =========

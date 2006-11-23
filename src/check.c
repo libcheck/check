@@ -32,7 +32,7 @@
 #include "check_msg.h"
 
 #ifndef DEFAULT_TIMEOUT
-#define DEFAULT_TIMEOUT 3
+#define DEFAULT_TIMEOUT 4
 #endif
 
 int check_major_version = CHECK_MAJOR_VERSION;

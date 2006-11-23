@@ -1066,7 +1066,7 @@ forking.  This means that only the first error will be shown.
 @findex tcase_set_timeout()
 @vindex CK_DEFAULT_TIMEOUT
 To be certain that a test won't hang indefinitely, all tests are run
-with a timeout, the default being 3 seconds.  If the test is not
+with a timeout, the default being 4 seconds.  If the test is not
 finished within that time, it is killed and logged as an error.
 
 The timeout for a specific test case, which may contain multiple unit
