@@ -22,7 +22,7 @@ Check has the following dependencies:
   pkg-config-0.20
   texinfo-4.7
   tetex-bin
-  GNU sed-4.0.5
+  POSIX sed
 
 The versions specified may be higher than those actually needed.
 
