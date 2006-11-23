@@ -76,6 +76,7 @@ if test -n "$GCC"; then
 fi
 AC_CHECK_PROGS(GCOV, gcov, false)
 AC_CHECK_PROGS(LCOV, lcov, false)
+AC_CHECK_PROGS(GENHTML, genhtml, false)
 
 # Checks for libraries.
 
