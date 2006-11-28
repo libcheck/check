@@ -65,7 +65,7 @@ static master_test_t master_tests[] = {
   { "Timeout Tests",  -1, CK_PASS,   "Passed" },
   { "Timeout Tests", 269, CK_ERROR,  "Test timeout expired" },
   { "Timeout Tests", 275, CK_ERROR,  "Test timeout expired" },
-  { "User Timeout Tests", 2560, CK_ERROR,  "Test timeout expired" },
+  { "User Timeout Tests", 256, CK_ERROR,  "Test timeout expired" },
   { "User Timeout Tests",  -1, CK_PASS,   "Passed" },
   { "User Timeout Tests",  -1, CK_PASS,   "Passed" },
   { "User Timeout Tests", 275, CK_ERROR,  "Test timeout expired" },
