@@ -15,14 +15,14 @@
 
 START_TEST(test_lno)
 {
-  fail("Failure expected"); /*line 18*/
+  fail("Failure expected"); /* line 18*/
 }
 END_TEST
 
 START_TEST(test_mark_lno)
 {
-  mark_point(); /*line 24*/
-  exit(EXIT_FAILURE); /*should fail at line 24*/
+  mark_point(); /* line 24*/
+  exit(EXIT_FAILURE); /* should fail at line 24*/
 }
 END_TEST
 
@@ -108,7 +108,124 @@ START_TEST(test_fail_empty)
 }
 END_TEST
 
-START_TEST(test_segv) /* line 111 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+START_TEST(test_ck_assert)
+{
+  int x = 3;
+  int y = 3;
+  ck_assert(1);
+  ck_assert(x == y);
+  y++;
+  ck_assert(x != y);
+  ck_assert(x == y); /* line 139 */
+}
+END_TEST
+
+START_TEST(test_ck_assert_null)
+{
+  ck_assert(0); /* line 145 */
+}
+END_TEST
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+START_TEST(test_int_assert_eq)
+{
+  int x = 3;
+  int y = 3;
+  ck_assert_int_eq(x, y);
+  y++;
+  ck_assert_int_eq(x, y); /* line 170 */
+}
+END_TEST
+
+START_TEST(test_int_assert_ne)
+{
+  int x = 3;
+  int y = 2;
+  ck_assert_int_ne(x, y);
+  y++;
+  ck_assert_int_ne(x, y); /* line 180 */
+}
+END_TEST
+
+START_TEST(test_str_assert_eq)
+{
+  const char *s = "test2";
+  ck_assert_str_eq("test2", s);
+  ck_assert_str_eq("test1", s); /* line 188 */
+}
+END_TEST
+
+START_TEST(test_str_assert_ne)
+{
+  const char *s = "test2";
+  const char *t = "test1";
+  ck_assert_str_ne(t, s);
+  t = "test2";
+  ck_assert_str_ne(t, s); /* line 198 */
+}
+END_TEST
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+START_TEST(test_segv) /* line 228 */
 {
   raise (SIGSEGV);
 }
@@ -136,7 +253,7 @@ START_TEST(test_mark_point)
 END_TEST
 
 #if TIMEOUT_TESTS_ENABLED
-START_TEST(test_eternal) /* line 139 */
+START_TEST(test_eternal) /* line 256 */
 {
   for (;;)
     ;
@@ -149,13 +266,13 @@ START_TEST(test_sleep2)
 }
 END_TEST
 
-START_TEST(test_sleep5) /* line 152 */
+START_TEST(test_sleep5) /* line 269 */
 {
   sleep(5);
 }
 END_TEST
 
-START_TEST(test_sleep8) /* line 158 */
+START_TEST(test_sleep8) /* line 275 */
 {
   sleep(8);
 }
@@ -368,6 +485,13 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_simple, test_fail_vararg_msg_2);
   tcase_add_test (tc_simple, test_fail_vararg_msg_3);
   tcase_add_test (tc_simple, test_fail_empty);
+
+  tcase_add_test (tc_simple, test_ck_assert);
+  tcase_add_test (tc_simple, test_ck_assert_null);
+  tcase_add_test (tc_simple, test_int_assert_eq);
+  tcase_add_test (tc_simple, test_int_assert_ne);
+  tcase_add_test (tc_simple, test_str_assert_eq);
+  tcase_add_test (tc_simple, test_str_assert_ne);
 
   tcase_add_test (tc_signal, test_segv);
   tcase_add_test_raise_signal (tc_signal, test_segv, 11); /* pass  */
