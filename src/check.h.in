@@ -23,6 +23,7 @@
 #define CHECK_H
 
 #include <stddef.h>
+#include <string.h>
 
 /* Check: a unit test framework for C
 
@@ -52,6 +53,9 @@
    frees all suites added to the runner. 
 
    Use srunner_run_all to run a suite and print results.
+
+   Macros and functions starting with _ (underscore) are internal and
+   may change without notice. You have been warned!.
 
 */
 
@@ -211,6 +215,22 @@ static void __testname (int _i __attribute__((unused)))\
 /* Non macro version of #fail_unless, with more complicated interface */
 void CK_EXPORT _fail_unless (int result, const char *file,
                              int line, const char *expr, ...);
+
+/* New check fail API. */
+#define ck_assert(C) ck_assert_msg(C, NULL)
+#define ck_assert_msg fail_unless
+
+/* Integer comparsion macros with improved output compared to fail_unless(). */
+/* O may be any comparion operator. */
+#define _ck_assert_int(X, O, Y) ck_assert_msg((X) O (Y), "Assertion '"#X#O#Y"' failed: "#X"==%d, "#Y"==%d", X, Y) 
+#define ck_assert_int_eq(X, Y) _ck_assert_int(X, ==, Y) 
+#define ck_assert_int_ne(X, Y) _ck_assert_int(X, !=, Y) 
+
+/* String comparsion macros with improved output compared to fail_unless() */
+#define _ck_assert_str(C, X, O, Y) ck_assert_msg(C, "Assertion '"#X#O#Y"' failed: "#X"==\"%s\", "#Y"==\"%s\"", X, Y) 
+#define ck_assert_str_eq(X, Y) _ck_assert_str(!strcmp(X, Y), X, ==, Y)
+#define ck_assert_str_ne(X, Y) _ck_assert_str(strcmp(X, Y), X, !=, Y)
+
 
 /* Mark the last point reached in a unit test
    (useful for tracking down where a segfault, etc. occurs)
