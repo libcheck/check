@@ -217,6 +217,8 @@ void CK_EXPORT _fail_unless (int result, const char *file,
                              int line, const char *expr, ...);
 
 /* New check fail API. */
+#define ck_abort() ck_abort_msg(NULL)
+#define ck_abort_msg fail
 #define ck_assert(C) ck_assert_msg(C, NULL)
 #define ck_assert_msg fail_unless
 

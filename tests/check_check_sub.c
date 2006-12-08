@@ -108,25 +108,25 @@ START_TEST(test_fail_empty)
 }
 END_TEST
 
+/* FIXME: all these line numbers are kind of hard to maintain */
+START_TEST(test_ck_abort)
+{
+  ck_abort(); /* line 114 */
+}
+END_TEST
 
+START_TEST(test_ck_abort_msg)
+{
+  ck_abort_msg("Failure expected"); /* line 120 */
+}
+END_TEST
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/* FIXME: perhaps passing NULL to ck_abort_msg should be an error. */
+START_TEST(test_ck_abort_msg_null)
+{
+  ck_abort_msg(NULL); /* line 127 */
+}
+END_TEST
 
 START_TEST(test_ck_assert)
 {
@@ -161,7 +161,7 @@ END_TEST
 
 
 
-START_TEST(test_int_assert_eq)
+START_TEST(test_ck_assert_int_eq)
 {
   int x = 3;
   int y = 3;
@@ -171,7 +171,7 @@ START_TEST(test_int_assert_eq)
 }
 END_TEST
 
-START_TEST(test_int_assert_ne)
+START_TEST(test_ck_assert_int_ne)
 {
   int x = 3;
   int y = 2;
@@ -181,7 +181,7 @@ START_TEST(test_int_assert_ne)
 }
 END_TEST
 
-START_TEST(test_str_assert_eq)
+START_TEST(test_ck_assert_str_eq)
 {
   const char *s = "test2";
   ck_assert_str_eq("test2", s);
@@ -189,7 +189,7 @@ START_TEST(test_str_assert_eq)
 }
 END_TEST
 
-START_TEST(test_str_assert_ne)
+START_TEST(test_ck_assert_str_ne)
 {
   const char *s = "test2";
   const char *t = "test1";
@@ -486,12 +486,15 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_simple, test_fail_vararg_msg_3);
   tcase_add_test (tc_simple, test_fail_empty);
 
+  tcase_add_test (tc_simple, test_ck_abort);
+  tcase_add_test (tc_simple, test_ck_abort_msg);
+  tcase_add_test (tc_simple, test_ck_abort_msg_null);
   tcase_add_test (tc_simple, test_ck_assert);
   tcase_add_test (tc_simple, test_ck_assert_null);
-  tcase_add_test (tc_simple, test_int_assert_eq);
-  tcase_add_test (tc_simple, test_int_assert_ne);
-  tcase_add_test (tc_simple, test_str_assert_eq);
-  tcase_add_test (tc_simple, test_str_assert_ne);
+  tcase_add_test (tc_simple, test_ck_assert_int_eq);
+  tcase_add_test (tc_simple, test_ck_assert_int_ne);
+  tcase_add_test (tc_simple, test_ck_assert_str_eq);
+  tcase_add_test (tc_simple, test_ck_assert_str_ne);
 
   tcase_add_test (tc_signal, test_segv);
   tcase_add_test_raise_signal (tc_signal, test_segv, 11); /* pass  */
