@@ -1,8 +1,8 @@
-Maintainers:     Fredrik Hugosson <hugo303 AT users.sourceforge.net>
-	         Chris Pickett <chris.pickett AT mail.mcgill.ca>
+Maintainers:     Fredrik Hugosson <hugo303 at users dot sourceforge dot net>
+	         Chris Pickett <chris dot pickett at mail dot mcgill dot ca>
 
-Ex-Maintainer:   Sven Neumann <sven AT convergence.de>
-Original Author: Arien Malec <arien_malec AT yahoo.com>
+Ex-Maintainer:   Sven Neumann <sven at convergence dot de>
+Original Author: Arien Malec <arien dot malec at gmail dot com>
 
 Patches:         Bernhard Reiter (configure issues)
                  Neil Spring (const fixes)
@@ -17,4 +17,4 @@ Patches:         Bernhard Reiter (configure issues)
 
 Anybody who has contributed code to Check or Check's build system is
 considered an author.  Send patches to this file to 
-<check-devel AT lists.sourceforge.net>.
+<check-devel at lists dot sourceforge dot net>.
