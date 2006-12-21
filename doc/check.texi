@@ -1047,7 +1047,7 @@ static const int primes[5] = {2,3,5,7,11};
 
 START_TEST (check_is_prime)
 {
-  fail_unless (is_prime(_i));
+  fail_unless (is_prime (primes[_i]));
 }
 END_TEST
 
