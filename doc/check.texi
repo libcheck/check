@@ -11,7 +11,7 @@
 @copying
 This manual is for Check
 (version @value{VERSION}, @value{UPDATED}),
-a unit test framework for C programs.
+a unit testing framework for C.
 
 Copyright @copyright{} 2001--2006 Arien Malec, Chris Pickett, Fredrik
 Hugosson, and Robert Lemmen.
@@ -33,7 +33,7 @@ entitled ``@acronym{GNU} Free Documentation License.''
 
 @titlepage
 @title Check
-@subtitle A Unit Test Framework for C
+@subtitle A Unit Testing Framework for C
 @subtitle for version @value{VERSION}, @value{UPDATED}
 @author Arien Malec 
 @author Chris Pickett
@@ -234,7 +234,7 @@ In early development.  See the @uref{http://cunit.sourceforge.net,
 CUnit homepage}.
 
 @item CppUnit
-The premier unit test framework for C++; you can also use it to test C
+The premier unit testing framework for C++; you can also use it to test C
 code.  It is stable, actively developed, and has a GUI interface.  The
 primary reasons not to use CppUnit for C are first that it is quite
 big, and second you have to write your tests in C++, which means you
@@ -267,7 +267,7 @@ it probably wouldn't be hard to add that to frameworks without that
 feature).  Try 'em all out: adapt this tutorial to use all of the
 frameworks above, and use whichever you like.  Contribute, spread the
 word, and make one a standard.  Languages such as Java and Python are
-fortunate to have standard unit test frameworks; it would be desirable
+fortunate to have standard unit testing frameworks; it would be desirable
 that C have one as well.
 
 @node Tutorial, Advanced Features, Unit Testing in C, Top

@@ -111,7 +111,7 @@ Unit test writing
 [     ] * Allow unit tests to write to the log
 [     ] * Allow unit tests that expect output (see stdout logging above) (but
           maybe perl/sh/expect/dejagnu are better tools)
-[     ] * Autoproduce unit test framework from header files
+[     ] * Autoproduce unit testing framework from header files
 [     ] * Count the number of START_TEST macros and check that each function
           is added to some suite; issue a warning message otherwise.  Maybe the
 	  best way to do this is to put each function onto a list or
