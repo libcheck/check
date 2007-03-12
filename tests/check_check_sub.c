@@ -415,6 +415,31 @@ START_TEST(test_fork2_fail)
 }
 END_TEST
 
+START_TEST(test_srunner)
+{
+  Suite *s;
+  SRunner *sr;
+
+  s = suite_create("Check Servant3");
+  fail_unless(s != NULL);
+  sr = srunner_create(NULL);
+  fail_unless(sr != NULL);
+  srunner_add_suite(sr, s);
+  srunner_free(sr);
+
+  sr = srunner_create(NULL);
+  fail_unless(sr != NULL);
+  srunner_add_suite(sr, NULL);
+  srunner_free(sr);
+
+  s = suite_create("Check Servant3");
+  fail_unless(s != NULL);
+  sr = srunner_create(s);
+  fail_unless(sr != NULL);
+  srunner_free(sr);
+}
+END_TEST
+
 START_TEST(test_2nd_suite)
 {
   fail("We failed");
@@ -426,6 +451,7 @@ Suite *make_sub2_suite(void)
   Suite *s = suite_create("Check Servant2");
   TCase *tc = tcase_create("Core");
   suite_add_tcase(s, tc);
+  tcase_add_test(tc, test_srunner);
   tcase_add_test(tc, test_2nd_suite);
 
   return s;

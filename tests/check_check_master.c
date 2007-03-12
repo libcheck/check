@@ -90,6 +90,7 @@ static master_test_t master_tests[] = {
   { "Msg and fork Tests",  -1, CK_PASS,       "Passed" },
   { "Msg and fork Tests",  -1, CK_FAILURE,    "Expected fail" },
 
+  { "Core",          -1, CK_PASS,    "Passed" },
   { "Core",          -1, CK_FAILURE, "We failed" }
 };
 
