@@ -31,4 +31,8 @@ pcdatadir = $(libdir)/pkgconfig
 pcdata_DATA = check.pc
 
 SVNChangeLog:
-	svn log -v @abs_top_srcdir@ > $@
+	if [ -e .svn ] ; then \
+	svn log -v @abs_top_srcdir@ > $@ ;\
+	else \
+	echo "SVN Changelog not available" > $@ ;\
+	fi
