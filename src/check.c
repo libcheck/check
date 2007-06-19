@@ -47,6 +47,38 @@ static void tr_init (TestResult *tr);
 static void suite_free (Suite *s);
 static void tcase_free (TCase *tc);
 
+#if HAVE_CONFIG_H
+#include <config.h>
+#endif
+#undef malloc
+#undef realloc
+
+#include <sys/types.h>
+
+void *malloc ();
+void *realloc ();
+
+/* Allocate an N-byte block of memory from the heap. If N is zero,
+   allocate a 1-byte block. */
+void *
+rpl_malloc (size_t n)
+{
+  if (n == 0)
+    n = 1;
+  return malloc (n);
+} 
+
+/* configure defines realloc to rpl_realloc if realloc(0,0) is NULL */
+void *
+rpl_realloc (void *p, size_t n)
+{
+  if (n == 0)
+    n = 1;
+  if (p == 0)
+    return malloc (n);
+  return realloc (p, n);
+}
+
 Suite *suite_create (const char *name)
 {
   Suite *s;
