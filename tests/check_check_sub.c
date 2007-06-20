@@ -103,8 +103,8 @@ START_TEST(test_fail_vararg_msg_3)
 END_TEST
 
 START_TEST(test_fail_empty)
-{
-  fail();
+{ /* plain fail() doesn't compile with xlc in C mode because of `, ## __VA_ARGS__' problem */
+  fail(NULL);
 }
 END_TEST
 
