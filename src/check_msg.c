@@ -54,8 +54,8 @@
  * reading and writing.
  */
 
-FILE *send_file1;
-FILE *send_file2;
+static FILE *send_file1;
+static FILE *send_file2;
 
 static FILE * get_pipe(void);
 static void setup_pipe (void);
