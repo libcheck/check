@@ -137,7 +137,7 @@ TCase * CK_EXPORT tcase_create (const char *name);
 /* Add a test function to a test case
   (function version -- use this when the macro won't work
 */
-void CK_EXPORT _tcase_add_test (TCase *tc, TFun tf, const char *fname, int signal, int start, int end);
+void CK_EXPORT _tcase_add_test (TCase *tc, TFun tf, const char *fname, int _signal, int start, int end);
 
 /* Add unchecked fixture setup/teardown functions to a test case
 
