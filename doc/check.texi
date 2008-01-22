@@ -241,7 +241,7 @@ big, and second you have to write your tests in C++, which means you
 need a C++ compiler.  If these don't sound like concerns, it is
 definitely worth considering, along with other C++ unit testing
 frameworks.  See the
-@uref{http://cppunit.sourceforge.net/cppunit-wikie, CppUnit homepage}.
+@uref{http://cppunit.sourceforge.net/cppunit-wiki, CppUnit homepage}.
 
 @item MinUnit
 A minimal set of macros and that's it!  The point is to
