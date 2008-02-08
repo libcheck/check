@@ -183,7 +183,7 @@ void CK_EXPORT tcase_fn_start (const char *fname, const char *file, int line);
    One must use braces within a START_/END_ pair to declare new variables
 */ 
 #define START_TEST(__testname)\
-static void __testname (int _i __attribute__((unused)))\
+static void __testname (int __attribute__((unused)) _i)\
 {\
   tcase_fn_start (""# __testname, __FILE__, __LINE__);
 
