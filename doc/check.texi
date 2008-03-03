@@ -211,6 +211,18 @@ for C:
 
 @table @asis
 
+@item AceUnit
+AceUnit (Advanced C and Embedded Unit) bills itself as a comfortable C
+code unit test framework.  It tries to mimick JUnit 4.x and includes
+reflection-like capabilities.  AceUnit can be used in resource
+constraint environments, e.g. embedded software development, and
+importantly it runs fine in environments where you cannot include a
+single standard header file and cannot invoke a single standard C
+function from the ANSI / ISO C libraries.  It also has a Windows port.
+It does not use forks to trap signals, although the authors have
+expressed interest in adding such a feature.  See the
+@uref{http://aceunit.sourceforge.net/, AceUnit homepage}.
+
 @item GNU Autounit
 Much along the same lines as Check, including forking to run unit
 tests in a separate address space (in fact, the original author of
@@ -243,6 +255,12 @@ definitely worth considering, along with other C++ unit testing
 frameworks.  See the
 @uref{http://cppunit.sourceforge.net/cppunit-wiki, CppUnit homepage}.
 
+@item embUnit
+embUnit (Embedded Unit) is another unit test framework for embedded
+systems.  This one appears to be superseded by AceUnit.
+@uref{https://sourceforge.net/projects/embunit/, Embedded Unit
+homepage}.
+
 @item MinUnit
 A minimal set of macros and that's it!  The point is to
 show how easy it is to unit test your code.  See the
@@ -256,7 +274,7 @@ early development.  See the
 Mr. Ando homepage}.
 @end table
 
-This list was last updated in March 2006.  If you know of other C unit
+This list was last updated in March 2008.  If you know of other C unit
 test frameworks, please send an email plus description to
 @email{check-devel AT lists.sourceforge.net} and we will add the entry
 to this list.
