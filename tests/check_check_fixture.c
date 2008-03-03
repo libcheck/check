@@ -41,7 +41,7 @@ START_TEST(test_fixture_fail_counts)
   nrun = srunner_ntests_run(fixture_sr);
   nfail = srunner_ntests_failed(fixture_sr);
 
-  fail_unless (nrun == 0 && nfail == 1,
+  fail_unless (nrun == 1 && nfail == 1,
 	       "Counts for run and fail for fixture failure not correct");
 }
 END_TEST
@@ -49,7 +49,7 @@ END_TEST
 START_TEST(test_print_counts)
 {
   char *srstat = sr_stat_str(fixture_sr);
-  const char *exp = "0%: Checks: 0, Failures: 1, Errors: 0";
+  const char *exp = "0%: Checks: 1, Failures: 1, Errors: 0";
 
   fail_unless(strcmp(srstat, exp) == 0,
 	      "SRunner stat string incorrect with setup failure");
@@ -172,7 +172,7 @@ START_TEST(test_ch_setup_fail)
   sr = srunner_create(s);
   srunner_run_all(sr,CK_VERBOSE);
 
-  fail_unless (srunner_ntests_run(sr) == 0,
+  fail_unless (srunner_ntests_run(sr) == 1,
 	       "Test run counts not correct for checked setup failure");
   fail_unless (srunner_ntests_failed(sr) == 1,
 	       "Failure counts not correct for checked setup failure");
@@ -180,7 +180,7 @@ START_TEST(test_ch_setup_fail)
   strstat= sr_stat_str(sr);
 
   fail_unless(strcmp(strstat,
-		     "0%: Checks: 0, Failures: 1, Errors: 0") == 0,
+		     "0%: Checks: 1, Failures: 1, Errors: 0") == 0,
 	      "SRunner stat string incorrect with checked setup failure");
 
 
@@ -212,7 +212,7 @@ START_TEST(test_ch_setup_fail_nofork)
   srunner_set_fork_status(sr, CK_NOFORK);
   srunner_run_all(sr, CK_VERBOSE);
 
-  fail_unless (srunner_ntests_run(sr) == 0,
+  fail_unless (srunner_ntests_run(sr) == 1,
 	       "Test run counts not correct for checked setup failure");
   fail_unless (srunner_ntests_failed(sr) == 1,
 	       "Failure counts not correct for checked setup failure");
@@ -235,7 +235,7 @@ START_TEST(test_ch_setup_fail_nofork_2)
   srunner_set_fork_status(sr, CK_NOFORK);
   srunner_run_all(sr, CK_VERBOSE);
 
-  fail_unless (srunner_ntests_run(sr) == 0,
+  fail_unless (srunner_ntests_run(sr) == 1,
 	       "Test run counts not correct for checked setup failure");
   fail_unless (srunner_ntests_failed(sr) == 1,
 	       "Failure counts not correct for checked setup failure");
@@ -288,13 +288,13 @@ START_TEST(test_ch_setup_sig)
 
   fail_unless (srunner_ntests_failed(sr) == 1,
 	       "Failure counts not correct for checked setup signal");
-  fail_unless (srunner_ntests_run(sr) == 0,
+  fail_unless (srunner_ntests_run(sr) == 1,
 	       "Test run counts not correct for checked setup signal");
 
   strstat= sr_stat_str(sr);
 
   fail_unless(strcmp(strstat,
-		     "0%: Checks: 0, Failures: 0, Errors: 1") == 0,
+		     "0%: Checks: 1, Failures: 0, Errors: 1") == 0,
 	      "SRunner stat string incorrect with checked setup signal");
 
 

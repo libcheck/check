@@ -164,9 +164,7 @@ void srunner_run_all (SRunner *sr, enum print_output print_mode)
 static void srunner_add_failure (SRunner *sr, TestResult *tr)
 {  
   list_add_end (sr->resultlst, tr);
-  /* If the context is either of these, the test has run. */
-  if ((tr->ctx == CK_CTX_TEST) || (tr->ctx == CK_CTX_TEARDOWN))
-    sr->stats->n_checked++;
+  sr->stats->n_checked++; /* count checks during setup, test, and teardown */
   if (tr->rtype == CK_FAILURE)
     sr->stats->n_failed++;
   else if (tr->rtype == CK_ERROR)
