@@ -267,7 +267,7 @@ FILE *srunner_open_lfile (SRunner *sr)
   if (srunner_has_log (sr)) {
     f = fopen(sr->log_fname, "w");
     if (f == NULL)
-      eprintf ("Could not open log file %s:", __FILE__, __LINE__,
+      eprintf ("Error in call to fopen while opening log file %s:", __FILE__, __LINE__ - 2,
 	       sr->log_fname);
   }
   return f;
@@ -279,7 +279,7 @@ FILE *srunner_open_xmlfile (SRunner *sr)
   if (srunner_has_xml (sr)) {
     f = fopen(sr->xml_fname, "w");
     if (f == NULL)
-      eprintf ("Could not open xml file %s:", __FILE__, __LINE__,
+      eprintf ("Error in call to fopen while opening xml file %s:", __FILE__, __LINE__ - 2,
 	       sr->xml_fname);
   }
   return f;
@@ -314,7 +314,7 @@ void srunner_end_logging (SRunner *sr)
     if (lg->close) {
       rval = fclose (lg->lfile);
       if (rval != 0)
-	eprintf ("Error closing log file:", __FILE__, __LINE__);
+	eprintf ("Error in call to fclose while closing log file:", __FILE__, __LINE__ - 2);
     }
     free (lg);
   }

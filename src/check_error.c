@@ -29,6 +29,7 @@
 #include "check_error.h"
 
 
+/* FIXME: including a colon at the end is a bad way to indicate an error */
 void eprintf (const char *fmt, const char *file, int line, ...)
 {
   va_list args;
@@ -52,7 +53,7 @@ void *emalloc (size_t n)
   void *p;
   p = malloc(n);
   if (p == NULL)
-    eprintf("malloc of %u bytes failed:", __FILE__, __LINE__, n);
+    eprintf("malloc of %u bytes failed:", __FILE__, __LINE__ - 2, n);
   return p;
 }
 
@@ -61,6 +62,6 @@ void *erealloc (void * ptr, size_t n)
   void *p;
   p = realloc (ptr, n);
   if (p == NULL)
-    eprintf("realloc of %u bytes failed:", __FILE__, __LINE__, n);
+    eprintf("realloc of %u bytes failed:", __FILE__, __LINE__ - 2, n);
   return p;
 }

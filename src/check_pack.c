@@ -259,7 +259,7 @@ void ppack (int fdes, enum ck_msg_type type, CheckMsg *msg)
   n = pack (type, &buf, msg);
   r = write (fdes, buf, n);
   if (r == -1)
-    eprintf ("Error in ppack:",__FILE__,__LINE__);
+    eprintf ("Error in call to write:", __FILE__, __LINE__ - 2);
 
   free (buf);
 }
@@ -279,7 +279,7 @@ static int read_buf (int fdes, char **buf)
     if (n == 0)
       break;
     if (n == -1)
-      eprintf ("Error in read_buf:", __FILE__, __LINE__);
+      eprintf ("Error in call to read:", __FILE__, __LINE__ - 4);
 
     nread += n;
     size *= grow;
@@ -299,7 +299,7 @@ static int get_result (char *buf, RcvMsg *rmsg)
 
   n = upack (buf, &msg, &type);
   if (n == -1)
-    eprintf ("Error in upack", __FILE__, __LINE__);
+    eprintf ("Error in call to upack", __FILE__, __LINE__ - 2);
   
   if (type == CK_MSG_CTX) {
     CtxMsg *cmsg = (CtxMsg *) &msg;

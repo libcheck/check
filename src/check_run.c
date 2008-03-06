@@ -426,7 +426,7 @@ static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun, int i)
   int status = 0;
   pid = fork();
   if (pid == -1)
-    eprintf("Unable to fork:",__FILE__,__LINE__);
+    eprintf("Error in call to fork:", __FILE__, __LINE__ - 2);
   if (pid == 0) {
     setpgid(0, 0);
     group_pid = getpgrp();
