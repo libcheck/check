@@ -55,8 +55,11 @@ static void tcase_free (TCase *tc);
 
 #include <sys/types.h>
 
-void *malloc ();
-void *realloc ();
+void *malloc (size_t n);
+void *realloc (void *p, size_t n);
+
+void *rpl_malloc (size_t n);
+void *rpl_realloc (void *p, size_t n);
 
 /* Allocate an N-byte block of memory from the heap. If N is zero,
    allocate a 1-byte block. */
@@ -68,7 +71,14 @@ rpl_malloc (size_t n)
   return malloc (n);
 } 
 
-/* configure defines realloc to rpl_realloc if realloc(0,0) is NULL */
+/* AC_FUNC_REALLOC in configure defines realloc to rpl_realloc if
+   realloc(0,0) is NULL to make it GNU compatible and always return a
+   valid pointer, same for AC_FUNC_MALLOC, malloc, and rpl_malloc.
+   rpl means `replacement'.
+
+   If this ever turns out to be a problem, it might be easiest to just
+   kill the configure macro calls.
+ */
 void *
 rpl_realloc (void *p, size_t n)
 {
