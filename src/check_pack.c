@@ -306,7 +306,7 @@ static int get_result (char *buf, RcvMsg *rmsg)
     rcvmsg_update_ctx (rmsg, cmsg->ctx);
   } else if (type == CK_MSG_LOC) {
     LocMsg *lmsg = (LocMsg *) &msg;
-    if (rmsg->failctx == -1)
+    if (rmsg->failctx == CK_CTX_INVALID)
     {
       rcvmsg_update_loc (rmsg, lmsg->file, lmsg->line);
     }
@@ -347,8 +347,8 @@ static RcvMsg *rcvmsg_create (void)
   RcvMsg *rmsg;
 
   rmsg = emalloc (sizeof (RcvMsg));
-  rmsg->lastctx = -1;
-  rmsg->failctx = -1;
+  rmsg->lastctx = CK_CTX_INVALID;
+  rmsg->failctx = CK_CTX_INVALID;
   rmsg->msg = NULL;
   reset_rcv_test (rmsg);
   reset_rcv_fixture (rmsg);
@@ -365,7 +365,7 @@ void rcvmsg_free (RcvMsg *rmsg)
 
 static void rcvmsg_update_ctx (RcvMsg *rmsg, enum ck_result_ctx ctx)
 {
-  if (rmsg->lastctx != -1)
+  if (rmsg->lastctx != CK_CTX_INVALID)
   {
     free(rmsg->fixture_file);
     reset_rcv_fixture (rmsg);
@@ -408,7 +408,7 @@ RcvMsg *punpack (int fdes)
   }
 
   free (obuf);
-  if (rmsg->lastctx == -1) {
+  if (rmsg->lastctx == CK_CTX_INVALID) {
     free (rmsg);
     rmsg = NULL;
   }

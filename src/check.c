@@ -368,7 +368,7 @@ void tr_reset(TestResult *tr)
 
 static void tr_init (TestResult *tr)
 {
-  tr->ctx = -1;
+  tr->ctx = CK_CTX_INVALID;
   tr->line = -1;
   tr->rtype = -1;
   tr->msg = NULL;

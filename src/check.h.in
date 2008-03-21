@@ -267,7 +267,8 @@ typedef struct SRunner SRunner;
 typedef struct TestResult TestResult;
 
 /* accessors for tr fields */
- enum ck_result_ctx {
+enum ck_result_ctx {
+  CK_CTX_INVALID,
   CK_CTX_SETUP,
   CK_CTX_TEST,
   CK_CTX_TEARDOWN
