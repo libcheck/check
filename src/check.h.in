@@ -269,7 +269,7 @@ typedef struct TestResult TestResult;
 
 /* accessors for tr fields */
 enum ck_result_ctx {
-  CK_CTX_INVALID,
+  CK_CTX_INVALID, /* Default value; should not encounter this */
   CK_CTX_SETUP,
   CK_CTX_TEST,
   CK_CTX_TEARDOWN
@@ -369,8 +369,9 @@ const char * CK_EXPORT srunner_xml_fname (SRunner *sr);
 
 /* Control forking */
 enum fork_status {
-  CK_FORK,
-  CK_NOFORK
+  CK_FORK_GETENV, /* look in the environment for CK_FORK */
+  CK_FORK,        /* call fork to run tests */
+  CK_NOFORK       /* don't call fork */
 };
  
 /* Get the current fork status */

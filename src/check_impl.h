@@ -27,12 +27,6 @@
    Include stdio.h & list.h before this header
 */
 
-/* magic values */
-
-/* Unspecified fork status, used only internally */
-#define  CK_FORK_UNSPECIFIED -1
-
-
 typedef struct TF {
   TFun fn;
   int loop_start;

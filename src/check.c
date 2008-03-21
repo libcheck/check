@@ -270,7 +270,7 @@ SRunner *srunner_create (Suite *s)
   sr->log_fname = NULL;
   sr->xml_fname = NULL;
   sr->loglst = NULL;
-  sr->fstat = CK_FORK_UNSPECIFIED;
+  sr->fstat = CK_FORK_GETENV;
   return sr;
 }
 
@@ -412,7 +412,7 @@ static int _fstat = CK_FORK;
 
 void set_fork_status (enum fork_status fstat)
 {
-  if (fstat == CK_FORK || fstat == CK_NOFORK)
+  if (fstat == CK_FORK || fstat == CK_NOFORK || fstat == CK_FORK_GETENV)
     _fstat = fstat;
   else
     eprintf ("Bad status in set_fork_status", __FILE__, __LINE__);

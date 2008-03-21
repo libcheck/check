@@ -497,7 +497,7 @@ static char *pass_msg (void)
 
 enum fork_status srunner_fork_status (SRunner *sr)
 {
-  if (sr->fstat == CK_FORK_UNSPECIFIED) {
+  if (sr->fstat == CK_FORK_GETENV) {
     char *env = getenv ("CK_FORK");
     if (env == NULL)
       return CK_FORK;
