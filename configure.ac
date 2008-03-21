@@ -68,6 +68,8 @@ AM_CONDITIONAL(NO_TIMEOUT_TESTS, test x"$enable_timeout_tests" = "xfalse")
 # Checks for programs.
 AC_PROG_AWK
 AC_PROG_CC
+# Automake wants this for per-target CFLAGS
+AM_PROG_CC_C_O
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_LIBTOOL
