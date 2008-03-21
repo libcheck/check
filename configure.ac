@@ -8,6 +8,9 @@ AC_INIT([Check], [0.9.5], [check-devel at lists dot sourceforge dot net])
 # unique source file --- primitive safety check 
 AC_CONFIG_SRCDIR([src/check.c])
 
+# place where extra autoconf macros are kept
+AC_CONFIG_MACRO_DIR([m4])
+
 # place to put some extra build scripts installed
 AC_CONFIG_AUX_DIR([build-aux])
 
@@ -73,9 +76,16 @@ AM_PROG_CC_C_O
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_LIBTOOL
-if test -n "$GCC"; then
-  CFLAGS="$CFLAGS -Wall -Wextra -Wstrict-prototypes -Wmissing-prototypes -Wwrite-strings -Wno-variadic-macros"
-fi
+
+# add these options to CFLAGS if gcc supports them
+AX_CFLAGS_GCC_OPTION([-Wall])
+AX_CFLAGS_GCC_OPTION([-Wextra])
+# for some reason this option is detected as "obsolete"...
+AX_CFLAGS_GCC_OPTION([-Wstrict-prototypes])
+AX_CFLAGS_GCC_OPTION([-Wmissing-prototypes])
+AX_CFLAGS_GCC_OPTION([-Wwrite-strings])
+AX_CFLAGS_GCC_OPTION([-Wno-variadic-macros])
+
 AC_CHECK_PROGS(GCOV, gcov, false)
 AC_CHECK_PROGS(LCOV, lcov, false)
 AC_CHECK_PROGS(GENHTML, genhtml, false)

@@ -36,3 +36,5 @@ SVNChangeLog:
 	else \
 	echo "SVN Changelog not available" > $@ ;\
 	fi
+
+ACLOCAL_AMFLAGS = -I m4
