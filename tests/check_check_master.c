@@ -311,6 +311,7 @@ Suite *make_master_suite (void)
 
 static void init_signal_strings(void)
 {
+  /* strsignal may overwrite the string returned by the previous call */
   char *s8 = strdup(strsignal(8));
   char *s11 = strdup(strsignal(11));
   int n;
