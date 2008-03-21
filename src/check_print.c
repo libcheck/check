@@ -109,6 +109,10 @@ void tr_xmlprint (FILE *file, TestResult *tr, enum print_output print_mode)
   case CK_ERROR:
     strcpy(result, "error");
     break;
+  case CK_TEST_RESULT_INVALID:
+  default:
+    abort ();
+    break;
   }
 
   slash = strrchr(tr->file, '/');

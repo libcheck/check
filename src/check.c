@@ -370,7 +370,7 @@ static void tr_init (TestResult *tr)
 {
   tr->ctx = CK_CTX_INVALID;
   tr->line = -1;
-  tr->rtype = -1;
+  tr->rtype = CK_TEST_RESULT_INVALID;
   tr->msg = NULL;
   tr->file = NULL;
   tr->tcname = NULL;

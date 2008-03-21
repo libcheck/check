@@ -244,6 +244,7 @@ void CK_EXPORT _mark_point (const char *file, int line);
 
 /* Result of a test */
 enum test_result {
+  CK_TEST_RESULT_INVALID, /* Default value; should not encounter this */
   CK_PASS, /* Test passed*/
   CK_FAILURE, /* Test completed but failed */
   CK_ERROR /* Test failed to complete
