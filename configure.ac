@@ -77,14 +77,14 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_LIBTOOL
 
-# add these options to CFLAGS if gcc supports them
-AX_CFLAGS_GCC_OPTION([-Wall])
-AX_CFLAGS_GCC_OPTION([-Wextra])
-# for some reason this option is detected as "obsolete"...
-AX_CFLAGS_GCC_OPTION([-Wstrict-prototypes])
-AX_CFLAGS_GCC_OPTION([-Wmissing-prototypes])
-AX_CFLAGS_GCC_OPTION([-Wwrite-strings])
-AX_CFLAGS_GCC_OPTION([-Wno-variadic-macros])
+# add these options to CFLAGS if the compiler supports them
+AC_DEFUN([AX_CFLAGS_ADD],[AX_C_CHECK_FLAG($1, , , CFLAGS="$CFLAGS $1")])
+AX_CFLAGS_ADD([-Wall])
+AX_CFLAGS_ADD([-Wextra])
+AX_CFLAGS_ADD([-Wstrict-prototypes])
+AX_CFLAGS_ADD([-Wmissing-prototypes])
+AX_CFLAGS_ADD([-Wwrite-strings])
+AX_CFLAGS_ADD([-Wno-variadic-macros])
 
 AC_CHECK_PROGS(GCOV, gcov, false)
 AC_CHECK_PROGS(LCOV, lcov, false)

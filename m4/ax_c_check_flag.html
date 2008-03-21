@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ax_c_check_flag
+  </title>
+  <link rel="stylesheet" type="text/css" href="autoconf-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:25%;" align="center" valign="top">
+      <a href="http://autoconf-archive.cryp.to/ax_c_check_flag.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:25%;" align="center" valign="top">
+      <a href=
+      "http://git.cryp.to/?p=autoconf-archive;a=history;f=ax_c_check_flag.m4">Macro
+      History</a>
+     </td>
+     <td style="width:25%;" align="center" valign="top">
+      <a href="macros-by-category.html">Category Index</a>
+     </td>
+     <td style="width:25%;" align="center" valign="top">
+      <form method="get" action="http://www.google.com/search">
+       <div>
+        <input name="sitesearch" value="autoconf-archive.cryp.to" type=
+        "hidden"><a href="http://www.google.com/">Search</a>: <input name="q"
+        size="10" maxlength="255" type="text">
+       </div>
+      </form>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ax_c_check_flag
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AX_C_CHECK_FLAG(FLAG-TO-CHECK,[PROLOGUE],[BODY],[ACTION-IF-SUCCESS],[ACTION-IF-FAILURE])</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    This macro tests if the C compiler supports the flag FLAG-TO-CHECK. If
+    successfull execute ACTION-IF-SUCCESS otherwise ACTION-IF-FAILURE. PROLOGUE
+    and BODY are optional and should be used as in AC_LANG_PROGRAM macro.
+   </p>
+   <p>
+    This code is inspired from KDE_CHECK_COMPILER_FLAG macro. Thanks to Bogdan
+    Drozdowski &lt;bogdandr@op.pl&gt; for testing and bug fixes.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Francesco Salvestrini &lt;salvestrini@users.sourceforge.net&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2007-11-26
+  </p>
+  <h2>
+   Cross References
+  </h2>
+  <p class="indent">
+   <img src="group25-xrefs.png" alt="group25-xrefs.png" usemap=
+   "#group25"><map id="group25" name="group25">
+    <area shape="poly" href="ax_c_check_flag.html" title="ax_c_check_flag" alt=
+    "" coords=
+    "443,30 447,37 459,44 476,49 499,52 524,54 549,52 572,49 589,44 601,37 605,30 601,22 589,16 572,10 549,7 524,6 499,7 476,10 459,16 447,22">
+    <area shape="poly" href="ax_cpp_check_flag.html" title="ax_cpp_check_flag"
+    alt="" coords=
+    "433,102 438,109 450,116 471,121 496,124 524,126 552,124 577,121 598,116 610,109 615,102 610,94 598,88 577,82 552,79 524,78 496,79 471,82 450,88 438,94">
+    <area shape="poly" href="ax_cxx_check_flag.html" title="ax_cxx_check_flag"
+    alt="" coords=
+    "434,174 438,181 451,188 471,193 496,196 524,198 552,196 577,193 597,188 610,181 614,174 610,166 597,160 577,154 552,151 524,150 496,151 471,154 451,160 438,166">
+    <area shape="poly" href="ax_cxxcpp_check_flag.html" title=
+    "ax_cxxcpp_check_flag" alt="" coords=
+    "420,246 425,253 440,260 463,265 492,268 524,270 556,268 585,265 608,260 623,253 628,246 623,238 608,232 585,226 556,223 524,222 492,223 463,226 440,232 425,238">
+    <area shape="poly" href="ax_gcc_install_dir.html" title=
+    "ax_gcc_install_dir" alt="" coords=
+    "5,174 9,181 22,188 40,193 64,196 91,198 117,196 141,193 160,188 172,181 176,174 172,166 160,160 141,154 117,151 91,150 64,151 40,154 22,160 9,166">
+    <area shape="poly" href="ax_gcc_option.html" title="ax_gcc_option" alt=""
+    coords=
+    "224,174 227,181 238,188 254,193 275,196 297,198 320,196 340,193 357,188 367,181 371,174 367,166 357,160 340,154 320,151 297,150 275,151 254,154 238,160 227,166">
+    <area shape="poly" href="ax_ld_check_flag.html" title="ax_ld_check_flag"
+    alt="" coords=
+    "441,318 445,325 457,332 475,337 498,340 524,342 550,340 573,337 591,332 603,325 607,318 603,310 591,304 573,298 550,295 524,294 498,295 475,298 457,304 445,310">
+   </map>
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AX_C_CHECK_FLAG],[
+  AC_PREREQ([2.61])
+  AC_REQUIRE([AC_PROG_CC])
+  AC_REQUIRE([AC_PROG_SED])
+
+  flag=`echo "$1" | $SED 'y% .=/+-(){}&lt;&gt;:*,%_______________%'`
+
+  AC_CACHE_CHECK([whether the C compiler accepts the $1 flag],
+    [ax_cv_c_check_flag_$flag],[
+
+    AC_LANG_PUSH([C])
+
+    save_CFLAGS="$CFLAGS"
+    CFLAGS="$CFLAGS $1"
+    AC_COMPILE_IFELSE([
+      AC_LANG_PROGRAM([$2],[$3])
+    ],[
+      eval "ax_cv_c_check_flag_$flag=yes"
+    ],[
+      eval "ax_cv_c_check_flag_$flag=no"
+    ])
+
+    CFLAGS="$save_CFLAGS"
+
+    AC_LANG_POP
+
+  ])
+
+  AS_IF([eval "test \"`echo '$ax_cv_c_check_flag_'$flag`\" = yes"],[
+    :
+    $4
+  ],[
+    :
+    $5
+  ])
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2007 Francesco
+   Salvestrini &lt;salvestrini@users.sourceforge.net&gt;</span>
+   <p>
+    This program is free software; you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the Free
+    Software Foundation; either version 2 of the License, or (at your option)
+    any later version.
+   </p>
+   <p>
+    This program is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+    more details.
+   </p>
+   <p>
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc., 59
+    Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+   </p>
+   <p>
+    As a special exception, the respective Autoconf Macro's copyright owner
+    gives unlimited permission to copy, distribute and modify the configure
+    scripts that are the output of Autoconf when processing the Macro. You need
+    not follow the terms of the GNU General Public License when using or
+    distributing such scripts, even though portions of the text of the Macro
+    appear in them. The GNU General Public License (GPL) does govern all other
+    use of the material that constitutes the Autoconf Macro.
+   </p>
+   <p>
+    This special exception to the GPL applies to versions of the Autoconf Macro
+    released by the Autoconf Macro Archive. When you make and distribute a
+    modified version of the Autoconf Macro, you may extend this special
+    exception to the GPL to apply to your modified version as well.
+   </p>
+  </div>
+ </body>
+</html>
