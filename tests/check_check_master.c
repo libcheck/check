@@ -311,13 +311,17 @@ Suite *make_master_suite (void)
 
 static void init_signal_strings(void)
 {
+  char *s8 = strdup(strsignal(8));
+  char *s11 = strdup(strsignal(11));
   int n;
-  n = snprintf(signal_11_str, SIG_STR_LEN, "Received signal 11 (%s)", strsignal(11));
+  n = snprintf(signal_11_str, SIG_STR_LEN, "Received signal 11 (%s)", s11);
   assert(n < SIG_STR_LEN);
-  n = snprintf(signal_11_8_str, SIG_STR_LEN, "Received signal 11 (%s), expected 8 (%s)", strsignal(11), strsignal(8));
+  n = snprintf(signal_11_8_str, SIG_STR_LEN, "Received signal 11 (%s), expected 8 (%s)", s11, s8);
   assert(n < SIG_STR_LEN);
-  n = snprintf(signal_8_str, SIG_STR_LEN, "Received signal 8 (%s)", strsignal(8));
+  n = snprintf(signal_8_str, SIG_STR_LEN, "Received signal 8 (%s)", s8);
   assert(n < SIG_STR_LEN);
+  free(s8);
+  free(s11);
 }
 
 void setup (void)

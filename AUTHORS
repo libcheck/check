@@ -14,7 +14,8 @@ Patches:         Bernhard Reiter (configure issues)
                  Robert Lemmen (gcov description in manual)
 	         Loic Martin (AM_PATH_CHECK patch)
 	         Ross Burton (pkg-config patch)
-		 Roland Stigge (bug fix)
+		 Roland Stigge (bug fix: allow fail inside setup)
+		 Torok Edwin (strsignal and build fixes)
 
 Anybody who has contributed code to Check or Check's build system is
 considered an author.  Send patches to this file to 
