@@ -1156,7 +1156,7 @@ As you can see this is an annotated source file with three columns:
 usage information, line numbers, and the original source.  The usage
 information in the first column can either be '-', which means that
 this line does not contain code that could be executed; '#####', which
-means this line was never executed altough it does contain
+means this line was never executed although it does contain
 code---these are the lines that are probably most interesting for you;
 or a number, which indicates how often that line was executed.
 
