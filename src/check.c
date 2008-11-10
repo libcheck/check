@@ -276,6 +276,9 @@ SRunner *srunner_create (Suite *s)
 
 void srunner_add_suite (SRunner *sr, Suite *s)
 {
+  if (s == NULL)
+    return;
+
   list_add_end(sr->slst, s);
 }
 
