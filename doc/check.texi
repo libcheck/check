@@ -490,12 +490,12 @@ Here are the changes to @file{check_money.c} for our first unit test:
 A unit test should just chug along and complete.  If it exits early,
 or is signaled, it will fail with a generic error message.  (Note: it
 is conceivable that you expect an early exit, or a signal.  There is
-currently nothing in Check to specifically assert that we should
-expect either --- if that is valuable, it may be worth while adding to
-Check.)  If we want to get some information about what failed, we need
-to use the @code{fail_unless()} function.  The function (actually a
-macro) takes a first Boolean argument, and an error message to send if
-the condition is not true.
+functionality in Check to specifically assert that we should expect a
+signal, but early exits are currently not handled -- if that is valuable,
+it may be worth while adding to Check.)  If we want to get some information
+about what failed, we need to use the @code{fail_unless()} function.  The
+function (actually a macro) takes a first Boolean argument, and an error
+message to send if the condition is not true.
 
 @findex fail()
 If the Boolean argument is too complicated to elegantly express within
