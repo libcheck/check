@@ -66,6 +66,20 @@
 CK_CPPSTART
 #endif
 
+#if defined(__GNUC__) && defined(__GNUC_MINOR__)
+#define GCC_VERSION_AT_LEAST(major, minor) \
+((__GNUC__ > (major)) || \
+ (__GNUC__ == (major) && __GNUC_MINOR__ >= (minor)))
+#else
+#define GCC_VERSION_AT_LEAST(major, minor) 0
+#endif
+
+#if GCC_VERSION_AT_LEAST(2,95)
+#define CK_ATTRIBUTE_UNUSED __attribute__ ((unused))
+#else
+#define CK_ATTRIBUTE_UNUSED              
+#endif /* GCC 2.95 */
+
 #include <sys/types.h>
 
 /* Used to create the linker script for hiding lib-local symbols. Shall
@@ -183,7 +197,7 @@ void CK_EXPORT tcase_fn_start (const char *fname, const char *file, int line);
    One must use braces within a START_/END_ pair to declare new variables
 */ 
 #define START_TEST(__testname)\
-static void __testname (int __attribute__((unused)) _i)\
+static void __testname (int CK_ATTRIBUTE_UNUSED _i)\
 {\
   tcase_fn_start (""# __testname, __FILE__, __LINE__);
 
