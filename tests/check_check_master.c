@@ -133,9 +133,9 @@ START_TEST(test_check_failure_msgs)
       continue;
     }
 
-    fail_if(i - passed > sub_nfailed);
+    fail_if(i - passed > sub_nfailed, NULL);
     tr = tr_fail_array[i - passed];
-    fail_unless(tr != NULL);
+    fail_unless(tr != NULL, NULL);
     got_msg = tr_msg(tr);
     expected_msg = master_tests[i].msg;
     if (strcmp(got_msg, expected_msg) != 0) {      
@@ -162,9 +162,9 @@ START_TEST(test_check_failure_lnos)
       continue;
     }
 
-    fail_if(i - passed > sub_nfailed);
+    fail_if(i - passed > sub_nfailed, NULL);
     tr = tr_fail_array[i - passed];
-    fail_unless(tr != NULL);
+    fail_unless(tr != NULL, NULL);
     line_no = master_tests[i].line_nos;
     if (line_no > 0 && tr_lno(tr) != line_no) {
       char *emsg = malloc(MAXSTR);
@@ -189,9 +189,9 @@ START_TEST(test_check_failure_ftypes)
       continue;
     }
 
-    fail_if(i - passed > sub_nfailed);
+    fail_if(i - passed > sub_nfailed, NULL);
     tr = tr_fail_array[i - passed];
-    fail_unless(tr != NULL);
+    fail_unless(tr != NULL, NULL);
     fail_unless(master_tests[i].failure_type == tr_rtype(tr),
                 "Failure type wrong for test %d", i);
   }
@@ -203,7 +203,7 @@ START_TEST(test_check_failure_lfiles)
   int i;
   for (i = 0; i < sub_nfailed; i++) {
     TestResult *tr = tr_fail_array[i];
-    fail_unless(tr != NULL);
+    fail_unless(tr != NULL, NULL);
     fail_unless(tr_lfile(tr) != NULL, "Bad file name for test %d", i);
     fail_unless(strstr(tr_lfile(tr), "check_check_sub.c") != 0,
                 "Bad file name for test %d", i);
