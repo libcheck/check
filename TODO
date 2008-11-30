@@ -143,3 +143,6 @@ Check Internals
           allow Win32 compatibility.
 [     ] * Incorporate existing Win32 support as mentioned here:
           http://opendarwin.org/pipermail/cvs-libfoundation-all/2005-March/000177.html
+[     ] * Get Cygwin to work, even without forking
+[     ] * Get MinGW to work, even without forking
+[     ] * Get MSVC to work, even without forking
