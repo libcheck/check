@@ -20,8 +20,8 @@ Check has the following dependencies:
   autoconf-2.59
   libtool-1.5.22
   pkg-config-0.20
-  texinfo-4.7
-  tetex-bin
+  texinfo-4.7 (for documentation)
+  tetex-bin (or any texinfo-compatible TeX installation, for documentation)
   POSIX sed
 
 The versions specified may be higher than those actually needed.
