@@ -16,7 +16,7 @@ Patches:         Bernhard Reiter (configure issues)
 	         Ross Burton (pkg-config patch)
 		 Roland Stigge (bug fix: allow fail inside setup)
 		 Torok Edwin (strsignal and build fixes)
-		 Roland Illig (portability fixes for varargs calls)
+		 Roland Illig (varargs and strsignal portability fixes)
 
 Anybody who has contributed code to Check or Check's build system is
 considered an author.  Send patches to this file to 

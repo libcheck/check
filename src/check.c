@@ -52,14 +52,17 @@ static void tcase_free (TCase *tc);
 #endif
 #undef malloc
 #undef realloc
+#undef strsignal
 
 #include <sys/types.h>
 
 void *malloc (size_t n);
 void *realloc (void *p, size_t n);
+char *strsignal(int sig);
 
 void *rpl_malloc (size_t n);
 void *rpl_realloc (void *p, size_t n);
+static const char *rpl_strsignal(int sig);
 
 /* Allocate an N-byte block of memory from the heap. If N is zero,
    allocate a 1-byte block. */
@@ -87,6 +90,20 @@ rpl_realloc (void *p, size_t n)
   if (p == 0)
     return malloc (n);
   return realloc (p, n);
+}
+
+/* We simply don't have strsignal on some platforms.  This function
+   should get used if AC_REPLACE_FUNCS([strsignal]) cannot find
+   something acceptable.  Note that Gnulib has a much much much more
+   advanced version of strsignal, but we don't really care.
+*/
+static const char *
+rpl_strsignal (int sig)
+{
+  static char signame[40];
+  
+  sprintf(signame, "SIG #%d", sig);
+  return signame;
 }
 
 Suite *suite_create (const char *name)
