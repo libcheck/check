@@ -17,7 +17,7 @@ Documentation
 [0.9.4] * Create initial and final versions of money example.
 [0.9.4] * Update tutorial so that it works with modern tools.
 [0.9.5] * Clarify looping tests and give example of usage.
-[     ] * Document pkg-config usage.
+[     ] * Document pkg-config usage, note that old macro usage is not recommended.
 
 Interface
 =========
