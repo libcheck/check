@@ -50,6 +50,7 @@ Build issues:
 [0.9.4] * Fix AM_PATH_CHECK by deprecating it; use pkg-config instead
 [     ] * make Check pass its own unit tests: make (dist)check can fail.
 [     ] * use stricter CFLAGS for compiling Check
+[     ] * use ax_cflags_gcc_option to add to CFLAGS to Check
 
 Check source code:
 ============
