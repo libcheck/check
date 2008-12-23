@@ -20,9 +20,13 @@
 
 #define _GNU_SOURCE
 #include "config.h"
-
 #include <sys/types.h>
+#ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>
+#endif
+/* according to Autoconf.info, unistd.h defines _POSIX_VERSION if the
+   system is POSIX-compliant, so we will use this as a test for all
+   things provided by POSIX like sigaction() and fork(). */
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -85,13 +89,15 @@ static int waserror (int status, int expected_signal);
 static int alarm_received;
 static pid_t group_pid;
 
-static void sig_handler(int sig_nr)
+static void CK_ATTRIBUTE_UNUSED sig_handler(int sig_nr)
 {
   switch (sig_nr) {
+#ifdef _POSIX_VERSION
    case SIGALRM:
     alarm_received = 1;
     killpg(group_pid, SIGKILL);
     break;
+#endif /* _POSIX_VERSION */
    default:
     eprintf("Unhandled signal: %d", __FILE__, __LINE__, sig_nr);
     break;
@@ -142,9 +148,11 @@ static void srunner_iterate_suites (SRunner *sr,
 
 void srunner_run_all (SRunner *sr, enum print_output print_mode)
 {
+#ifdef _POSIX_VERSION
   struct sigaction old_action;
   struct sigaction new_action;
-  
+#endif /* _POSIX_VERSION */
+
   if (sr == NULL)
     return;
   if (print_mode >= CK_LAST)
@@ -152,13 +160,17 @@ void srunner_run_all (SRunner *sr, enum print_output print_mode)
       eprintf ("Bad print_mode argument to srunner_run_all: %d",
 	      __FILE__, __LINE__, print_mode);
     }
+#ifdef _POSIX_VERSION
   memset(&new_action, 0, sizeof new_action);
   new_action.sa_handler = sig_handler;
   sigaction(SIGALRM, &new_action, &old_action);
+#endif /* _POSIX_VERSION */
   srunner_run_init (sr, print_mode);
   srunner_iterate_suites (sr, print_mode);
   srunner_run_end (sr, print_mode);
+#ifdef _POSIX_VERSION
   sigaction(SIGALRM, &old_action, NULL);
+#endif /* _POSIX_VERSION */
 }
 
 static void srunner_add_failure (SRunner *sr, TestResult *tr)
@@ -345,12 +357,18 @@ static TestResult *receive_result_info_nofork (const char *tcname,
   return tr;
 }
 
-static void set_fork_info (TestResult *tr, int status, int signal_expected)
+static void set_fork_info (TestResult *tr, int CK_ATTRIBUTE_UNUSED status, int signal_expected)
 {
-  int was_sig = WIFSIGNALED(status);
-  int was_exit = WIFEXITED(status);
-  int exit_status = WEXITSTATUS(status);
-  int signal_received = WTERMSIG(status);
+  int was_sig = 0;
+  int was_exit = 0;
+  int exit_status = 0;
+  int signal_received = 0;
+#ifdef _POSIX_VERSION
+  was_sig = WIFSIGNALED(status);
+  was_exit = WIFEXITED(status);
+  exit_status = WEXITSTATUS(status);
+  signal_received = WTERMSIG(status);
+#endif /* _POSIX_VERSION */
 
   if (was_sig) {
     if (signal_expected == signal_received) {
@@ -421,15 +439,20 @@ static TestResult *tcase_run_tfun_nofork (SRunner *sr, TCase *tc, TF *tfun, int 
   
 static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun, int i)
 {
-  pid_t pid_w;
-  pid_t pid;
+  pid_t pid_w = 0;
+  pid_t pid = 0;
   int status = 0;
+
+#ifdef _POSIX_VERSION
   pid = fork();
+#endif /* _POSIX_VERSION */
   if (pid == -1)
     eprintf("Error in call to fork:", __FILE__, __LINE__ - 2);
   if (pid == 0) {
+#ifdef _POSIX_VERSION
     setpgid(0, 0);
     group_pid = getpgrp();
+#endif /* _POSIX_VERSION */
     tcase_run_checked_setup(sr, tc);
     tfun->fn(i);
     tcase_run_checked_teardown(tc);
@@ -439,12 +462,18 @@ static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun, int i)
   }
 
   alarm_received = 0;
+#ifdef _POSIX_VERSION
   alarm(tc->timeout);
+#endif /* _POSIX_VERSION */
   do {
+#ifdef _POSIX_VERSION
     pid_w = waitpid(pid, &status, 0);
+#endif /* _POSIX_VERSION */
   } while (pid_w == -1);
   
+#ifdef _POSIX_VERSION
   killpg(pid, SIGKILL); /* Kill remaining processes. */
+#endif /* _POSIX_VERSION */
 
   return receive_result_info_fork(tc->name, tfun->name, i, status, tfun->signal);
 }
@@ -516,20 +545,25 @@ void srunner_set_fork_status (SRunner *sr, enum fork_status fstat)
 
 pid_t check_fork (void)
 {
-  pid_t pid = fork();
+  pid_t pid = 0;
+#ifdef _POSIX_VERSION
+  pid = fork();
   /* Set the process to a process group to be able to kill it easily. */
   setpgid(pid, group_pid);
+#endif /* _POSIX_VERSION */
   return pid;
 }
 
 void check_waitpid_and_exit (pid_t pid)
 {
-  pid_t pid_w;
-  int status;
+  pid_t pid_w = 0;
+  int status = 0;
 
   if (pid > 0) {
     do {
+#ifdef _POSIX_VERSION
       pid_w = waitpid(pid, &status, 0);
+#endif /* _POSIX_VERSION */
     } while (pid_w == -1);
     if (waserror(status, 0))
       exit(EXIT_FAILURE);
@@ -537,12 +571,18 @@ void check_waitpid_and_exit (pid_t pid)
   exit(EXIT_SUCCESS);
 }  
 
-static int waserror (int status, int signal_expected)
+static int waserror (int CK_ATTRIBUTE_UNUSED status, int signal_expected)
 {
-  int was_sig = WIFSIGNALED (status);
-  int was_exit = WIFEXITED (status);
-  int exit_status = WEXITSTATUS (status);
-  int signal_received = WTERMSIG(status);
+  int was_sig = 0;
+  int was_exit = 0;
+  int exit_status = 0;
+  int signal_received = 0;
+#ifdef _POSIX_VERSION
+  was_sig = WIFSIGNALED (status);
+  was_exit = WIFEXITED (status);
+  exit_status = WEXITSTATUS (status);
+  signal_received = WTERMSIG (status);
+#endif /* _POSIX_VERSION */
 
   return ((was_sig && (signal_received != signal_expected)) ||
           (was_exit && exit_status != 0));
