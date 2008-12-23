@@ -40,11 +40,11 @@ $(EXPORT_SYM): check.h.in
 libcheck_la_DEPENDENCIES= $(EXPORT_SYM)
 libcheck_la_LDFLAGS	= -export-symbols $(EXPORT_SYM)
 libcheck_la_SOURCES	= $(CFILES) $(HFILES)
-libcheck_la_LIBADD	= @GCOV_LIBS@
+libcheck_la_LIBADD	= @LIBOBJS@ @GCOV_LIBS@
 
 
 libcheckinternal_la_SOURCES	= $(libcheck_la_SOURCES)
-libcheckinternal_la_LIBADD	= @GCOV_LIBS@
+libcheckinternal_la_LIBADD	= @LIBOBJS@ @GCOV_LIBS@
 
 
 CLEANFILES	= *~ *.gcno $(EXPORT_SYM)

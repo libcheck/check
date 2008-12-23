@@ -47,65 +47,6 @@ static void tr_init (TestResult *tr);
 static void suite_free (Suite *s);
 static void tcase_free (TCase *tc);
 
-#if HAVE_CONFIG_H
-#include <config.h>
-#endif
-#undef malloc
-#undef realloc
-#undef strsignal
-
-#include <sys/types.h>
-
-void *malloc (size_t n);
-void *realloc (void *p, size_t n);
-char *strsignal(int sig);
-
-void *rpl_malloc (size_t n);
-void *rpl_realloc (void *p, size_t n);
-static const char *rpl_strsignal(int sig);
-
-/* Allocate an N-byte block of memory from the heap. If N is zero,
-   allocate a 1-byte block. */
-void *
-rpl_malloc (size_t n)
-{
-  if (n == 0)
-    n = 1;
-  return malloc (n);
-} 
-
-/* AC_FUNC_REALLOC in configure defines realloc to rpl_realloc if
-   realloc(0,0) is NULL to make it GNU compatible and always return a
-   valid pointer, same for AC_FUNC_MALLOC, malloc, and rpl_malloc.
-   rpl means `replacement'.
-
-   If this ever turns out to be a problem, it might be easiest to just
-   kill the configure macro calls.
- */
-void *
-rpl_realloc (void *p, size_t n)
-{
-  if (n == 0)
-    n = 1;
-  if (p == 0)
-    return malloc (n);
-  return realloc (p, n);
-}
-
-/* We simply don't have strsignal on some platforms.  This function
-   should get used if AC_REPLACE_FUNCS([strsignal]) cannot find
-   something acceptable.  Note that Gnulib has a much much much more
-   advanced version of strsignal, but we don't really care.
-*/
-static const char *
-rpl_strsignal (int sig)
-{
-  static char signame[40];
-  
-  sprintf(signame, "SIG #%d", sig);
-  return signame;
-}
-
 Suite *suite_create (const char *name)
 {
   Suite *s;
