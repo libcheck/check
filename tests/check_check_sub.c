@@ -313,9 +313,9 @@ END_TEST
 
 START_TEST(test_fork1p_pass)
 {
-  pid_t pid;
-  
 #ifdef _POSIX_VERSION
+  pid_t pid;
+
   if((pid = fork()) < 0) {
     fail("Failed to fork new process");
   } else if (pid > 0) {
@@ -334,9 +334,9 @@ END_TEST
 
 START_TEST(test_fork1p_fail)
 {
+#ifdef _POSIX_VERSION
   pid_t pid;
   
-#ifdef _POSIX_VERSION
   if((pid = fork()) < 0) {
     fail("Failed to fork new process");
   } else if (pid > 0) {
