@@ -15,7 +15,7 @@ noinst_PROGRAMS = \
 	ex_xml_output	\
 	ex_log_output
 
-LDADD = ../lib/libcompat.la
+LDADD = $(top_builddir)/lib/libcompat.la
 
 EXTRA_DIST = test_output.sh test_log_output.sh test_xml_output.sh
 

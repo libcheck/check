@@ -3,7 +3,7 @@
 lib_LTLIBRARIES		= libcheck.la
 noinst_LTLIBRARIES	= libcheckinternal.la
 
-LIBADD                  = ../lib/libcompat.la
+LIBADD                  = $(top_builddir)/lib/libcompat.la
 
 include_HEADERS		= check.h
 
