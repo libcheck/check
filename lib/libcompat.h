@@ -19,6 +19,10 @@ void *rpl_realloc (void *p, size_t n)
 unsigned int sleep (unsigned int seconds);
 #endif /* !HAVE_SLEEP */
 
+#if !HAVE_STRDUP
+char *strdup (const char *str)
+#endif /* !HAVE_STRDUP */
+
 #if !HAVE_STRSIGNAL
 const char *strsignal(int sig);
 #endif /* !HAVE_STRSIGNAL */
