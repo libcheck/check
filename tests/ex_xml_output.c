@@ -74,7 +74,7 @@ static void run_tests (int printmode)
 }
 
 
-int main (int argc, char **argv)
+int main (int argc CK_ATTRIBUTE_UNUSED, char **argv CK_ATTRIBUTE_UNUSED)
 {
   run_tests(CK_SILENT);		/* not considered in XML output */
 
