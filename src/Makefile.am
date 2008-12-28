@@ -3,6 +3,8 @@
 lib_LTLIBRARIES		= libcheck.la
 noinst_LTLIBRARIES	= libcheckinternal.la
 
+LIBADD                  = ../lib/libcompat.la
+
 include_HEADERS		= check.h
 
 EXTRA_DIST		= check.h.in
@@ -37,14 +39,14 @@ EXPORT_SYM	= exported.sym
 $(EXPORT_SYM): check.h.in
 	sed -n -e 's/^..*CK_EXPORT[[:space:]][[:space:]]*\([[:alnum:]_][[:alnum:]_]*\)..*$$/\1/p' @top_srcdir@/src/check.h.in > $@
 
-libcheck_la_DEPENDENCIES= $(EXPORT_SYM) @LTLIBOBJS@
+libcheck_la_DEPENDENCIES= $(EXPORT_SYM)
 libcheck_la_LDFLAGS	= -export-symbols $(EXPORT_SYM)
 libcheck_la_SOURCES	= $(CFILES) $(HFILES)
-libcheck_la_LIBADD	= @LTLIBOBJS@ @GCOV_LIBS@
+libcheck_la_LIBADD	= @GCOV_LIBS@
 
 
 libcheckinternal_la_SOURCES	= $(libcheck_la_SOURCES)
-libcheckinternal_la_LIBADD	= @LTLIBOBJS@ @GCOV_LIBS@
+libcheckinternal_la_LIBADD	= @GCOV_LIBS@
 
 
 CLEANFILES	= *~ *.gcno $(EXPORT_SYM)

@@ -11,6 +11,9 @@ AC_CONFIG_SRCDIR([src/check.c])
 # place where extra autoconf macros are kept
 AC_CONFIG_MACRO_DIR([m4])
 
+# place where portability library functions are kept
+AC_CONFIG_LIBOBJ_DIR([lib])
+
 # place to put some extra build scripts installed
 AC_CONFIG_AUX_DIR([build-aux])
 
@@ -123,6 +126,7 @@ AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([check.pc
                  Makefile
 		 doc/Makefile
+		 lib/Makefile
                  src/check.h
                  src/Makefile
                  tests/Makefile])
