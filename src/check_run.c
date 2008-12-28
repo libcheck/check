@@ -18,7 +18,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#define _GNU_SOURCE
 #include "config.h"
 #include <sys/types.h>
 #ifdef HAVE_SYS_WAIT_H

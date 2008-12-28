@@ -17,6 +17,9 @@ AC_CONFIG_LIBOBJ_DIR([lib])
 # place to put some extra build scripts installed
 AC_CONFIG_AUX_DIR([build-aux])
 
+# define things like _GNU_SOURCE appropriately
+AC_USE_SYSTEM_EXTENSIONS
+
 # really severe build strictness
 AM_INIT_AUTOMAKE([-Wall -Werror gnits 1.9.6])
 
