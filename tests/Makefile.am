@@ -15,6 +15,8 @@ noinst_PROGRAMS = \
 	ex_xml_output	\
 	ex_log_output
 
+LDADD = ../lib/libcompat.la
+
 EXTRA_DIST = test_output.sh test_log_output.sh test_xml_output.sh
 
 if NO_TIMEOUT_TESTS
