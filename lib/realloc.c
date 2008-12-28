@@ -3,13 +3,17 @@
 #if HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+/* realloc has been defined to rpl_realloc, so first undo that */
 #undef realloc
      
+/* defines size_t */
 #include <sys/types.h>
      
+/* this gives us the real realloc to use below */
 void *realloc (void *p, size_t n);
      
-/* force realloc(p, 0) to return a valid pointer */
+/* force realloc(p, 0) and realloc (NULL, n) to return a valid pointer */
 void *
 rpl_realloc (void *p, size_t n)
 {
