@@ -1,8 +1,7 @@
 /* AC_FUNC_MALLOC in configure defines malloc to rpl_malloc if
    malloc (0) is NULL to provide GNU compatibility */
-#if HAVE_CONFIG_H
-#include <config.h>
-#endif
+
+#include "libcompat.h"
 
 /* malloc has been defined to rpl_malloc, so first undo that */
 #undef malloc

@@ -2,6 +2,8 @@
 #include <config.h>
 #endif
 
+#include "../src/check.h"
+
 /* defines size_t */
 #include <sys/types.h>
 
@@ -18,5 +20,5 @@ unsigned int sleep (unsigned int seconds);
 #endif /* !HAVE_SLEEP */
 
 #if !HAVE_STRSIGNAL
-static const char *strsignal(int sig);
+const char *strsignal(int sig);
 #endif /* !HAVE_STRSIGNAL */

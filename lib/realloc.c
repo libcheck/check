@@ -1,8 +1,8 @@
 /* AC_FUNC_REALLOC in configure defines realloc to rpl_realloc if
-   realloc (p, 0) is NULL to provide GNU compatibility */
-#if HAVE_CONFIG_H
-#include <config.h>
-#endif
+   realloc (p, 0) or realloc (0, n) is NULL to provide GNU
+   compatibility */
+
+#include "libcompat.h"
 
 /* realloc has been defined to rpl_realloc, so first undo that */
 #undef realloc
