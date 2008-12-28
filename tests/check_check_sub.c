@@ -1,13 +1,13 @@
+#include "config.h"
+#include <sys/types.h>
+#if HAVE_SYS_WAIT_H
+#include <sys/wait.h>
+#endif /* HAVE_SYS_WAIT_H */
+#include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 #include <check.h>
 #include "check_check.h"
-
-
-
 
 
 
@@ -315,16 +315,20 @@ START_TEST(test_fork1p_pass)
 {
   pid_t pid;
   
+#ifdef _POSIX_VERSION
   if((pid = fork()) < 0) {
     fail("Failed to fork new process");
   } else if (pid > 0) {
+#endif /* _POSIX_VERSION */
     fail_unless(1, NULL);
+#ifdef _POSIX_VERSION
     kill(pid, SIGKILL);
   } else {
     for (;;) {
       sleep(1);
     }
   }
+#endif /* _POSIX_VERSION */
 }
 END_TEST
 
@@ -332,16 +336,20 @@ START_TEST(test_fork1p_fail)
 {
   pid_t pid;
   
+#ifdef _POSIX_VERSION
   if((pid = fork()) < 0) {
     fail("Failed to fork new process");
   } else if (pid > 0) {
+#endif /* _POSIX_VERSION */
     fail("Expected fail");
+#ifdef _POSIX_VERSION
     kill(pid, SIGKILL);
   } else {
     for (;;) {
       sleep(1);
     }
   }
+#endif /* _POSIX_VERSION */
 }
 END_TEST
 
