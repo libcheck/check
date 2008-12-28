@@ -1,0 +1,266 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ax_cflags_warn_all_ansi
+  </title>
+  <link rel="stylesheet" type="text/css" href="autoconf-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:25%;" align="center" valign="top">
+      <a href=
+      "http://autoconf-archive.cryp.to/ax_cflags_warn_all_ansi.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:25%;" align="center" valign="top">
+      <a href=
+      "http://git.cryp.to/autoconf-archive?a=history;f=ax_cflags_warn_all_ansi.m4">
+      Macro History</a>
+     </td>
+     <td style="width:25%;" align="center" valign="top">
+      <a href="macros-by-category.html">Category Index</a>
+     </td>
+     <td style="width:25%;" align="center" valign="top">
+      <form method="get" action="http://www.google.com/search">
+       <div>
+        <input name="sitesearch" value="autoconf-archive.cryp.to" type=
+        "hidden"><a href="http://www.google.com/">Search</a>: <input name="q"
+        size="10" maxlength="255" type="text">
+       </div>
+      </form>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ax_cflags_warn_all_ansi
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AX_CFLAGS_WARN_ALL_ANSI [(shellvar [,default, [A/NA]])]</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Try to find a compiler option that enables most reasonable warnings. This
+    macro is directly derived from <a href=
+    "vl_prog_cc_warnings.html">VL_PROG_CC_WARNINGS</a> which is split up into
+    two <a href="ax_cflags_warn_all.html">AX_CFLAGS_WARN_ALL</a> and
+    AX_CFLAGS_WARN_ALL_ANSI
+   </p>
+   <p>
+    For the GNU CC compiler it will be -Wall (and -ansi -pedantic) The result
+    is added to the shellvar being CFLAGS by default.
+   </p>
+   <p>
+    Currently this macro knows about GCC, Solaris C compiler, Digital Unix C
+    compiler, C for AIX Compiler, HP-UX C compiler, IRIX C compiler, NEC SX-5
+    (Super-UX 10) C compiler, and Cray J90 (Unicos 10.0.0.8) C compiler.
+   </p>
+   <pre>
+ - $1 shell-variable-to-add-to : CFLAGS
+ - $2 add-value-if-not-found : nothing
+ - $3 action-if-found : add value to shellvariable
+ - $4 action-if-not-found : nothing
+</pre>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Guido U. Draheim &lt;guidod@gmx.de&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2008-04-12
+  </p>
+  <h2>
+   Cross References
+  </h2>
+  <p class="indent">
+   <img src="group8-xrefs.png" alt="group8-xrefs.png" usemap="#group8"><map id=
+   "group8" name="group8">
+    <area shape="poly" href="ac_cxx_rtti.html" title="ac_cxx_rtti" alt=""
+    coords=
+    "1234,172 1230,165 1219,158 1203,153 1182,149 1159,148 1135,149 1115,153 1098,158 1087,165 1084,172 1087,179 1098,186 1115,191 1135,195 1159,196 1182,195 1203,191 1219,186 1230,179">
+    <area shape="poly" href="ax_cflags_aix_option.html" title=
+    "ax_cflags_aix_option" alt="" coords=
+    "274,275 268,267 249,261 219,255 181,252 140,251 99,252 61,255 31,261 12,267 6,275 12,282 31,289 61,294 99,297 140,299 181,297 219,294 249,289 268,282">
+    <area shape="poly" href="ax_cflags_gcc_option.html" title=
+    "ax_cflags_gcc_option" alt="" coords=
+    "602,275 595,267 576,261 545,255 506,252 463,251 420,252 381,255 350,261 330,267 323,275 330,282 350,289 381,294 420,297 463,299 506,297 545,294 576,289 595,282">
+    <area shape="poly" href="ax_cflags_warn_all.html" title=
+    "ax_cflags_warn_all" alt="" coords=
+    "1280,347 1274,339 1257,333 1230,327 1196,324 1159,323 1121,324 1087,327 1060,333 1043,339 1037,347 1043,354 1060,361 1087,366 1121,369 1159,371 1196,369 1230,366 1257,361 1274,354">
+    <area shape="poly" href="ax_cflags_hpux_option.html" title=
+    "ax_cflags_hpux_option" alt="" coords=
+    "965,203 958,195 937,189 905,183 865,180 820,179 775,180 735,183 703,189 682,195 675,203 682,210 703,217 735,222 775,225 820,227 865,225 905,222 937,217 958,210">
+    <area shape="poly" href="ax_cflags_irix_option.html" title=
+    "ax_cflags_irix_option" alt="" coords=
+    "954,275 948,267 929,261 899,255 861,252 820,251 779,252 741,255 711,261 692,267 686,275 692,282 711,289 741,294 779,297 820,299 861,297 899,294 929,289 948,282">
+    <area shape="poly" href="ax_cflags_sun_option.html" title=
+    "ax_cflags_sun_option" alt="" coords=
+    "959,347 952,339 932,333 901,327 863,324 820,323 777,324 739,327 708,333 688,339 681,347 688,354 708,361 739,366 777,369 820,371 863,369 901,366 932,361 952,354">
+    <area shape="poly" href="ax_cflags_warn_all_ansi.html" title=
+    "ax_cflags_warn_all_ansi" alt="" coords=
+    "1632,347 1625,339 1603,333 1569,327 1527,324 1480,323 1433,324 1391,327 1357,333 1335,339 1328,347 1335,354 1357,361 1391,366 1433,369 1480,371 1527,369 1569,366 1603,361 1625,354">
+    <area shape="poly" href="vl_prog_cc_warnings.html" title=
+    "vl_prog_cc_warnings" alt="" coords=
+    "1949,316 1942,309 1923,302 1894,297 1856,293 1815,292 1773,293 1736,297 1706,302 1687,309 1681,316 1687,323 1706,330 1736,335 1773,339 1815,340 1856,339 1894,335 1923,330 1942,323">
+    <area shape="poly" href="ax_cxx_gcc_abi_demangle.html" title=
+    "ax_cxx_gcc_abi_demangle" alt="" coords=
+    "989,29 981,22 957,15 919,10 872,7 820,5 768,7 721,10 683,15 659,22 651,29 659,37 683,43 721,49 768,52 820,53 872,52 919,49 957,43 981,37">
+   </map>
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AX_CFLAGS_WARN_ALL_ANSI],[dnl
+AS_VAR_PUSHDEF([FLAGS],[CFLAGS])dnl
+AS_VAR_PUSHDEF([VAR],[ac_cv_cflags_warn_all_ansi])dnl
+AC_CACHE_CHECK([m4_ifval($1,$1,FLAGS) for maximum ansi warnings],
+VAR,[VAR="no, unknown"
+ AC_LANG_SAVE
+ AC_LANG_C
+ ac_save_[]FLAGS="$[]FLAGS"
+# IRIX C compiler:
+#      -use_readonly_const is the default for IRIX C,
+#       puts them into .rodata, but they are copied later.
+#       need to be "-G0 -rdatashared" for strictmode but
+#       I am not sure what effect that has really.         - guidod
+for ac_arg dnl
+in "-pedantic  % -Wall -ansi -pedantic"       dnl   GCC
+   "-xstrconst % -v -Xc"                      dnl Solaris C
+   "-std1      % -verbose -w0 -warnprotos -std1" dnl Digital Unix
+   " % -qlanglvl=ansi -qsrcmsg -qinfo=all:noppt:noppc:noobs:nocnd" dnl AIX
+   " % -ansi -ansiE -fullwarn"                dnl IRIX
+   "+ESlit     % +w1 -Aa"                     dnl HP-UX C
+   "-Xc        % -pvctl[,]fullmsg -Xc"        dnl NEC SX-5 (Super-UX 10)
+   "-h conform % -h msglevel 2 -h conform"    dnl Cray C (Unicos)
+   #
+do FLAGS="$ac_save_[]FLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
+   AC_TRY_COMPILE([],[return 0;],
+   [VAR=`echo $ac_arg | sed -e 's,.*% *,,'` ; break])
+done
+ FLAGS="$ac_save_[]FLAGS"
+ AC_LANG_RESTORE
+])
+case ".$VAR" in
+     .ok|.ok,*) m4_ifvaln($3,$3) ;;
+   .|.no|.no,*) m4_ifvaln($4,$4,[m4_ifval($2,[
+        AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])
+                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])]) ;;
+   *) m4_ifvaln($3,$3,[
+   if echo " $[]m4_ifval($1,$1,FLAGS) " | grep " $VAR " 2&gt;&amp;1 &gt;/dev/null
+   then AC_RUN_LOG([: m4_ifval($1,$1,FLAGS) does contain $VAR])
+   else AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"])
+                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"
+   fi ]) ;;
+esac
+AS_VAR_POPDEF([VAR])dnl
+AS_VAR_POPDEF([FLAGS])dnl
+])
+
+dnl the only difference - the LANG selection... and the default FLAGS
+
+AC_DEFUN([AX_CXXFLAGS_WARN_ALL_ANSI],[dnl
+AS_VAR_PUSHDEF([FLAGS],[CXXFLAGS])dnl
+AS_VAR_PUSHDEF([VAR],[ac_cv_cxxflags_warn_all_ansi])dnl
+AC_CACHE_CHECK([m4_ifval($1,$1,FLAGS) for maximum ansi warnings],
+VAR,[VAR="no, unknown"
+ AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ ac_save_[]FLAGS="$[]FLAGS"
+# IRIX C compiler:
+#      -use_readonly_const is the default for IRIX C,
+#       puts them into .rodata, but they are copied later.
+#       need to be "-G0 -rdatashared" for strictmode but
+#       I am not sure what effect that has really.         - guidod
+for ac_arg dnl
+in "-pedantic  % -Wall -ansi -pedantic"       dnl   GCC
+   "-xstrconst % -v -Xc"                      dnl Solaris C
+   "-std1      % -verbose -w0 -warnprotos -std1" dnl Digital Unix
+   " % -qlanglvl=ansi -qsrcmsg -qinfo=all:noppt:noppc:noobs:nocnd" dnl AIX
+   " % -ansi -ansiE -fullwarn"                dnl IRIX
+   "+ESlit     % +w1 -Aa"                     dnl HP-UX C
+   "-Xc        % -pvctl[,]fullmsg -Xc"        dnl NEC SX-5 (Super-UX 10)
+   "-h conform % -h msglevel 2 -h conform"    dnl Cray C (Unicos)
+   #
+do FLAGS="$ac_save_[]FLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
+   AC_TRY_COMPILE([],[return 0;],
+   [VAR=`echo $ac_arg | sed -e 's,.*% *,,'` ; break])
+done
+ FLAGS="$ac_save_[]FLAGS"
+ AC_LANG_RESTORE
+])
+case ".$VAR" in
+     .ok|.ok,*) m4_ifvaln($3,$3) ;;
+   .|.no|.no,*) m4_ifvaln($4,$4,[m4_ifval($2,[
+        AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])
+                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])]) ;;
+   *) m4_ifvaln($3,$3,[
+   if echo " $[]m4_ifval($1,$1,FLAGS) " | grep " $VAR " 2&gt;&amp;1 &gt;/dev/null
+   then AC_RUN_LOG([: m4_ifval($1,$1,FLAGS) does contain $VAR])
+   else AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"])
+                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"
+   fi ]) ;;
+esac
+AS_VAR_POPDEF([VAR])dnl
+AS_VAR_POPDEF([FLAGS])dnl
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2008 Guido U. Draheim
+   &lt;guidod@gmx.de&gt;</span>
+   <p>
+    This program is free software; you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the Free
+    Software Foundation; either version 2 of the License, or (at your option)
+    any later version.
+   </p>
+   <p>
+    This program is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+    more details.
+   </p>
+   <p>
+    You should have received a copy of the GNU General Public License along
+    with this program. If not, see &lt;<a href=
+    "http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.
+   </p>
+   <p>
+    As a special exception, the respective Autoconf Macro's copyright owner
+    gives unlimited permission to copy, distribute and modify the configure
+    scripts that are the output of Autoconf when processing the Macro. You need
+    not follow the terms of the GNU General Public License when using or
+    distributing such scripts, even though portions of the text of the Macro
+    appear in them. The GNU General Public License (GPL) does govern all other
+    use of the material that constitutes the Autoconf Macro.
+   </p>
+   <p>
+    This special exception to the GPL applies to versions of the Autoconf Macro
+    released by the Autoconf Macro Archive. When you make and distribute a
+    modified version of the Autoconf Macro, you may extend this special
+    exception to the GPL to apply to your modified version as well.
+   </p>
+  </div>
+ </body>
+</html>

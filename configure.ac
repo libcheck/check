@@ -85,7 +85,7 @@ AC_PROG_LIBTOOL
 
 # add these options to CFLAGS if the compiler supports them
 AC_DEFUN([AX_CFLAGS_ADD],[AX_C_CHECK_FLAG($1, , , CFLAGS="$CFLAGS $1")])
-AX_CFLAGS_ADD([-Wall])
+AX_CFLAGS_WARN_ALL_ANSI
 AX_CFLAGS_ADD([-Wextra])
 AX_CFLAGS_ADD([-Wstrict-prototypes])
 AX_CFLAGS_ADD([-Wmissing-prototypes])

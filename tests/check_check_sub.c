@@ -60,8 +60,8 @@ END_TEST
 
 #if defined(__GNUC__)
 START_TEST(test_fail_no_msg)
-{
-  fail_unless(4 == 5);
+{ /* taking out the NULL provokes an ISO C99 warning in GCC */
+  fail_unless(4 == 5, NULL);
 }
 END_TEST
 #endif /* __GNUC__ */
@@ -73,8 +73,8 @@ END_TEST
 
 #if defined(__GNUC__)
 START_TEST(test_fail_if_no_msg)
-{
-  fail_if(4 != 5);
+{ /* taking out the NULL provokes an ISO C99 warning in GCC */
+  fail_if(4 != 5, NULL);
 }
 END_TEST
 #endif /* __GNUC__ */
@@ -104,11 +104,11 @@ END_TEST
 #if defined(__GNUC__)
 START_TEST(test_fail_empty)
 { /* plain fail() doesn't compile with xlc in C mode because of `, ## __VA_ARGS__' problem */
-  fail();
+  /* on the other hand, taking out the NULL provokes an ISO C99 warning in GCC */
+  fail(NULL);
 }
 END_TEST
 #endif /* __GNUC__ */
-/* FIXME: all these line numbers are kind of hard to maintain */
 START_TEST(test_ck_abort)
 {
   ck_abort(); /* line 114 */
