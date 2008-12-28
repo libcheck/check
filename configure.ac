@@ -118,7 +118,7 @@ AC_FUNC_REALLOC
 AC_FUNC_STRFTIME
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([alarm gettimeofday localtime_r memmove memset putenv setenv strdup strerror strrchr strstr])
-AC_REPLACE_FUNCS([strsignal])
+AC_REPLACE_FUNCS([sleep strsignal])
 
 # Output files
 AC_CONFIG_HEADERS([config.h])
