@@ -112,7 +112,7 @@ static void srunner_run_init (SRunner *sr, enum print_output print_mode)
   log_srunner_start (sr);
 }
 
-static void srunner_run_end (SRunner *sr, enum print_output print_mode)
+static void srunner_run_end (SRunner *sr, enum print_output CK_ATTRIBUTE_UNUSED print_mode)
 {
   log_srunner_end (sr);
   srunner_end_logging (sr);
@@ -121,7 +121,7 @@ static void srunner_run_end (SRunner *sr, enum print_output print_mode)
 }
 
 static void srunner_iterate_suites (SRunner *sr,
-				    enum print_output print_mode)
+				    enum print_output CK_ATTRIBUTE_UNUSED print_mode)
   
 {
   List *slst;
