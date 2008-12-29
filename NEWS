@@ -1,3 +1,60 @@
+Mon, Dec 29, 2009: Released Check 0.9.6
+  based on r453 (2008-12-01 22:14:15).
+
+* 'make distcheck' does not work out of the box. Disable the two
+  top lines in doc/Makefile.am and it shall pass. Will have to
+  be fixed later.
+
+* add call to AC_REPLACE_FUNCS([strsignal])
+* add new rpl_strsignal following rpl_(re)malloc template, body
+  of function due to Roland Illig
+  -- hopefully closes 1629755
+
+* add missing NULL argument to fail* varargs macro calls
+* define incorrect tests for __GNUC__ only
+   -- both per Roland Illig in bug 1677391
+
+* define CK_ATTRIBUTE_UNUSED for GCC >= 2.95, closing:
+  [ 1674626 ] compile error with non defined __attribute__ compiler
+
+* Fixed error in documentation example Makefile.am, bug #1888237
+
+* Fixed spelling (patch #1652630)
+
+* Handle NULL in srunner_add_suite(). Fixes #1624887
+
+* add CK_FORK_GETENV to enum fork_status and delete CK_FORK_UNSPECIFIED
+
+* call strdup on result from strsignal to avoid clobbering it
+* add Torok Edwin to AUTHORS
+
+* add CK_TEST_RESULT_INVALID to enum test_result
+
+* add CK_CTX_INVALID to ck_result_ctx and don't use -1 anymore
+
+* count checks in setup() as well; patch due to Roland Stigge
+
+* use int __attribute__((unused)) _i instead of
+      int _i __attribute__((unused))
+  per gcc-3.3.5 request from Sebastian Trahm
+
+* rename signal to _signal in _tcase_add_test to avoid a
+  symbol clash with /usr/include/sys/signal.h on OS X.
+
+* define rpl_malloc and rpl_realloc for platforms where
+  !malloc(0) and !realloc(0,0), such as AIX, because configure
+  goes and redefines malloc/realloc in this case...
+
+* SVNChangeLog patch from Robert Collins
+
+* Incorporated patch from Debian for debian bug #395466. This fixes
+   'AM_PATH_CHECK causes "possibly undefined macro" errors'.
+
+* Added new Check fail API. Implemented on top of fail_unless. Future
+  versions will reverse this so fail_unless is implemented on top of the
+  ck_assert API. This API is not documented yet, will probably not be fully
+  released until 0.9.8, when it will be possible to choose API.
+
 Tue, Nov 21, 2006: Released Check 0.9.5
 
 * Fixed code coverage support to work with gcc4 and buggy libtool.
