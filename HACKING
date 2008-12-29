@@ -26,6 +26,18 @@ better mechanism is needed.
 Release Process
 ===============
 
+Start by making sure everything is OK.
+
+1.  svn co https://svn.sourceforge.net/svnroot/check
+2.  cd check/trunk (or tagged version)
+3.  autoreconf --install
+4.  ./configure
+5.  make check
+6.  ulimit -c 0
+7.  make distcheck
+
+When the above works:
+
 1.  Decide on revision suitable for release.
 2.  svn cp -rXXX https://svn.sourceforge.net/svnroot/check/trunk https://svn.sourceforge.net/svnroot/check/tags/check-X.Y.Z
 3.  cd ~/check
@@ -37,24 +49,21 @@ Release Process
 9.  svn ci
 10.  autoreconf --install
 11. ./configure
-12. make
-13. ulimit -c 0
+12. ulimit -c 0
+13. make check
 14. make distcheck
 15. rsync -av . USERNAME@shell.sourceforge.net:/home/groups/c/ch/check/htdocs
-16. ftp upload.sourceforge.net
-> anonymous
-> username@domain
-> bin
-> cd /incoming
+16. sftp USERNAME@frs.sourceforge.net
+> cd uploads
 > put check-X.Y.Z.tar.gz
-> quit
+> exit
 17. Locally copy NEWS to NEWS-release, cut out old release news.
 18. Copy SVNChangeLog to SVNChangeLog-release, cut out old release log.
 19. Go to: http://sourceforge.net/project/admin/newrelease.php?package_id=20116&group_id=28255
 20. Enter X.Y.Z as new release name, hit "Create this release"
 21. Upload NEWS-release, SVNChangeLog-release
 22. Tick "Preserve my pre-formatted text", hit "Submit/Refresh"
-23. Tick "check-0.9.5.tar.gz" in list, hit "Add Files and/or Refresh View"
+23. Tick "check-X.Y.Z.tar.gz" in list, hit "Add Files and/or Refresh View"
 24. Choose "Platform-Independent" for Processor
 25. Choose "Source .gz" for File Type
 26. Hit "Update/Refresh"
