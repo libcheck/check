@@ -52,6 +52,7 @@ Build issues:
 [     ] * Make the docs pass 'make distcheck'
 [     ] * use stricter CFLAGS for compiling Check
 [     ] * use ax_cflags_gcc_option to add to CFLAGS to Check
+[     ] * prune unused checks from configure.ac
 
 Check source code:
 ============
