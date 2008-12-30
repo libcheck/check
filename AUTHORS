@@ -17,6 +17,7 @@ Patches:         Bernhard Reiter (configure issues)
 		 Roland Stigge (bug fix: allow fail inside setup)
 		 Torok Edwin (strsignal and build fixes)
 		 Roland Illig (varargs and strsignal portability fixes)
+		 Daniel Gollub (pthreads support)
 
 Anybody who has contributed code to Check or Check's build system is
 considered an author.  Send patches to this file to 

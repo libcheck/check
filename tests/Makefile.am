@@ -11,6 +11,7 @@ noinst_PROGRAMS = \
 	check_check_export \
 	check_check	\
 	check_stress	\
+	check_thread_stress \
 	ex_output	\
 	ex_xml_output	\
 	ex_log_output
@@ -47,6 +48,10 @@ check_check_LDADD = $(top_builddir)/src/libcheckinternal.la $(top_builddir)/lib/
 
 check_stress_SOURCES = check_stress.c
 check_stress_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
+
+check_thread_stress_SOURCES = check_thread_stress.c
+check_thread_stress_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la @PTHREAD_LIBS@
+check_thread_stress_CFLAGS = @PTHREAD_CFLAGS@
 
 ex_output_SOURCES = ex_output.c
 ex_output_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
