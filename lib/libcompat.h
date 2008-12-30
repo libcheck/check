@@ -36,15 +36,19 @@ void *rpl_realloc (void *p, size_t n);
 
 /* functions that may be undeclared */
 #if !HAVE_DECL_FILENO
-int fileno(FILE *stream);
+int fileno (FILE *stream);
 #endif /* !HAVE_DECL_FILENO */
 
 #if !HAVE_DECL_LOCALTIME_R
-struct tm *localtime_r(const time_t *clock, struct tm *result);
+struct tm *localtime_r (const time_t *clock, struct tm *result);
 #endif /* !HAVE_DECL_LOCALTIME_R */
 
+#if !HAVE_DECL_PUTENV
+int putenv (const char *string CK_ATTRIBUTE_UNUSED);
+#endif /* !HAVE_DECL_PUTENV */
+
 #if !HAVE_DECL_SETENV
-int setenv(const char *name, const char *value, int overwrite);
+int setenv (const char *name, const char *value, int overwrite);
 #endif /* !HAVE_DECL_SETENV */
 
 #if !HAVE_DECL_SLEEP
@@ -56,11 +60,11 @@ char *strdup (const char *str);
 #endif /* !HAVE_DECL_STRDUP */
 
 #if !HAVE_DECL_STRSIGNAL
-const char *strsignal(int sig);
+const char *strsignal (int sig);
 #endif /* !HAVE_DECL_STRSIGNAL */
 
 #if !HAVE_DECL_UNSETENV
-void unsetenv(const char *name);
+void unsetenv (const char *name);
 #endif /* !HAVE_DECL_UNSETENV */
 
 /* silence warnings about an empty library */
