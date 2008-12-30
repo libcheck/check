@@ -118,7 +118,7 @@ AC_CHECK_SIZEOF(long, 4)
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 AC_REPLACE_FUNCS([fileno localtime_r setenv sleep strdup strsignal unsetenv])
-AC_CHECK_DECLS([fileno, localtime_r, malloc, realloc, setenv, sleep, strdup, strsignal, unsetenv])
+AC_CHECK_DECLS([fileno, localtime_r, setenv, sleep, strdup, strsignal, unsetenv])
 
 # Output files
 AC_CONFIG_HEADERS([config.h])
