@@ -11,7 +11,7 @@ Suite *s;
 TCase *tc;
 SRunner *sr;
 
-void *sendinfo_thread(void *userdata)
+static void *sendinfo_thread(void *userdata CK_ATTRIBUTE_UNUSED)
 {
 	unsigned int i;
 	for (i=0; i < 100; i++) {
@@ -22,7 +22,7 @@ void *sendinfo_thread(void *userdata)
 }
 
 
-void *sendinfo_fail_thread(void *userdata)
+static void *sendinfo_fail_thread(void *userdata CK_ATTRIBUTE_UNUSED)
 {
 	unsigned int i;
 	for (i=0; i < 100; i++) {
@@ -42,8 +42,8 @@ START_TEST(test_pass)
 	pthread_join(a, NULL);
 	pthread_join(b, NULL);
 #else
-	sendinfo_thread(0xa);
-	sendinfo_thread(0xb);
+	sendinfo_thread((void *) 0xa);
+	sendinfo_thread((void *) 0xb);
 #endif
 }
 END_TEST
@@ -58,8 +58,8 @@ START_TEST(test_fail)
 	pthread_join(a, NULL);
 	pthread_join(b, NULL);
 #else
-	sendinfo_fail_thread(0xa);
-	sendinfo_fail_thread(0xb);
+	sendinfo_fail_thread((void *) 0xa);
+	sendinfo_fail_thread((void *) 0xb);
 #endif
 }
 END_TEST
