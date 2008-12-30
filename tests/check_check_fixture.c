@@ -63,7 +63,7 @@ START_TEST(test_setup_failure_msg)
 {
   TestResult **tra;
   char *trm;
-  const char *trmexp = "check_check_fixture.c:14:S:Fix Sub:unchecked_setup:0: Test failure in fixture";
+  const char *trmexp = "check_check_fixture.c:16:S:Fix Sub:unchecked_setup:0: Test failure in fixture";
 
   tra = srunner_failures(fixture_sr);
   trm = tr_str(tra[0]);
@@ -126,7 +126,7 @@ END_TEST
 
 static void setup_sub_fail (void)
 {
-  fail("Failed setup"); /* check_check_fixture.c:127 */
+  fail("Failed setup"); /* check_check_fixture.c:129 */
 }
 
 static void teardown_sub_fail (void)
@@ -187,9 +187,9 @@ START_TEST(test_ch_setup_fail)
 
 
   trm = tr_str(srunner_failures(sr)[0]);
-   /* Search for check_check_fixture.c:127 if this fails. */
+   /* Search for check_check_fixture.c:129 if this fails. */
   if (strstr(trm,
-	     "check_check_fixture.c:127:S:Setup Fail:test_sub_fail:0: Failed setup")
+	     "check_check_fixture.c:129:S:Setup Fail:test_sub_fail:0: Failed setup")
       == 0) {
     snprintf(errm, sizeof(errm),
 	     "Bad failed checked setup tr msg (%s)", trm);
@@ -303,7 +303,7 @@ START_TEST(test_ch_setup_sig)
   trm = tr_str(srunner_failures(sr)[0]);
 
   if (strstr(trm,
-	     "check_check_fixture.c:137:S:Setup Sig:test_sub_fail:0: "
+	     "check_check_fixture.c:139:S:Setup Sig:test_sub_fail:0: "
 	     "(after this point) Received signal 8")
       == 0) {
     snprintf(errm, sizeof(errm),
@@ -386,7 +386,7 @@ START_TEST(test_ch_teardown_fail)
   trm = tr_str(srunner_failures(sr)[0]);
 
   if (strstr(trm,
-	     "check_check_fixture.c:132:S:Teardown Fail:test_sub_pass:0: Failed teardown")
+	     "check_check_fixture.c:134:S:Teardown Fail:test_sub_pass:0: Failed teardown")
       == 0) {
     snprintf(errm, sizeof(errm),
 	     "Bad failed checked teardown tr msg (%s)", trm);
@@ -428,7 +428,7 @@ START_TEST(test_ch_teardown_sig)
   trm = tr_str(srunner_failures(sr)[0]);
 
   if (strstr(trm,
-	     "check_check_fixture.c:143:S:Teardown Sig:test_sub_pass:0: "
+	     "check_check_fixture.c:145:S:Teardown Sig:test_sub_pass:0: "
 	     "(after this point) Received signal 8")
       == 0) {
     snprintf(errm, sizeof(errm),
