@@ -43,8 +43,12 @@ int fileno (FILE *stream);
 struct tm *localtime_r (const time_t *clock, struct tm *result);
 #endif /* !HAVE_DECL_LOCALTIME_R */
 
+#if !HAVE_DECL_PIPE
+int pipe (int *fildes);
+#endif /* !HAVE_DECL_PIPE */
+
 #if !HAVE_DECL_PUTENV
-int putenv (const char *string CK_ATTRIBUTE_UNUSED);
+int putenv (const char *string);
 #endif /* !HAVE_DECL_PUTENV */
 
 #if !HAVE_DECL_SETENV
