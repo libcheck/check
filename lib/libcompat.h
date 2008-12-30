@@ -5,6 +5,20 @@
 #include <config.h>
 #endif
 
+#if defined(__GNUC__) && defined(__GNUC_MINOR__)
+#define GCC_VERSION_AT_LEAST(major, minor) \
+((__GNUC__ > (major)) || \
+ (__GNUC__ == (major) && __GNUC_MINOR__ >= (minor)))
+#else
+#define GCC_VERSION_AT_LEAST(major, minor) 0
+#endif
+
+#if GCC_VERSION_AT_LEAST(2,95)
+#define CK_ATTRIBUTE_UNUSED __attribute__ ((unused))
+#else
+#define CK_ATTRIBUTE_UNUSED              
+#endif /* GCC 2.95 */
+
 /* defines size_t */
 #include <sys/types.h>
 
