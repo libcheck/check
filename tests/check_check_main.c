@@ -1,3 +1,5 @@
+#include "../lib/libcompat.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <check.h>

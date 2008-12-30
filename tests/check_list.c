@@ -1,3 +1,5 @@
+#include "../lib/libcompat.h"
+
 #include <string.h>
 #include <stdlib.h>
 

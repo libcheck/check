@@ -5,8 +5,6 @@
 #include <config.h>
 #endif
 
-#include "../src/check.h"
-
 /* defines size_t */
 #include <sys/types.h>
 
