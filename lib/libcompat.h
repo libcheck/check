@@ -1,3 +1,6 @@
+#ifndef LIBCOMPAT_H
+#define LIBCOMPAT_H
+
 #if HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -50,3 +53,5 @@ void unsetenv(const char *name);
 
 /* silence warnings about an empty library */
 void ck_do_nothing (void);
+
+#endif /* !LIBCOMPAT_H */
