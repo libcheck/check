@@ -115,13 +115,10 @@ AC_CHECK_SIZEOF(short, 2)
 AC_CHECK_SIZEOF(long, 4)
 
 # Checks for library functions.
-AC_FUNC_FORK
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
-AC_FUNC_STRFTIME
-AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([alarm gettimeofday localtime_r memmove memset putenv setenv strerror strrchr strstr])
-AC_REPLACE_FUNCS([sleep strdup strsignal])
+AC_REPLACE_FUNCS([fileno localtime_r setenv sleep strdup strsignal unsetenv])
+AC_CHECK_DECLS([fileno, localtime_r, malloc, realloc, setenv, sleep, strdup, strsignal, unsetenv])
 
 # Output files
 AC_CONFIG_HEADERS([config.h])
