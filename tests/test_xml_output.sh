@@ -11,21 +11,21 @@ expected="<?xml version=\"1.0\"?>
   <suite>
     <title>S1</title>
     <test result=\"success\">
-      <fn>ex_xml_output.c:8</fn>
+      <fn>ex_xml_output.c:10</fn>
       <id>test_pass</id>
       <iteration>0</iteration>
       <description>Core</description>
       <message>Passed</message>
     </test>
     <test result=\"failure\">
-      <fn>ex_xml_output.c:14</fn>
+      <fn>ex_xml_output.c:16</fn>
       <id>test_fail</id>
       <iteration>0</iteration>
       <description>Core</description>
       <message>Failure</message>
     </test>
     <test result=\"error\">
-      <fn>ex_xml_output.c:18</fn>
+      <fn>ex_xml_output.c:20</fn>
       <id>test_exit</id>
       <iteration>0</iteration>
       <description>Core</description>
@@ -35,28 +35,28 @@ expected="<?xml version=\"1.0\"?>
   <suite>
     <title>S2</title>
     <test result=\"success\">
-      <fn>ex_xml_output.c:26</fn>
+      <fn>ex_xml_output.c:28</fn>
       <id>test_pass2</id>
       <iteration>0</iteration>
       <description>Core</description>
       <message>Passed</message>
     </test>
     <test result=\"failure\">
-      <fn>ex_xml_output.c:32</fn>
+      <fn>ex_xml_output.c:34</fn>
       <id>test_loop</id>
       <iteration>0</iteration>
       <description>Core</description>
       <message>Iteration 0 failed</message>
     </test>
     <test result=\"success\">
-      <fn>ex_xml_output.c:32</fn>
+      <fn>ex_xml_output.c:34</fn>
       <id>test_loop</id>
       <iteration>1</iteration>
       <description>Core</description>
       <message>Passed</message>
     </test>
     <test result=\"failure\">
-      <fn>ex_xml_output.c:32</fn>
+      <fn>ex_xml_output.c:34</fn>
       <id>test_loop</id>
       <iteration>2</iteration>
       <description>Core</description>
