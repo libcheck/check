@@ -20,6 +20,7 @@
 
 #include "config.h"
 #include "../lib/libcompat.h"
+
 #include <sys/types.h>
 #ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>

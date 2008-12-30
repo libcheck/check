@@ -19,6 +19,7 @@
  */
 
 #include "config.h"
+#include "../lib/libcompat.h"
 
 #include <stdio.h>
 #include <string.h>
