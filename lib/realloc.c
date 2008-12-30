@@ -7,9 +7,6 @@
 /* realloc has been defined to rpl_realloc, so first undo that */
 #undef realloc
      
-/* defines size_t */
-#include <sys/types.h>
-     
 /* this gives us the real realloc to use below */
 void *realloc (void *p, size_t n);
      

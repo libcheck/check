@@ -6,9 +6,6 @@
 /* malloc has been defined to rpl_malloc, so first undo that */
 #undef malloc
 
-/* defines size_t */
-#include <sys/types.h>
-
 /* this gives us the real malloc to use below */
 void *malloc (size_t n);
 
