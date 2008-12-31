@@ -121,7 +121,8 @@ AC_REPLACE_FUNCS([fileno localtime_r pipe putenv setenv sleep strdup strsignal u
 AC_CHECK_DECLS([fileno, localtime_r, pipe, putenv, setenv, sleep, strdup, strsignal, unsetenv])
 
 # Checks for pthread implementation.
-ACX_PTHREAD([CC="$PTHREAD_CC"])
+ACX_PTHREAD
+CC="$PTHREAD_CC"
 
 # Output files
 AC_CONFIG_HEADERS([config.h])
