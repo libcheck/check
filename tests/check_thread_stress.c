@@ -1,4 +1,3 @@
-#include "config.h"
 #include "../lib/libcompat.h"
 
 #include <time.h>
