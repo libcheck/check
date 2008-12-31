@@ -1,6 +1,16 @@
 #include "libcompat.h"
-
-struct tm *localtime_r (const time_t *clock CK_ATTRIBUTE_UNUSED, struct tm *result CK_ATTRIBUTE_UNUSED)
+  
+struct tm *
+localtime_r (const time_t *clock, struct tm *result)
 {
-  return NULL;
+  struct tm *now = localtime (clock);
+  if (now == NULL)
+    {
+      return NULL;
+    }
+  else
+    {
+      *result = *now;
+    }
+  return result;
 }
