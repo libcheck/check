@@ -17,42 +17,42 @@ sendinfo (void *userdata CK_ATTRIBUTE_UNUSED)
     {
       fail_unless (1, "Shouldn't see this message");
     }
-
   return NULL;
 }
 
+#ifdef HAVE_PTHREAD
 START_TEST (test_stress_threads)
 {
-#ifdef HAVE_PTHREAD
   pthread_t a, b;
   pthread_create (&a, NULL, sendinfo, (void *) 0xa);
   pthread_create (&b, NULL, sendinfo, (void *) 0xb);
 
   pthread_join (a, NULL);
   pthread_join (b, NULL);
-#else
-  sendinfo ((void *) 0xa);
-  sendinfo ((void *) 0xb);
-#endif
 }
-END_TEST
 
+END_TEST
+#endif /* HAVE_PTHREAD */
+#ifdef _POSIX_VERSION
 START_TEST (test_stress_forks)
 {
   pid_t cpid = fork ();
   if (cpid == 0)
-    {				
+    {
       /* child */
       sendinfo ((void *) 0x1);
+      exit (EXIT_SUCCESS);
     }
   else
     {
+      /* parent */
       sendinfo ((void *) 0x2);
     }
 }
-END_TEST 
 
-int
+END_TEST
+#endif /* _POSIX_VERSION */
+  int
 main (void)
 {
   int nf;
@@ -61,10 +61,15 @@ main (void)
   sr = srunner_create (s);
   suite_add_tcase (s, tc);
 
+#ifdef HAVE_PTHREAD
   tcase_add_loop_test (tc, test_stress_threads, 0, 100);
-  tcase_add_loop_test (tc, test_stress_forks, 0, 100);
+#endif /* HAVE_PTHREAD */
 
-  srunner_run_all (sr, CK_SILENT);
+#ifdef _POSIX_VERSION
+  tcase_add_loop_test (tc, test_stress_forks, 0, 100);
+#endif /* _POSIX_VERSION */
+
+  srunner_run_all (sr, CK_VERBOSE);
   nf = srunner_ntests_failed (sr);
   srunner_free (sr);
   return nf ? EXIT_FAILURE : EXIT_SUCCESS;
