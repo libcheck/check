@@ -30,9 +30,9 @@ START_TEST (test_stress_threads)
   pthread_join (a, NULL);
   pthread_join (b, NULL);
 }
-
 END_TEST
 #endif /* HAVE_PTHREAD */
+
 #ifdef _POSIX_VERSION
 START_TEST (test_stress_forks)
 {
@@ -49,10 +49,10 @@ START_TEST (test_stress_forks)
       sendinfo ((void *) 0x2);
     }
 }
-
 END_TEST
 #endif /* _POSIX_VERSION */
-  int
+
+int
 main (void)
 {
   int nf;
