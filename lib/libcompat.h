@@ -22,6 +22,9 @@
 /* defines size_t */
 #include <sys/types.h>
 
+/* provides assert */
+#include <assert.h>
+
 /* defines FILE */
 #include <stdio.h>
 
