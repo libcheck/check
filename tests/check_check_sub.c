@@ -472,7 +472,9 @@ Suite *make_sub_suite(void)
   TCase *tc_simple;
   TCase *tc_signal;
 #if TIMEOUT_TESTS_ENABLED
+#if HAVE_WORKING_SETENV
   TCase *tc_timeout_env;
+#endif /* HAVE_WORKING_SETENV */
   TCase *tc_timeout;
   TCase *tc_timeout_usr;
 #endif
@@ -484,9 +486,11 @@ Suite *make_sub_suite(void)
   tc_simple = tcase_create("Simple Tests");
   tc_signal = tcase_create("Signal Tests");
 #if TIMEOUT_TESTS_ENABLED
+#if HAVE_WORKING_SETENV
   setenv("CK_DEFAULT_TIMEOUT", "6", 1);
   tc_timeout_env = tcase_create("Environment Timeout Tests");
   unsetenv("CK_DEFAULT_TIMEOUT");
+#endif /* HAVE_WORKING_SETENV */
   tc_timeout = tcase_create("Timeout Tests");
   tc_timeout_usr = tcase_create("User Timeout Tests");
 #endif
@@ -496,7 +500,9 @@ Suite *make_sub_suite(void)
   suite_add_tcase (s, tc_simple);
   suite_add_tcase (s, tc_signal);
 #if TIMEOUT_TESTS_ENABLED
+#if HAVE_WORKING_SETENV
   suite_add_tcase (s, tc_timeout_env);
+#endif /* HAVE_WORKING_SETENV */
   suite_add_tcase (s, tc_timeout);
   suite_add_tcase (s, tc_timeout_usr);
   /* Add a second time to make sure tcase_set_timeout doesn't contaminate it. */
@@ -545,10 +551,12 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_signal, test_mark_point);
 
 #if TIMEOUT_TESTS_ENABLED
+#if HAVE_WORKING_SETENV
   tcase_add_test (tc_timeout_env, test_eternal);
   tcase_add_test (tc_timeout_env, test_sleep2);
   tcase_add_test (tc_timeout_env, test_sleep5);
   tcase_add_test (tc_timeout_env, test_sleep8);
+#endif /* HAVE_WORKING_SETENV */
 
   tcase_add_test (tc_timeout, test_eternal);
   tcase_add_test (tc_timeout, test_sleep2);
