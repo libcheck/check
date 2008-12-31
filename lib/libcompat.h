@@ -25,6 +25,10 @@
 /* defines FILE */
 #include <stdio.h>
 
+/* provides localtime and struct tm */
+#include <sys/time.h>
+#include <time.h>
+
 /* declares fork(), _POSIX_VERSION.  according to Autoconf.info,
    unistd.h defines _POSIX_VERSION if the system is POSIX-compliant,
    so we will use this as a test for all things uniquely provided by
