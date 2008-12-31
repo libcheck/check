@@ -4,7 +4,6 @@
 #if HAVE_SYS_WAIT_H
 #include <sys/wait.h>
 #endif /* HAVE_SYS_WAIT_H */
-#include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
 #include <check.h>

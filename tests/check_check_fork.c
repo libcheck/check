@@ -1,7 +1,6 @@
 #include "../lib/libcompat.h"
 
 #include <sys/types.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include <check.h>
 #include "check_check.h"

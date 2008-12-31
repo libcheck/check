@@ -25,6 +25,19 @@
 /* defines FILE */
 #include <stdio.h>
 
+/* declares fork(), _POSIX_VERSION.  according to Autoconf.info,
+   unistd.h defines _POSIX_VERSION if the system is POSIX-compliant,
+   so we will use this as a test for all things uniquely provided by
+   POSIX like sigaction() and fork() */
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
+/* declares pthread_create and friends */
+#ifdef HAVE_PTHREAD
+#include <pthread.h>
+#endif
+
 /* replacement functions for broken originals */
 #if !HAVE_MALLOC
 void *rpl_malloc (size_t n);

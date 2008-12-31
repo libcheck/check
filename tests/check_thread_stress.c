@@ -6,15 +6,6 @@
 #include <stdio.h>
 #include <check.h>
 
-/* fork() */
-#ifdef HAVE_UNISTD_H
-#include <unistd.h> 
-#endif
-
-#ifdef HAVE_PTHREAD
-#include <pthread.h>
-#endif
-
 Suite *s;
 TCase *tc;
 SRunner *sr;

@@ -25,10 +25,6 @@
 #ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>
 #endif
-/* according to Autoconf.info, unistd.h defines _POSIX_VERSION if the
-   system is POSIX-compliant, so we will use this as a test for all
-   things provided by POSIX like sigaction() and fork(). */
-#include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
