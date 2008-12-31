@@ -72,5 +72,11 @@ main (void)
   srunner_run_all (sr, CK_VERBOSE);
   nf = srunner_ntests_failed (sr);
   srunner_free (sr);
+
+  /* hack to give us XFAIL on non-posix platforms */
+#ifndef _POSIX_VERSION
+  nf++;
+#endif /* !_POSIX_VERSION */
+
   return nf ? EXIT_FAILURE : EXIT_SUCCESS;
 }
