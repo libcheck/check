@@ -8,6 +8,7 @@ Suite *s;
 TCase *tc;
 SRunner *sr;
 
+#if defined (HAVE_PTHREAD) || defined (_POSIX_VERSION)
 static void *
 sendinfo (void *userdata CK_ATTRIBUTE_UNUSED)
 {
@@ -18,6 +19,7 @@ sendinfo (void *userdata CK_ATTRIBUTE_UNUSED)
     }
   return NULL;
 }
+#endif /* HAVE_PTHREAD || _POSIX_VERSION */
 
 #ifdef HAVE_PTHREAD
 START_TEST (test_stress_threads)
