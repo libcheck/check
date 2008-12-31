@@ -12,6 +12,7 @@
 
 
 
+
 START_TEST(test_lno)
 {
   fail("Failure expected"); /* line 18*/
