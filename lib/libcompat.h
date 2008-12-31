@@ -33,6 +33,10 @@
 #include <unistd.h>
 #endif
 
+#ifdef HAVE_SYS_WAIT_H
+#include <sys/wait.h>
+#endif
+
 /* declares pthread_create and friends */
 #ifdef HAVE_PTHREAD
 #include <pthread.h>

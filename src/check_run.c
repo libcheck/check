@@ -21,9 +21,6 @@
 #include "../lib/libcompat.h"
 
 #include <sys/types.h>
-#ifdef HAVE_SYS_WAIT_H
-#include <sys/wait.h>
-#endif
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

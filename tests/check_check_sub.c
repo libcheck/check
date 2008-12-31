@@ -1,13 +1,13 @@
 #include "../lib/libcompat.h"
 
 #include <sys/types.h>
-#if HAVE_SYS_WAIT_H
-#include <sys/wait.h>
-#endif /* HAVE_SYS_WAIT_H */
 #include <stdlib.h>
 #include <signal.h>
 #include <check.h>
 #include "check_check.h"
+
+
+
 
 
 
