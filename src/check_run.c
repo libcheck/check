@@ -60,27 +60,39 @@ static TestResult * tcase_run_checked_setup (SRunner *sr, TCase *tc);
 static void tcase_run_checked_teardown (TCase *tc);
 static void srunner_iterate_tcase_tfuns (SRunner *sr, TCase *tc);
 static void srunner_add_failure (SRunner *sr, TestResult *tf);
+#ifdef _POSIX_VERSION
 static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tf, int i);
+#endif /* _POSIX_VERSION */
 static TestResult *tcase_run_tfun_nofork (SRunner *sr, TCase *tc, TF *tf, int i);
+#ifdef _POSIX_VERSION
 static TestResult *receive_result_info_fork (const char *tcname,
                                              const char *tname,
                                              int iter,
 					     int status, int expected_signal);
+#endif /* _POSIX_VERSION */
 static TestResult *receive_result_info_nofork (const char *tcname,
                                                const char *tname,
                                                int iter);
+#ifdef _POSIX_VERSION
 static void set_fork_info (TestResult *tr, int status, int expected_signal);
+#endif /* _POSIX_VERSION */
 static void set_nofork_info (TestResult *tr);
+#ifdef _POSIX_VERSION
 static char *signal_msg (int sig);
 static char *signal_error_msg (int signal_received, int signal_expected);
-static char *pass_msg (void);
 static char *exit_msg (int exitstatus);
+#endif /* _POSIX_VERSION */
+static char *pass_msg (void);
+#ifdef _POSIX_VERSION
 static int waserror (int status, int expected_signal);
+#endif /* _POSIX_VERSION */
 
 #define MSG_LEN 100
 
+#ifdef _POSIX_VERSION
 static int alarm_received;
 static pid_t group_pid;
+#endif /* _POSIX_VERSION */
 
 #ifdef _POSIX_VERSION
 static void CK_ATTRIBUTE_UNUSED sig_handler(int sig_nr)
@@ -319,6 +331,7 @@ static void srunner_run_tcase (SRunner *sr, TCase *tc)
   }
 }
 
+#ifdef _POSIX_VERSION
 static TestResult *receive_result_info_fork (const char *tcname,
                                              const char *tname,
                                              int iter,
@@ -336,6 +349,7 @@ static TestResult *receive_result_info_fork (const char *tcname,
 
   return tr;
 }
+#endif /* _POSIX_VERSION */
 
 static TestResult *receive_result_info_nofork (const char *tcname,
                                                const char *tname,
@@ -354,9 +368,9 @@ static TestResult *receive_result_info_nofork (const char *tcname,
   return tr;
 }
 
+#ifdef _POSIX_VERSION
 static void set_fork_info (TestResult *tr, int CK_ATTRIBUTE_UNUSED status, int signal_expected)
 {
-#ifdef _POSIX_VERSION
   int was_sig = WIFSIGNALED(status);
   int was_exit = WIFEXITED(status);
   int exit_status = WEXITSTATUS(status);
@@ -402,10 +416,8 @@ static void set_fork_info (TestResult *tr, int CK_ATTRIBUTE_UNUSED status, int s
 	tr->rtype = CK_FAILURE; /* early exit */
     }
   }
-#else /* _POSIX_VERSION */
-  eprintf("This version does not support fork", __FILE__, __LINE__);
-#endif /* _POSIX_VERSION */
 }
+#endif /* _POSIX_VERSION */
 
 static void set_nofork_info (TestResult *tr)
 {
@@ -431,10 +443,9 @@ static TestResult *tcase_run_tfun_nofork (SRunner *sr, TCase *tc, TF *tfun, int 
   return tr;
 }
 
-  
+#ifdef _POSIX_VERSION
 static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun, int i)
 {
-#ifdef _POSIX_VERSION
   pid_t pid_w;
   pid_t pid;
   int status = 0;
@@ -462,10 +473,6 @@ static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun, int i)
   killpg(pid, SIGKILL); /* Kill remaining processes. */
 
   return receive_result_info_fork(tc->name, tfun->name, i, status, tfun->signal);
-#else /* _POSIX_VERSION */
-  eprintf("This version does not support fork", __FILE__, __LINE__);
-  return NULL;
-#endif /* _POSIX_VERSION */
 }
 
 static char *signal_error_msg (int signal_received, int signal_expected)
@@ -506,6 +513,7 @@ static char *exit_msg (int exitval)
             "Early exit with return value %d", exitval);
   return msg;
 }
+#endif /* _POSIX_VERSION */
 
 static char *pass_msg (void)
 {
@@ -552,7 +560,7 @@ pid_t check_fork (void)
 #endif /* _POSIX_VERSION */
 }
 
-void check_waitpid_and_exit (pid_t pid)
+void check_waitpid_and_exit (pid_t pid CK_ATTRIBUTE_UNUSED)
 {
 #ifdef _POSIX_VERSION
   pid_t pid_w;
@@ -572,9 +580,9 @@ void check_waitpid_and_exit (pid_t pid)
 #endif /* _POSIX_VERSION */
 }  
 
+#ifdef _POSIX_VERSION
 static int waserror (int CK_ATTRIBUTE_UNUSED status, int signal_expected)
 {
-#ifdef _POSIX_VERSION
   int was_sig = WIFSIGNALED (status);
   int was_exit = WIFEXITED (status);
   int exit_status = WEXITSTATUS (status);
@@ -582,8 +590,5 @@ static int waserror (int CK_ATTRIBUTE_UNUSED status, int signal_expected)
 
   return ((was_sig && (signal_received != signal_expected)) ||
           (was_exit && exit_status != 0));
-#else /* _POSIX_VERSION */
-  eprintf("This version does not support fork", __FILE__, __LINE__);
-  return 0;
-#endif /* _POSIX_VERSION */
 }
+#endif /* _POSIX_VERSION */
