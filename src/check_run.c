@@ -522,8 +522,14 @@ enum fork_status srunner_fork_status (SRunner *sr)
       return CK_FORK;
     if (strcmp (env,"no") == 0)
       return CK_NOFORK;
-    else
+    else {
+#ifdef _POSIX_VERSION
       return CK_FORK;
+#else /* _POSIX_VERSION */
+      eprintf("This version does not support fork", __FILE__, __LINE__);
+      return CK_NOFORK;
+#endif /* _POSIX_VERSION */
+    }
   } else
     return sr->fstat;
 }
