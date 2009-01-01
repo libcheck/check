@@ -18,6 +18,7 @@ Patches:         Bernhard Reiter (configure issues)
 		 Torok Edwin (strsignal and build fixes)
 		 Roland Illig (varargs and strsignal portability fixes)
 		 Daniel Gollub (pthreads support)
+		 Friedrich Beckmann (mingw and msvc port)
 
 Anybody who has contributed code to Check or Check's build system is
 considered an author.  Send patches to this file to 

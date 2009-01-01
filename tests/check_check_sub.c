@@ -311,45 +311,38 @@ START_TEST(test_null_2)
 }
 END_TEST
 
+#ifdef _POSIX_VERSION
 START_TEST(test_fork1p_pass)
 {
-#ifdef _POSIX_VERSION
   pid_t pid;
 
   if((pid = fork()) < 0) {
     fail("Failed to fork new process");
   } else if (pid > 0) {
-#endif /* _POSIX_VERSION */
     fail_unless(1, NULL);
-#ifdef _POSIX_VERSION
     kill(pid, SIGKILL);
   } else {
     for (;;) {
       sleep(1);
     }
   }
-#endif /* _POSIX_VERSION */
 }
 END_TEST
 
 START_TEST(test_fork1p_fail)
 {
-#ifdef _POSIX_VERSION
   pid_t pid;
   
   if((pid = fork()) < 0) {
     fail("Failed to fork new process");
   } else if (pid > 0) {
-#endif /* _POSIX_VERSION */
     fail("Expected fail");
-#ifdef _POSIX_VERSION
     kill(pid, SIGKILL);
   } else {
     for (;;) {
       sleep(1);
     }
   }
-#endif /* _POSIX_VERSION */
 }
 END_TEST
 
@@ -422,6 +415,7 @@ START_TEST(test_fork2_fail)
   check_waitpid_and_exit(pid);
 }
 END_TEST
+#endif /* _POSIX_VERSION */
 
 START_TEST(test_srunner)
 {
@@ -574,12 +568,14 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_limit, test_null);
   tcase_add_test (tc_limit, test_null_2);
 
+#ifdef _POSIX_VERSION
   tcase_add_test (tc_messaging_and_fork, test_fork1p_pass);
   tcase_add_test (tc_messaging_and_fork, test_fork1p_fail);
   tcase_add_test (tc_messaging_and_fork, test_fork1c_pass);
   tcase_add_test (tc_messaging_and_fork, test_fork1c_fail);
   tcase_add_test (tc_messaging_and_fork, test_fork2_pass);
   tcase_add_test (tc_messaging_and_fork, test_fork2_fail);
+#endif /* _POSIX_VERSION */
 
   return s;
 }
