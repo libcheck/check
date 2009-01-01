@@ -4,4 +4,5 @@
 void
 ck_do_nothing (void)
 {
+  assert (0);
 }
