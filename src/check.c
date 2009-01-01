@@ -211,8 +211,11 @@ void _fail_unless (int result, const char *file,
     vsnprintf(buf, BUFSIZ, msg, ap);
     va_end(ap);
     send_failure_info (buf);
-    if (cur_fork_status() == CK_FORK)
+    if (cur_fork_status() == CK_FORK) {
+#ifdef _POSIX_VERSION
       exit(1);
+#endif /* _POSIX_VERSION */
+    }
   }
 }
 

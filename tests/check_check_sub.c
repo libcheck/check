@@ -18,14 +18,14 @@ START_TEST(test_lno)
   fail("Failure expected"); /* line 18*/
 }
 END_TEST
-
 START_TEST(test_mark_lno)
 {
-  mark_point(); /* line 24*/
-  exit(EXIT_FAILURE); /* should fail at line 24*/
+  mark_point(); /* line 23*/
+#ifdef _POSIX_VERSION
+  exit(EXIT_FAILURE); /* should fail at line 23*/
+#endif /* _POSIX_VERSION */
 }
 END_TEST
-
 START_TEST(test_pass)
 {
   fail_unless(1 == 1, "This test should pass");

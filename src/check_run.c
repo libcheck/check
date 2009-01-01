@@ -449,7 +449,9 @@ static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun, int i)
     tcase_run_checked_setup(sr, tc);
     tfun->fn(i);
     tcase_run_checked_teardown(tc);
+#ifdef _POSIX_VERSION
     exit(EXIT_SUCCESS);
+#endif /* _POSIX_VERSION */
   } else {
     group_pid = pid;
   }
@@ -558,10 +560,15 @@ void check_waitpid_and_exit (pid_t pid)
       pid_w = waitpid(pid, &status, 0);
 #endif /* _POSIX_VERSION */
     } while (pid_w == -1);
-    if (waserror(status, 0))
+    if (waserror(status, 0)) {
+#ifdef _POSIX_VERSION
       exit(EXIT_FAILURE);
+#endif /* _POSIX_VERSION */
+    }
   }
+#ifdef _POSIX_VERSION
   exit(EXIT_SUCCESS);
+#endif /* _POSIX_VERSION */
 }  
 
 static int waserror (int CK_ATTRIBUTE_UNUSED status, int signal_expected)

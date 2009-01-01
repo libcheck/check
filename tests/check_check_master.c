@@ -29,7 +29,7 @@ static char signal_8_str[SIG_STR_LEN];
 /* FIXME: all these line numbers are kind of hard to maintain */
 static master_test_t master_tests[] = {
   { "Simple Tests",  18, CK_FAILURE, "Failure expected" },
-  { "Simple Tests",  24, CK_ERROR,   "Early exit with return value 1" },
+  { "Simple Tests",  23, CK_ERROR,   "Early exit with return value 1" },
   { "Simple Tests",  -1, CK_PASS,    "Passed" },
   { "Simple Tests",  -1, CK_FAILURE, "This test should fail" },
   { "Simple Tests",  -1, CK_PASS,    "Passed" },
