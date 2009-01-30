@@ -59,7 +59,8 @@ static void srunner_iterate_tcase_tfuns (SRunner *sr, TCase *tc);
 static void srunner_add_failure (SRunner *sr, TestResult *tf);
 static int srunner_run_unchecked_setup (SRunner *sr, TCase *tc);
 static TestResult * tcase_run_checked_setup (SRunner *sr, TCase *tc);
-static void srunner_run_unchecked_teardown (SRunner *sr, TCase *tc);
+static void srunner_run_teardown (List *l);
+static void srunner_run_unchecked_teardown (TCase *tc);
 static void tcase_run_checked_teardown (TCase *tc);
 static void srunner_run_tcase (SRunner *sr, TCase *tc);
 static TestResult *tcase_run_tfun_nofork (SRunner *sr, TCase *tc, TF *tf, int i);
@@ -255,43 +256,32 @@ static TestResult * tcase_run_checked_setup (SRunner *sr, TCase *tc)
   return tr;
 }
 
-static void srunner_run_unchecked_teardown (SRunner *sr, TCase *tc)
+static void srunner_run_teardown (List *l)
 {
-  List *l;
   Fixture *f;
   
-  set_fork_status(CK_NOFORK);
-  l = tc->unch_tflst;
-  
   for (list_front(l); !list_at_end(l); list_advance(l)) {
-    
     f = list_val(l);
     send_ctx_info(CK_CTX_TEARDOWN);
     f->fun ();
   }
-  set_fork_status(srunner_fork_status(sr));
+}
+
+static void srunner_run_unchecked_teardown (TCase *tc)
+{
+  srunner_run_teardown(tc->unch_tflst);
 }
 
 static void tcase_run_checked_teardown (TCase *tc)
 {
-  List *l;
-  Fixture *f;
-
-  l = tc->ch_tflst;
-  
-  send_ctx_info(CK_CTX_TEARDOWN);
-
-  for (list_front(l); !list_at_end(l); list_advance(l)) {
-    f = list_val(l);
-    f->fun();
-  }
+  srunner_run_teardown(tc->ch_tflst);
 }
 
 static void srunner_run_tcase (SRunner *sr, TCase *tc)
 {
   if (srunner_run_unchecked_setup(sr,tc)) {
     srunner_iterate_tcase_tfuns(sr,tc);
-    srunner_run_unchecked_teardown(sr, tc);
+    srunner_run_unchecked_teardown(tc);
   }
 }
 
