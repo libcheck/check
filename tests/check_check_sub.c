@@ -6,25 +6,25 @@
 #include <check.h>
 #include "check_check.h"
 
-
-
-
-
-
+#define _STR(Y) #Y
 
 
 START_TEST(test_lno)
 {
-  fail("Failure expected"); /* line 18*/
+  fail("Failure expected");
+  #define LINENO_lno _STR(__LINE__)
 }
 END_TEST
+
 START_TEST(test_mark_lno)
 {
-  mark_point(); /* line 23*/
+  mark_point();
+  #define LINENO_mark_lno _STR(__LINE__)
 #ifdef _POSIX_VERSION
-  exit(EXIT_FAILURE); /* should fail at line 23*/
+  exit(EXIT_FAILURE); /* should fail with mark_point above as line */
 #endif /* _POSIX_VERSION */
 }
+
 END_TEST
 START_TEST(test_pass)
 {
@@ -32,6 +32,7 @@ START_TEST(test_pass)
   fail_unless(9999, "This test should pass");
 }
 END_TEST
+
 /* FIXME: this should really be called test_fail_unless */
 START_TEST(test_fail)
 {
@@ -101,6 +102,7 @@ START_TEST(test_fail_vararg_msg_3)
   fail("%d == %d", x, y);
 }
 END_TEST
+
 #if defined(__GNUC__)
 START_TEST(test_fail_empty)
 { /* plain fail() doesn't compile with xlc in C mode because of `, ## __VA_ARGS__' problem */
@@ -109,22 +111,26 @@ START_TEST(test_fail_empty)
 }
 END_TEST
 #endif /* __GNUC__ */
+
 START_TEST(test_ck_abort)
 {
-  ck_abort(); /* line 114 */
+  ck_abort();
+  #define LINENO_ck_abort _STR(__LINE__)
 }
 END_TEST
 
 START_TEST(test_ck_abort_msg)
 {
-  ck_abort_msg("Failure expected"); /* line 120 */
+  ck_abort_msg("Failure expected");
+  #define LINENO_ck_abort_msg _STR(__LINE__)
 }
 END_TEST
 
 /* FIXME: perhaps passing NULL to ck_abort_msg should be an error. */
 START_TEST(test_ck_abort_msg_null)
 {
-  ck_abort_msg(NULL); /* line 127 */
+  ck_abort_msg(NULL);
+  #define LINENO_ck_abort_msg_null _STR(__LINE__)
 }
 END_TEST
 
@@ -136,30 +142,17 @@ START_TEST(test_ck_assert)
   ck_assert(x == y);
   y++;
   ck_assert(x != y);
-  ck_assert(x == y); /* line 139 */
+  ck_assert(x == y);
+  #define LINENO_ck_assert _STR(__LINE__)
 }
 END_TEST
 
 START_TEST(test_ck_assert_null)
 {
-  ck_assert(0); /* line 145 */
+  ck_assert(0);
+  #define LINENO_ck_assert_null _STR(__LINE__)
 }
 END_TEST
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 START_TEST(test_ck_assert_int_eq)
 {
@@ -167,7 +160,8 @@ START_TEST(test_ck_assert_int_eq)
   int y = 3;
   ck_assert_int_eq(x, y);
   y++;
-  ck_assert_int_eq(x, y); /* line 170 */
+  ck_assert_int_eq(x, y);
+  #define LINENO_ck_assert_int_eq _STR(__LINE__)
 }
 END_TEST
 
@@ -177,7 +171,8 @@ START_TEST(test_ck_assert_int_ne)
   int y = 2;
   ck_assert_int_ne(x, y);
   y++;
-  ck_assert_int_ne(x, y); /* line 180 */
+  ck_assert_int_ne(x, y);
+  #define LINENO_ck_assert_int_ne _STR(__LINE__)
 }
 END_TEST
 
@@ -185,7 +180,8 @@ START_TEST(test_ck_assert_str_eq)
 {
   const char *s = "test2";
   ck_assert_str_eq("test2", s);
-  ck_assert_str_eq("test1", s); /* line 188 */
+  ck_assert_str_eq("test1", s);
+  #define LINENO_ck_assert_str_eq _STR(__LINE__)
 }
 END_TEST
 
@@ -195,37 +191,13 @@ START_TEST(test_ck_assert_str_ne)
   const char *t = "test1";
   ck_assert_str_ne(t, s);
   t = "test2";
-  ck_assert_str_ne(t, s); /* line 198 */
+  ck_assert_str_ne(t, s);
+  #define LINENO_ck_assert_str_ne _STR(__LINE__)
 }
 END_TEST
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-START_TEST(test_segv) /* line 228 */
+START_TEST(test_segv)
+  #define LINENO_segv _STR(__LINE__)
 {
   raise (SIGSEGV);
 }
@@ -253,7 +225,8 @@ START_TEST(test_mark_point)
 END_TEST
 
 #if TIMEOUT_TESTS_ENABLED
-START_TEST(test_eternal) /* line 256 */
+START_TEST(test_eternal)
+  #define LINENO_eternal _STR(__LINE__)
 {
   for (;;)
     ;
@@ -266,13 +239,15 @@ START_TEST(test_sleep2)
 }
 END_TEST
 
-START_TEST(test_sleep5) /* line 269 */
+START_TEST(test_sleep5)
+  #define LINENO_sleep5 _STR(__LINE__)
 {
   sleep(5);
 }
 END_TEST
 
-START_TEST(test_sleep8) /* line 275 */
+START_TEST(test_sleep8)
+  #define LINENO_sleep8 _STR(__LINE__)
 {
   sleep(8);
 }
@@ -459,6 +434,87 @@ Suite *make_sub2_suite(void)
   return s;
 }
 
+void init_master_tests_lineno(void) {
+  const char * lineno[] = {
+/* Simple Tests */
+    LINENO_lno,
+    LINENO_mark_lno,
+    "-1",
+    "-1",
+    "-1",
+    "-1",
+    "-1",
+    "-1",
+    "-1",
+    "-1",
+    "-1",
+    "-1",
+    "-1",
+    "-1",
+    LINENO_ck_abort,
+    LINENO_ck_abort_msg,
+    LINENO_ck_abort_msg_null,
+    LINENO_ck_assert,
+    LINENO_ck_assert_null,
+    LINENO_ck_assert_int_eq,
+    LINENO_ck_assert_int_ne,
+    LINENO_ck_assert_str_eq,
+    LINENO_ck_assert_str_ne,
+
+/* Signal Tests */
+    "-1",
+    "-1",
+    LINENO_segv,
+    "-1",
+    "-1",
+    "-1",
+    "-1",
+
+#if TIMEOUT_TESTS_ENABLED
+/* Timeout Tests */
+    LINENO_eternal,
+    "-1",
+    "-1",
+    LINENO_sleep8,
+    LINENO_eternal,
+    "-1",
+    LINENO_sleep5,
+    LINENO_sleep8,
+    LINENO_eternal,
+    "-1",
+    "-1",
+    LINENO_sleep8,
+    LINENO_eternal,
+    "-1",
+    LINENO_sleep5,
+    LINENO_sleep8,
+#endif
+
+/* Limit Tests */
+    "-1",
+    "-1",
+    "-1",
+
+/* Msg and fork Tests */
+    "-1",
+    "-1",
+    "-1",
+    "-1",
+    "-1",
+    "-1",
+
+/* Core */
+    "-1",
+    "-1"
+  };
+  int s = sizeof lineno /sizeof lineno[0];
+  int i;
+
+  for (i = 0; i < s; i++) {
+    master_tests_lineno[i] = atoi(lineno[i]) - 1;
+  }
+}
+
 Suite *make_sub_suite(void)
 {
   Suite *s;
@@ -562,6 +618,10 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_timeout_usr, test_sleep2);
   tcase_add_test (tc_timeout_usr, test_sleep5);
   tcase_add_test (tc_timeout_usr, test_sleep8);
+#if 0
+  tcase_set_timeout (tc_timeout_kill, 2);
+  tcase_add_test (tc_timeout_kill, test_sleep);
+#endif
 #endif
 
   tcase_add_test (tc_limit, test_early_exit);
