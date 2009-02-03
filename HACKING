@@ -35,6 +35,7 @@ Start by making sure everything is OK.
 5.  make check
 6.  ulimit -c 0
 7.  make distcheck
+8.  make -C doc check.html
 
 When the above works:
 
@@ -52,25 +53,26 @@ When the above works:
 12. ulimit -c 0
 13. make check
 14. make distcheck
-15. rsync -av . USERNAME@shell.sourceforge.net:/home/groups/c/ch/check/htdocs
-16. sftp USERNAME@frs.sourceforge.net
+15. make -C doc check.html
+16. rsync -av . USERNAME@shell.sourceforge.net:/home/groups/c/ch/check/htdocs
+17. sftp USERNAME@frs.sourceforge.net
 > cd uploads
 > put check-X.Y.Z.tar.gz
 > exit
-17. Locally copy NEWS to NEWS-release, cut out old release news.
-18. Copy SVNChangeLog to SVNChangeLog-release, cut out old release log.
-19. Go to: http://sourceforge.net/project/admin/newrelease.php?package_id=20116&group_id=28255
-20. Enter X.Y.Z as new release name, hit "Create this release"
-21. Upload NEWS-release, SVNChangeLog-release
-22. Tick "Preserve my pre-formatted text", hit "Submit/Refresh"
-23. Tick "check-X.Y.Z.tar.gz" in list, hit "Add Files and/or Refresh View"
-24. Choose "Platform-Independent" for Processor
-25. Choose "Source .gz" for File Type
-26. Hit "Update/Refresh"
-27. In a new tab or window go to: http://sourceforge.net/project/showfiles.php?group_id=28255
-28. Check project notes, verify NEWS-release and SVNChangeLog-release uploads look OK.
-29. Back in the old tab, tick "I'm sure" and hit "Send Notice".
-30. Send the following email to check-devel at lists dot sourceforge dot net:
+18. Locally copy NEWS to NEWS-release, cut out old release news.
+19. Copy SVNChangeLog to SVNChangeLog-release, cut out old release log.
+20. Go to: http://sourceforge.net/project/admin/newrelease.php?package_id=20116&group_id=28255
+21. Enter X.Y.Z as new release name, hit "Create this release"
+22. Upload NEWS-release, SVNChangeLog-release
+23. Tick "Preserve my pre-formatted text", hit "Submit/Refresh"
+24. Tick "check-X.Y.Z.tar.gz" in list, hit "Add Files and/or Refresh View"
+25. Choose "Platform-Independent" for Processor
+26. Choose "Source .gz" for File Type
+27. Hit "Update/Refresh"
+28. In a new tab or window go to: http://sourceforge.net/project/showfiles.php?group_id=28255
+29. Check project notes, verify NEWS-release and SVNChangeLog-release uploads look OK.
+30. Back in the old tab, tick "I'm sure" and hit "Send Notice".
+31. Send the following email to check-devel at lists dot sourceforge dot net:
 Subject: check-X.Y.Z released
 Hi,
 
@@ -83,8 +85,9 @@ Thanks,
 `whoami`
 
 <paste contents of NEWS-release here>
-31. cd ~/check/trunk
-32. svn up
-33. svn merge -r(rev. in step #4):(rev. in step #9) ../tags/check-X.Y.Z .
-34. svn resolve any conflicts, check everything looks fine.
-35. svn ci
+32. Send the same message to check-announce and check-users
+33. cd ~/check/trunk
+34. svn up
+35. svn merge -r(rev. in step #4):(rev. in step #9) ../tags/check-X.Y.Z .
+36. svn resolve any conflicts, check everything looks fine.
+37. svn ci
