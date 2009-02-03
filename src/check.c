@@ -124,7 +124,7 @@ void suite_add_tcase (Suite *s, TCase *tc)
   list_add_end (s->tclst, tc);
 }
 
-void _tcase_add_test (TCase *tc, TFun fn, const char *name, int _signal, int start, int end)
+void _tcase_add_test (TCase *tc, TFun fn, const char *name, int _signal, int allowed_exit_value, int start, int end)
 {
   TF * tf;
   if (tc == NULL || fn == NULL || name == NULL)
@@ -134,6 +134,7 @@ void _tcase_add_test (TCase *tc, TFun fn, const char *name, int _signal, int sta
   tf->loop_start = start;
   tf->loop_end = end;
   tf->signal = _signal; /* 0 means no signal expected */
+  tf->allowed_exit_value = allowed_exit_value; /* 0 is default successful exit */
   tf->name = name;
   list_add_end (tc->tflst, tf);
 }

@@ -47,6 +47,7 @@ check_check_SOURCES = \
 	check_check_fork.c	\
 	check_check_fixture.c	\
 	check_check_pack.c	\
+	check_check_exit.c	\
 	check_check_main.c
 check_check_LDADD = $(top_builddir)/src/libcheckinternal.la $(top_builddir)/lib/libcompat.la
 

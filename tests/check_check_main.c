@@ -24,6 +24,7 @@ int main (void)
   srunner_add_suite(sr, make_fork_suite());
   srunner_add_suite(sr, make_fixture_suite());
   srunner_add_suite(sr, make_pack_suite());
+  srunner_add_suite(sr, make_exit_suite());
   
   printf ("Ran %d tests in subordinate suite\n", sub_ntests);
   srunner_run_all (sr, CK_VERBOSE);
