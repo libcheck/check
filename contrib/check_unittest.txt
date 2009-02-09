@@ -1,0 +1,13 @@
+An XSLT stylesheet to transform Check its XML output to HTML
+
+Bart van Kuik - bkuik
+2006-03-16
+
+This is an XSLT stylesheet to transform Check its XML
+output to HTML. It's very basic and could probably be a
+lot shorter. The HTML that is output isn't very
+standards compliant either, but it works.
+
+You can generate such a report on the commandline with a quick 
+ 
+$ xsltproc check_unittest.xslt check_output.xml > report.html
