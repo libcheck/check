@@ -250,7 +250,7 @@ static void upack_fail (char **buf, FailMsg *fmsg)
 static void check_type (int type, const char *file, int line)
 {
   if (type < 0 || type >= CK_MSG_LAST)
-    eprintf ("Bad message type arg", file, line);
+    eprintf ("Bad message type arg %d", file, line, type);
 }
 
 #ifdef HAVE_PTHREAD
