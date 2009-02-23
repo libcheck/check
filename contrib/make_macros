@@ -1,0 +1,302 @@
+#!/usr/bin/perl
+
+# Purpose: 
+#   Generates Assert/Fail macros for use with check.
+#
+# Usage:
+#   make_macros macros.in > macros.h
+# 
+# macros.in: one or more lines containing...
+#   Assert
+#   Assert_(|not)(Success|Error|Failure|NULL|True|False|Same)
+#   Fail_(if|unless)(Success|Error|Failure|NULL|True|False|Same)
+#   Assert_(|not)(0[0-7]+|0x[0-9A-Fa-f]+|0b[01]+|[1-9][0-9]+)
+#   Fail_(if|unless)(0[0-7]+|0x[0-9A-Fa-f]+|0b[01]+|[1-9][0-9]+)
+#   Assert_(|not)(LT|LE|EQ|GE|GT|NE)
+#   Fail_(if|unless)(LT|LE|EQ|GE|GT|NE)
+#   Assert_(|not){Type}(LT|LE|EQ|GE|GT|NE)
+#   Fail_(if|unless){Type}(LT|LE|EQ|GE|GT|NE)
+#   {Type}_compare
+#
+# Example:
+#   echo -e 'Assert_notNULL\nAssertStringEQ' | make_macros > macros.h
+#
+#   #include "macros.h"
+#          ...
+#   char *foo;
+#   Assert_notNULL( foo = strdup( "foo" ) , NULL );
+#   Assert_StringEQ( foo, "foo", NULL );
+#
+# author: unknown... if you know, please correct or email check-devel
+
+use warnings;
+use strict;
+
+use Switch 'Perl6';
+use Text::Wrap;
+
+our %need;
+our %include;
+our %macros;
+
+sub make_macro {
+    my ($name, $fh) = @_;
+    my ($condition) = $name;
+    
+    my ($failIf, $failUnless, $assertNot, $assert);
+    for ($condition) {
+        $failIf     = 1, next if s/^ Fail_ if     ([A-Z0-9]?) /$1/x;
+        $failUnless = 1, next if s/^ Fail_ unless ([A-Z0-9]?) /$1/x;
+        $assertNot  = 1, next if s/^ Assert_ not  ([A-Z0-9] ) /$1/x;
+        $assert     = 1, next if s/^ Assert_      (.        ) /$1/x;
+        $assert     = 1, next if s/^ Assert                  $//x;
+        print $fh "#error don't know how to make ${name}\n\n";
+        return;
+    }
+    
+    my ($invert) = 0;
+    foreach ($failIf, $assertNot) {
+    	$invert = !$invert if $_;
+    }
+    
+    my $type = "";
+    if ($condition =~ s/(LT|LE|EQ|GE|GT|NE)$//) {
+        $type = $condition;
+        $condition = $1;
+    }
+    $type = "Number" unless length $type;
+    
+    my (@args) = qw( expr );
+    my ($expr) = qw( (expr) );
+    my ($msg);
+    my ($doc);
+    my (%argdocs) = (
+        expr => "The expression to test."
+    );
+    
+    my ($not)  = sub { $invert ? "not " :     "" };
+    my ($Not)  = sub { $invert ?     "" : "not " };
+    my ($EQ)   = sub { $invert ? "!=" : "==" };
+    my ($NE)   = sub { $invert ? "==" : "!=" };
+
+    given ($condition) {
+        when "" {
+            unless ( $invert ) {
+                $doc = "Asserts that \@p expr is true.";
+                $msg = "Assertion '\"#expr\"' failed.";
+            } else {
+                $doc = "Asserts that \@p expr is false.";
+                $msg = "Negative assertion '\"#expr\"' failed";
+            }
+        }
+        when [qw(Error error Failure failure Success success)] {
+            $invert = !$invert when [qw(Success success)];
+            unless ( $invert ) {
+                $doc = "Asserts that \@p expr failed.";
+                $msg = "'\"#expr\"' did not fail";
+            } else {
+                $doc = "Asserts that \@p expr did not fail.";
+                $msg = "'\"#expr\"' failed";
+            }
+            $invert = !$invert;
+        }
+        when [qw(True true False false)] {
+            $invert = !$invert when "false";
+            $doc = "Asserts that \@p expr is ".( $invert ? "false" : "true" ).".";
+            $msg = "'\"#expr\"' was " . ( $invert ? "true" : "false" );
+        }
+        when "NULL" {
+            $msg = "'\"#expr\"' was ".&$Not."NULL";
+            $doc = "Asserts that \@p expr is ".&$not."NULL";
+            $expr = "(expr) ".&$EQ." NULL";
+            $invert = 0;
+            $include{"stddef.h"} = 1;
+        }
+        when m/^(?:[1-9]\d*|0x[0-9A-Fa-f]+|0b[01]+|0[0-7]+)$/x {
+            $msg = "'\"#expr\"' was ".&$Not."equal to $condition";
+            $doc = "Asserts that \@p expr is ".&$not."equal to $condition.";
+            $condition = oct($condition) if $condition =~ /^0/;
+            $expr = "(expr) ".&$EQ." $condition";
+            $invert = 0;
+        }
+        when [qw(GT GE LT LE EQ NE Equal equal)] {
+            my $op;
+            given ( $condition ) {
+              $op = [ "less than"                 , "<"  ] when "LT";
+              $op = [ "less than that or equal to", "<=" ] when "LE";
+              $op = [ "equal to"                  , "==" ] when ["EQ", "Equal", "equal", "NE"];
+              $op = [ "greater than or equal to"  , ">=" ] when "GE";
+              $op = [ "greater than"              , ">"  ] when "GT";
+            };
+            $invert = !$invert when "NE";
+            @args = ( $type."1", $type."2" );
+            %argdocs = (
+                $type."1" => "The expression to test.",
+                $type."2" => "The test value."
+            );
+            $msg = "'\"#$args[0]\"' is ".&$Not.$op->[0]." '\"#$args[1]\"'";
+            $doc = "Asserts that \@p $args[0] is ".&$not.$op->[0]." \@p $args[1].";
+            $expr = "(${type}_compare( $args[0], $args[1] ) ".$op->[1]." 0)";
+            $need{$type."_compare"} = 1;
+        }
+        when [qw(Same same)] {
+            @args = qw( arg1 arg2 );
+            %argdocs = (
+                arg1 => "The expression to test.",
+                arg2 => "The expected value."
+            );
+            $msg = "'\"#arg1\"' and '\"#arg2\"' are ".&$Not."the same";
+            $msg = "Asserts that \@p arg1 and \@p arg2 are ".&$not."the same";
+            $expr = "(arg1) ".&$EQ." (arg2)";
+            $invert = 0;
+        }
+        default {
+            print $fh "#error don't know how to make ${name}\n\n";
+            return;
+        }
+    }
+
+    if ($invert) {
+        $expr = "!$expr";
+    }
+
+    if ($doc) {
+        print $fh "/**\n";
+        print $fh wrap(" * "," * ","$doc\n");
+        my ($maxlength) = 3;
+        foreach (keys %argdocs) {
+            $maxlength = length $_ if length $_ > $maxlength;
+        }
+        my ($indent) = " " x ($maxlength + 1 + 7);
+        foreach (keys %argdocs) {
+            print $fh wrap(" * ",
+                           " * $indent",
+                          "\@param $_ ".(" " x ($maxlength - length $_)).
+                          "$argdocs{$_}\n");
+        }
+        print $fh wrap(" * ",
+                       " * $indent",
+                       "\@param ... ".(" " x ($maxlength - 3)).
+                       "An optional message to indicate the assertion failed; ".
+                       "Omit for a default message.\n");
+
+        print $fh " */\n";
+    }
+    print $fh "#define ${name}(",(join ", ", @args, '...'),") \\\n";
+    print $fh "    _fail_unless( $expr, __FILE__, __LINE__, \\\n";
+    print $fh "                  \"$msg\", ## __VA_ARGS__, NULL)\n";
+    print $fh "\n";
+    
+    $macros{$name} = 1;
+}
+
+sub make_compare {
+    my ($name, $fh) = @_;
+    my ($type) = $name;
+    $type =~ s/_compare$//;
+
+    my ($expr);
+    my ($warning);
+    my ($ord);
+    my (@name) = ( "", "" );
+
+    given ($type) {
+        when "Number" {
+            $expr = "( ${type}1 - ${type}2 )";
+            $ord = "is";
+        }
+        when "String" {
+            $expr = "strcmp( ${type}1, ${type}2 )";
+            $include{"string.h"} = 1;
+            $ord = "is";
+        }
+        default {
+            $expr = "memcmp( ${type}1, ${type}2, sizeof( ${type} ) )";
+            $include{"string.h"} = 1;
+            $ord = "are";
+            @name = ( "'s bytes ", "'s" );
+            $warning = "This compares \@p ${type}1 and \@p ${type}2 "
+                     . "byte-for-byte, this is probably not what you want "
+                     . "for all but the simplest of structures.";
+        }
+    }
+
+    print $fh "/**\n";
+    print $fh " * Compares \@p ${type}1 and \@p ${type}2.\n";
+    print $fh wrap(" * "," * ",$warning . "\n") if $warning;
+    print $fh " * \@param ${type}1 The first ${type}.\n";
+    print $fh " * \@param ${type}2 The second ${type}.\n";
+    my (%val_name) = (
+        ">0" => "greater than",
+        "0 " => "equal to",
+        "<0" => "less than",
+    );
+    while (my ($val, $name) = each %val_name) {
+        print $fh " * \@retval $val If \@p ${type}1 $name[0]$ord $name \@p ${type}2 $name[1].\n";
+    }
+    print $fh " */\n";
+    print $fh "#define ${type}_compare(${type}1, ${type}2) \\\n";
+    print $fh "    $expr\n";
+    print $fh "\n";
+    $macros{$name} = 1;
+}
+
+my $INCLUDES = '';
+open my $includes, ">", \$INCLUDES or die;
+
+my $MACROS = '';
+open my $macros, ">", \$MACROS or die;
+
+my $MACROS2 = '';
+open my $macros2, ">", \$MACROS2 or die;
+
+while (<>) {
+    chomp;
+    make_macro( $_, $macros2 ) if /^(?:Assert|Fail)/;
+    make_compare( $_, $macros ) if /_compare$/;
+}
+
+foreach my $need (keys %need) {
+    given ($need) {
+        when /^(?:String|Number)_compare$/ {
+            make_compare( $need, $macros );
+            delete $need{$need};
+        }
+    }
+}
+
+foreach my $macro (keys %macros) {
+    delete $need{$macro};
+}
+
+if (scalar %need) {
+    print $includes "/* needed functions/macros:\n";
+    foreach my $need (keys %need) {
+        if ($need =~ /^(.*)_compare$/) {
+            print $includes " * int $need(${1}1,${1}2);\n";
+        } else {
+            print $includes " * $need\n";
+        }
+    }
+    print $includes " */\n\n";
+}
+
+foreach my $include (keys %include) {
+    print $includes "#include <$include>\n";
+}
+
+print <<'END';
+#ifndef _CHECK_MACROS_H
+#define _CHECK_MACROS_H
+
+END
+print $INCLUDES;
+print "\n";
+print $MACROS;
+print $MACROS2;
+print <<'END';
+
+#endif /* _CHECK_MACROS_H */
+END
+
+ 	  	 
