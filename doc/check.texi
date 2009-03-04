@@ -13,7 +13,7 @@ This manual is for Check
 (version @value{VERSION}, @value{UPDATED}),
 a unit testing framework for C.
 
-Copyright @copyright{} 2001--2006 Arien Malec, Chris Pickett, Fredrik
+Copyright @copyright{} 2001--2009 Arien Malec, Chris Pickett, Fredrik
 Hugosson, and Robert Lemmen.
 
 @quotation
@@ -93,7 +93,7 @@ Advanced Features
 * No Fork Mode::                
 * Test Fixtures::               
 * Multiple Suites in one SRunner::  
-* Testing Signal Handling::     
+* Testing Signal Handling and Exit Values::     
 * Looping Tests::               
 * Test Timeouts::               
 * Determining Test Coverage::   
@@ -489,10 +489,9 @@ Here are the changes to @file{check_money.c} for our first unit test:
 @findex fail_unless()
 A unit test should just chug along and complete.  If it exits early,
 or is signaled, it will fail with a generic error message.  (Note: it
-is conceivable that you expect an early exit, or a signal.  There is
+is conceivable that you expect an early exit, or a signal and there is
 functionality in Check to specifically assert that we should expect a
-signal, but early exits are currently not handled -- if that is valuable,
-it may be worth while adding to Check.)  If we want to get some information
+signal or an early exit.)  If we want to get some information
 about what failed, we need to use the @code{fail_unless()} function.  The
 function (actually a macro) takes a first Boolean argument, and an error
 message to send if the condition is not true.
@@ -779,7 +778,7 @@ easier for the developer to write, run, and analyse tests.
 * No Fork Mode::                
 * Test Fixtures::               
 * Multiple Suites in one SRunner::  
-* Testing Signal Handling::     
+* Testing Signal Handling and Exit Values::     
 * Looping Tests::               
 * Test Timeouts::               
 * Determining Test Coverage::   
@@ -967,7 +966,7 @@ or unchecked fixtures, the unit tests for the test case, and the
 @code{teardown()} function for the fixture will not be run.  A fixture
 error will be created and reported to the @code{SRunner}.
 
-@node Multiple Suites in one SRunner, Testing Signal Handling, Test Fixtures, Advanced Features
+@node Multiple Suites in one SRunner, Testing Signal Handling and Exit Values, Test Fixtures, Advanced Features
 @section Multiple Suites in one SRunner
 
 In a large program, it will be convenient to create multiple suites,
@@ -1011,8 +1010,8 @@ srunner_add_suite (sr, make_pack_suite ());
 @end verbatim
 @end example
 
-@node Testing Signal Handling, Looping Tests, Multiple Suites in one SRunner, Advanced Features
-@section Testing Signal Handling
+@node Testing Signal Handling and Exit Values, Looping Tests, Multiple Suites in one SRunner, Advanced Features
+@section Testing Signal Handling and Exit Values
 
 @findex tcase_add_test_raise_signal()
 
@@ -1025,7 +1024,18 @@ is received this is logged as an error.
 
 The signal handling functionality only works in CK_FORK mode.
 
-@node Looping Tests, Test Timeouts, Testing Signal Handling, Advanced Features
+@findex tcase_add_exit_test()
+
+To enable testing of expected exits, there is a function
+@code{tcase_add_exit_test()} which is used instead of @code{tcase_add_test()}.
+This function takes an additional expected exit value argument,
+specifying a value that the test is expected to exit with.  If the test
+exits with any other value this is logged as a failure.  If the test exits
+early this is logged as an error.
+
+The exit handling functionality only works in CK_FORK mode.
+
+@node Looping Tests, Test Timeouts, Testing Signal Handling and Exit Values, Advanced Features
 @section Looping Tests
 
 Looping tests are tests that are called with a new context for each
