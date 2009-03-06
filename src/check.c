@@ -89,7 +89,15 @@ TCase *tcase_create (const char *name)
       timeout = tmp;
     }
   }
-  
+
+  env = getenv("CK_TIMEOUT_MULTIPLIER");
+  if (env != NULL) {
+    int tmp = atoi(env);
+    if (tmp >= 0) {
+      timeout = timeout * tmp;
+    }
+  }  
+
   tc->timeout = timeout;
   tc->tflst = check_list_create();
   tc->unch_sflst = check_list_create();
@@ -180,8 +188,16 @@ static void tcase_add_fixture (TCase *tc, SFun setup, SFun teardown,
 
 void tcase_set_timeout (TCase *tc, int timeout)
 {
-  if (timeout >= 0)
+  if (timeout >= 0) {
+    char *env = getenv("CK_TIMEOUT_MULTIPLIER");
+    if (env != NULL) {
+      int tmp = atoi(env);
+      if (tmp >= 0) {
+        timeout = timeout * tmp;
+      }
+    }
     tc->timeout = timeout;
+  }
 }
 
 void tcase_fn_start (const char *fname CK_ATTRIBUTE_UNUSED, const char *file, int line)

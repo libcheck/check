@@ -59,10 +59,12 @@ static master_test_t master_tests[] = {
   { "Signal Tests", CK_ERROR,   signal_8_str },
 
 #if TIMEOUT_TESTS_ENABLED
+#if HAVE_WORKING_SETENV
   { "Environment Timeout Tests", CK_ERROR,  "Test timeout expired" },
   { "Environment Timeout Tests", CK_PASS,   "Passed" },
   { "Environment Timeout Tests", CK_PASS,   "Passed" },
   { "Environment Timeout Tests", CK_ERROR,  "Test timeout expired" },
+#endif
   { "Timeout Tests", CK_ERROR,  "Test timeout expired" },
   { "Timeout Tests", CK_PASS,   "Passed" },
   { "Timeout Tests", CK_ERROR,  "Test timeout expired" },
@@ -76,6 +78,20 @@ static master_test_t master_tests[] = {
   { "Timeout Tests", CK_PASS,   "Passed" },
   { "Timeout Tests", CK_ERROR,  "Test timeout expired" },
   { "Timeout Tests", CK_ERROR,  "Test timeout expired" },
+#if HAVE_WORKING_SETENV
+  { "Environment Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
+  { "Environment Timeout Scaling Tests", CK_PASS,   "Passed" },
+  { "Environment Timeout Scaling Tests", CK_PASS,   "Passed" },
+  { "Environment Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
+  { "Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
+  { "Timeout Scaling Tests", CK_PASS,   "Passed" },
+  { "Timeout Scaling Tests", CK_PASS,   "Passed" },
+  { "Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
+  { "User Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
+  { "User Timeout Scaling Tests", CK_PASS,   "Passed" },
+  { "User Timeout Scaling Tests", CK_PASS,   "Passed" },
+  { "User Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
+#endif
 #endif
 
   { "Limit Tests", CK_ERROR,   "Early exit with return value 1" },
