@@ -1093,6 +1093,7 @@ forking.  This means that only the first error will be shown.
 
 @findex tcase_set_timeout()
 @vindex CK_DEFAULT_TIMEOUT
+@vindex CK_TIMEOUT_MULTIPLIER
 To be certain that a test won't hang indefinitely, all tests are run
 with a timeout, the default being 4 seconds.  If the test is not
 finished within that time, it is killed and logged as an error.
@@ -1101,8 +1102,11 @@ The timeout for a specific test case, which may contain multiple unit
 tests, can be changed with the @code{tcase_set_timeout()} function.
 The default timeout used for all test cases can be changed with the
 environment variable @code{CK_DEFAULT_TIMEOUT}, but this will not
-override an explicitly set timeout.  All timeout arguments are in
-seconds and a timeout of 0 seconds turns off the timeout
+override an explicitly set timeout.  Another way to change the timeout
+length is to use the @code{CK_TIMEOUT_MULTIPLIER} environment variable,
+which multiplies all timeouts, including those set with
+@code{tcase_set_timeout()}, with the supplied integer value. All timeout
+arguments are in seconds and a timeout of 0 seconds turns off the timeout
 functionality.
 
 Test timeouts are only available in CK_FORK mode.
