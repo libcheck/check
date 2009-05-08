@@ -67,6 +67,6 @@ ex_log_output_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcom
 ex_xml_output_SOURCES = ex_xml_output.c
 ex_xml_output_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
 
-AM_CPPFLAGS = -I$(top_srcdir)/src
+AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src
 
 CLEANFILES = *~ *.log *.xml test_logfile
