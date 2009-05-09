@@ -39,6 +39,7 @@ entitled ``@acronym{GNU} Free Documentation License.''
 @author Chris Pickett
 @author Fredrik Hugosson
 @author Robert Lemmen
+@author Robert Collins
 
 @c The following two commands start the copyright page.
 @page
@@ -98,6 +99,7 @@ Advanced Features
 * Test Timeouts::               
 * Determining Test Coverage::   
 * Test Logging::                
+* Subunit Support::
 
 Test Fixtures
 
@@ -689,6 +691,11 @@ Gets the print mode from the environment variable @code{CK_VERBOSITY},
 which can have the values "silent", "minimal", "normal", "verbose". If
 the variable is not found or the value is not recognized, the print
 mode is set to @code{CK_NORMAL}.
+
+@vindex CK_SUBUNIT
+@item CK_SUBUNIT
+Prints running progress through the @uref{https://launchpad.net/subunit/,
+subunit} test runner protocol. See 'subunit support' under the Advanced Features section for more information.
 @end table
 
 With the @code{CK_NORMAL} flag specified in our @code{main()}, let's
@@ -783,6 +790,7 @@ easier for the developer to write, run, and analyse tests.
 * Test Timeouts::               
 * Determining Test Coverage::   
 * Test Logging::                
+* Subunit Support::
 @end menu
 
 @node Running Multiple Cases, No Fork Mode, Advanced Features, Advanced Features
@@ -1179,7 +1187,7 @@ how determining test coverage generally works, and how it can help
 you.  For more information or help with other compilers, please refer
 to the relevant manuals.
 
-@node Test Logging,  , Determining Test Coverage, Advanced Features
+@node Test Logging, Subunit Support, Determining Test Coverage, Advanced Features
 @section Test Logging
 
 @findex srunner_set_log()
@@ -1281,6 +1289,50 @@ of the same log output as before but in XML:
 </testsuites>
 @end verbatim
 @end example
+
+@node Subunit Support, , Test Logging, Advanced Features
+@section Subunit Support
+
+Check supports running test suites with subunit output. This can be useful to
+combine test results from multiple languages, or to perform programmatic
+analysis on the results of multiple check test suites or otherise handle test
+results in a programmatic manner. Using subunit with check is very straight
+forward. There are two steps:
+1) In your check test suite driver pass 'CK_SUBUNIT' as the output mode
+for your srunner.
+@example
+@verbatim
+SRunner *sr;
+sr = srunner_create (make_s1_suite ());
+srunner_add_suite (sr, make_s2_suite ());
+srunner_run_all (sr, CK_SUBUNIT);
+@end verbatim
+@end example
+2) Setup your main language test runner to run your check based test
+executable. For instance using python:
+@example
+@verbatim
+
+import subunit
+
+class ShellTests(subunit.ExecTestCase):
+    """Run some tests from the C codebase."""
+
+    def test_group_one(self):
+        """./foo/check_driver"""
+
+    def test_group_two(self):
+        """./foo/other_driver"""
+@end verbatim
+@end example
+
+In this example, running the test suite ShellTests in python (using any test
+runner - unittest.py, tribunal, trial, nose or others) will run
+./foo/check_driver and ./foo/other_driver and report on their result.
+
+Subunit is hosted on launchpad - the @uref{https://launchpad.net/subunit/,
+subunit} project there contains bug tracker, future plans, and source code
+control details.
 
 @node Conclusion and References, AM_PATH_CHECK, Advanced Features, Top
 @chapter Conclusion and References

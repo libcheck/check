@@ -20,6 +20,7 @@ Patches:         Bernhard Reiter (configure issues)
 		 Daniel Gollub (pthreads support)
 		 Friedrich Beckmann (mingw and msvc port)
 		 Roy Merkel (specified test exit value)
+ 		 Robert Collins (subunit support)
 
 Anybody who has contributed code to Check or Check's build system is
 considered an author.  Send patches to this file to 

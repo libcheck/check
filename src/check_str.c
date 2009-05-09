@@ -47,6 +47,20 @@ char *tr_str (TestResult *tr)
   return rstr;
 }
 
+char *tr_short_str (TestResult *tr) 
+{
+  const char *exact_msg;
+  char *rstr;
+  
+  exact_msg = (tr->rtype == CK_ERROR) ? "(after this point) ": "";
+  
+  rstr = ck_strdup_printf ("%s:%d: %s%s",
+                           tr->file, tr->line,
+                           exact_msg, tr->msg);
+
+  return rstr;
+}
+
 char *sr_stat_str (SRunner *sr)
 {
   char *str;

@@ -74,6 +74,26 @@ esac], [enable_timeout_tests=true ])
 
 AM_CONDITIONAL(NO_TIMEOUT_TESTS, test x"$enable_timeout_tests" = "xfalse")
 
+AC_ARG_ENABLE(subunit,
+AC_HELP_STRING([--enable-subunit],
+	       [enable support for the subunit test protocol @<:@default=autodetect@:>@]),
+[case "${enableval}" in
+  yes)
+    enable_subunit=true
+    echo "Enabled subunit support"
+    ;;
+  no)
+    enable_subunit=false
+    echoo "Disabled subunit support"
+    ;;
+  autodetect)
+    echo "Subunit support will enable automatically."
+    ;;
+  *)   AC_MSG_ERROR(bad value ${enableval} for --enable-subunit) ;;
+esac], 
+[echo "Subunit support will enable automatically."
+ enable_subunit=autodetect])
+
 # Checks for programs.
 AC_PROG_AWK
 AC_PROG_CC
@@ -102,6 +122,42 @@ AC_CHECK_PROGS(GENHTML, genhtml, false)
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS([fcntl.h stddef.h stdint.h stdlib.h string.h sys/time.h unistd.h])
+
+if test xfalse != x"$enable_subunit"; then
+AC_CHECK_LIB(subunit, subunit_test_start, ,
+[case "$enable_subunit" in
+ autodetect)
+   enable_subunit=false
+   ;;
+ true)
+   AC_MSG_ERROR([libsubunit is required for subunit protocol support. The homepage for subunit is https://launchpad.net/subunit/])
+   ;;
+ esac
+])
+fi
+if test xfalse != x"$enable_subunit"; then
+AC_CHECK_HEADER([subunit/child.h], ,
+[case "$enable_subunit" in
+ autodetect)
+   enable_subunit=false
+   ;;
+ true)
+   AC_MSG_ERROR([The header subunit/child.h could not be succesfully included and is required for subunit protocol support. The homepage for subunit is https://launchpad.net/subunit/])
+   ;;
+ esac
+])
+fi
+if test xfalse = x"$enable_subunit"; then
+ENABLE_SUBUNIT="0"
+else
+ENABLE_SUBUNIT="1"
+fi
+AC_SUBST(ENABLE_SUBUNIT)
+AC_DEFINE_UNQUOTED(ENABLE_SUBUNIT, $ENABLE_SUBUNIT, [Subunit protocol result output])
+
+AM_CONDITIONAL(SUBUNIT, test x"$enable_subunit" != "xfalse")
+
+
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -133,6 +189,7 @@ AC_CONFIG_FILES([check.pc
 		 lib/Makefile
                  src/check.h
                  src/Makefile
-                 tests/Makefile])
+                 tests/Makefile
+		 tests/test_vars])
 
 AC_OUTPUT

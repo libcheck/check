@@ -20,7 +20,7 @@ noinst_PROGRAMS = \
 	ex_xml_output	\
 	ex_log_output
 
-EXTRA_DIST = test_output.sh test_log_output.sh test_xml_output.sh
+EXTRA_DIST = test_output.sh test_log_output.sh test_vars.in test_xml_output.sh
 
 if NO_TIMEOUT_TESTS
 check_check_CFLAGS = -DTIMEOUT_TESTS_ENABLED=0
@@ -37,17 +37,18 @@ check_check_export_SOURCES = \
 check_check_export_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
 
 check_check_SOURCES = \
-	check_check.h		\
-	check_list.c		\
-	check_check_sub.c	\
-	check_check_master.c	\
-	check_check_msg.c	\
-	check_check_log.c	\
-	check_check_limit.c	\
-	check_check_fork.c	\
-	check_check_fixture.c	\
-	check_check_pack.c	\
-	check_check_exit.c	\
+	check_check.h			\
+	check_list.c			\
+	check_check_sub.c		\
+	check_check_master.c		\
+	check_check_msg.c		\
+	check_check_log.c		\
+	check_check_log_internal.c	\
+	check_check_limit.c		\
+	check_check_fork.c		\
+	check_check_fixture.c		\
+	check_check_pack.c		\
+	check_check_exit.c		\
 	check_check_main.c
 check_check_LDADD = $(top_builddir)/src/libcheckinternal.la $(top_builddir)/lib/libcompat.la
 

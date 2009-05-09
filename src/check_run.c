@@ -159,6 +159,7 @@ static void srunner_iterate_tcase_tfuns (SRunner *sr, TCase *tc)
 
     for (i = tfun->loop_start; i < tfun->loop_end; i++)
     {
+      log_test_start (sr, tc, tfun);
       switch (srunner_fork_status(sr)) {
       case CK_FORK:
 #ifdef _POSIX_VERSION

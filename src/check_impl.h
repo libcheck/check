@@ -84,6 +84,7 @@ enum cl_event {
   CLSTART_S,
   CLEND_SR,
   CLEND_S,
+  CLSTART_T, /* A test case is about to run */
   CLEND_T
 };
 
