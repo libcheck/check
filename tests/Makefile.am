@@ -3,13 +3,17 @@
 TESTS = \
 	check_check_export	\
 	check_check		\
-	check_thread_stress     \
 	test_output.sh		\
 	test_xml_output.sh	\
 	test_log_output.sh
 
-XFAIL_TESTS = \
-	check_thread_stress
+# check_thread_stress is kind of slow.
+# add this line back to TESTS to enable check_thread_stress
+# 	check_thread_stress     \
+#
+# uncomment if check_thread_stress enabled
+# XFAIL_TESTS = \
+# 	check_thread_stress
 
 noinst_PROGRAMS = \
 	check_check_export \
