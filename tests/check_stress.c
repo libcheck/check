@@ -1,5 +1,8 @@
 #include "../lib/libcompat.h"
 
+/* note: this test appears pretty useless, so we aren't including it
+   in the TESTS variable of Makefile.am */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <check.h>
