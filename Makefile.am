@@ -52,7 +52,6 @@ prereleasecheck: doc/check.html
 
 RELEASE_VERSION ?= unset
 SF_USERNAME ?= unset
-SVN_REVNO = `svn st -u | grep "Status against revision:" | awk '{ print $4 }'`
 releasevars:
 	@if [ "unset" = "${RELEASE_VERSION}" ]; then \
 	    echo "set RELEASE_VERSION to something like 0.9.6 to prepare a release."; \
@@ -63,12 +62,15 @@ releasevars:
 	    false; \
 	fi
 
-preparerelease: releasevars prereleasecheck
+.svnrelease:
+	svn st -u | grep "Status against revision:" | awk '{ print $4 }' > $@
+
+preparerelease: releasevars .svnrelease prereleasecheck
 	@echo checking we have can connect properly to do release tasks before tagging:
 	sftp -b /dev/null ${SF_USERNAME}@web.sourceforge.net
 	sftp -b /dev/null ${SF_USERNAME}@frs.sourceforge.net
-	@echo tagging release
-	svn cp -r${SVN_REVNO} https://svn.sourceforge.net/svnroot/check/trunk https://svn.sourceforge.net/svnroot/check/tags/check-${RELEASE_VERSION}
+	@echo tagging release from `cat .svnrelease`
+	svn cp -r`cat .svnrelease` https://svn.sourceforge.net/svnroot/check/trunk https://svn.sourceforge.net/svnroot/check/tags/check-${RELEASE_VERSION}
 	svn co https://svn.sourceforge.net/svnroot/check/tags/check-${RELEASE_VERSION} check-${RELEASE_VERSION}
 	@echo "You need to:"
 	@echo "Update NEWS with info from `svn log | less`."
@@ -79,7 +81,7 @@ preparerelease: releasevars prereleasecheck
 	@echo "aborting will leave the partially prepared release in" `pwd`
 	cd check-${RELEASE_VERSION} && ${SHELL} 
 	$(MAKE) -C check-${RELEASE_VERSION} dorelease
-	-svn merge -r${SVN_REVNO}:`svn st -u check-${RELEASE_VERSION} | grep "Status against revision:" | awk '{ print $4 }'` ../tags/check-${RELEASE_VERSION} .
+	-svn merge -r`cat .svnrelease`:`svn st -u check-${RELEASE_VERSION} | grep "Status against revision:" | awk '{ print $4 }'` ../tags/check-${RELEASE_VERSION} .
 	@echo "Please resolve any conflicts"
 	${SHELL}
 	svn ci -m "Merge back release ${RELEASE_VERSION}"
@@ -112,4 +114,4 @@ dorelease: releasevars doc/check.html prereleasecheck
 	${SHELL}
 	
 
-.PHONY: releasevars prereleasecheck preparerelease dorelease
+.PHONY: releasevars prereleasecheck preparerelease dorelease .svnrelease
