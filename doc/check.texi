@@ -354,7 +354,7 @@ Note that this is not the place to explain how Autotools works.  If
 you need help understanding what's going on beyond the explanations
 here, the best place to start is probably Alexandre Duret-Lutz's
 excellent
-@uref{http://www-src.lip6.fr/homepages/Alexandre.Duret-Lutz/autotools.html,
+@uref{http://www.lrde.epita.fr/~adl/autotools.html,
 Autotools tutorial}.
 
 The examples in this section are part of the Check distribution; you
