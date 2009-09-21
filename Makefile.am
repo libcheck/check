@@ -63,7 +63,7 @@ releasevars:
 	fi
 
 .svnrelease:
-	svn st -u | grep "Status against revision:" | awk '{ print $4 }' > $@
+	svn st -u | grep "Status against revision:" | awk '{ print $$4 }' > $@
 
 preparerelease: releasevars .svnrelease prereleasecheck
 	@echo checking we have can connect properly to do release tasks before tagging:

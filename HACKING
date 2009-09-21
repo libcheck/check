@@ -28,7 +28,7 @@ Release Process
 
 Start by making sure everything is OK.
 
-Start in a configured trunk.
+Start in a configured in-place build of trunk.
 
 1.  Decide on a X.Y.Z revision suitable for release.
 2.  make SF_USERNAME=username RELEASE_VERSION=X.Y.Z preparerelease
