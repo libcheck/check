@@ -64,10 +64,11 @@ releasevars:
 	fi
 
 preparerelease: releasevars prereleasecheck
-	-# check we have can connect properly to do release tasks before tagging:
+	@echo checking we have can connect properly to do release tasks before tagging:
 	sftp -b /dev/null ${SF_USERNAME}@web.sourceforge.net
 	sftp -b /dev/null ${SF_USERNAME}@frs.sourceforge.net
-	svn cp -rXXX https://svn.sourceforge.net/svnroot/check/trunk https://svn.sourceforge.net/svnroot/check/tags/check-${RELEASE_VERSION}
+	@echo tagging release
+	svn cp -r${SVN_REVNO} https://svn.sourceforge.net/svnroot/check/trunk https://svn.sourceforge.net/svnroot/check/tags/check-${RELEASE_VERSION}
 	svn co https://svn.sourceforge.net/svnroot/check/tags/check-${RELEASE_VERSION} check-${RELEASE_VERSION}
 	@echo "You need to:"
 	@echo "Update NEWS with info from `svn log | less`."
@@ -82,6 +83,8 @@ preparerelease: releasevars prereleasecheck
 	@echo "Please resolve any conflicts"
 	${SHELL}
 	svn ci -m "Merge back release ${RELEASE_VERSION}"
+	@echo "Cleaning up workdir."
+	rm -rf check-${RELEASE_VERSION}
 
 
 dorelease: releasevars doc/check.html prereleasecheck
