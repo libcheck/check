@@ -4,7 +4,7 @@ In development:
   protocol. See the check manual for more information. (Contributed by Robert
   Collins).
 
-Mon, Dec 29, 2009: Released Check 0.9.6
+Mon, Dec 29, 2008: Released Check 0.9.6
   based on r453 (2008-12-01 22:14:15).
 
 * 'make distcheck' does not work out of the box. Disable the two

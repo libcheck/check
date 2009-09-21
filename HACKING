@@ -28,66 +28,25 @@ Release Process
 
 Start by making sure everything is OK.
 
-1.  svn co https://svn.sourceforge.net/svnroot/check
-2.  cd check/trunk (or tagged version)
-3.  autoreconf --install
-4.  ./configure
-5.  make check
-6.  ulimit -c 0
-7.  make distcheck
-8.  make -C doc check.html
+Start in a configured trunk.
 
-When the above works:
-
-1.  Decide on revision suitable for release.
-2.  svn cp -rXXX https://svn.sourceforge.net/svnroot/check/trunk https://svn.sourceforge.net/svnroot/check/tags/check-X.Y.Z
-3.  cd ~/check
-4.  svn up
-5.  cd check-X.Y.Z
-6.  Update NEWS with info from `svn log | less`.
-7.  Update TODO and make sure version numbers match appropriately.
-8.  Update configure.ac with new version numbers.
-9.  svn ci
-10.  autoreconf --install
-11. ./configure
-12. ulimit -c 0
-13. make check
-14. make distcheck
-15. make -C doc check.html
-16. rsync -av . USERNAME@shell.sourceforge.net:/home/groups/c/ch/check/htdocs
-17. sftp USERNAME@frs.sourceforge.net
-> cd uploads
-> put check-X.Y.Z.tar.gz
-> exit
-18. Locally copy NEWS to NEWS-release, cut out old release news.
-19. Copy SVNChangeLog to SVNChangeLog-release, cut out old release log.
-20. Go to: http://sourceforge.net/project/admin/newrelease.php?package_id=20116&group_id=28255
-21. Enter X.Y.Z as new release name, hit "Create this release"
-22. Upload NEWS-release, SVNChangeLog-release
-23. Tick "Preserve my pre-formatted text", hit "Submit/Refresh"
-24. Tick "check-X.Y.Z.tar.gz" in list, hit "Add Files and/or Refresh View"
-25. Choose "Platform-Independent" for Processor
-26. Choose "Source .gz" for File Type
-27. Hit "Update/Refresh"
-28. In a new tab or window go to: http://sourceforge.net/project/showfiles.php?group_id=28255
-29. Check project notes, verify NEWS-release and SVNChangeLog-release uploads look OK.
-30. Back in the old tab, tick "I'm sure" and hit "Send Notice".
-31. Send the following email to check-devel at lists dot sourceforge dot net:
+1.  Decide on a X.Y.Z revision suitable for release.
+2.  make SF_USERNAME=username RELEASE_VERSION=X.Y.Z preparerelease
+    This will tag trunk as https://svn.sourceforge.net/svnroot/check/tags/check-X.Y.Z
+3.  Follow the prompts
+4.  Use the following template to announce the release:
+=====
 Subject: check-X.Y.Z released
 Hi,
 
 <some sentence about the release, e.g. "This is a bug fix release."> 
 Please test it out and report any problems you might have!
 
-http://prdownloads.sourceforge.net/check/check-0.9.5.tar.gz?download
+http://prdownloads.sourceforge.net/check/check-X.Y.Z.tar.gz?download
 
 Thanks,
 `whoami`
 
 <paste contents of NEWS-release here>
-32. Send the same message to check-announce and check-users
-33. cd ~/check/trunk
-34. svn up
-35. svn merge -r(rev. in step #4):(rev. in step #9) ../tags/check-X.Y.Z .
-36. svn resolve any conflicts, check everything looks fine.
-37. svn ci
+=====
+5.  Follow the remaining prompts.
