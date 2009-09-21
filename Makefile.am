@@ -73,13 +73,13 @@ preparerelease: releasevars .svnrelease prereleasecheck
 	svn cp -r`cat .svnrelease` https://svn.sourceforge.net/svnroot/check/trunk https://svn.sourceforge.net/svnroot/check/tags/check-${RELEASE_VERSION}
 	svn co https://svn.sourceforge.net/svnroot/check/tags/check-${RELEASE_VERSION} check-${RELEASE_VERSION}
 	@echo "You need to:"
-	@echo "Update NEWS with info from `svn log | less`."
+	@echo "Update NEWS with info from svn log .. | less."
 	@echo "Update TODO and make sure version numbers match appropriately."
 	@echo "Update configure.ac with new version numbers."
 	@echo "Then svn commit these changes."
 	@echo "CTRL-D when finished or 'exit 1' to abort."
 	@echo "aborting will leave the partially prepared release in" `pwd`
-	cd check-${RELEASE_VERSION} && ${SHELL} 
+	cd check-${RELEASE_VERSION} && ${SHELL} && autoreconf -i && ./configure
 	$(MAKE) -C check-${RELEASE_VERSION} dorelease
 	-svn merge -r`cat .svnrelease`:`svn st -u check-${RELEASE_VERSION} | grep "Status against revision:" | awk '{ print $4 }'` ../tags/check-${RELEASE_VERSION} .
 	@echo "Please resolve any conflicts"
@@ -93,13 +93,15 @@ dorelease: releasevars doc/check.html prereleasecheck
 	cp NEWS NEWS-${RELEASE_VERSION}.txt
 	@echo "You need to:"
 	@echo "cut out old release news from NEWS-${RELEASE_VERSION}.txt."
-	@echo "Add anything important from SVNChangeLog to NEWS-release."
+	@echo "Add anything important from SVNChangeLog to NEWS-${RELEASE_VERSION}.txt."
 	@echo "CTRL-D to complete, or exit 1 to abort."
 	${SHELL}
 	@echo uploading...
 	rsync -e ssh NEWS-${RELEASE_VERSION}.txt ${SF_USERNAME},check@frs.sourceforge.net:/home/frs/project/c/ch/check/check/${RELEASE_VERSION}/
 	rsync -e ssh check-${RELEASE_VERSION}.tar.gz ${SF_USERNAME},check@frs.sourceforge.net:/home/frs/project/c/ch/check/check/${RELEASE_VERSION}/
-	rsync -av doc/. ${SF_USERNAME},check@web.sourceforge.net:/home/groups/c/ch/check/htdocs
+	rsync -rlvC doc/. ${SF_USERNAME},check@web.sourceforge.net:/home/groups/c/ch/check/htdocs
+	@echo
+	@echo Uploaded...
 	@echo "visit https://sourceforge.net/project/admin/explorer.php?group_id=28255"
 	@echo "Mark the NEWS file in check/${RELEASE_VERSION} as being a release note."
 	@echo "And the tar.gz file as being 'all platforms', using the NEWS file for release notes."
@@ -107,9 +109,9 @@ dorelease: releasevars doc/check.html prereleasecheck
 	@echo "Check it looks ok. It may take 15 minutes to show up."
 	@echo Finally, mail check-devel ,announce and users at lists dot sourceforge dot net
 	@echo an email (template is in HACKING) about this announcement.
-	@echo NEWS-release can be found at `pwd`/NEWS-release
+	@echo NEWS-release can be found at `pwd`/NEWS-${RELEASE_VERSION}.txt
 	@echo Note that with the tarballs, docs amd NEWS up, the release is done :P
-	@echo so you'll have to manuall roll back if you abort.
+	@echo "so you'll have to manually roll back if you abort."
 	@echo "CTRL-D to complete, or exit 1 to abort."
 	${SHELL}
 	

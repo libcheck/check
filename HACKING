@@ -33,14 +33,14 @@ Start in a configured in-place build of trunk.
 1.  Decide on a X.Y.Z revision suitable for release.
 2.  make SF_USERNAME=username RELEASE_VERSION=X.Y.Z preparerelease
     This will tag trunk as https://svn.sourceforge.net/svnroot/check/tags/check-X.Y.Z
-3.  Follow the prompts
+3.  Follow the prompts. If anything goes wrong see Makefile.am and complete it by hand.
 4.  Use the following template to announce the release:
 =====
 Subject: check-X.Y.Z released
 Hi,
 
 <some sentence about the release, e.g. "This is a bug fix release."> 
-Please test it out and report any problems you might have!
+Please test it out and report any problems you might have.
 
 http://prdownloads.sourceforge.net/check/check-X.Y.Z.tar.gz?download
 
