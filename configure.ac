@@ -115,6 +115,13 @@ AX_CFLAGS_ADD([-Wno-variadic-macros])
 AC_CHECK_PROGS(GCOV, gcov, false)
 AC_CHECK_PROGS(LCOV, lcov, false)
 AC_CHECK_PROGS(GENHTML, genhtml, false)
+AC_CHECK_PROGS(TEX, tex, false)
+if test -n "$TEX"; then
+    # Make it [somewhat] clear to maintainers that tex is missing. Not an error
+    # though because 'make install' (which users need) does not build the docs
+    # anyway.
+    AC_MSG_WARN(tex not installed: cannot rebuild HTML documentation.)
+fi
 
 # Checks for libraries.
 
