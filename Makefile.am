@@ -46,7 +46,7 @@ doc/check.html:
 # perhaps we should check for out of date (svn st -u) and modified files.
 prereleasecheck: doc/check.html
 	-$(MAKE) distclean
-	./autoreconf -i && ./configure \
+	autoreconf -i && ./configure \
 	    && ulimit -c 0 && \
 	    $(MAKE) distcheck
 
