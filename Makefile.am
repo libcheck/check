@@ -81,8 +81,8 @@ preparerelease: releasevars .svnrelease prereleasecheck
 	@echo "aborting will leave the partially prepared release in" `pwd`
 	cd check-${RELEASE_VERSION} && ${SHELL} && autoreconf -i && ./configure
 	$(MAKE) -C check-${RELEASE_VERSION} dorelease
-	-svn merge -r`cat .svnrelease`:`svn st -u check-${RELEASE_VERSION} | grep "Status against revision:" | awk '{ print $4 }'` ../tags/check-${RELEASE_VERSION} .
-	@echo "Please resolve any conflicts"
+	-svn merge -r`cat .svnrelease`:`svn st -u check-${RELEASE_VERSION} | grep "Status against revision:" | awk '{ print $4 }'` check-${RELEASE_VERSION} .
+	@echo "Please resolve any conflicts. Be sure to also restore the 'In Development:' line to NEWS."
 	${SHELL}
 	svn ci -m "Merge back release ${RELEASE_VERSION}"
 	@echo "Cleaning up workdir."

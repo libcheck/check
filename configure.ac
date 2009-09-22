@@ -3,7 +3,7 @@
 
 # Prelude.
 AC_PREREQ([2.59])
-AC_INIT([Check], [0.9.6], [check-devel at lists dot sourceforge dot net])
+AC_INIT([Check], [0.9.7], [check-devel at lists dot sourceforge dot net])
 
 # unique source file --- primitive safety check 
 AC_CONFIG_SRCDIR([src/check.c])

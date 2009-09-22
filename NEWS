@@ -1,8 +1,30 @@
 In development:
 
+Tue, Sep 22, 2009: Released Check 0.9.7
+  based on r552 (2009-09-22 09:26).
+
 * Added CK_SUBUNIT support for outputting test information in the subunit wire
   protocol. See the check manual for more information. (Contributed by Robert
   Collins).
+
+* Added code and tests for timeout scaling via environment variable.
+  Feature requested in tracker item #1549835 on sourceforge.
+
+* Added documentation for testing exit values with tcase_add_exit_test().
+
+* Add make_macros perl script from somebody (who?)
+
+* add type to check_type error message
+
+* add contrib dir with xslt transform
+
+* function exist testing support (patch #1726574).
+
+* introduce HAVE_WORKING_SETENV to protect tc_timeout_env usage
+
+* support running tests with multiple pthreads (Daniel Gollub, closes 1391527)
+
+* partial MSYS/MinGW support
 
 Mon, Dec 29, 2008: Released Check 0.9.6
   based on r453 (2008-12-01 22:14:15).
