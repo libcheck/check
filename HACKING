@@ -26,7 +26,7 @@ better mechanism is needed.
 Release Process
 ===============
 
-Start by making sure everything is OK.
+You need 'release tech' access within the project to do this.
 
 Start in a configured in-place build of trunk.
 
