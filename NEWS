@@ -1,4 +1,7 @@
-In development:
+In development.
+
+Tue, Sep 22, 2009: Released Check 0.9.8
+  based on r559 (2009-09-23 21:00).
 
 * Fix CHECK_MICRO_VERSION, left at 6 in 0.9.7 by mistake.
 

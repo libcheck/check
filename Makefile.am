@@ -106,7 +106,7 @@ dorelease: releasevars doc/check.html prereleasecheck
 	@echo "visit https://sourceforge.net/projects/check/files/"
 	@echo "Check it looks ok. It may take 15 minutes to show up."
 	@echo Finally, mail check-devel ,announce and users at lists dot sourceforge dot net
-	@echo an email (template is in HACKING) about this announcement.
+	@echo 'an email (template is in HACKING) about this announcement.'
 	@echo NEWS-release can be found at `pwd`/NEWS-${RELEASE_VERSION}.txt
 	@echo Note that with the tarballs, docs amd NEWS up, the release is done :P
 	@echo "so you'll have to manually roll back if you abort."
