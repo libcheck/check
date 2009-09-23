@@ -93,7 +93,6 @@ dorelease: releasevars doc/check.html prereleasecheck
 	cp NEWS NEWS-${RELEASE_VERSION}.txt
 	@echo "You need to:"
 	@echo "cut out old release news from NEWS-${RELEASE_VERSION}.txt."
-	@echo "Add anything important from SVNChangeLog to NEWS-${RELEASE_VERSION}.txt."
 	@echo "CTRL-D to complete, or exit 1 to abort."
 	${SHELL}
 	@echo uploading...
