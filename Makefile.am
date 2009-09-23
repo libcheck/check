@@ -73,7 +73,6 @@ preparerelease: releasevars .svnrelease prereleasecheck
 	svn cp -r`cat .svnrelease` https://svn.sourceforge.net/svnroot/check/trunk https://svn.sourceforge.net/svnroot/check/tags/check-${RELEASE_VERSION}
 	svn co https://svn.sourceforge.net/svnroot/check/tags/check-${RELEASE_VERSION} check-${RELEASE_VERSION}
 	@echo "You need to:"
-	@echo "Update NEWS with info from svn log .. | less."
 	@echo "Update TODO and make sure version numbers match appropriately."
 	@echo "Update configure.ac with new version numbers."
 	@echo "Then svn commit these changes."
