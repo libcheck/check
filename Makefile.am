@@ -70,15 +70,15 @@ preparerelease: releasevars .svnrelease prereleasecheck
 	sftp -b /dev/null ${SF_USERNAME}@web.sourceforge.net
 	sftp -b /dev/null ${SF_USERNAME}@frs.sourceforge.net
 	@echo tagging release from `cat .svnrelease`
-	svn cp -m "Release check-${RELEASE_VERSION}" -r`cat .svnrelease` https://svn.sourceforge.net/svnroot/check/trunk https://svn.sourceforge.net/svnroot/check/tags/check-${RELEASE_VERSION}
+	svn cp -m "Tagging for check-${RELEASE_VERSION}" -r`cat .svnrelease` https://svn.sourceforge.net/svnroot/check/trunk https://svn.sourceforge.net/svnroot/check/tags/check-${RELEASE_VERSION}
 	svn co https://svn.sourceforge.net/svnroot/check/tags/check-${RELEASE_VERSION} check-${RELEASE_VERSION}
 	@echo "You need to:"
-	@echo "Update TODO and make sure version numbers match appropriately."
+	@echo "Update the version number in NEWS."
+	@echo "Update TODO to mark off any completed items."
 	@echo "Update configure.ac with new version numbers."
-	@echo "Then svn commit these changes."
 	@echo "CTRL-D when finished or 'exit 1' to abort."
 	@echo "aborting will leave the partially prepared release in" `pwd`
-	cd check-${RELEASE_VERSION} && ${SHELL} && autoreconf -i && ./configure
+	cd check-${RELEASE_VERSION} && ${SHELL} && svn ci -m "Release check-${RELEASE_VERSION}" && autoreconf -i && ./configure
 	$(MAKE) -C check-${RELEASE_VERSION} dorelease
 	-svn merge -r`cat .svnrelease`:`svn st -u check-${RELEASE_VERSION} | grep "Status against revision:" | awk '{ print $4 }'` check-${RELEASE_VERSION} .
 	@echo "Please resolve any conflicts. Be sure to also restore the 'In Development:' line to NEWS."
