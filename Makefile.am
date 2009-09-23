@@ -70,7 +70,7 @@ preparerelease: releasevars .svnrelease prereleasecheck
 	sftp -b /dev/null ${SF_USERNAME}@web.sourceforge.net
 	sftp -b /dev/null ${SF_USERNAME}@frs.sourceforge.net
 	@echo tagging release from `cat .svnrelease`
-	svn cp -r`cat .svnrelease` https://svn.sourceforge.net/svnroot/check/trunk https://svn.sourceforge.net/svnroot/check/tags/check-${RELEASE_VERSION}
+	svn cp -m "Release check-${RELEASE_VERSION}" -r`cat .svnrelease` https://svn.sourceforge.net/svnroot/check/trunk https://svn.sourceforge.net/svnroot/check/tags/check-${RELEASE_VERSION}
 	svn co https://svn.sourceforge.net/svnroot/check/tags/check-${RELEASE_VERSION} check-${RELEASE_VERSION}
 	@echo "You need to:"
 	@echo "Update TODO and make sure version numbers match appropriately."
