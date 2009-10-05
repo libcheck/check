@@ -97,7 +97,7 @@ dorelease: releasevars doc/check.html prereleasecheck
 	@echo uploading...
 	rsync -e ssh NEWS-${RELEASE_VERSION}.txt ${SF_USERNAME},check@frs.sourceforge.net:/home/frs/project/c/ch/check/check/${RELEASE_VERSION}/
 	rsync -e ssh check-${RELEASE_VERSION}.tar.gz ${SF_USERNAME},check@frs.sourceforge.net:/home/frs/project/c/ch/check/check/${RELEASE_VERSION}/
-	rsync -rlvC doc/. ${SF_USERNAME},check@web.sourceforge.net:/home/groups/c/ch/check/htdocs
+	rsync -rlvC . ${SF_USERNAME},check@web.sourceforge.net:htdocs
 	@echo
 	@echo Uploaded...
 	@echo "visit https://sourceforge.net/project/admin/explorer.php?group_id=28255"
