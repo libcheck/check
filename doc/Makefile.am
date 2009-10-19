@@ -98,7 +98,7 @@ example_tests_docs = example/tests/Makefile.am \
 
 ## what to clean
 
-CLEANFILES = *~ *.diff
+CLEANFILES = check.info *~ *.diff
 
 ## what to distribute
 
