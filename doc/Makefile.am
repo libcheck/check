@@ -3,6 +3,9 @@
 info_TEXINFOS = check.texi
 check_TEXINFOS = fdl.texi
 
+check_html: $(srcdir)/check.texi
+	texi2html --output=check_html --top-file=index.html --split=chapter check.texi
+
 ## we need to include several diffs as we evolve the example in the
 ## tutorial.  this means we'll generate them from the example source.
 
@@ -100,6 +103,8 @@ example_tests_docs = example/tests/Makefile.am \
 
 CLEANFILES = check.info *~ *.diff
 
+clean-local:
+	rm -rf check_html
 ## what to distribute
 
 EXTRA_DIST = $(example_docs) \

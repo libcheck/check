@@ -39,12 +39,12 @@ SVNChangeLog:
 
 ACLOCAL_AMFLAGS = -I m4
 
-doc/check.html:
-	$(MAKE) -C doc check.html
+doc/check_html:
+	$(MAKE) -C doc check_html
 
 # check we can do a clean build, including docs.
 # perhaps we should check for out of date (svn st -u) and modified files.
-prereleasecheck: doc/check.html
+prereleasecheck: doc/check_html
 	-$(MAKE) distclean
 	autoreconf -i && ./configure \
 	    && ulimit -c 0 && \
@@ -88,7 +88,7 @@ preparerelease: releasevars .svnrelease prereleasecheck
 	rm -rf check-${RELEASE_VERSION}
 
 
-dorelease: releasevars doc/check.html prereleasecheck
+dorelease: releasevars doc/check_html prereleasecheck
 	cp NEWS NEWS-${RELEASE_VERSION}.txt
 	@echo "You need to:"
 	@echo "cut out old release news from NEWS-${RELEASE_VERSION}.txt."
