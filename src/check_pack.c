@@ -254,7 +254,7 @@ static void check_type (int type, const char *file, int line)
 }
 
 #ifdef HAVE_PTHREAD
-pthread_mutex_t mutex_lock = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t mutex_lock = PTHREAD_MUTEX_INITIALIZER;
 #endif
 
 void ppack (int fdes, enum ck_msg_type type, CheckMsg *msg)
