@@ -226,14 +226,13 @@ expressed interest in adding such a feature.  See the
 @uref{http://aceunit.sourceforge.net/, AceUnit homepage}.
 
 @item GNU Autounit
-Much along the same lines as Check, including forking to run unit
-tests in a separate address space (in fact, the original author of
-Check borrowed the idea from @acronym{GNU} Autounit).  @acronym{GNU}
-Autounit uses GLib extensively, which means that linking and such need
-special options, but this may not be a big problem to you, especially
-if you are already using GTK or GLib.  See the
-@uref{http://www.recursism.com/s2004/zp/products/gnu+autounit, GNU
-Autounit homepage}.
+Much along the same lines as Check, including forking to run unit tests
+in a separate address space (in fact, the original author of Check
+borrowed the idea from @acronym{GNU} Autounit).  @acronym{GNU} Autounit
+uses GLib extensively, which means that linking and such need special
+options, but this may not be a big problem to you, especially if you are
+already using GTK or GLib.  See the @uref{http://autounit.tigris.org/,
+GNU Autounit homepage}.
 
 @item cUnit
 Also uses GLib, but does not fork to protect the address space of unit
