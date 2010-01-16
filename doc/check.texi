@@ -94,12 +94,12 @@ Advanced Features
 * No Fork Mode::                
 * Test Fixtures::               
 * Multiple Suites in one SRunner::  
-* Testing Signal Handling and Exit Values::     
+* Testing Signal Handling and Exit Values::  
 * Looping Tests::               
 * Test Timeouts::               
 * Determining Test Coverage::   
 * Test Logging::                
-* Subunit Support::
+* Subunit Support::             
 
 Test Fixtures
 
@@ -246,6 +246,11 @@ Standard C, with plans for a Win32 GUI implementation.  Does not
 currently fork or otherwise protect the address space of unit tests.
 In early development.  See the @uref{http://cunit.sourceforge.net,
 CUnit homepage}.
+
+@item CuTest
+A simple framework with just one .c and one .h file that you drop into
+your source tree.  See the @uref{http://cutest.sourceforge.net, CuTest
+homepage}.
 
 @item CppUnit
 The premier unit testing framework for C++; you can also use it to test C
@@ -785,12 +790,12 @@ easier for the developer to write, run, and analyse tests.
 * No Fork Mode::                
 * Test Fixtures::               
 * Multiple Suites in one SRunner::  
-* Testing Signal Handling and Exit Values::     
+* Testing Signal Handling and Exit Values::  
 * Looping Tests::               
 * Test Timeouts::               
 * Determining Test Coverage::   
 * Test Logging::                
-* Subunit Support::
+* Subunit Support::             
 @end menu
 
 @node Running Multiple Cases, No Fork Mode, Advanced Features, Advanced Features
@@ -1290,7 +1295,7 @@ of the same log output as before but in XML:
 @end verbatim
 @end example
 
-@node Subunit Support, , Test Logging, Advanced Features
+@node Subunit Support,  , Test Logging, Advanced Features
 @section Subunit Support
 
 Check supports running test suites with subunit output. This can be useful to
