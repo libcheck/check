@@ -54,6 +54,7 @@ enum tf_type {
 static void srunner_run_init (SRunner *sr, enum print_output print_mode);
 static void srunner_run_end (SRunner *sr, enum print_output print_mode);
 static void srunner_iterate_suites (SRunner *sr,
+                                    const char *sname, const char *tcname,
 				    enum print_output print_mode);
 static void srunner_iterate_tcase_tfuns (SRunner *sr, TCase *tc);
 static void srunner_add_failure (SRunner *sr, TestResult *tf);
@@ -120,6 +121,7 @@ static void srunner_run_end (SRunner *sr, enum print_output CK_ATTRIBUTE_UNUSED 
 }
 
 static void srunner_iterate_suites (SRunner *sr,
+                                    const char *sname, const char *tcname,
 				    enum print_output CK_ATTRIBUTE_UNUSED print_mode)
   
 {
@@ -128,16 +130,25 @@ static void srunner_iterate_suites (SRunner *sr,
   TCase *tc;
 
   slst = sr->slst;
-  
+
   for (list_front(slst); !list_at_end(slst); list_advance(slst)) {
     Suite *s = list_val(slst);
     
+    if (((sname != NULL) && (strcmp (sname, s->name) != 0))
+        || ((tcname != NULL) && (!suite_tcase (s, tcname))))
+      continue;
+
     log_suite_start (sr, s);
 
     tcl = s->tclst;
   
     for (list_front(tcl);!list_at_end (tcl); list_advance (tcl)) {
       tc = list_val (tcl);
+
+      if ((tcname != NULL) && (strcmp (tcname, tc->name) != 0)) {
+          continue;
+        }
+
       srunner_run_tcase (sr, tc);
     }
     
@@ -514,10 +525,23 @@ void srunner_set_fork_status (SRunner *sr, enum fork_status fstat)
 
 void srunner_run_all (SRunner *sr, enum print_output print_mode)
 {
+  srunner_run (sr,
+               NULL,  /* All test suites.  */
+               NULL,  /* All test cases.   */
+               print_mode);
+}
+
+void srunner_run (SRunner *sr, const char *sname, const char *tcname, enum print_output print_mode)
+{
 #ifdef _POSIX_VERSION
   struct sigaction old_action;
   struct sigaction new_action;
 #endif /* _POSIX_VERSION */
+
+  /*  Get the selected test suite and test case from the
+      environment.  */
+  if (!tcname) tcname = getenv ("CK_RUN_CASE");
+  if (!sname) sname = getenv ("CK_RUN_SUITE");
 
   if (sr == NULL)
     return;
@@ -532,7 +556,7 @@ void srunner_run_all (SRunner *sr, enum print_output print_mode)
   sigaction(SIGALRM, &new_action, &old_action);
 #endif /* _POSIX_VERSION */
   srunner_run_init (sr, print_mode);
-  srunner_iterate_suites (sr, print_mode);
+  srunner_iterate_suites (sr, sname, tcname, print_mode);
   srunner_run_end (sr, print_mode);
 #ifdef _POSIX_VERSION
   sigaction(SIGALRM, &old_action, NULL);

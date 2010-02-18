@@ -638,22 +638,38 @@ focus on making the test pass.
 @section SRunner Output
 
 @findex srunner_run_all()
-The function to run tests in an @code{SRunner} is defined as follows:
+@findex srunner_run()
+The functions to run tests in an @code{SRunner} are defined as follows:
 @example
 @verbatim
 void srunner_run_all (SRunner * sr, enum print_output print_mode);
+
+void srunner_run (SRunner *sr, const char *sname, const char *tcname,
+                  enum print_output print_mode);
 @end verbatim
 @end example
 
-This function does two things:
+Those functions do two things:
 
 @enumerate
 @item
-It runs all of the unit tests for all of the test cases defined for all
-of the suites in the SRunner, and collects the results in the SRunner
+They run all of the unit tests for the selected test cases defined for
+the selected suites in the SRunner, and collect the results in the
+SRunner.  The determination of the selected test cases and suites
+depends on the specific function used.
+
+@code{srunner_run_all} will run all the defined test cases of all
+defined suites except if the environment variables @code{CK_RUN_CASE}
+or @code{CK_RUN_SUITE} are defined.  If defined, those variables shall
+contain the name of a test suite or a test case, defining in that way
+the selected suite/test case.
+
+@code{srunner_run} will run the suite/case selected by the
+@code{sname} and @code{tcname} parameters.  A value of @code{NULL}
+in some of those parameters means ``any suite/case''.
 
 @item
-It prints the results according to the @code{print_mode} specified.
+They print the results according to the @code{print_mode} specified.
 @end enumerate
 
 For SRunners that have already been run, there is also a separate

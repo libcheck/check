@@ -120,6 +120,10 @@ typedef struct Suite Suite;
 /* Creates a test suite with the given name */
 Suite * CK_EXPORT suite_create (const char *name);
 
+/* Determines whether a given test suite contains a case named after a
+   given string.  */
+int suite_tcase (Suite *s, const char *tcname);
+
 /* Add a test case to a suite */
 void CK_EXPORT suite_add_tcase (Suite *s, TCase *tc);
 
@@ -327,6 +331,11 @@ void CK_EXPORT srunner_free (SRunner *sr);
 
 /* Runs an SRunner, printing results as specified (see enum print_output) */
 void CK_EXPORT srunner_run_all (SRunner *sr, enum print_output print_mode);
+
+/* Runs an SRunner specifying test suite and test case by name,
+   printing results as specified (see enum print_output).  A NULL
+   value means "any test suite" or "any test case".  */
+void CK_EXPORT srunner_run (SRunner *sr, const char *sname, const char *tcname, enum print_output print_mode);
 
  
 /* Next functions are valid only after the suite has been

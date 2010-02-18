@@ -59,6 +59,24 @@ Suite *suite_create (const char *name)
   return s;
 }
 
+int suite_tcase (Suite *s, const char *tcname)
+{
+  List *l;
+  TCase *tc;
+
+  if (s == NULL)
+    return 0;
+
+  l = s->tclst;
+  for (list_front (l); !list_at_end (l); list_advance (l)) {
+    tc = list_val (l);
+    if (strcmp (tcname, tc->name) == 0)
+      return 1;
+  }
+
+  return 0;
+}
+
 static void suite_free (Suite *s)
 {
   List *l;
