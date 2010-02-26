@@ -34,9 +34,7 @@
 #include "check_impl.h"
 #include "check_pack.h"
 
-#ifdef HAVE_PTHREAD
-pthread_mutex_t lock_mutex = PTHREAD_MUTEX_INITIALIZER;
-#else
+#ifndef HAVE_PTHREAD
 #define pthread_mutex_lock(arg)
 #define pthread_mutex_unlock(arg)
 #endif
