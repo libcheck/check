@@ -1,5 +1,8 @@
 In development.
 
+* Added checkmk, a tool for reducing "boilerplate coding" when writing
+  unit tests with check.
+
 Tue, Sep 22, 2009: Released Check 0.9.8
   based on r559 (2009-09-23 21:00).
 

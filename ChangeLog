@@ -1,3 +1,17 @@
+2010-04-03  Micah Cowan  <micah@cowan.name>
+
+	* checkmk/*: Added Awk program "checkmk", for eliminating
+	boilerplate work when writing unit test modules. Includes
+	documentation and tests.
+
+	* Makefile.am (SUBDIRS): Added checkmk.
+
+	* configure.ac: Added extra awk-detection logic for checkmk.
+
+	* NEWS: Updated with news about checkmk.
+
+	* AUTHORS (Patches): Added myself.
+
 2010-02-17  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* tests/check_check_selective.c (make_selective_suite): New
