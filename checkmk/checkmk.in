@@ -1,0 +1,371 @@
+#! @AWK_PATH@ -f
+# @configure_input@
+
+# checkmk - translate more concise versions of test suite specifications
+#           into C programs suitable for use with the Check unit test
+#           framework.
+
+# -- LICENSE --
+#
+# Written by Micah Cowan <micah@cowan.name>
+# Copyright (c) 2006, 2010  Micah Cowan
+#
+# Redistribution of this program in any form, with or without
+# modifications, is permitted, provided that the above copyright is
+# retained in distributions of this program in source form.
+# 
+# (This is a free, non-copyleft license compatible with pretty much any
+# other free or proprietary license, including the GPL. It's essentially
+# a scaled-down version of the "modified" BSD license.)
+
+BEGIN {
+    progname="checkmk";
+    is_stdin=0;
+    outfname="/dev/stdout";
+
+    # Tokens
+    pp_ws        = "[[:space:]]+";
+    pp_ws_op     = "[[:space:]]*";
+    pp_prefix    = pp_ws_op "#" pp_ws_op;
+    pp_tag       = "([Ss][Uu][Ii][Tt][Ee]|[Tt][Cc][Aa][Ss][Ee])";
+    pp_test_tag  = "[Tt][Ee][Ss][Tt]";
+    pp_main_pre_tag = "[Mm][Aa][Ii][Nn]-[Pp][Rr][Ee]";
+    pp_main_post_tag = "[Mm][Aa][Ii][Nn]-[Pp][Oo][Ss][Tt]";
+    pp_sep       = "[[:space:]]+";
+    pp_name      = ".+";
+    pp_hex_quad = "[[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]]"
+    pp_ucn       = "\\\\(u" pp_hex_quad "|U" pp_hex_quad pp_hex_quad ")";
+    pp_test_name = "([[:alpha:]_]|" pp_ucn ")([[:alnum:]_]|" pp_ucn ")*";
+
+    pp_suite_or_tcase_line = "^" pp_prefix pp_tag pp_ws pp_name "$";
+    pp_test_line_prefix = "^" pp_prefix pp_test_tag pp_ws;
+    pp_test_line = pp_test_line_prefix pp_name pp_ws_op "$";
+    pp_main_pre_line = "^" pp_prefix pp_main_pre_tag pp_ws_op "$";
+    pp_main_post_line = "^" pp_prefix pp_main_post_tag pp_ws_op "$";
+    
+    # Global vars
+    num_tests = 0;
+    cur_suite = cur_tcase = "Core";
+    cur_test = "";
+    in_test = 0;
+    needs_line_decl = 0;
+    exit_okay = 1;
+
+    num_cur_tcases = 0;
+    num_cur_tests = 0;
+    start = 1;
+}
+
+# Run on the first line of the input file.
+start {
+    print_boilerplate();
+    start = 0;
+}
+
+# (Executed every line:)
+{
+    print_line = 1;
+}
+
+$0 ~ pp_suite_or_tcase_line {
+    if (in_main())
+        in_main_error();
+
+    # Skip to the start of the tag ("suite" or "tcase").
+    match($0, pp_prefix);
+    rol = substr($0, RLENGTH+1);
+
+    # Save away the tag.
+    match(rol, "^" pp_tag);
+    tag = substr(rol, 1, RLENGTH);
+
+    # Advance past the ws following tag.
+    rol = substr(rol, RLENGTH+1);
+    match(rol, pp_ws);
+    rol = substr(rol, RLENGTH+1);
+
+    # The suite or tcase name is the rest of the line, minus any
+    # trailing ws.
+    if (match(rol, pp_ws "$")) {
+        name = substr(rol, 1, RSTART-1);
+    } else {
+        name = rol;
+    }
+
+    if (tolower(tag) == "suite") {
+        # Does this suite already exist?
+        if ((name, 0) in suite_tcase_map) {
+            error_with_line("Suite \"" name "\" already exists.");
+        }
+        cur_suite = name;
+        num_cur_tcases = 0;
+    }
+    else if ((name, 0) in tcase_test_map) {
+        error_with_line("Test Case \"" name "\" already exists.");
+    }
+    cur_tcase = name;
+    num_cur_tests = 0;
+
+    finish_test();
+    print_line = 0;
+    if (!clean_mode)
+        needs_line_decl = 1;
+}
+
+$0 ~ pp_test_line {
+    if (in_main())
+        in_main_error();
+
+    if (in_test) {
+        finish_test();
+        print "";
+    }
+    ++num_tests;
+
+    # Get the test name
+    match($0, pp_test_line_prefix)
+    cur_test = substr($0, RLENGTH+1);
+
+    # Remove trailing ws.
+    sub(pp_ws_op "$", "", cur_test);
+
+    # Confirm that the test name is a valid C identifier.
+    if (!match(cur_test, "^" pp_test_name "$")) {
+        error_with_line("Malformed test name \"" cur_test \
+                        "\" (must be a C identifier).");
+    }
+
+    # Verify that it has not already been used.
+    if (cur_test in test_registry) {
+        error_with_line("Test \"" cur_test "\" already exists.");
+    }
+
+    # Verify that any implied test case is not a repeat.
+    if (num_cur_tests == 0 && (cur_tcase, 0) in tcase_test_map) {
+        error_with_line("Test Case \"" name "\" already exists.");
+    }
+
+    # Print preamble
+    print "START_TEST(" cur_test ")";
+    print "{";
+    if (!clean_mode)
+        print "#line " FNR+1;
+    needs_line_decl = 0;
+
+    register_test();
+
+    print_line = 0;
+    in_test = 1;
+}
+
+$0 ~ pp_main_pre_line {
+    main_pre();
+
+    print "";
+    print "    /* User-specified pre-run code */";
+
+    if (!clean_mode)
+        needs_line_decl = 1;
+    print_line = 0;
+}
+
+$0 ~ pp_main_post_line {
+    main_post();
+
+    print "";
+    print "    /* User-specified post-run code */";
+
+    if (!clean_mode)
+        needs_line_decl = 1;
+    print_line = 0;
+}
+
+print_line {
+    if (/[^[:space:]]/ && needs_line_decl && !clean_mode) {
+        print "#line " FNR;
+        needs_line_decl = 0;
+    }
+    print;
+}
+
+END {
+    if (!exit_okay) {
+        # We're exiting due to an error. Don't do anything else.
+    }
+    else if (num_tests) {
+        if (!main_post_done) {
+            main_post();
+            print "";
+            print "    return nf == 0 ? 0 : 1;";
+        }
+
+        print "}";
+    }
+    else {
+        error("Expected at least one #test line.");
+    }
+}
+
+### Functions ###
+
+function main_post()
+{
+    if (main_post_done)
+        error_with_line("main-post specified multiple times.");
+    if (!main_pre_done)
+        main_pre();
+    main_post_done = 1;
+
+    print "";
+
+    print_runner_bindings();
+
+    print "";
+    print "    srunner_run_all(sr, CK_ENV);";
+    print "    nf = srunner_ntests_failed(sr);";
+    print "    srunner_free(sr);";
+}
+
+function in_main()
+{
+    return main_pre_done || main_post_done;
+}
+
+function in_main_error()
+{
+    error_with_line("Cannot specify tests after main-pre or main-post.");
+}
+
+function main_pre()
+{
+    if (main_post_done)
+        error_with_line("main-pre specified after main-post.");
+    if (main_pre_done)
+        error_with_line("main-pre specified multiple times.");
+    main_pre_done = 1;
+    finish_test();
+    print "";
+    print "int main(void)";
+    print "{";
+
+    print_main_declarations();
+}
+
+function suite_var_name(num)
+{
+    return "s" num+1;
+}
+
+function tcase_var_name(snum, tcnum)
+{
+    return "tc" snum+1 "_" tcnum+1;
+}
+
+function print_main_declarations()
+{
+    for (i=0; i != num_suites; ++i) {
+        s = suite_names[i];
+        svar = suite_var_name(i);
+        print "    Suite *" svar " = suite_create(" string_encode(s) ");";
+        for (j=0; j != suite_num_tcases[s]; ++j) {
+            tc = suite_tcase_map[s, j];
+            tcvar = tcase_var_name(i, j);
+            print "    TCase *" tcvar " = tcase_create(" \
+                    string_encode(tc) ");";
+        }
+    }
+    print "    SRunner *sr = srunner_create(s1);";
+    print "    int nf;";
+}
+
+function string_encode(raw)
+{
+    # The next line might look funny, but remember that the first
+    # argument will go through both string interpolation /and/ regex
+    # interpolation, so the backslashes must be double-escaped. The
+    # substitution string is supposed to result in an actual
+    # double-backslash.
+    gsub("\\\\", "\\\\", raw);
+    gsub("\"", "\\\"", raw);
+    return "\"" raw "\"";
+}
+
+function print_runner_bindings()
+{
+    for (i=0; i != num_suites; ++i) {
+        s = suite_names[i];
+        svar = suite_var_name(i);
+        for (j=0; j != suite_num_tcases[s]; ++j) {
+            tc = suite_tcase_map[s, j];
+            tcvar = tcase_var_name(i, j);
+            print "    suite_add_tcase(" svar ", " tcvar ");";
+            for (k=0; k != tcase_num_tests[tc]; ++k) {
+                t = tcase_test_map[tc, k];
+                print "    tcase_add_test(" tcvar ", " t ");";
+            }
+        }
+    }
+    if (num_suites > 1) {
+        print "";
+        for (i=1; i != num_suites; ++i) {
+            svar = suite_var_name(i);
+            print "    srunner_add_suite(sr, " svar ");";
+        }
+    }
+}
+
+function register_test()
+{
+    if (num_cur_tcases == 0) {
+        suite_names[num_suites++] = cur_suite;
+    }
+    if (num_cur_tests == 0) {
+        suite_tcase_map[cur_suite, num_cur_tcases++] = cur_tcase;
+        suite_num_tcases[cur_suite] = num_cur_tcases;
+    }
+    tcase_test_map[cur_tcase, num_cur_tests++] = cur_test;
+    tcase_num_tests[cur_tcase] = num_cur_tests;
+    test_registry[cur_test] = 1;
+}
+
+function finish_test()
+{
+    if (in_test) {
+        in_test = 0;
+        print "}";
+        print "END_TEST";
+    }
+}
+
+function print_boilerplate()
+{
+    print "/*";
+    print " * DO NOT EDIT THIS FILE. Generated by " progname ".";
+    if (!FILENAME || FILENAME == "-") {
+        clean_mode=1;
+        is_stdin=1;
+    }
+    if (is_stdin)
+        srcfile = "(standard input)";
+    else
+        srcfile = "\"" FILENAME "\"";
+    print " * Edit the original source file " srcfile " instead.";
+    print " */";
+    print "";
+    print "#include <check.h>";
+    print "";
+    if (!clean_mode)
+        print "#line 1 " string_encode(FILENAME)
+}
+
+function error_with_line(err)
+{
+    error((is_stdin ? "(standard input)" : FILENAME) " line " FNR ": " err);
+}
+
+function error(err)
+{
+    print progname ": " err > "/dev/stderr";
+    exit_okay = 0;
+    exit 1;
+}

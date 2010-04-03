@@ -187,11 +187,21 @@ AC_CHECK_DECLS([fileno, localtime_r, pipe, putenv, setenv, sleep, strdup, strsig
 ACX_PTHREAD
 CC="$PTHREAD_CC"
 
+# Check for whether we can install checkmk (we have a usable awk)
+AC_ARG_VAR([AWK_PATH],[Awk interpreter command])
+AC_PATH_PROG(AWK_PATH, $AWK, [*NO AWK*])
+AM_CONDITIONAL([INSTALL_CHECKMK], [test "x$AWK_PATH" != 'x*NO AWK*'])
+AS_IF([test "x$AWK_PATH" = 'x*NO AWK*'],
+      [AC_MSG_WARN([Couldn't find a usable awk; won't install checkmk.])],
+      [AC_CONFIG_FILES(checkmk/checkmk)
+       AC_CONFIG_COMMANDS([checkmk-x], [chmod +x checkmk/checkmk])])
+
 # Output files
 AC_CONFIG_HEADERS([config.h])
 
 AC_CONFIG_FILES([check.pc
                  Makefile
+                 checkmk/Makefile
 		 doc/Makefile
 		 lib/Makefile
                  src/check.h

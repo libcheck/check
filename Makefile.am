@@ -2,7 +2,7 @@
 
 ## run tests after everything else
 
-SUBDIRS = lib src doc . tests
+SUBDIRS = lib src doc . checkmk tests
 
 ## FIXME: maybe we don't need this line
 
