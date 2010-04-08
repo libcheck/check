@@ -24,18 +24,18 @@ BEGIN {
     outfname="/dev/stdout";
 
     # Tokens
-    pp_ws        = "[[:space:]]+";
-    pp_ws_op     = "[[:space:]]*";
+    pp_ws        = "[ \t\f\v\r\n]+";
+    pp_ws_op     = "[ \t\f\v\r\n]*";
     pp_prefix    = pp_ws_op "#" pp_ws_op;
     pp_tag       = "([Ss][Uu][Ii][Tt][Ee]|[Tt][Cc][Aa][Ss][Ee])";
     pp_test_tag  = "[Tt][Ee][Ss][Tt]";
     pp_main_pre_tag = "[Mm][Aa][Ii][Nn]-[Pp][Rr][Ee]";
     pp_main_post_tag = "[Mm][Aa][Ii][Nn]-[Pp][Oo][Ss][Tt]";
-    pp_sep       = "[[:space:]]+";
+    pp_sep       = "[ \t\f\v\r\n]+";
     pp_name      = ".+";
-    pp_hex_quad = "[[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]]"
+    pp_hex_quad = "[A-F0-9a-f][A-F0-9a-f][A-F0-9a-f][A-F0-9a-f]"
     pp_ucn       = "\\\\(u" pp_hex_quad "|U" pp_hex_quad pp_hex_quad ")";
-    pp_test_name = "([[:alpha:]_]|" pp_ucn ")([[:alnum:]_]|" pp_ucn ")*";
+    pp_test_name = "([A-Za-z_]|" pp_ucn ")([A-Za-z0-9_]|" pp_ucn ")*";
 
     pp_suite_or_tcase_line = "^" pp_prefix pp_tag pp_ws pp_name "$";
     pp_test_line_prefix = "^" pp_prefix pp_test_tag pp_ws;
@@ -181,7 +181,7 @@ $0 ~ pp_main_post_line {
 }
 
 print_line {
-    if (/[^[:space:]]/ && needs_line_decl && !clean_mode) {
+    if (/[^ \t\f\v\r\n]/ && needs_line_decl && !clean_mode) {
         print "#line " FNR;
         needs_line_decl = 0;
     }

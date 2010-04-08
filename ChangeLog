@@ -1,3 +1,9 @@
+2010-04-08  Micah Cowan  <micah@cowan.name>
+
+	* checkmk/checkmk.in: Replaced POSIX character-classes
+	with (roughly) equivalent character groups from pre-POSIX
+	syntax, to support pre-POSIX awk implementations.
+
 2010-04-03  Micah Cowan  <micah@cowan.name>
 
 	* checkmk/*: Added Awk program "checkmk", for eliminating
