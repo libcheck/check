@@ -285,7 +285,7 @@ function string_encode(raw)
     # interpolation, so the backslashes must be double-escaped. The
     # substitution string is supposed to result in an actual
     # double-backslash.
-    gsub("\\\\", "\\\\", raw);
+    gsub("\\\\", "@AWK_GSUB_DBL_BSLASH@", raw);
     gsub("\"", "\\\"", raw);
     return "\"" raw "\"";
 }

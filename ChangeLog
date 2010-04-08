@@ -1,8 +1,14 @@
 2010-04-08  Micah Cowan  <micah@cowan.name>
 
+	* configure.ac: Determine at configure time, how many
+	backslashes are needed in the second argument to Awk's built-in
+	"gsub" function in order to generate two backslashes.
+
 	* checkmk/checkmk.in: Replaced POSIX character-classes
 	with (roughly) equivalent character groups from pre-POSIX
 	syntax, to support pre-POSIX awk implementations.
+	(string_encode): Use configure-substituted AWK_GSUB_DBL_BSLASH
+	to determine how to substitute a doubled backslash in gsub.
 
 2010-04-03  Micah Cowan  <micah@cowan.name>
 
