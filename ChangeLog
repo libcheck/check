@@ -1,3 +1,7 @@
+IT IS NOT NECESSARY TO UPDATE THIS FILE.
+
+PLEASE MAKE SURE TO LEAVE A GOOD SVN COMMIT MESSAGE.
+
 2010-04-08  Micah Cowan  <micah@cowan.name>
 
 	* configure.ac: Determine at configure time, how many
