@@ -249,15 +249,25 @@ void CK_EXPORT _fail_unless (int result, const char *file,
 #define ck_assert_msg fail_unless
 
 /* Integer comparsion macros with improved output compared to fail_unless(). */
-/* O may be any comparion operator. */
-#define _ck_assert_int(X, O, Y) ck_assert_msg((X) O (Y), "Assertion '"#X#O#Y"' failed: "#X"==%d, "#Y"==%d", X, Y) 
+/* OP may be any comparion operator. */
+#define _ck_assert_int(X, OP, Y) do { \
+  int _ck_x = (X); \
+  int _ck_y = (Y); \
+  ck_assert_msg(_ck_x OP _ck_y, "Assertion '"#X#OP#Y"' failed: "#X"==%d, "#Y"==%d", _ck_x, _ck_y); \
+} while (0)
 #define ck_assert_int_eq(X, Y) _ck_assert_int(X, ==, Y) 
 #define ck_assert_int_ne(X, Y) _ck_assert_int(X, !=, Y) 
 
 /* String comparsion macros with improved output compared to fail_unless() */
-#define _ck_assert_str(C, X, O, Y) ck_assert_msg(C, "Assertion '"#X#O#Y"' failed: "#X"==\"%s\", "#Y"==\"%s\"", X, Y) 
-#define ck_assert_str_eq(X, Y) _ck_assert_str(!strcmp(X, Y), X, ==, Y)
-#define ck_assert_str_ne(X, Y) _ck_assert_str(strcmp(X, Y), X, !=, Y)
+/* OP might be any operator that can be used in '0 OP strcmp(X,Y)' comparison */
+#define _ck_assert_str(X, OP, Y) do { \
+  const char* _ck_x = (X); \
+  const char* _ck_y = (Y); \
+  ck_assert_msg(0 OP strcmp(_ck_x, _ck_y), \
+    "Assertion '"#X#OP#Y"' failed: "#X"==\"%s\", "#Y"==\"%s\"", _ck_x, _ck_y); \
+} while (0)
+#define ck_assert_str_eq(X, Y) _ck_assert_str(X, ==, Y)
+#define ck_assert_str_ne(X, Y) _ck_assert_str(X, !=, Y)
 
 
 /* Mark the last point reached in a unit test

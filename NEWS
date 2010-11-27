@@ -1,5 +1,8 @@
 In development.
 
+* Documented new Check API and fixed macros to allow multiple
+  evaluation.
+
 * Added checkmk, a tool for reducing "boilerplate coding" when writing
   unit tests with check.
 
