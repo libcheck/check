@@ -260,10 +260,11 @@ void CK_EXPORT _fail_unless (int result, const char *file,
 
 /* String comparsion macros with improved output compared to fail_unless() */
 /* OP might be any operator that can be used in '0 OP strcmp(X,Y)' comparison */
+/* The x and y parameter swap in strcmp() is needed to handle >, >=, <, <= operators */
 #define _ck_assert_str(X, OP, Y) do { \
   const char* _ck_x = (X); \
   const char* _ck_y = (Y); \
-  ck_assert_msg(0 OP strcmp(_ck_x, _ck_y), \
+  ck_assert_msg(0 OP strcmp(_ck_y, _ck_x), \
     "Assertion '"#X#OP#Y"' failed: "#X"==\"%s\", "#Y"==\"%s\"", _ck_x, _ck_y); \
 } while (0)
 #define ck_assert_str_eq(X, Y) _ck_assert_str(X, ==, Y)

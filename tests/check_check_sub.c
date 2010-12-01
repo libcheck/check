@@ -185,6 +185,20 @@ START_TEST(test_ck_assert_int_expr)
   #define LINENO_ck_assert_int_expr _STR(__LINE__)
 } END_TEST
 
+START_TEST(test_ck_assert_str)
+{
+  _ck_assert_str("test1", < ,"test2");
+  _ck_assert_str("test2", > ,"test1");
+
+  _ck_assert_str("test1", <= ,"test2");
+  _ck_assert_str("test2", >= ,"test1");
+
+  _ck_assert_str("test1", <= ,"test1");
+  _ck_assert_str("test1", >= ,"test1");
+  #define LINENO_ck_assert_str _STR(__LINE__)
+}
+END_TEST
+
 START_TEST(test_ck_assert_str_eq)
 {
   const char *s = "test2";
@@ -486,6 +500,7 @@ void init_master_tests_lineno(void) {
     LINENO_ck_assert_int_eq,
     LINENO_ck_assert_int_ne,
     LINENO_ck_assert_int_expr,
+    LINENO_ck_assert_str,
     LINENO_ck_assert_str_eq,
     LINENO_ck_assert_str_ne,
     LINENO_ck_assert_str_expr,
@@ -654,6 +669,7 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_simple, test_ck_assert_int_eq);
   tcase_add_test (tc_simple, test_ck_assert_int_ne);
   tcase_add_test (tc_simple, test_ck_assert_int_expr);
+  tcase_add_test (tc_simple, test_ck_assert_str);
   tcase_add_test (tc_simple, test_ck_assert_str_eq);
   tcase_add_test (tc_simple, test_ck_assert_str_ne);
   tcase_add_test (tc_simple, test_ck_assert_str_expr);
