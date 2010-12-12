@@ -818,49 +818,56 @@ easier for the developer to write, run, and analyse tests.
 @node Convenience Test Functions, Running Multiple Cases, Advanced Features, Advanced Features
 @section Convenience Test Functions
 
-Using the @code{fail_unless} function for all tests can lead to lot of repetitive
-code that is hard to read.  For your convenience Check provides a set of functions
-(actually macros) for testing often used conditions.
+Using the @code{fail_unless} function for all tests can lead to lot of
+repetitive code that is hard to read.  For your convenience Check
+provides a set of functions (actually macros) for testing often used
+conditions.
 
-@table @code
-@vindex ck_abort
+@ftable @code
 @item ck_abort
 Unconditionally fails test with default message.
 
-@vindex ck_abort_msg
 @item ck_abort_msg
 Unconditionally fails test with user supplied message.
 
-@vindex ck_assert
 @item ck_assert
-Fails test if supplied condition evaluates to true. This function is equivalent to
-@code{fail_unless} with @code{NULL} as a message.
+Fails test if supplied condition evaluates to true. This function is
+equivalent to @code{fail_unless} with @code{NULL} as a message.
 
-@vindex ck_assert_msg
 @item ck_assert_msg
-Fails test if supplied condition evaluates to true and displays user provided
-message. This function is equivalent to @code{fail_unless}.
+Fails test if supplied condition evaluates to true and displays user
+provided message. This function is equivalent to @code{fail_unless}.
 
-@vindex ck_assert_int_eq
 @item ck_assert_int_eq
-Takes two integer values, compares them for equality and fails test if values
-are not equal. Uses predefined message displaying failed condition and values of
-both input parameters.
+@itemx ck_assert_int_ne
+@itemx ck_assert_int_lt
+@itemx ck_assert_int_le
+@itemx ck_assert_int_gt
+@itemx ck_assert_int_ge
 
-@vindex ck_assert_int_ne
-@item ck_assert_int_ne
-Same as @code{ck_assert_int_eq} but fails if the values are equal.
+Compares two @code{int} values and displays predefined message with
+condition and values of both input parameters on failure.  The operator
+used for comparison is different for each function and is indicated by
+the last two letters of the function name.  The abbreviations @code{eq},
+@code{ne}, @code{lt}, @code{le}, @code{gt}, and @code{ge} correspond to
+@code{==}, @code{!=}, @code{<}, @code{<=}, @code{>}, and @code{>=}
+respectively.
 
-@vindex ck_assert_str_eq
 @item ck_assert_str_eq
-Same as @code{ck_assert_int_eq} but takes @code{char*} values and compares
-them using the @code{strcmp()} function.
+@itemx ck_assert_str_ne
+@itemx ck_assert_str_lt
+@itemx ck_assert_str_le
+@itemx ck_assert_str_gt
+@itemx ck_assert_str_ge
 
-@vindex ck_assert_str_eq
-@item ck_assert_str_eq
-Same as @code{ck_assert_int_ne} but takes @code{char*} values and compares
-them using the @code{strcmp()} function.
-@end table
+Compares two null-terminated @code{char *} string values, using the
+@code{strcmp()} function internally, and displays predefined message
+with condition and input parameter values on failure.  The comparison
+operator is again indicated by last two letters of the function name.
+@code{ck_assert_str_lt(a, b)} will pass if the unsigned numerical value
+of the character string @code{a} is less than that of @code{b}.
+
+@end ftable
 
 @node Running Multiple Cases, No Fork Mode, Convenience Test Functions, Advanced Features
 @section Running Multiple Cases

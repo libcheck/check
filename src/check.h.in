@@ -257,6 +257,10 @@ void CK_EXPORT _fail_unless (int result, const char *file,
 } while (0)
 #define ck_assert_int_eq(X, Y) _ck_assert_int(X, ==, Y) 
 #define ck_assert_int_ne(X, Y) _ck_assert_int(X, !=, Y) 
+#define ck_assert_int_lt(X, Y) _ck_assert_int(X, <, Y)
+#define ck_assert_int_le(X, Y) _ck_assert_int(X, <=, Y)
+#define ck_assert_int_gt(X, Y) _ck_assert_int(X, >, Y)
+#define ck_assert_int_ge(X, Y) _ck_assert_int(X, >=, Y)
 
 /* String comparsion macros with improved output compared to fail_unless() */
 /* OP might be any operator that can be used in '0 OP strcmp(X,Y)' comparison */
@@ -269,6 +273,10 @@ void CK_EXPORT _fail_unless (int result, const char *file,
 } while (0)
 #define ck_assert_str_eq(X, Y) _ck_assert_str(X, ==, Y)
 #define ck_assert_str_ne(X, Y) _ck_assert_str(X, !=, Y)
+#define ck_assert_str_lt(X, Y) _ck_assert_str(X, <, Y)
+#define ck_assert_str_le(X, Y) _ck_assert_str(X, <=, Y)
+#define ck_assert_str_gt(X, Y) _ck_assert_str(X, >, Y)
+#define ck_assert_str_ge(X, Y) _ck_assert_str(X, >=, Y)
 
 
 /* Mark the last point reached in a unit test

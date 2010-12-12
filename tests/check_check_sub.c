@@ -134,6 +134,9 @@ START_TEST(test_ck_abort_msg_null)
 }
 END_TEST
 
+/* These ck_assert tests are all designed to fail on the last
+   assertion. */
+
 START_TEST(test_ck_assert)
 {
   int x = 3;
@@ -176,6 +179,48 @@ START_TEST(test_ck_assert_int_ne)
 }
 END_TEST
 
+START_TEST(test_ck_assert_int_lt)
+{
+  int x = 2;
+  int y = 3;
+  ck_assert_int_lt(x, y);
+  ck_assert_int_lt(x, x);
+  #define LINENO_ck_assert_int_lt _STR(__LINE__)
+}
+END_TEST
+
+START_TEST(test_ck_assert_int_le)
+{
+  int x = 2;
+  int y = 3;
+  ck_assert_int_le(x, y);
+  ck_assert_int_le(x, x);
+  ck_assert_int_le(y, x);
+  #define LINENO_ck_assert_int_le _STR(__LINE__)
+}
+END_TEST
+
+START_TEST(test_ck_assert_int_gt)
+{
+  int x = 2;
+  int y = 3;
+  ck_assert_int_gt(y, x);
+  ck_assert_int_gt(y, y);
+  #define LINENO_ck_assert_int_gt _STR(__LINE__)
+}
+END_TEST
+
+START_TEST(test_ck_assert_int_ge)
+{
+  int x = 2;
+  int y = 3;
+  ck_assert_int_ge(y, x);
+  ck_assert_int_ge(y, x);
+  ck_assert_int_ge(x, y);
+  #define LINENO_ck_assert_int_ge _STR(__LINE__)
+}
+END_TEST
+
 START_TEST(test_ck_assert_int_expr)
 {
   int x = 1;
@@ -184,20 +229,6 @@ START_TEST(test_ck_assert_int_expr)
   ck_assert_int_eq(x, y);
   #define LINENO_ck_assert_int_expr _STR(__LINE__)
 } END_TEST
-
-START_TEST(test_ck_assert_str)
-{
-  _ck_assert_str("test1", < ,"test2");
-  _ck_assert_str("test2", > ,"test1");
-
-  _ck_assert_str("test1", <= ,"test2");
-  _ck_assert_str("test2", >= ,"test1");
-
-  _ck_assert_str("test1", <= ,"test1");
-  _ck_assert_str("test1", >= ,"test1");
-  #define LINENO_ck_assert_str _STR(__LINE__)
-}
-END_TEST
 
 START_TEST(test_ck_assert_str_eq)
 {
@@ -216,6 +247,48 @@ START_TEST(test_ck_assert_str_ne)
   t = "test2";
   ck_assert_str_ne(t, s);
   #define LINENO_ck_assert_str_ne _STR(__LINE__)
+}
+END_TEST
+
+START_TEST(test_ck_assert_str_lt)
+{
+  const char *s = "test1";
+  const char *t = "test2";
+  ck_assert_str_lt(s, t);
+  ck_assert_str_lt(s, s);
+  #define LINENO_ck_assert_str_lt _STR(__LINE__)
+}
+END_TEST
+
+START_TEST(test_ck_assert_str_le)
+{
+  const char *s = "test1";
+  const char *t = "test2";
+  ck_assert_str_le(s, t);
+  ck_assert_str_le(s, s);
+  ck_assert_str_le(t, s);
+  #define LINENO_ck_assert_str_le _STR(__LINE__)
+}
+END_TEST
+
+START_TEST(test_ck_assert_str_gt)
+{
+  const char *s = "test1";
+  const char *t = "test2";
+  ck_assert_str_gt(t, s);
+  ck_assert_str_gt(t, t);
+  #define LINENO_ck_assert_str_gt _STR(__LINE__)
+}
+END_TEST
+
+START_TEST(test_ck_assert_str_ge)
+{
+  const char *s = "test1";
+  const char *t = "test2";
+  ck_assert_str_ge(t, s);
+  ck_assert_str_ge(t, t);
+  ck_assert_str_ge(s, t);
+  #define LINENO_ck_assert_str_ge _STR(__LINE__)
 }
 END_TEST
 
@@ -499,10 +572,17 @@ void init_master_tests_lineno(void) {
     LINENO_ck_assert_null,
     LINENO_ck_assert_int_eq,
     LINENO_ck_assert_int_ne,
+    LINENO_ck_assert_int_lt,
+    LINENO_ck_assert_int_le,
+    LINENO_ck_assert_int_gt,
+    LINENO_ck_assert_int_ge,
     LINENO_ck_assert_int_expr,
-    LINENO_ck_assert_str,
     LINENO_ck_assert_str_eq,
     LINENO_ck_assert_str_ne,
+    LINENO_ck_assert_str_lt,
+    LINENO_ck_assert_str_le,
+    LINENO_ck_assert_str_gt,
+    LINENO_ck_assert_str_ge,
     LINENO_ck_assert_str_expr,
 
 /* Signal Tests */
@@ -668,10 +748,17 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_simple, test_ck_assert_null);
   tcase_add_test (tc_simple, test_ck_assert_int_eq);
   tcase_add_test (tc_simple, test_ck_assert_int_ne);
+  tcase_add_test (tc_simple, test_ck_assert_int_lt);
+  tcase_add_test (tc_simple, test_ck_assert_int_le);
+  tcase_add_test (tc_simple, test_ck_assert_int_gt);
+  tcase_add_test (tc_simple, test_ck_assert_int_ge);
   tcase_add_test (tc_simple, test_ck_assert_int_expr);
-  tcase_add_test (tc_simple, test_ck_assert_str);
   tcase_add_test (tc_simple, test_ck_assert_str_eq);
   tcase_add_test (tc_simple, test_ck_assert_str_ne);
+  tcase_add_test (tc_simple, test_ck_assert_str_lt);
+  tcase_add_test (tc_simple, test_ck_assert_str_le);
+  tcase_add_test (tc_simple, test_ck_assert_str_gt);
+  tcase_add_test (tc_simple, test_ck_assert_str_ge);
   tcase_add_test (tc_simple, test_ck_assert_str_expr);
 
   tcase_add_test (tc_signal, test_segv);
