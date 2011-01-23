@@ -23,6 +23,7 @@ Patches:         Bernhard Reiter (configure issues)
  		 Robert Collins (subunit support)
                  Micah Cowan (checkmk tool, docs and tests)
 		 Zdenek Crha (new Check API docs, fixes, and tests)
+		 Bogdan Cristea (eclipse support in contrib dir)
 
 Anybody who has contributed code to Check or Check's build system is
 considered an author.  Send patches to this file to 

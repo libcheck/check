@@ -1,0 +1,16 @@
+Eclipse template for creating unit tests with check framework
+
+The template has been tested with Eclipse Helios CDT. Note that check
+framework should be installed first and the check library should be
+found in system path.
+
+Installation:
+
+From the "New Source File" dialog, press "Configure...", then
+"Import..." and select the template XML file
+(e.g. check_template_eclipse_helios.xml). The template should appear
+under "C Source File" tree as "C source template with check unit
+testing" in "Preferences" dialog.
+
+The newly installed template should be available when creating a "New
+Source File" in "Template" combo box.
