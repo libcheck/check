@@ -7,6 +7,7 @@ else
 fi
 
 expected="<?xml version=\"1.0\"?>
+<?xml-stylesheet type=\"text/xsl\" href=\"http://check.sourceforge.net/xml/check_unittest.xslt\"?>
 <testsuites xmlns=\"http://check.sourceforge.net/ns\">
   <suite>
     <title>S1</title>

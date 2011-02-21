@@ -34,6 +34,7 @@ $ xsltproc check_unittest.xslt check_output.xml > check_output.html
   <td>Path</td>
   <td>Filename</td>
   <td>Test ID</td>
+  <td>Iteration</td>
   <td>Description</td>
   <td>Message</td>
   </tr>
@@ -67,6 +68,10 @@ $ xsltproc check_unittest.xslt check_output.xml > check_output.html
   <td><xsl:apply-templates/></td>
 </xsl:template>
 
+<xsl:template match="c:iteration">
+  <td><xsl:apply-templates/></td>
+</xsl:template>
+
 <xsl:template match="c:description">
   <td><xsl:apply-templates/></td>
 </xsl:template>
@@ -81,4 +86,3 @@ $ xsltproc check_unittest.xslt check_output.xml > check_output.html
 
 </xsl:stylesheet>
 
- 	  	 

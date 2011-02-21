@@ -238,6 +238,7 @@ void xml_lfun (SRunner *sr CK_ATTRIBUTE_UNUSED, FILE *file, enum print_output pr
   switch (evt) {
   case CLINITLOG_SR:
     fprintf(file, "<?xml version=\"1.0\"?>\n");
+    fprintf(file, "<?xml-stylesheet type=\"text/xsl\" href=\"http://check.sourceforge.net/xml/check_unittest.xslt\"?>\n");
     fprintf(file, "<testsuites xmlns=\"http://check.sourceforge.net/ns\">\n");
     fprintf(file, "  <datetime>%s</datetime>\n", t);
     break;
