@@ -187,8 +187,11 @@ static void srunner_iterate_tcase_tfuns (SRunner *sr, TCase *tc)
       default:
         eprintf("Bad fork status in SRunner", __FILE__, __LINE__);
       }
-      srunner_add_failure (sr, tr);
-      log_test_end(sr, tr);
+
+      if ( NULL != tr ) {
+        srunner_add_failure (sr, tr);
+        log_test_end(sr, tr);
+      }
     }
   }
 }  
@@ -333,12 +336,14 @@ static TestResult *receive_result_info_nofork (const char *tcname,
   TestResult *tr;
 
   tr = receive_test_result(0);
-  if (tr == NULL)
+  if (tr == NULL) {
     eprintf("Failed to receive test result", __FILE__, __LINE__);
-  tr->tcname = tcname;
-  tr->tname = tname;
-  tr->iter = iter;
-  set_nofork_info(tr);
+  } else {
+    tr->tcname = tcname;
+    tr->tname = tname;
+    tr->iter = iter;
+    set_nofork_info(tr);
+  }
 
   return tr;
 }
@@ -401,12 +406,14 @@ static TestResult *receive_result_info_fork (const char *tcname,
   TestResult *tr;
 
   tr = receive_test_result(waserror(status, expected_signal));
-  if (tr == NULL)
+  if (tr == NULL) {
     eprintf("Failed to receive test result", __FILE__, __LINE__);
-  tr->tcname = tcname;
-  tr->tname = tname;
-  tr->iter = iter;
-  set_fork_info(tr, status, expected_signal, allowed_exit_value);
+  } else {
+    tr->tcname = tcname;
+    tr->tname = tname;
+    tr->iter = iter;
+    set_fork_info(tr, status, expected_signal, allowed_exit_value);
+  }
 
   return tr;
 }

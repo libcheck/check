@@ -169,7 +169,6 @@ void stdout_lfun (SRunner *sr, FILE *file, enum print_output printmode,
     }
     break;
   case CLEND_S:
-    s = obj;
     break;
   case CLSTART_T:
     break;
@@ -204,7 +203,6 @@ void lfile_lfun (SRunner *sr, FILE *file, enum print_output printmode CK_ATTRIBU
     srunner_fprint (file, sr, CK_MINIMAL);
     break;
   case CLEND_S:
-    s = obj;
     break;
   case CLSTART_T:
     break;
@@ -260,7 +258,6 @@ void xml_lfun (SRunner *sr CK_ATTRIBUTE_UNUSED, FILE *file, enum print_output pr
     break;
   case CLEND_S:
     fprintf(file, "  </suite>\n");
-    s = obj;
     break;
   case CLSTART_T:
     break;

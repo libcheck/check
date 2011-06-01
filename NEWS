@@ -13,6 +13,8 @@ In development.
 * Added longjmp to fail function to ensure that no code will be executed in test
   function after failed assertion
 
+* Fix dead assignments and several possible NULL pointer dereferences
+
 Tue, Sep 22, 2009: Released Check 0.9.8
   based on r559 (2009-09-23 21:00).
 
