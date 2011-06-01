@@ -21,6 +21,10 @@
 #ifndef ERROR_H
 #define ERROR_H
 
+#include <setjmp.h>
+
+extern jmp_buf error_jmp_buffer;
+
 /* Include stdlib.h beforehand */
 
 /* Print error message and die

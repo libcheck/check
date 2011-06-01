@@ -250,6 +250,8 @@ void _fail_unless (int result, const char *file,
 #ifdef _POSIX_VERSION
       exit(1);
 #endif /* _POSIX_VERSION */
+    } else {
+      longjmp(error_jmp_buffer, 1);
     }
   }
 }

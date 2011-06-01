@@ -25,8 +25,14 @@
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
+#include <setjmp.h>
 
 #include "check_error.h"
+
+/**
+ * Storage for setjmp/longjmp context information used in NOFORK mode
+ */
+jmp_buf error_jmp_buffer;
 
 
 /* FIXME: including a colon at the end is a bad way to indicate an error */

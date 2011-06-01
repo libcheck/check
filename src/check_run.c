@@ -26,6 +26,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <signal.h>
+#include <setjmp.h>
 
 #include "check.h"
 #include "check_error.h"
@@ -47,6 +48,7 @@ enum tf_type {
   CK_NOFORK_TEST,
   CK_NOFORK_FIXTURE
 };
+
 
 /* all functions are defined in the same order they are declared.
    functions that depend on forking are gathered all together.
@@ -216,7 +218,10 @@ static int srunner_run_unchecked_setup (SRunner *sr, TCase *tc)
   for (list_front(l); !list_at_end(l); list_advance(l)) {
     send_ctx_info(CK_CTX_SETUP);
     f = list_val(l);
-    f->fun();
+
+    if ( 0 == setjmp(error_jmp_buffer) ) {
+      f->fun();
+    }
 
     tr = receive_result_info_nofork (tc->name, "unchecked_setup", 0);
 
@@ -240,18 +245,24 @@ static TestResult * tcase_run_checked_setup (SRunner *sr, TCase *tc)
   List *l;
   Fixture *f;
   enum fork_status fstat = srunner_fork_status(sr);
-  
+
   l = tc->ch_sflst;
   if (fstat == CK_FORK) {
     send_ctx_info(CK_CTX_SETUP);
   }
-  
+
   for (list_front(l); !list_at_end(l); list_advance(l)) {
+    f = list_val(l);
+
     if (fstat == CK_NOFORK) {
       send_ctx_info(CK_CTX_SETUP);
+
+      if ( 0 == setjmp(error_jmp_buffer) ) {
+        f->fun();
+      }
+    } else {
+      f->fun();
     }
-    f = list_val(l);
-    f->fun();
 
     /* Stop the setup and return the failure if nofork mode. */
     if (fstat == CK_NOFORK) {
@@ -305,7 +316,9 @@ static TestResult *tcase_run_tfun_nofork (SRunner *sr, TCase *tc, TF *tfun, int 
   
   tr = tcase_run_checked_setup(sr, tc);
   if (tr == NULL) {
-    tfun->fn(i);
+    if ( 0 == setjmp(error_jmp_buffer) ) {
+      tfun->fn(i);
+    }
     tcase_run_checked_teardown(tc);
     return receive_result_info_nofork(tc->name, tfun->name, i);
   }

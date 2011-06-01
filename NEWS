@@ -10,6 +10,9 @@ In development.
 * Added xslt link to xml output, added display of iteration field into xslt
   stylesheet and moved it to directory accessible from web page root
 
+* Added longjmp to fail function to ensure that no code will be executed in test
+  function after failed assertion
+
 Tue, Sep 22, 2009: Released Check 0.9.8
   based on r559 (2009-09-23 21:00).
 
