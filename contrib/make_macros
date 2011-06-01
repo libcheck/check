@@ -183,7 +183,7 @@ sub make_macro {
         print $fh " */\n";
     }
     print $fh "#define ${name}(",(join ", ", @args, '...'),") \\\n";
-    print $fh "    _fail_unless( $expr, __FILE__, __LINE__, \\\n";
+    print $fh "    _ck_assert_msg( $expr, __FILE__, __LINE__, \\\n";
     print $fh "                  \"$msg\", ## __VA_ARGS__, NULL)\n";
     print $fh "\n";
     

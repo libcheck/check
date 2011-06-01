@@ -229,7 +229,7 @@ void _mark_point (const char *file, int line)
   send_loc_info (file, line);
 }
 
-void _fail_unless (int result, const char *file,
+void _ck_assert_msg (int result, const char *file,
                    int line, const char *expr, ...)
 {
   const char *msg;

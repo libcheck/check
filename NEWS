@@ -4,6 +4,8 @@ In development.
   multiple evaluation, unit tests, and new
   ck_assert_(str|int)_(lt|le|gt|ge) comparison functions.
 
+* Made the new Check API primary and use it to define macros from old Check API
+
 * Added checkmk, a tool for reducing "boilerplate coding" when writing
   unit tests with check.
 

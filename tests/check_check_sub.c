@@ -33,8 +33,7 @@ START_TEST(test_pass)
 }
 END_TEST
 
-/* FIXME: this should really be called test_fail_unless */
-START_TEST(test_fail)
+START_TEST(test_fail_unless)
 {
   fail_unless(1 == 2, "This test should fail");
 }
@@ -723,7 +722,7 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_simple, test_lno);
   tcase_add_test (tc_simple, test_mark_lno);
   tcase_add_test (tc_simple, test_pass);
-  tcase_add_test (tc_simple, test_fail);
+  tcase_add_test (tc_simple, test_fail_unless);
   tcase_add_test (tc_simple, test_fail_if_pass);
   tcase_add_test (tc_simple, test_fail_if_fail);
   tcase_add_test (tc_simple, test_fail_null_msg);
@@ -765,7 +764,7 @@ Suite *make_sub_suite(void)
   tcase_add_test_raise_signal (tc_signal, test_segv, 11); /* pass  */
   tcase_add_test_raise_signal (tc_signal, test_segv, 8);  /* error */
   tcase_add_test_raise_signal (tc_signal, test_pass, 8);  /* fail  */
-  tcase_add_test_raise_signal (tc_signal, test_fail, 8);  /* fail  */
+  tcase_add_test_raise_signal (tc_signal, test_fail_unless, 8);  /* fail  */
   tcase_add_test (tc_signal, test_fpe);
   tcase_add_test (tc_signal, test_mark_point);
 

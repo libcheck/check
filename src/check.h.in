@@ -216,37 +216,41 @@ static void __testname (int _i CK_ATTRIBUTE_UNUSED)\
 /* End a unit test */
 #define END_TEST }
 
+/* Old check fail API, use new check fail API for newly written code. */
+
 /* Fail the test case unless expr is true */
+#define fail_unless ck_assert_msg
+
+/* Fail the test case if expr is true */
 /* The space before the comma sign before ## is essential to be compatible
    with gcc 2.95.3 and earlier.
+   FIXME: these macros may conflict with C89 if expr is
+   FIXME:   strcmp (str1, str2) due to excessive string length.
 */
-#define fail_unless(expr, ...)\
-        _fail_unless(expr, __FILE__, __LINE__,\
-        "Assertion '"#expr"' failed" , ## __VA_ARGS__, NULL)
+#define fail_if(expr, ...)\
+  _ck_assert_msg(!(expr), __FILE__, __LINE__,\
+    "Failure '"#expr"' occured" , ## __VA_ARGS__, NULL)
+
+#define fail ck_abort_msg
+
+/* Non macro version of #ck_assert_msg, with more complicated interface */
+void CK_EXPORT _ck_assert_msg (int result, const char *file,
+                             int line, const char *expr, ...);
+
+/* New check fail API. */
 
 /* Fail the test case if expr is true */
 /* The space before the comma sign before ## is essential to be compatible
    with gcc 2.95.3 and earlier.
 */
-
-/* FIXME: these macros may conflict with C89 if expr is 
-   FIXME:   strcmp (str1, str2) due to excessive string length. */
-#define fail_if(expr, ...)\
-        _fail_unless(!(expr), __FILE__, __LINE__,\
-        "Failure '"#expr"' occured" , ## __VA_ARGS__, NULL)
+#define ck_assert(C) ck_assert_msg(C, NULL)
+#define ck_assert_msg(expr, ...) \
+  _ck_assert_msg(expr, __FILE__, __LINE__,\
+    "Assertion '"#expr"' failed" , ## __VA_ARGS__, NULL)
 
 /* Always fail */
-#define fail(...) _fail_unless(0, __FILE__, __LINE__, "Failed" , ## __VA_ARGS__, NULL)
-
-/* Non macro version of #fail_unless, with more complicated interface */
-void CK_EXPORT _fail_unless (int result, const char *file,
-                             int line, const char *expr, ...);
-
-/* New check fail API. */
 #define ck_abort() ck_abort_msg(NULL)
-#define ck_abort_msg fail
-#define ck_assert(C) ck_assert_msg(C, NULL)
-#define ck_assert_msg fail_unless
+#define ck_abort_msg(...) _ck_assert_msg(0, __FILE__, __LINE__, "Failed" , ## __VA_ARGS__, NULL)
 
 /* Integer comparsion macros with improved output compared to fail_unless(). */
 /* OP may be any comparion operator. */
