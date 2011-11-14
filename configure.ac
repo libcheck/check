@@ -84,7 +84,7 @@ AC_HELP_STRING([--enable-subunit],
     ;;
   no)
     enable_subunit=false
-    echoo "Disabled subunit support"
+    echo "Disabled subunit support"
     ;;
   autodetect)
     echo "Subunit support will enable automatically."
