@@ -945,7 +945,7 @@ function is run, if defined. After each unit test, the
 @code{teardown()} function is run, if defined.  Since they run inside
 the forked address space, if checked fixtures signal or otherwise
 fail, they will be caught and reported by the @code{SRunner}.  A
-checked @code{teardown()} fixture will run even if the unit test
+checked @code{teardown()} fixture will not run if the unit test
 fails.
 
 @item Unchecked fixtures
@@ -953,9 +953,12 @@ are run in the same address space as the test program. Therefore they
 may not signal or exit, but may use the fail functions. The unchecked
 @code{setup()}, if defined, is run before the test case is
 started. The unchecked @code{teardown()}, if defined, is run after the
-test case is done.
+test case is done. An unchecked @code{teardown()} fixture will run even
+if a unit test fails.
 @end table
 
+An important  difference is that the checked fixtures are run once per
+unit test and the unchecked fixtures are run once per test case.
 So for a test case that contains @code{check_one()} and
 @code{check_two()} unit tests,
 @code{checked_setup()}/@code{checked_teardown()} checked fixtures, and
