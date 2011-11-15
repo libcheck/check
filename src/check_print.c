@@ -105,9 +105,9 @@ void tr_fprint (FILE *file, TestResult *tr, enum print_output print_mode)
 void tr_xmlprint (FILE *file, TestResult *tr, enum print_output print_mode CK_ATTRIBUTE_UNUSED)
 {
   char result[10];
-  char *path_name;
-  char *file_name;
-  char *slash;
+  char *path_name = "";
+  char *file_name = "";
+  char *slash = NULL;
 
   switch (tr->rtype) {
   case CK_PASS:
@@ -125,15 +125,17 @@ void tr_xmlprint (FILE *file, TestResult *tr, enum print_output print_mode CK_AT
     break;
   }
 
-  slash = strrchr(tr->file, '/');
-  if (slash == NULL) {
-    path_name = (char*)".";
-    file_name = tr->file;
-  } else {
-    path_name = strdup(tr->file);
-    path_name[slash - tr->file] = 0; /* Terminate the temporary string. */
-    file_name = slash + 1;
-  }
+  if (tr->file) {
+    slash = strrchr(tr->file, '/');
+    if (slash == NULL) {
+      path_name = (char*)".";
+      file_name = tr->file;
+    } else {
+      path_name = strdup(tr->file);
+      path_name[slash - tr->file] = 0; /* Terminate the temporary string. */
+      file_name = slash + 1;
+    }
+  } 
     
 
   fprintf(file, "    <test result=\"%s\">\n", result);
