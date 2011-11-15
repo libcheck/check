@@ -1,5 +1,9 @@
 In development.
 
+* Changed how the message pipe is read. Before, the whole file was copied to
+  RAM with realloc, giving problems with huge allocations for repetetive
+  tests, the problem was visible for a specific GStreamer test case.
+
 * Improvements to the new Check API: documentation, macros that allow
   multiple evaluation, unit tests, and new
   ck_assert_(str|int)_(lt|le|gt|ge) comparison functions.
