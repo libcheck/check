@@ -39,6 +39,18 @@
 #define pthread_mutex_unlock(arg)
 #endif
 
+/* Maximum size for one message in the message stream. */
+#define CK_MAX_MSG_SIZE 8192
+/* This is used to implement a sliding window on the receiving
+ * side. When sending messages, we assure that no single message
+ * is bigger than this (actually we check against CK_MAX_MSG_SIZE/2).
+ * The usual size for a message is less than 80 bytes.
+ * All this is done instead of the previous approach to allocate (actually
+ * continuously reallocate) one big chunk for the whole message stream.
+ * Problems were seen in the wild with up to 4 GB reallocations.
+ */
+
+
 /* typedef an unsigned int that has at least 4 bytes */
 typedef uint32_t ck_uint32;
 
@@ -59,7 +71,7 @@ static void  check_type (int type, const char *file, int line);
 static enum ck_msg_type upack_type (char **buf);
 static void  pack_type  (char **buf, enum ck_msg_type type);
 
-static int   read_buf   (int fdes, char **buf);
+static int   read_buf   (int fdes, int size, char *buf);
 static int   get_result (char *buf, RcvMsg *rmsg);
 static void  rcvmsg_update_ctx (RcvMsg *rmsg, enum ck_result_ctx ctx);
 static void  rcvmsg_update_loc (RcvMsg *rmsg, const char *file, int line);
@@ -96,7 +108,6 @@ int pack (enum ck_msg_type type, char **buf, CheckMsg *msg)
 int upack (char *buf, CheckMsg *msg, enum ck_msg_type *type)
 {
   char *obuf;
-  int nread;
 
   if (buf == NULL)
     return -1;
@@ -109,8 +120,7 @@ int upack (char *buf, CheckMsg *msg, enum ck_msg_type *type)
   
   upftab[*type] (&buf, msg);
 
-  nread = buf - obuf;
-  return nread;
+  return buf - obuf;
 }
 
 static void pack_int (char **buf, int val)
@@ -262,6 +272,10 @@ void ppack (int fdes, enum ck_msg_type type, CheckMsg *msg)
   ssize_t r;
 
   n = pack (type, &buf, msg);
+  /* Keep it on the safe side to not send too much data. */
+  if (n > (CK_MAX_MSG_SIZE / 2))
+    eprintf("Message string too long", __FILE__, __LINE__ - 2);
+
   pthread_mutex_lock(&mutex_lock);
   r = write (fdes, buf, n);
   pthread_mutex_unlock(&mutex_lock);
@@ -271,32 +285,16 @@ void ppack (int fdes, enum ck_msg_type type, CheckMsg *msg)
   free (buf);
 }
 
-static int read_buf (int fdes, char **buf)
+static int read_buf (int fdes, int size, char *buf)
 {
-  char *readloc;
   int n;
-  int nread = 0;
-  int size = 1;
-  int grow = 2;
-  
-  *buf = emalloc(size);
-  readloc = *buf;
-  while (1) {
-    n = read (fdes, readloc, size - nread);
-    if (n == 0)
-      break;
-    if (n == -1)
-      eprintf ("Error in call to read:", __FILE__, __LINE__ - 4);
 
-    nread += n;
-    size *= grow;
-    *buf = erealloc (*buf,size);
-    readloc = *buf + nread;
-  }
+  n = read (fdes, buf, size);
+  if (n == -1)
+    eprintf ("Error in call to read:", __FILE__, __LINE__ - 4);
 
-  return nread;
+  return n;
 }    
-
 
 static int get_result (char *buf, RcvMsg *rmsg)
 {
@@ -399,22 +397,33 @@ static void rcvmsg_update_loc (RcvMsg *rmsg, const char *file, int line)
   
 RcvMsg *punpack (int fdes)
 {
-  int nread, n;
+  int nread, nparse, n;
   char *buf;
-  char *obuf;
   RcvMsg *rmsg;
 
-  nread = read_buf (fdes, &buf);
-  obuf = buf;
   rmsg = rcvmsg_create ();
   
-  while (nread > 0) {
+  /* Allcate a buffer */
+  buf = emalloc(CK_MAX_MSG_SIZE);
+  /* Fill the buffer from the file */
+  nread = read_buf (fdes, CK_MAX_MSG_SIZE, buf);
+  nparse = nread;
+  /* While not all parsed */
+  while (nparse > 0) {
+    /* Parse one message */
     n = get_result (buf, rmsg);
-    nread -= n;
-    buf += n;
+    nparse -= n;
+    /* Move remaining data in buffer to the beginning */
+    memmove(buf, buf + n, nparse);
+    /* If EOF has not been seen */
+    if (nread > 0) {
+      /* Read more data into empty space at end of the buffer */
+      nread = read_buf (fdes, n, buf + nparse);
+      nparse += nread;
+    }
   }
+  free (buf);
 
-  free (obuf);
   if (rmsg->lastctx == CK_CTX_INVALID) {
     free (rmsg);
     rmsg = NULL;
