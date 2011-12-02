@@ -95,6 +95,7 @@ Advanced Features
 * No Fork Mode::                
 * Test Fixtures::               
 * Multiple Suites in one SRunner::  
+* Selective Running of Tests::
 * Testing Signal Handling and Exit Values::  
 * Looping Tests::               
 * Test Timeouts::               
@@ -807,6 +808,7 @@ easier for the developer to write, run, and analyse tests.
 * No Fork Mode::                
 * Test Fixtures::               
 * Multiple Suites in one SRunner::  
+* Selective Running of Tests::
 * Testing Signal Handling and Exit Values::  
 * Looping Tests::               
 * Test Timeouts::               
@@ -1053,7 +1055,7 @@ or unchecked fixtures, the unit tests for the test case, and the
 @code{teardown()} function for the fixture will not be run.  A fixture
 error will be created and reported to the @code{SRunner}.
 
-@node Multiple Suites in one SRunner, Testing Signal Handling and Exit Values, Test Fixtures, Advanced Features
+@node Multiple Suites in one SRunner, Selective Running of Tests, Test Fixtures, Advanced Features
 @section Multiple Suites in one SRunner
 
 In a large program, it will be convenient to create multiple suites,
@@ -1097,7 +1099,21 @@ srunner_add_suite (sr, make_pack_suite ());
 @end verbatim
 @end example
 
-@node Testing Signal Handling and Exit Values, Looping Tests, Multiple Suites in one SRunner, Advanced Features
+@node Selective Running of Tests, Testing Signal Handling and Exit Values, Multiple Suites in one SRunner, Advanced Features
+@section Selective Running of Tests
+
+@vindex CK_RUN_SUITE
+@vindex CK_RUN_CASE
+After adding a couple of suites and some test cases in each, it is
+sometimes practical to be able to run only one suite, or one
+specific test case, without recompiling the test code. There are
+two environment variables available that offers this ability,
+@code{CK_RUN_SUITE} and @code{CK_RUN_CASE}. Just set the value to
+the name of the suite and/or test case you want to run. These
+environment variables can also be a good integration tool for
+running specific tests from within another tool, e.g. an IDE.
+  
+@node Testing Signal Handling and Exit Values, Looping Tests, Selective Running of Tests, Advanced Features
 @section Testing Signal Handling and Exit Values
 
 @findex tcase_add_test_raise_signal()
