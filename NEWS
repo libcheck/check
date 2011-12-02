@@ -1,5 +1,7 @@
 In development.
 
+* Added a chapter in the documentation for selective running of tests.
+
 * Changed how the message pipe is read. Before, the whole file was copied to
   RAM with realloc, giving problems with huge allocations for repetetive
   tests, the problem was visible for a specific GStreamer test case.
