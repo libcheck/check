@@ -59,13 +59,13 @@ directory in the CVS, but not ship it when doing "make dist".
 
 Sometimes upstream insists on shipping the debian directory to their
 users so these can easily build a .deb, which is really bad because
-they usually don't remmeber to change the Debian changelog and version
+they usually don't remember to change the Debian changelog and version
 accordingly, and generally don't know enough about Debian policy to
 make conforming packages.
 
 So in the end you will have different broken packages compiled on
 various systems floating around which all have the same version number
-and look like offical packages.
+and look like official packages.
 
   -- Robert Lemmen, 2006
 
