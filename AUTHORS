@@ -8,9 +8,9 @@ Original Author: Arien Malec <arien dot malec at gmail dot com>
 Patches:
     Bernhard Reiter (configure issues)
     Neil Spring (const fixes)
-                 Rick Poyner (pipe handling, bug fixes)
-                 Dietmar Petras (bug fixes)
-                 Gilgamesh Nootebos (bug fixes)
+    Rick Poyner (pipe handling, bug fixes)
+    Dietmar Petras (bug fixes)
+    Gilgamesh Nootebos (bug fixes)
 	         Frederic Peters (XML output)
 	         Lucas Di Pentima and Cesar Ballardini (signals)
                  Robert Lemmen (gcov description in manual)
