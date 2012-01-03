@@ -5,8 +5,9 @@ Maintainers:
 Ex-Maintainer:   Sven Neumann <sven at convergence dot de>
 Original Author: Arien Malec <arien dot malec at gmail dot com>
 
-Patches:         Bernhard Reiter (configure issues)
-                 Neil Spring (const fixes)
+Patches:
+    Bernhard Reiter (configure issues)
+    Neil Spring (const fixes)
                  Rick Poyner (pipe handling, bug fixes)
                  Dietmar Petras (bug fixes)
                  Gilgamesh Nootebos (bug fixes)
