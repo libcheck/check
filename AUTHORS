@@ -1,31 +1,35 @@
+Original Author:
+    Arien Malec <arien dot malec at gmail dot com>
+
 Maintainers:
     Fredrik Hugosson <hugo303 at users dot sourceforge dot net>
     Chris Pickett <chris dot pickett at mail dot mcgill dot ca>
 
-Ex-Maintainer:   Sven Neumann <sven at convergence dot de>
-Original Author: Arien Malec <arien dot malec at gmail dot com>
+Ex-Maintainer:
+    Sven Neumann <sven at convergence dot de>
 
 Patches:
+    Cesar Ballardini (signals)
+    Friedrich Beckmann (mingw and msvc port)
+    Ross Burton (pkg-config patch)
+    Robert Collins (subunit support)
+    Micah Cowan (checkmk tool, docs and tests)
+    Zdenek Crha (new Check API docs, fixes, and tests)
+    Bogdan Cristea (eclipse support in contrib dir)
+    Lucas Di Pentima (signals)
+    Torok Edwin (strsignal and build fixes)
+    Daniel Gollub (pthreads support)
+    Roland Illig (varargs and strsignal portability fixes)
+    Robert Lemmen (gcov description in manual)
+    Loic Martin (AM_PATH_CHECK patch)
+    Roy Merkel (specified test exit value)
+    Gilgamesh Nootebos (bug fixes)
+    Frederic Peters (XML output)
+    Dietmar Petras (bug fixes)
+    Rick Poyner (pipe handling, bug fixes)
     Bernhard Reiter (configure issues)
     Neil Spring (const fixes)
-    Rick Poyner (pipe handling, bug fixes)
-    Dietmar Petras (bug fixes)
-    Gilgamesh Nootebos (bug fixes)
-	         Frederic Peters (XML output)
-	         Lucas Di Pentima and Cesar Ballardini (signals)
-                 Robert Lemmen (gcov description in manual)
-	         Loic Martin (AM_PATH_CHECK patch)
-	         Ross Burton (pkg-config patch)
-		 Roland Stigge (bug fix: allow fail inside setup)
-		 Torok Edwin (strsignal and build fixes)
-		 Roland Illig (varargs and strsignal portability fixes)
-		 Daniel Gollub (pthreads support)
-		 Friedrich Beckmann (mingw and msvc port)
-		 Roy Merkel (specified test exit value)
- 		 Robert Collins (subunit support)
-                 Micah Cowan (checkmk tool, docs and tests)
-		 Zdenek Crha (new Check API docs, fixes, and tests)
-		 Bogdan Cristea (eclipse support in contrib dir)
+    Roland Stigge (bug fix: allow fail inside setup)
 
 Anybody who has contributed code to Check or Check's build system is
 considered an author.  Send patches to this file to 
