@@ -1,0 +1,34 @@
+The `check.mk' file in this directory will improve the behaviour of
+`make check' when using Automake.  If you create one test program for
+each module you are testing in your program, then this will do this
+following:
+
+1) Allow tests to be compiled and run in parallel
+2) Only recompile and rerun test programs when the sources change
+3) Produce a .log file with the output from each test
+4) Only display the contents of .log files for failed tests
+5) Print either a red or green status message at the end according to
+whether some tests failed or all tests passed
+
+Modifications to your project should be minimal.  A working example
+can be found in libspmt, here:
+
+https://svn.sable.mcgill.ca/sable/spmt/libspmt/tests/
+
+First, copy check.mk to trunk/build-aux/check.mk
+
+Second, add the following lines to tests/Makefile.am after `TESTS' and
+`check_PROGRAMS' are defined:
+
+-----
+# quiet errors re: check.mk not knowing how to create .log
+.log:
+
+LAZY_TEST_SUITE = 1
+TEST_LOGS = $(TESTS:=.log)
+
+# improved make check
+include $(top_srcdir)/build-aux/check.mk
+-----
+
+Third, rebuild and test with `make check'.

@@ -1,5 +1,8 @@
 In development.
 
+* Added instructions for improving the speed and output of `make
+  check' when using Automake.  See contrib/improved_make_check/.
+
 * Added a chapter in the documentation for selective running of tests.
 
 * Changed how the message pipe is read. Before, the whole file was copied to
