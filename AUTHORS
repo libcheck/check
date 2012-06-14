@@ -10,7 +10,7 @@ Ex-Maintainer:
 
 Patches:
     Cesar Ballardini (signals)
-    Friedrich Beckmann (mingw and msvc port)
+    Friedrich Beckmann (mingw and msvc port #1)
     Ross Burton (pkg-config patch)
     Robert Collins (subunit support)
     Micah Cowan (checkmk tool, docs and tests)
@@ -21,6 +21,7 @@ Patches:
     Daniel Gollub (pthreads support)
     Roland Illig (varargs and strsignal portability fixes)
     Robert Lemmen (gcov description in manual)
+    Mateusz Loskot (msvc port #2)
     Loic Martin (AM_PATH_CHECK patch)
     Roy Merkel (specified test exit value)
     Gilgamesh Nootebos (bug fixes)

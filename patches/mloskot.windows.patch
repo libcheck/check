@@ -1,0 +1,1824 @@
+diff -u -r -N trunk/CMakeLists.txt mloskot-check-5790d29/CMakeLists.txt
+--- trunk/CMakeLists.txt	1969-12-31 19:00:00.000000000 -0500
++++ mloskot-check-5790d29/CMakeLists.txt	2012-01-08 13:37:22.000000000 -0500
+@@ -0,0 +1,359 @@
++#
++# Check: a unit test framework for C
++#
++# Copyright (C) 2011 Mateusz Loskot
++# Copyright (C) 2001, 2002 Arien Malec
++#
++# This library is free software; you can redistribute it and/or
++# modify it under the terms of the GNU Lesser General Public
++# License as published by the Free Software Foundation; either
++# version 2.1 of the License, or (at your option) any later version.
++#
++# This library is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++# Lesser General Public License for more details.
++#
++# You should have received a copy of the GNU Lesser General Public
++# License along with this library; if not, write to the
++# Free Software Foundation, Inc., 59 Temple Place - Suite 330,
++# Boston, MA 02111-1307, USA.
++#
++project(check C)
++
++cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
++set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
++
++# TODO: extract from configure.ac
++set(CHECK_MAJOR_VERSION 0)
++set(CHECK_MINOR_VERSION 9)
++set(CHECK_MICRO_VERSION 6)
++
++set(CHECK_VERSION
++  "${CHECK_MAJOR_VERSION}.${CHECK_MINOR_VERSION}.${CHECK_MICRO_VERSION}")
++
++###############################################################################
++# Set build features
++set(CMAKE_BUILD_TYPE Debug)
++
++set(TIMEOUT_TESTS_ENABLED 0)
++
++# TODO - look for SubUnit --mloskot
++if(NOT MSVC)
++  set(ENABLE_SUBUNIT 1)
++else(NOT MSVC)
++  set(ENABLE_SUBUNIT 0)
++endif()
++
++###############################################################################
++# Check system and architecture
++if(WIN32)
++  if(MSVC60)
++    set(WINVER 0x0400)
++  else()
++    set(WINVER 0x0500)
++  endif()
++  set(_WIN32_WINNT ${WINVER})
++endif(WIN32)
++
++if(MSVC)
++  add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
++  add_definitions(-D_CRT_SECURE_NO_WARNINGS)
++  add_definitions(-D_CRT_NONSTDC_NO_WARNINGS)
++endif(MSVC)
++
++###############################################################################
++include(CheckCSourceCompiles)
++include(CheckCSourceRuns)
++include(CheckFunctionExists)
++include(CheckIncludeFile)
++include(CheckIncludeFiles)
++include(CheckLibraryExists)
++include(CheckStructMember)
++include(CheckSymbolExists)
++include(CheckTypeExists)
++include(CheckTypeSize)
++
++###############################################################################
++# Check headers
++set(INCLUDES "")
++macro(ck_check_include_file header var)
++  check_include_files("${INCLUDES};${header}" ${var})
++  if(${var})
++    set(INCLUDES ${INCLUDES} ${header})
++  endif(${var})
++endmacro(ck_check_include_file)
++
++# Some FreeBSD headers assume sys/types.h was already included.
++ck_check_include_file("sys/types.h" HAVE_SYS_TYPES_H)
++
++# Alphabetize the rest unless there's a compelling reason
++ck_check_include_file("ctype.h" HAVE_CTYPE_H)
++ck_check_include_file("copyfile.h" HAVE_COPYFILE_H)
++ck_check_include_file("direct.h" HAVE_DIRECT_H)
++ck_check_include_file("dlfcn.h" HAVE_DLFCN_H)
++ck_check_include_file("errno.h" HAVE_ERRNO_H)
++ck_check_include_file("inttypes.h" HAVE_INTTYPES_H)
++ck_check_include_file("io.h" HAVE_IO_H)
++ck_check_include_file("limits.h" HAVE_LIMITS_H)
++ck_check_include_file("locale.h" HAVE_LOCALE_H)
++ck_check_include_file("memory.h" HAVE_MEMORY_H)
++ck_check_include_file("poll.h" HAVE_POLL_H)
++ck_check_include_file("process.h" HAVE_PROCESS_H)
++ck_check_include_file("signal.h" HAVE_SIGNAL_H)
++ck_check_include_file("stdarg.h" HAVE_STDARG_H)
++ck_check_include_file("stdint.h" HAVE_STDINT_H)
++ck_check_include_file("stdlib.h" HAVE_STDLIB_H)
++ck_check_include_file("string.h" HAVE_STRING_H)
++ck_check_include_file("strings.h" HAVE_STRINGS_H)
++ck_check_include_file("sys/cdefs.h" HAVE_SYS_CDEFS_H)
++ck_check_include_file("sys/poll.h" HAVE_SYS_POLL_H)
++ck_check_include_file("sys/select.h" HAVE_SYS_SELECT_H)
++ck_check_include_file("sys/stat.h" HAVE_SYS_STAT_H)
++ck_check_include_file("sys/time.h" HAVE_SYS_TIME_H)
++ck_check_include_file("sys/wait.h" HAVE_SYS_WAIT_H)
++ck_check_include_file("time.h" HAVE_TIME_H)
++ck_check_include_file("unistd.h" HAVE_UNISTD_H)
++ck_check_include_file("utime.h" HAVE_UTIME_H)
++ck_check_include_file("wchar.h" HAVE_WCHAR_H)
++ck_check_include_file("wctype.h" HAVE_WCTYPE_H)
++ck_check_include_file("windows.h" HAVE_WINDOWS_H)
++# Following files need windows.h, so we should test it after windows.h test.
++ck_check_include_file("wincrypt.h" HAVE_WINCRYPT_H)
++ck_check_include_file("winioctl.h" HAVE_WINIOCTL_H)
++
++###############################################################################
++# Check functions
++check_function_exists(ctime_r HAVE_CTIME_R)
++check_function_exists(fcntl HAVE_FCNTL)
++check_function_exists(fileno HAVE_FILENO)
++check_function_exists(fork HAVE_FORK)
++check_function_exists(fstat HAVE_FSTAT)
++check_function_exists(getenv HAVE_GETENV)
++check_function_exists(getpid HAVE_GETPID)
++check_function_exists(gettimeofday HAVE_GETTIMEOFDAY)
++check_function_exists(gmtime_r HAVE_GMTIME_R)
++check_function_exists(localtime_r HAVE_LOCALTIME_R)
++check_function_exists(localtime_s HAVE_LOCALTIME_S)
++check_function_exists(lstat HAVE_LSTAT)
++check_function_exists(malloc HAVE_MALLOC)
++check_function_exists(mbrtowc HAVE_MBRTOWC)
++check_function_exists(mbsnrtowcs HAVE_MBSNRTOWCS)
++check_function_exists(memmove HAVE_MEMMOVE)
++check_function_exists(mkdir HAVE_MKDIR)
++check_function_exists(mkstemp HAVE_MKSTEMP)
++check_function_exists(pipe HAVE_PIPE)
++check_function_exists(poll HAVE_POLL)
++check_function_exists(putenv HAVE_PUTENV)
++check_function_exists(realloc HAVE_REALLOC)
++check_function_exists(read HAVE_READ)
++check_function_exists(select HAVE_SELECT)
++check_function_exists(setenv HAVE_SETENV)
++check_function_exists(setlocale HAVE_SETLOCALE)
++check_function_exists(sigaction HAVE_SIGACTION)
++check_function_exists(sleep HAVE_SLEEP)
++check_function_exists(snprintf HAVE_SNPRINTF)
++check_function_exists(strchr HAVE_STRCHR)
++check_function_exists(strdup HAVE_STRDUP)
++check_function_exists(strftime HAVE_STRFTIME)
++check_function_exists(strerror HAVE_STRERROR)
++check_function_exists(strerror_r HAVE_STRERROR_R)
++check_function_exists(strncpy_s HAVE_STRNCPY_S)
++check_function_exists(strrchr HAVE_STRRCHR)
++check_function_exists(strsignal HAVE_STRSIGNAL)
++check_function_exists(timegm HAVE_TIMEGM)
++check_function_exists(tzset HAVE_TZSET)
++check_function_exists(unsetenv HAVE_UNSETENV)
++check_function_exists(utime HAVE_UTIME)
++check_function_exists(vfork HAVE_VFORK)
++check_function_exists(vprintf HAVE_VPRINTF)
++check_function_exists(wcrtomb HAVE_WCRTOMB)
++check_function_exists(wcscmp HAVE_WCSCMP)
++check_function_exists(wcscpy HAVE_WCSCPY)
++check_function_exists(wcslen HAVE_WCSLEN)
++check_function_exists(wcsnrtombs HAVE_WCSNRTOMBS)
++check_function_exists(wctomb HAVE_WCTOMB)
++check_function_exists(wmemcmp HAVE_WMEMCMP)
++check_function_exists(wmemcpy HAVE_WMEMCPY)
++check_function_exists(write HAVE_WRITE)
++check_function_exists(_ctime64_s HAVE__CTIME64_S)
++check_function_exists(_fileno HAVE__FILENO)
++check_function_exists(_fseeki64 HAVE__FSEEKI64)
++check_function_exists(_get_timezone HAVE__GET_TIMEZONE)
++check_function_exists(_getpid HAVE__GETPID)
++check_function_exists(_localtime64_s HAVE__LOCALTIME64_S)
++check_function_exists(_mkgmtime64 HAVE__MKGMTIME64)
++check_function_exists(_pipe HAVE__PIPE)
++check_function_exists(_putenv HAVE__PUTENV)
++check_function_exists(_read HAVE__READ)
++check_function_exists(_snprintf HAVE__SNPRINTF)
++check_function_exists(_strdup HAVE__STRDUP)
++check_function_exists(_write HAVE__WRITE)
++
++###############################################################################
++# Check defines
++set(headers "limits.h")
++
++if(HAVE_STDINT_H)
++  list(APPEND headers "stdint.h")
++endif(HAVE_STDINT_H)
++
++if(HAVE_INTTYPES_H)
++  list(APPEND headers "inttypes.h")
++endif(HAVE_INTTYPES_H)
++
++check_symbol_exists(INT64_MAX "${headers}" HAVE_INT64_MAX)
++check_symbol_exists(INT64_MIN "${headers}" HAVE_INT64_MIN)
++check_symbol_exists(UINT32_MAX "${headers}" HAVE_UINT32_MAX)
++check_symbol_exists(UINT64_MAX "${headers}" HAVE_UINT64_MAX)
++check_symbol_exists(SIZE_MAX "${headers}" HAVE_SIZE_MAX)
++check_symbol_exists(SSIZE_MAX "limits.h"   HAVE_SSIZE_MAX)
++
++###############################################################################
++# Check struct members
++
++# Check for  tv_sec in struct timeval 
++if(NOT HAVE_SYS_TIME_H)
++    if(MSVC)
++        check_struct_member("struct timeval" tv_sec "Winsock2.h" HAVE_STRUCT_TIMEVAL_TV_SEC)
++        check_struct_member("struct timeval" tv_usec "Winsock2.h" HAVE_STRUCT_TIMEVAL_TV_USEC)
++    endif()
++endif()
++
++
++###############################################################################
++# Check for integer types
++check_type_size("short" SIZE_OF_SHORT)
++check_type_size("int" SIZE_OF_INT)
++check_type_size("long" SIZE_OF_LONG)
++check_type_size("long long" SIZE_OF_LONG_LONG)
++
++check_type_size("unsigned short" SIZE_OF_UNSIGNED_SHORT)
++check_type_size("unsigned" SIZE_OF_UNSIGNED)
++check_type_size("unsigned long" SIZE_OF_UNSIGNED_LONG)
++check_type_size("unsigned long long" SIZE_OF_UNSIGNED_LONG_LONG)
++
++check_type_size("__int64" __INT64)
++check_type_size("unsigned __int64" UNSIGNED___INT64)
++
++check_type_size(int16_t INT16_T) 
++check_type_size(int32_t INT32_T)
++check_type_size(int64_t INT64_T)
++check_type_size(intmax_t INTMAX_T)
++check_type_size(uint8_t UINT8_T) 
++check_type_size(uint16_t UINT16_T) 
++check_type_size(uint32_t UINT32_T) 
++check_type_size(uint64_t UINT64_T)
++check_type_size(uintmax_t UINTMAX_T)
++
++check_type_size(dev_t DEV_T)
++if(NOT HAVE_DEV_T)
++  if(MSVC)
++    set(dev_t "unsigned int")
++  endif(MSVC)
++endif(NOT HAVE_DEV_T)
++#
++check_type_size(gid_t GID_T)
++if(NOT HAVE_GID_T)
++  if(WIN32)
++    set(gid_t "short")
++  else(WIN32)
++    set(gid_t "unsigned int")
++  endif(WIN32)
++endif(NOT HAVE_GID_T)
++#
++check_type_size(id_t ID_T)
++if(NOT HAVE_ID_T)
++  if(WIN32)
++    set(id_t "short")
++  else(WIN32)
++    set(id_t "unsigned int")
++  endif(WIN32)
++endif(NOT HAVE_ID_T)
++#
++check_type_size(mode_t MODE_T)
++if(NOT HAVE_MODE_T)
++  if(WIN32)
++    set(mode_t "unsigned short")
++  else(WIN32)
++    set(mode_t "int")
++  endif(WIN32)
++endif(NOT HAVE_MODE_T)
++#
++check_type_size(off_t OFF_T)
++if(NOT HAVE_OFF_T)
++  set(off_t "__int64")
++endif(NOT HAVE_OFF_T)
++#
++check_type_size(size_t SIZE_T)
++if(NOT HAVE_SIZE_T)
++  if("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
++    set(size_t "uint64_t")
++  else("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
++    set(size_t   "uint32_t")
++  endif("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
++endif(NOT HAVE_SIZE_T)
++#
++check_type_size(ssize_t SSIZE_T)
++if(NOT HAVE_SSIZE_T)
++  if("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
++    set(ssize_t "int64_t")
++  else("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
++    set(ssize_t "long")
++  endif("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
++endif(NOT HAVE_SSIZE_T)
++#
++check_type_size(uid_t UID_T)
++if(NOT HAVE_UID_T)
++  if(WIN32)
++    set(uid_t "short")
++  else(WIN32)
++    set(uid_t "unsigned int")
++  endif(WIN32)
++endif(NOT HAVE_UID_T)
++#
++check_type_size(pid_t PID_T)
++if(NOT HAVE_PID_T)
++  if(WIN32)
++    set(pid_t "int")
++  else(WIN32)
++    MESSAGE(FATAL_ERROR "pid_t doesn't exist on this platform?")
++  endif(WIN32)
++endif(NOT HAVE_PID_T)
++#
++check_type_size(intptr_t INTPTR_T)
++if(NOT HAVE_INTPTR_T)
++  if("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
++    set(intptr_t "int64_t")
++  else()
++    set(intptr_t "int32_t")
++  endif()
++endif(NOT HAVE_INTPTR_T)
++#
++check_type_size(uintptr_t UINTPTR_T)
++if(NOT HAVE_UINTPTR_T)
++  if("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
++    set(uintptr_t "uint64_t")
++  else()
++    set(uintptr_t "uint32_t")
++  endif()
++endif(NOT HAVE_UINTPTR_T)
++#
++check_type_size(wchar_t SIZEOF_WCHAR_T)
++if(HAVE_SIZEOF_WCHAR_T)
++  set(HAVE_WCHAR_T 1)
++endif(HAVE_SIZEOF_WCHAR_T)
++
++###############################################################################
++# Generate "config.h" from "cmake/config.h.cmake"
++configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in
++  ${CMAKE_CURRENT_BINARY_DIR}/config.h)
++include_directories(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
++add_definitions(-DHAVE_CONFIG_H)
++set(CONFIG_HEADER ${CMAKE_CURRENT_BINARY_DIR}/config.h)
++
++###############################################################################
++# Subdirectories
++add_subdirectory(lib)
++add_subdirectory(src)
++add_subdirectory(tests)
+\ No newline at end of file
+diff -u -r -N trunk/cmake/CheckHeaderDirent.cmake mloskot-check-5790d29/cmake/CheckHeaderDirent.cmake
+--- trunk/cmake/CheckHeaderDirent.cmake	1969-12-31 19:00:00.000000000 -0500
++++ mloskot-check-5790d29/cmake/CheckHeaderDirent.cmake	2012-01-08 13:37:22.000000000 -0500
+@@ -0,0 +1,32 @@
++# - Check if the system has the specified type
++# CHECK_HEADER_DIRENT (HEADER1 HEARDER2 ...)
++#
++#  HEADER - the header(s) where the prototype should be declared
++#
++# The following variables may be set before calling this macro to
++# modify the way the check is run:
++#
++#  CMAKE_REQUIRED_FLAGS = string of compile command line flags
++#  CMAKE_REQUIRED_DEFINITIONS = list of macros to define (-DFOO=bar)
++#  CMAKE_REQUIRED_INCLUDES = list of include directories
++# Copyright (c) 2009, Michihiro NAKAJIMA
++#
++# Redistribution and use is allowed according to the terms of the BSD license.
++# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
++
++
++INCLUDE(CheckTypeExists)
++
++MACRO (CHECK_HEADER_DIRENT)
++  CHECK_TYPE_EXISTS("DIR *" dirent.h     HAVE_DIRENT_H)
++  IF(NOT HAVE_DIRENT_H)
++    CHECK_TYPE_EXISTS("DIR *" sys/ndir.h  HAVE_SYS_NDIR_H)
++    IF(NOT HAVE_SYS_NDIR_H)
++      CHECK_TYPE_EXISTS("DIR *" ndir.h      HAVE_NDIR_H)
++      IF(NOT HAVE_NDIR_H)
++        CHECK_TYPE_EXISTS("DIR *" sys/dir.h   HAVE_SYS_DIR_H)
++      ENDIF(NOT HAVE_NDIR_H)
++    ENDIF(NOT HAVE_SYS_NDIR_H)
++  ENDIF(NOT HAVE_DIRENT_H)
++ENDMACRO (CHECK_HEADER_DIRENT)
++
+diff -u -r -N trunk/cmake/CheckStructMember.cmake mloskot-check-5790d29/cmake/CheckStructMember.cmake
+--- trunk/cmake/CheckStructMember.cmake	1969-12-31 19:00:00.000000000 -0500
++++ mloskot-check-5790d29/cmake/CheckStructMember.cmake	2012-01-08 13:37:22.000000000 -0500
+@@ -0,0 +1,43 @@
++# - Check if the given struct or class has the specified member variable
++# CHECK_STRUCT_MEMBER (STRUCT MEMBER HEADER VARIABLE)
++#
++#  STRUCT - the name of the struct or class you are interested in
++#  MEMBER - the member which existence you want to check
++#  HEADER - the header(s) where the prototype should be declared
++#  VARIABLE - variable to store the result
++#
++# The following variables may be set before calling this macro to
++# modify the way the check is run:
++#
++#  CMAKE_REQUIRED_FLAGS = string of compile command line flags
++#  CMAKE_REQUIRED_DEFINITIONS = list of macros to define (-DFOO=bar)
++#  CMAKE_REQUIRED_INCLUDES = list of include directories
++
++# Copyright (c) 2006, Alexander Neundorf, <neundorf@kde.org>
++#
++# Redistribution and use is allowed according to the terms of the BSD license.
++# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
++
++
++INCLUDE(CheckCSourceCompiles)
++
++MACRO (CHECK_STRUCT_MEMBER _STRUCT _MEMBER _HEADER _RESULT)
++   SET(_INCLUDE_FILES)
++   FOREACH (it ${_HEADER})
++      SET(_INCLUDE_FILES "${_INCLUDE_FILES}#include <${it}>\n")
++   ENDFOREACH (it)
++
++   SET(_CHECK_STRUCT_MEMBER_SOURCE_CODE "
++${_INCLUDE_FILES}
++int main()
++{
++   static ${_STRUCT} tmp;
++   if (sizeof(tmp.${_MEMBER}))
++      return 0;
++  return 0;
++}
++")
++   CHECK_C_SOURCE_COMPILES("${_CHECK_STRUCT_MEMBER_SOURCE_CODE}" ${_RESULT})
++
++ENDMACRO (CHECK_STRUCT_MEMBER)
++
+diff -u -r -N trunk/cmake/CheckTypeExists.cmake mloskot-check-5790d29/cmake/CheckTypeExists.cmake
+--- trunk/cmake/CheckTypeExists.cmake	1969-12-31 19:00:00.000000000 -0500
++++ mloskot-check-5790d29/cmake/CheckTypeExists.cmake	2012-01-08 13:37:22.000000000 -0500
+@@ -0,0 +1,42 @@
++# - Check if the system has the specified type
++# CHECK_TYPE_EXISTS (TYPE HEADER VARIABLE)
++#
++#  TYPE - the name of the type or struct or class you are interested in
++#  HEADER - the header(s) where the prototype should be declared
++#  VARIABLE - variable to store the result
++#
++# The following variables may be set before calling this macro to
++# modify the way the check is run:
++#
++#  CMAKE_REQUIRED_FLAGS = string of compile command line flags
++#  CMAKE_REQUIRED_DEFINITIONS = list of macros to define (-DFOO=bar)
++#  CMAKE_REQUIRED_INCLUDES = list of include directories
++# Copyright (c) 2009, Michihiro NAKAJIMA
++# Copyright (c) 2006, Alexander Neundorf, <neundorf@kde.org>
++#
++# Redistribution and use is allowed according to the terms of the BSD license.
++# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
++
++
++INCLUDE(CheckCSourceCompiles)
++
++MACRO (CHECK_TYPE_EXISTS _TYPE _HEADER _RESULT)
++   SET(_INCLUDE_FILES)
++   FOREACH (it ${_HEADER})
++      SET(_INCLUDE_FILES "${_INCLUDE_FILES}#include <${it}>\n")
++   ENDFOREACH (it)
++
++   SET(_CHECK_TYPE_EXISTS_SOURCE_CODE "
++${_INCLUDE_FILES}
++int main()
++{
++   static ${_TYPE} tmp;
++   if (sizeof(tmp))
++      return 0;
++  return 0;
++}
++")
++   CHECK_C_SOURCE_COMPILES("${_CHECK_TYPE_EXISTS_SOURCE_CODE}" ${_RESULT})
++
++ENDMACRO (CHECK_TYPE_EXISTS)
++
+diff -u -r -N trunk/cmake/config.h.in mloskot-check-5790d29/cmake/config.h.in
+--- trunk/cmake/config.h.in	1969-12-31 19:00:00.000000000 -0500
++++ mloskot-check-5790d29/cmake/config.h.in	2012-01-08 13:37:22.000000000 -0500
+@@ -0,0 +1,599 @@
++/*-*- mode:C; -*- */
++/* config.h.  Generated from build/cmake/config.h.in by cmake configure */
++/*
++ * Check: a unit test framework for C
++ *
++ * Copyright (C) 2011 Mateusz Loskot
++ * Copyright (C) 2001, 2002 Arien Malec
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library; if not, write to the
++ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
++ * Boston, MA 02111-1307, USA.
++ */
++
++#if defined(__osf__)
++# define _OSF_SOURCE
++#endif
++
++/*
++ * Ensure we have C99-style int64_t, etc, all defined.
++ */
++
++/* First, we need to know if the system has already defined them. */
++#cmakedefine HAVE_INT16_T
++#cmakedefine HAVE_INT32_T
++#cmakedefine HAVE_INT64_T
++#cmakedefine HAVE_INTMAX_T
++
++#cmakedefine HAVE_UINT8_T
++#cmakedefine HAVE_UINT16_T
++#cmakedefine HAVE_UINT32_T
++#cmakedefine HAVE_UINT64_T
++#cmakedefine HAVE_UINTMAX_T
++
++/* We might have the types we want under other spellings. */
++#cmakedefine HAVE___INT64
++#cmakedefine HAVE_U_INT64_T
++#cmakedefine HAVE_UNSIGNED___INT64
++
++/* The sizes of various standard integer types. */
++@SIZE_OF_SHORT_CODE@
++@SIZE_OF_INT_CODE@
++@SIZE_OF_LONG_CODE@
++@SIZE_OF_LONG_LONG_CODE@
++@SIZE_OF_UNSIGNED_SHORT_CODE@
++@SIZE_OF_UNSIGNED_CODE@
++@SIZE_OF_UNSIGNED_LONG_CODE@
++@SIZE_OF_UNSIGNED_LONG_LONG_CODE@
++
++/*
++ * If we lack int64_t, define it to the first of __int64, int, long, and long long
++ * that exists and is the right size.
++ */
++#if !defined(HAVE_INT64_T) && defined(HAVE___INT64)
++typedef __int64 int64_t;
++#define HAVE_INT64_T
++#endif
++
++#if !defined(HAVE_INT64_T) && SIZE_OF_INT == 8
++typedef int int64_t;
++#define HAVE_INT64_T
++#endif
++
++#if !defined(HAVE_INT64_T) && SIZE_OF_LONG == 8
++typedef long int64_t;
++#define HAVE_INT64_T
++#endif
++
++#if !defined(HAVE_INT64_T) && SIZE_OF_LONG_LONG == 8
++typedef long long int64_t;
++#define HAVE_INT64_T
++#endif
++
++#if !defined(HAVE_INT64_T)
++#error No 64-bit integer type was found.
++#endif
++
++/*
++ * Similarly for int32_t
++ */
++#if !defined(HAVE_INT32_T) && SIZE_OF_INT == 4
++typedef long int32_t;
++#define HAVE_INT32_T
++#endif
++
++#if !defined(HAVE_INT32_T) && SIZE_OF_LONG == 4
++typedef long int32_t;
++#define HAVE_INT32_T
++#endif
++
++#if !defined(HAVE_INT32_T)
++#error No 32-bit integer type was found.
++#endif
++
++/*
++ * Similarly for int16_t
++ */
++#if !defined(HAVE_INT16_T) && SIZE_OF_INT == 2
++typedef int int16_t;
++#define HAVE_INT16_T
++#endif
++
++#if !defined(HAVE_INT16_T) && SIZE_OF_SHORT == 2
++typedef short int16_t;
++#define HAVE_INT16_T
++#endif
++
++#if !defined(HAVE_INT16_T)
++#error No 16-bit integer type was found.
++#endif
++
++/*
++ * Similarly for uint64_t
++ */
++#if !defined(HAVE_UINT64_T) && defined(HAVE_UNSIGNED___INT64)
++typedef unsigned __int64 uint64_t;
++#define HAVE_UINT64_T
++#endif
++
++#if !defined(HAVE_UINT64_T) && SIZE_OF_UNSIGNED == 8
++typedef unsigned uint64_t;
++#define HAVE_UINT64_T
++#endif
++
++#if !defined(HAVE_UINT64_T) && SIZE_OF_UNSIGNED_LONG == 8
++typedef unsigned long uint64_t;
++#define HAVE_UINT64_T
++#endif
++
++#if !defined(HAVE_UINT64_T) && SIZE_OF_UNSIGNED_LONG_LONG == 8
++typedef unsigned long long uint64_t;
++#define HAVE_UINT64_T
++#endif
++
++#if !defined(HAVE_UINT64_T)
++#error No 64-bit unsigned integer type was found.
++#endif
++
++
++/*
++ * Similarly for uint32_t
++ */
++#if !defined(HAVE_UINT32_T) && SIZE_OF_UNSIGNED == 4
++typedef unsigned uint32_t;
++#define HAVE_UINT32_T
++#endif
++
++#if !defined(HAVE_UINT32_T) && SIZE_OF_UNSIGNED_LONG == 4
++typedef unsigned long uint32_t;
++#define HAVE_UINT32_T
++#endif
++
++#if !defined(HAVE_UINT32_T)
++#error No 32-bit unsigned integer type was found.
++#endif
++
++/*
++ * Similarly for uint16_t
++ */
++#if !defined(HAVE_UINT16_T) && SIZE_OF_UNSIGNED == 2
++typedef unsigned uint16_t;
++#define HAVE_UINT16_T
++#endif
++
++#if !defined(HAVE_UINT16_T) && SIZE_OF_UNSIGNED_SHORT == 2
++typedef unsigned short uint16_t;
++#define HAVE_UINT16_T
++#endif
++
++#if !defined(HAVE_UINT16_T)
++#error No 16-bit unsigned integer type was found.
++#endif
++
++/*
++ * Similarly for uint8_t
++ */
++#if !defined(HAVE_UINT8_T)
++typedef unsigned char uint8_t;
++#define HAVE_UINT8_T
++#endif
++
++#if !defined(HAVE_UINT16_T)
++#error No 8-bit unsigned integer type was found.
++#endif
++
++/* Define intmax_t and uintmax_t if they are not already defined. */
++#if !defined(HAVE_INTMAX_T)
++typedef int64_t intmax_t;
++#define INTMAX_MIN INT64_MIN
++#define INTMAX_MAX INT64_MAX
++#endif
++
++#if !defined(HAVE_UINTMAX_T)
++typedef uint64_t uintmax_t;
++#endif
++
++/* Define to 1 if you have the `ctime_r' function. */
++#cmakedefine HAVE_CTIME_R 1
++
++/* Define to 1 if you have the <ctype.h> header file. */
++#cmakedefine HAVE_CTYPE_H 1
++
++/* Define to 1 if you have the declaration of `INT64_MAX', and to 0 if you
++   don't. */
++#cmakedefine HAVE_DECL_INT64_MAX 1
++
++/* Define to 1 if you have the declaration of `INT64_MIN', and to 0 if you
++   don't. */
++#cmakedefine HAVE_DECL_INT64_MIN 1
++
++/* Define to 1 if you have the declaration of `SIZE_MAX', and to 0 if you
++   don't. */
++#cmakedefine HAVE_DECL_SIZE_MAX 1
++
++/* Define to 1 if you have the declaration of `SSIZE_MAX', and to 0 if you
++   don't. */
++#cmakedefine HAVE_DECL_SSIZE_MAX 1
++
++/* Define to 1 if you have the declaration of `strerror_r', and to 0 if you
++   don't. */
++#cmakedefine HAVE_DECL_STRERROR_R 1
++
++/* Define to 1 if you have the declaration of `UINT32_MAX', and to 0 if you
++   don't. */
++#cmakedefine HAVE_DECL_UINT32_MAX 1
++
++/* Define to 1 if you have the declaration of `UINT64_MAX', and to 0 if you
++   don't. */
++#cmakedefine HAVE_DECL_UINT64_MAX 1
++
++/* Define to 1 if you have the <direct.h> header file. */
++#cmakedefine HAVE_DIRECT_H 1
++
++/* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
++   */
++#cmakedefine HAVE_DIRENT_H 1
++
++/* Define to 1 if you have the <dlfcn.h> header file. */
++#cmakedefine HAVE_DLFCN_H 1
++
++/* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
++#cmakedefine HAVE_DOPRNT 1
++
++/* Define to 1 if you have the <errno.h> header file. */
++#cmakedefine HAVE_ERRNO_H 1
++
++/* Define to 1 if you have the `fcntl' function. */
++#cmakedefine HAVE_FCNTL 1
++
++/* Define to 1 if you have the <fcntl.h> header file. */
++#cmakedefine HAVE_FCNTL_H 1
++
++/* Define to 1 if you have the `fileno' function. */
++#cmakedefine HAVE_FILENO 1
++
++/* Define to 1 if you have the `fork' function. */
++#cmakedefine HAVE_FORK 1
++
++/* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
++#cmakedefine HAVE_FSEEKO 1
++
++/* Define to 1 if you have the `fstat' function. */
++#cmakedefine HAVE_FSTAT 1
++
++/* Define to 1 if you have the `fstatat' function. */
++#cmakedefine HAVE_FSTATAT 1
++
++/* Define to 1 if you have the `getpid' function. */
++#cmakedefine HAVE_GETPID 1
++
++/* Define to 1 if you have the `gettimeofday' function. */
++#cmakedefine HAVE_GETTIMEOFDAY 1
++
++/* Define to 1 if you have the `gmtime_r' function. */
++#cmakedefine HAVE_GMTIME_R 1
++
++/* Define to 1 if you have the <inttypes.h> header file. */
++#cmakedefine HAVE_INTTYPES_H 1
++
++/* Define to 1 if you have the <io.h> header file. */
++#cmakedefine HAVE_IO_H 1
++
++/* Define to 1 if you have the <limits.h> header file. */
++#cmakedefine HAVE_LIMITS_H 1
++
++/* Define to 1 if you have the <locale.h> header file. */
++#cmakedefine HAVE_LOCALE_H 1
++
++/* Define to 1 if you have the `localtime_r' function. */
++#cmakedefine HAVE_LOCALTIME_R 1
++
++/* Define to 1 if you have the `localtime_s' function. */
++#cmakedefine HAVE_LOCALTIME_S 1
++
++/* Define to 1 if the system has the type `long long int'. */
++#cmakedefine HAVE_LONG_LONG_INT 1
++
++/* Define to 1 if you have the `malloc' function. */
++#cmakedefine HAVE_MALLOC 1
++
++/* Define to 1 if you have the `mbrtowc' function. */
++#cmakedefine HAVE_MBRTOWC 1
++
++/* Define to 1 if you have the `mbsnrtowcs' function. */
++#cmakedefine HAVE_MBSNRTOWCS 1
++
++/* Define to 1 if you have the `memmove' function. */
++#cmakedefine HAVE_MEMMOVE 1
++
++/* Define to 1 if you have the <memory.h> header file. */
++#cmakedefine HAVE_MEMORY_H 1
++
++/* Define to 1 if you have the `mkdir' function. */
++#cmakedefine HAVE_MKDIR 1
++
++/* Define to 1 if you have the `mkstemp' function. */
++#cmakedefine HAVE_MKSTEMP 1
++
++/* Define to 1 if you have the `pipe' function. */
++#cmakedefine HAVE_PIPE 1
++
++/* Define to 1 if you have the `poll' function. */
++#cmakedefine HAVE_POLL 1
++
++/* Define to 1 if you have the <poll.h> header file. */
++#cmakedefine HAVE_POLL_H 1
++
++/* Define to 1 if you have the <process.h> header file. */
++#cmakedefine HAVE_PROCESS_H 1
++
++/* Define to 1 if you have the `putenv' function. */
++#cmakedefine HAVE_PUTENV 1
++
++/* Define to 1 if you have the `realloc' function. */
++#cmakedefine HAVE_REALLOC 1
++
++/* Define to 1 if you have the <regex.h> header file. */
++#cmakedefine HAVE_REGEX_H 1
++
++/* Define to 1 if you have the `select' function. */
++#cmakedefine HAVE_SELECT 1
++
++/* Define to 1 if you have the `setenv' function. */
++#cmakedefine HAVE_SETENV 1
++
++/* Define to 1 if you have the `setlocale' function. */
++#cmakedefine HAVE_SETLOCALE 1
++
++/* Define to 1 if you have the <signal.h> header file. */
++#cmakedefine HAVE_SIGNAL_H 1
++
++/* Define to 1 if you have the `sleep' function. */
++#cmakedefine HAVE_SLEEP 1
++
++/* Define to 1 if you have the <stdarg.h> header file. */
++#cmakedefine HAVE_STDARG_H 1
++
++/* Define to 1 if you have the <stdint.h> header file. */
++#cmakedefine HAVE_STDINT_H 1
++
++/* Define to 1 if you have the <stdlib.h> header file. */
++#cmakedefine HAVE_STDLIB_H 1
++
++/* Define to 1 if you have the `strchr' function. */
++#cmakedefine HAVE_STRCHR 1
++
++/* Define to 1 if you have the `strdup' function. */
++#cmakedefine HAVE_STRDUP 1
++
++/* Define to 1 if you have the `strerror' function. */
++#cmakedefine HAVE_STRERROR 1
++
++/* Define to 1 if you have the `strerror_r' function. */
++#cmakedefine HAVE_STRERROR_R 1
++
++/* Define to 1 if you have the `strftime' function. */
++#cmakedefine HAVE_STRFTIME 1
++
++/* Define to 1 if you have the <strings.h> header file. */
++#cmakedefine HAVE_STRINGS_H 1
++
++/* Define to 1 if you have the <string.h> header file. */
++#cmakedefine HAVE_STRING_H 1
++
++/* Define to 1 if you have the `strrchr' function. */
++#cmakedefine HAVE_STRRCHR 1
++
++/* Define to 1 if you have the `strsignal' function. */
++#cmakedefine HAVE_STRSIGNAL 1
++
++/* Define to 1 if you have the <sys/dir.h> header file,
++   and it defines `DIR'. */
++#cmakedefine HAVE_SYS_DIR_H 1
++
++/* Define to 1 if you have the <sys/poll.h> header file. */
++#cmakedefine HAVE_SYS_POLL_H 1
++
++/* Define to 1 if you have the <sys/select.h> header file. */
++#cmakedefine HAVE_SYS_SELECT_H 1
++
++/* Define to 1 if you have the <sys/stat.h> header file. */
++#cmakedefine HAVE_SYS_STAT_H 1
++
++/* Define to 1 if you have the <sys/time.h> header file. */
++#cmakedefine HAVE_SYS_TIME_H 1
++
++/* Define to 1 if you have the <sys/types.h> header file. */
++#cmakedefine HAVE_SYS_TYPES_H 1
++
++/* Define to 1 if you have the <sys/utime.h> header file. */
++#cmakedefine HAVE_SYS_UTIME_H 1
++
++/* Define to 1 if you have <sys/wait.h> that is POSIX.1 compatible. */
++#cmakedefine HAVE_SYS_WAIT_H 1
++
++/* Define to 1 if you have the `timegm' function. */
++#cmakedefine HAVE_TIMEGM 1
++
++/* Define to 1 if you have the <time.h> header file. */
++#cmakedefine HAVE_TIME_H 1
++
++/* Define to 1 if you have the `tzset' function. */
++#cmakedefine HAVE_TZSET 1
++
++/* Define to 1 if you have the <unistd.h> header file. */
++#cmakedefine HAVE_UNISTD_H 1
++
++/* Define to 1 if you have the `unsetenv' function. */
++#cmakedefine HAVE_UNSETENV 1
++
++/* Define to 1 if the system has the type `unsigned long long'. */
++#cmakedefine HAVE_UNSIGNED_LONG_LONG 1
++
++/* Define to 1 if the system has the type `unsigned long long int'. */
++#cmakedefine HAVE_UNSIGNED_LONG_LONG_INT 1
++
++/* Define to 1 if you have the `vfork' function. */
++#cmakedefine HAVE_VFORK 1
++
++/* Define to 1 if you have the `vprintf' function. */
++#cmakedefine HAVE_VPRINTF 1
++
++/* Define to 1 if you have the <wchar.h> header file. */
++#cmakedefine HAVE_WCHAR_H 1
++
++/* Define to 1 if the system has the type `wchar_t'. */
++#cmakedefine HAVE_WCHAR_T 1
++
++/* Define to 1 if you have the `wcrtomb' function. */
++#cmakedefine HAVE_WCRTOMB 1
++
++/* Define to 1 if you have the `wcscmp' function. */
++#cmakedefine HAVE_WCSCMP 1
++
++/* Define to 1 if you have the `wcscpy' function. */
++#cmakedefine HAVE_WCSCPY 1
++
++/* Define to 1 if you have the `wcslen' function. */
++#cmakedefine HAVE_WCSLEN 1
++
++/* Define to 1 if you have the `wcsnrtombs' function. */
++#cmakedefine HAVE_WCSNRTOMBS 1
++
++/* Define to 1 if you have the `wctomb' function. */
++#cmakedefine HAVE_WCTOMB 1
++
++/* Define to 1 if you have the <wctype.h> header file. */
++#cmakedefine HAVE_WCTYPE_H 1
++
++/* Define to 1 if you have the <windows.h> header file. */
++#cmakedefine HAVE_WINDOWS_H 1
++
++/* Define to 1 if you have the `_ctime64_s' function. */
++#cmakedefine HAVE__CTIME64_S 1
++
++/* Define to 1 if you have the `_fileno' function. */
++#cmakedefine HAVE__FILENO 1
++
++/* Define to 1 if you have the `_fseeki64' function. */
++#cmakedefine HAVE__FSEEKI64 1
++
++/* Define to 1 if you have the `_get_timezone' function. */
++#cmakedefine HAVE__GET_TIMEZONE 1
++
++/* Define to 1 if you have the `_getpid' function. */
++#cmakedefine HAVE__GETPID 1
++
++/* Define to 1 if you have the `_localtime64_s' function. */
++#cmakedefine HAVE__LOCALTIME64_S 1
++
++/* Define to 1 if you have the `_mkgmtime64' function. */
++#cmakedefine HAVE__MKGMTIME64 1
++
++/* Define to 1 if you have the `_pipe' function. */
++#cmakedefine HAVE__PIPE 1
++
++/* Define to 1 if you have the `_putenv' function. */
++#cmakedefine HAVE__PUTENV 1
++
++/* Define to 1 if you have the `_strdup' function. */
++#cmakedefine HAVE__STRDUP 1
++
++/* Define to 1 if you have the `_snprintf' function. */
++#cmakedefine HAVE__SNPRINTF 1
++
++/* Version number of Check */
++#cmakedefine CHECK_VERSION "${CHECK_MAJOR_VERSION}.${CHECK_MINOR_VERSION}.${CHECK_MICRO_VERSION}"
++
++/* The size of `wchar_t', as computed by sizeof. */
++#cmakedefine SIZEOF_WCHAR_T ${SIZEOF_WCHAR_T}
++
++/* Define to 1 if strerror_r returns char *. */
++#cmakedefine STRERROR_R_CHAR_P 1
++
++/* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
++#cmakedefine TIME_WITH_SYS_TIME 1
++
++/*
++ * Some platform requires a macro to use extension functions.
++ */
++#cmakedefine SAFE_TO_DEFINE_EXTENSIONS 1
++#ifdef SAFE_TO_DEFINE_EXTENSIONS
++/* Enable extensions on AIX 3, Interix.  */
++#ifndef _ALL_SOURCE
++# define _ALL_SOURCE 1
++#endif
++/* Enable GNU extensions on systems that have them.  */
++#ifndef _GNU_SOURCE
++# define _GNU_SOURCE 1
++#endif
++/* Enable threading extensions on Solaris.  */
++#ifndef _POSIX_PTHREAD_SEMANTICS
++# define _POSIX_PTHREAD_SEMANTICS 1
++#endif
++/* Enable extensions on HP NonStop.  */
++#ifndef _TANDEM_SOURCE
++# define _TANDEM_SOURCE 1
++#endif
++/* Enable general extensions on Solaris.  */
++#ifndef __EXTENSIONS__
++# define __EXTENSIONS__ 1
++#endif
++#endif /* SAFE_TO_DEFINE_EXTENSIONS */
++
++/* Number of bits in a file offset, on hosts where this is settable. */
++#cmakedefine _FILE_OFFSET_BITS ${_FILE_OFFSET_BITS}
++
++/* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
++#cmakedefine _LARGEFILE_SOURCE 1
++
++/* Define for large files, on AIX-style hosts. */
++#cmakedefine _LARGE_FILES ${_LARGE_FILES}
++
++/* Define for Windows to use Windows 2000+ APIs. */
++#cmakedefine _WIN32_WINNT ${_WIN32_WINNT}
++#cmakedefine WINVER ${WINVER}
++
++/* Define to empty if `const' does not conform to ANSI C. */
++#cmakedefine const ${const}
++
++/* Define to `int' if <sys/types.h> doesn't define. */
++#cmakedefine gid_t ${gid_t}
++
++/* Define to `unsigned long' if <sys/types.h> does not define. */
++#cmakedefine id_t ${id_t}
++
++/* Define to `int' if <sys/types.h> does not define. */
++#cmakedefine mode_t ${mode_t}
++
++/* Define to `long long' if <sys/types.h> does not define. */
++#cmakedefine off_t ${off_t}
++
++/* Define to `int' if <sys/types.h> doesn't define. */
++#cmakedefine pid_t ${pid_t}
++
++/* Define to `unsigned int' if <sys/types.h> does not define. */
++#cmakedefine size_t ${size_t}
++
++/* Define to `int' if <sys/types.h> does not define. */
++#cmakedefine ssize_t ${ssize_t}
++
++/* Define to `int' if <sys/types.h> doesn't define. */
++#cmakedefine uid_t ${uid_t}
++
++/* Define to `int' if <sys/types.h> does not define. */
++#cmakedefine intptr_t ${intptr_t}
++
++/* Define to `unsigned int' if <sys/types.h> does not define. */
++#cmakedefine uintptr_t ${uintptr_t}
+diff -u -r -N trunk/lib/CMakeLists.txt mloskot-check-5790d29/lib/CMakeLists.txt
+--- trunk/lib/CMakeLists.txt	1969-12-31 19:00:00.000000000 -0500
++++ mloskot-check-5790d29/lib/CMakeLists.txt	2012-01-08 13:37:22.000000000 -0500
+@@ -0,0 +1,45 @@
++#
++# Check: a unit test framework for C
++# Copyright (C) 2011 Mateusz Loskot
++#
++# This library is free software; you can redistribute it and/or
++# modify it under the terms of the GNU Lesser General Public
++# License as published by the Free Software Foundation; either
++# version 2.1 of the License, or (at your option) any later version.
++#
++# This library is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++# Lesser General Public License for more details.
++#
++# You should have received a copy of the GNU Lesser General Public
++# License along with this library; if not, write to the
++# Free Software Foundation, Inc., 59 Temple Place - Suite 330,
++# Boston, MA 02111-1307, USA.
++#
++
++set(SOURCES
++  fileno.c
++  gettimeofday.c
++  libcompat.c
++  localtime_r.c
++  malloc.c
++  pipe.c
++  putenv.c
++  realloc.c
++  setenv.c
++  sleep.c
++  strdup.c
++  strsignal.c
++  unsetenv.c)
++
++set(HEADERS libcompat.h)
++
++add_library(compat STATIC ${SOURCES} ${HEADERS})
++
++install(TARGETS compat
++  RUNTIME DESTINATION bin
++  LIBRARY DESTINATION lib
++  ARCHIVE DESTINATION lib) 
++
++install(FILES ${CMAKE_BINARY_DIR}/lib/libcompat.h DESTINATION include)
+\ No newline at end of file
+diff -u -r -N trunk/lib/fileno.c mloskot-check-5790d29/lib/fileno.c
+--- trunk/lib/fileno.c	2008-12-31 21:52:11.000000000 -0500
++++ mloskot-check-5790d29/lib/fileno.c	2012-01-08 13:37:22.000000000 -0500
+@@ -1,8 +1,11 @@
+ #include "libcompat.h"
+ 
++#if !HAVE_FILENO && !HAVE__FILENO
++
+ int fileno(FILE *stream CK_ATTRIBUTE_UNUSED)
+ {
+-  assert (0);
+-  return 0;
++    assert (0);
++    return 0;
+ }
+ 
++#endif /* !HAVE__FILENO && !HAVE__FILENO */
+diff -u -r -N trunk/lib/gettimeofday.c mloskot-check-5790d29/lib/gettimeofday.c
+--- trunk/lib/gettimeofday.c	1969-12-31 19:00:00.000000000 -0500
++++ mloskot-check-5790d29/lib/gettimeofday.c	2012-01-08 13:37:22.000000000 -0500
+@@ -0,0 +1,28 @@
++#include "libcompat.h"
++
++#if !HAVE_GETTIMEOFDAY
++
++#if _MSC_VER
++
++#if defined(_MSC_VER) || defined(__BORLANDC__)
++#define EPOCHFILETIME (116444736000000000i64)
++#else
++#define EPOCHFILETIME (116444736000000000LL)
++#endif
++
++int gettimeofday (struct timeval *tv, void* tz)
++{
++    union {
++        __int64 ns100; /*time since 1 Jan 1601 in 100ns units */
++        FILETIME ft;
++    } now;
++
++    GetSystemTimeAsFileTime (&now.ft);
++    tv->tv_usec = (long) ((now.ns100 / 10LL) % 1000000LL);
++    tv->tv_sec = (long) ((now.ns100 - EPOCHFILETIME) / 10000000LL);
++    return (0);
++}
++
++#endif /* _MSC_VER */
++
++#endif /* !HAVE_GETTIMEOFDAY */
+diff -u -r -N trunk/lib/libcompat.c mloskot-check-5790d29/lib/libcompat.c
+--- trunk/lib/libcompat.c	2008-12-31 21:52:11.000000000 -0500
++++ mloskot-check-5790d29/lib/libcompat.c	2012-01-08 13:37:22.000000000 -0500
+@@ -1,8 +1,7 @@
+ #include "libcompat.h"
+ 
+ /* silence warnings about an empty library */
+-void
+-ck_do_nothing (void)
++void ck_do_nothing (void)
+ {
+-  assert (0);
++    assert (0);
+ }
+diff -u -r -N trunk/lib/libcompat.h mloskot-check-5790d29/lib/libcompat.h
+--- trunk/lib/libcompat.h	2008-12-31 18:45:29.000000000 -0500
++++ mloskot-check-5790d29/lib/libcompat.h	2012-01-08 13:37:22.000000000 -0500
+@@ -19,6 +19,12 @@
+ #define CK_ATTRIBUTE_UNUSED              
+ #endif /* GCC 2.95 */
+ 
++#if _MSC_VER
++#include <WinSock2.h> /* struct timeval, API used in gettimeofday implementation */
++#include <io.h> /* read, write */
++#include <process.h> /* getpid */
++#endif /* _MSC_VER */
++
+ /* defines size_t */
+ #include <sys/types.h>
+ 
+@@ -29,7 +35,9 @@
+ #include <stdio.h>
+ 
+ /* provides localtime and struct tm */
++#ifdef HAVE_SYS_TIME_H
+ #include <sys/time.h>
++#endif /* !HAVE_SYS_TIME_H */
+ #include <time.h>
+ 
+ /* declares fork(), _POSIX_VERSION.  according to Autoconf.info,
+@@ -59,25 +67,43 @@
+ #endif /* !HAVE_REALLOC */
+ 
+ /* functions that may be undeclared */
+-#if !HAVE_DECL_FILENO
++#if !HAVE_FILENO && !HAVE__FILENO
+ int fileno (FILE *stream);
+-#endif /* !HAVE_DECL_FILENO */
++#elif !HAVE_FILENO && HAVE__FILENO
++#define fileno _fileno;
++#endif /* !HAVE_FILENO && HAVE__FILENO */
++
++#if !HAVE_GETPID && HAVE__GETPID
++#define getpid _getpid;
++#endif /* !HAVE_GETPID && HAVE__GETPID */
++
++#if !HAVE_GETTIMEOFDAY
++int gettimeofday (struct timeval *tv, void* tz);
++#endif /* !HAVE_LOCALTIME_R */
+ 
+-#if !HAVE_DECL_LOCALTIME_R
++#if !HAVE_LOCALTIME_R
+ struct tm *localtime_r (const time_t *clock, struct tm *result);
+-#endif /* !HAVE_DECL_LOCALTIME_R */
++#endif /* !HAVE_LOCALTIME_R */
+ 
+-#if !HAVE_DECL_PIPE
++#if !HAVE_PIPE && !HAVE__PIPE
+ int pipe (int *fildes);
+-#endif /* !HAVE_DECL_PIPE */
++#elif !HAVE_PIPE && HAVE__PIPE
++#define pipe _pipe;
++#endif /* !HAVE_PIPE && HAVE__PIPE */
+ 
+-#if !HAVE_DECL_PUTENV
++#if !HAVE_PUTENV && !HAVE__PUTENV
+ int putenv (const char *string);
+-#endif /* !HAVE_DECL_PUTENV */
++#elif !HAVE_PUTENV && HAVE__PUTENV
++#define putenv _putenv;
++#endif /* HAVE__PUTENV && !HAVE_FILENO */
++
++#if !HAVE_READ && HAVE__READ
++#define read _read
++#endif /* !HAVE_READ && HAVE__READ */
+ 
+-#if !HAVE_DECL_SETENV
++#if !HAVE_SETENV
+ int setenv (const char *name, const char *value, int overwrite);
+-#endif /* !HAVE_DECL_SETENV */
++#endif /* !HAVE_SETENV */
+ 
+ /* our setenv implementation is currently broken */
+ #if !HAVE_SETENV
+@@ -86,21 +112,31 @@
+ #define HAVE_WORKING_SETENV 1
+ #endif
+ 
+-#if !HAVE_DECL_SLEEP
++#if !HAVE_SLEEP
+ unsigned int sleep (unsigned int seconds);
+-#endif /* !HAVE_DECL_SLEEP */
++#endif /* !HAVE_SLEEP */
+ 
+-#if !HAVE_DECL_STRDUP
++#if !HAVE_STRDUP && !HAVE__STRDUP
+ char *strdup (const char *str);
+-#endif /* !HAVE_DECL_STRDUP */
++#elif !HAVE_STRDUP && HAVE__STRDUP
++#define strdup _strdup;
++#endif /* !HAVE_STRDUP && HAVE__STRDUP */
++
++#if !HAVE_SNPRINTF && HAVE__SNPRINTF
++#define snprintf _snprintf
++#endif /* !HAVE_STRDUP && HAVE__STRDUP */
+ 
+-#if !HAVE_DECL_STRSIGNAL
++#if !HAVE_STRSIGNAL
+ const char *strsignal (int sig);
+-#endif /* !HAVE_DECL_STRSIGNAL */
++#endif /* !HAVE_STRSIGNAL */
+ 
+-#if !HAVE_DECL_UNSETENV
++#if !HAVE_UNSETENV
+ void unsetenv (const char *name);
+-#endif /* !HAVE_DECL_UNSETENV */
++#endif /* !HAVE_UNSETENV */
++
++#if !HAVE_WRITE && HAVE_WRITE
++#define write _write
++#endif /* !HAVE_WRITE && HAVE__WRITE */
+ 
+ /* silence warnings about an empty library */
+ void ck_do_nothing (void);
+diff -u -r -N trunk/lib/localtime_r.c mloskot-check-5790d29/lib/localtime_r.c
+--- trunk/lib/localtime_r.c	2008-12-31 17:53:50.000000000 -0500
++++ mloskot-check-5790d29/lib/localtime_r.c	2012-01-08 13:37:22.000000000 -0500
+@@ -1,16 +1,27 @@
+ #include "libcompat.h"
+-  
+-struct tm *
+-localtime_r (const time_t *clock, struct tm *result)
++
++#if !HAVE_LOCALTIME_R
++
++struct tm *localtime_r (const time_t *clock, struct tm *result)
+ {
+-  struct tm *now = localtime (clock);
+-  if (now == NULL)
++    struct tm * now = NULL;
++#if HAVE_LOCALTIME_S
++    localtime_s (now, clock)
++#elif HAVE__LOCALTIME64_S
++    _localtime64_s (now, clock);
++#else
++    now = localtime (clock);
++#endif /* !HAVE_LOCALTIME_S */
++
++    if (now == NULL)
+     {
+-      return NULL;
++        return NULL;
+     }
+-  else
++    else
+     {
+-      *result = *now;
++        *result = *now;
+     }
+-  return result;
++    return result;
+ }
++
++#endif /* !HAVE_LOCALTIME_R */
+diff -u -r -N trunk/lib/malloc.c mloskot-check-5790d29/lib/malloc.c
+--- trunk/lib/malloc.c	2008-12-29 21:17:15.000000000 -0500
++++ mloskot-check-5790d29/lib/malloc.c	2012-01-08 13:37:22.000000000 -0500
+@@ -1,8 +1,10 @@
+ /* AC_FUNC_MALLOC in configure defines malloc to rpl_malloc if
+-   malloc (0) is NULL to provide GNU compatibility */
++malloc (0) is NULL to provide GNU compatibility */
+ 
+ #include "libcompat.h"
+ 
++#if !HAVE_MALLOC
++
+ /* malloc has been defined to rpl_malloc, so first undo that */
+ #undef malloc
+ 
+@@ -13,7 +15,9 @@
+ void *
+ rpl_malloc (size_t n)
+ {
+-  if (n == 0)
+-    n = 1;
+-  return malloc (n);
++    if (n == 0)
++        n = 1;
++    return malloc (n);
+ }
++
++#endif /* !HAVE_MALLOC */
+diff -u -r -N trunk/lib/pipe.c mloskot-check-5790d29/lib/pipe.c
+--- trunk/lib/pipe.c	2008-12-31 18:14:25.000000000 -0500
++++ mloskot-check-5790d29/lib/pipe.c	2012-01-08 13:37:22.000000000 -0500
+@@ -1,8 +1,11 @@
+ #include "libcompat.h"
+ 
+-int
+-pipe (int *fildes CK_ATTRIBUTE_UNUSED)
++#if !HAVE_PIPE && !HAVE__PIPE
++
++int pipe (int *fildes CK_ATTRIBUTE_UNUSED)
+ {
+-  assert (0);
+-  return 0;
++    assert (0);
++    return 0;
+ }
++
++#endif /* !HAVE_PIPE && !HAVE__PIPE */
+\ No newline at end of file
+diff -u -r -N trunk/lib/putenv.c mloskot-check-5790d29/lib/putenv.c
+--- trunk/lib/putenv.c	2008-12-31 21:52:11.000000000 -0500
++++ mloskot-check-5790d29/lib/putenv.c	2012-01-08 13:37:22.000000000 -0500
+@@ -1,8 +1,11 @@
+ #include "libcompat.h"
+ 
+-int
+-putenv (const char *string CK_ATTRIBUTE_UNUSED);
++#if !HAVE_PUTENV && !HAVE__PUTENV
++
++int putenv (const char *string CK_ATTRIBUTE_UNUSED)
+ {
+-  assert (0);
+-  return 0;
++    assert (0);
++    return 0;
+ }
++
++#endif /* HAVE_PUTENV */
+\ No newline at end of file
+diff -u -r -N trunk/lib/realloc.c mloskot-check-5790d29/lib/realloc.c
+--- trunk/lib/realloc.c	2008-12-29 21:17:15.000000000 -0500
++++ mloskot-check-5790d29/lib/realloc.c	2012-01-08 13:37:22.000000000 -0500
+@@ -1,22 +1,26 @@
+ /* AC_FUNC_REALLOC in configure defines realloc to rpl_realloc if
+-   realloc (p, 0) or realloc (0, n) is NULL to provide GNU
+-   compatibility */
++realloc (p, 0) or realloc (0, n) is NULL to provide GNU
++compatibility */
+ 
+ #include "libcompat.h"
+ 
++#if !HAVE_REALLOC
++
+ /* realloc has been defined to rpl_realloc, so first undo that */
+ #undef realloc
+-     
++
+ /* this gives us the real realloc to use below */
+ void *realloc (void *p, size_t n);
+-     
++
+ /* force realloc(p, 0) and realloc (NULL, n) to return a valid pointer */
+ void *
+ rpl_realloc (void *p, size_t n)
+ {
+-  if (n == 0)
+-    n = 1;
+-  if (p == 0)
+-    return malloc (n);
+-  return realloc (p, n);
++    if (n == 0)
++        n = 1;
++    if (p == 0)
++        return malloc (n);
++    return realloc (p, n);
+ }
++
++#endif /* !HAVE_REALLOC */
+diff -u -r -N trunk/lib/setenv.c mloskot-check-5790d29/lib/setenv.c
+--- trunk/lib/setenv.c	2008-12-31 18:14:25.000000000 -0500
++++ mloskot-check-5790d29/lib/setenv.c	2012-01-08 13:37:22.000000000 -0500
+@@ -1,8 +1,11 @@
+ #include "libcompat.h"
+ 
+-int
+-setenv (const char *name CK_ATTRIBUTE_UNUSED, const char *value CK_ATTRIBUTE_UNUSED, int overwrite CK_ATTRIBUTE_UNUSED)
++#if !HAVE_SETENV
++
++int setenv (const char *name CK_ATTRIBUTE_UNUSED, const char *value CK_ATTRIBUTE_UNUSED, int overwrite CK_ATTRIBUTE_UNUSED)
+ {
+-  assert (0);
+-  return 0;
++    assert (0);
++    return 0;
+ }
++
++#endif /* !HAVE_SETENV */
+diff -u -r -N trunk/lib/sleep.c mloskot-check-5790d29/lib/sleep.c
+--- trunk/lib/sleep.c	2008-12-31 18:14:25.000000000 -0500
++++ mloskot-check-5790d29/lib/sleep.c	2012-01-08 13:37:22.000000000 -0500
+@@ -1,8 +1,20 @@
+ #include "libcompat.h"
+ 
+-unsigned int
+-sleep (unsigned int seconds CK_ATTRIBUTE_UNUSED)
++#if !HAVE_SLEEP
++
++#if _MSC_VER
++#include <windows.h> /* Sleep() */
++#endif
++
++unsigned int sleep (unsigned int seconds CK_ATTRIBUTE_UNUSED)
+ {
+-  assert (0);
+-  return 0;
++#if _MSC_VER
++    DWORD millisecs = seconds * 1000;
++    Sleep(millisecs);
++#else
++    assert (0);
++#endif
++    return 0;
+ }
++
++#endif /* !HAVE_SLEEP */
+diff -u -r -N trunk/lib/strdup.c mloskot-check-5790d29/lib/strdup.c
+--- trunk/lib/strdup.c	2008-12-31 21:52:11.000000000 -0500
++++ mloskot-check-5790d29/lib/strdup.c	2012-01-08 13:37:22.000000000 -0500
+@@ -1,8 +1,11 @@
+ #include "libcompat.h"
+ 
+-char *
+-strdup (const char *str CK_ATTRIBUTE_UNUSED)
++#if !HAVE_STRDUP && !HAVE__STRDUP
++
++char * strdup (const char *str CK_ATTRIBUTE_UNUSED)
+ {
+-  assert (0);
+-  return NULL;
++    assert (0);
++    return NULL;
+ }
++
++#endif /* #if !HAVE_STRDUP && !HAVE__STRDUP */
+diff -u -r -N trunk/lib/strsignal.c mloskot-check-5790d29/lib/strsignal.c
+--- trunk/lib/strsignal.c	2008-12-29 21:17:15.000000000 -0500
++++ mloskot-check-5790d29/lib/strsignal.c	2012-01-08 13:37:22.000000000 -0500
+@@ -1,9 +1,12 @@
+ #include "libcompat.h"
+ 
+-const char *
+-strsignal (int sig)
++#if !HAVE_STRSIGNAL
++
++const char * strsignal (int sig)
+ {
+-  static char signame[40];
+-  sprintf(signame, "SIG #%d", sig);
+-  return signame;
++    static char signame[40];
++    sprintf(signame, "SIG #%d", sig);
++    return signame;
+ }
++
++#endif /* !HAVE_STRSIGNAL */
+diff -u -r -N trunk/lib/unsetenv.c mloskot-check-5790d29/lib/unsetenv.c
+--- trunk/lib/unsetenv.c	2008-12-31 18:14:25.000000000 -0500
++++ mloskot-check-5790d29/lib/unsetenv.c	2012-01-08 13:37:22.000000000 -0500
+@@ -1,7 +1,10 @@
+ #include "libcompat.h"
+ 
+-void
+-unsetenv (const char *name CK_ATTRIBUTE_UNUSED)
++#if !HAVE_UNSETENV
++
++void unsetenv (const char *name CK_ATTRIBUTE_UNUSED)
+ {
+-  assert (0);
++    assert (0);
+ }
++
++#endif /* !HAVE_UNSETENV */
+diff -u -r -N trunk/src/CMakeLists.txt mloskot-check-5790d29/src/CMakeLists.txt
+--- trunk/src/CMakeLists.txt	1969-12-31 19:00:00.000000000 -0500
++++ mloskot-check-5790d29/src/CMakeLists.txt	2012-01-08 13:37:22.000000000 -0500
+@@ -0,0 +1,62 @@
++#
++# Check: a unit test framework for C
++# Copyright (C) 2011 Mateusz Loskot
++# Copyright (C) 2001, 2002 Arien Malec
++#
++# This library is free software; you can redistribute it and/or
++# modify it under the terms of the GNU Lesser General Public
++# License as published by the Free Software Foundation; either
++# version 2.1 of the License, or (at your option) any later version.
++#
++# This library is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++# Lesser General Public License for more details.
++#
++# You should have received a copy of the GNU Lesser General Public
++# License along with this library; if not, write to the
++# Free Software Foundation, Inc., 59 Temple Place - Suite 330,
++# Boston, MA 02111-1307, USA.
++#
++
++set(SOURCES
++  check.c
++  check_error.c
++  check_list.c
++  check_log.c
++  check_msg.c
++  check_pack.c
++  check_print.c
++  check_run.c
++  check_str.c)
++
++set(HEADERS 
++  ${CONFIG_HEADER}
++  ${CMAKE_CURRENT_BINARY_DIR}/check.h
++  check.h.in
++  check_error.h
++  check_impl.h
++  check_list.h
++  check_log.h
++  check_msg.h
++  check_pack.h
++  check_print.h
++  check_str.h)
++
++configure_file(check.h.in check.h)
++
++# Enable finding check.h
++include_directories(${CMAKE_CURRENT_BINARY_DIR})
++
++add_library(check STATIC ${SOURCES} ${HEADERS})
++
++if(MSVC)
++  add_definitions(-DCK_DLL_EXP=_declspec\(dllexport\))
++endif (MSVC)
++
++install(TARGETS check 
++  RUNTIME DESTINATION bin
++  LIBRARY DESTINATION lib
++  ARCHIVE DESTINATION lib)
++
++install(FILES ${CMAKE_BINARY_DIR}/check.h DESTINATION include)
+\ No newline at end of file
+diff -u -r -N trunk/src/check_log.c mloskot-check-5790d29/src/check_log.c
+--- trunk/src/check_log.c	2011-06-01 05:42:35.000000000 -0400
++++ mloskot-check-5790d29/src/check_log.c	2012-01-08 13:37:22.000000000 -0500
+@@ -229,7 +229,7 @@
+   {
+     struct tm now;
+     gettimeofday(&inittv, NULL);
+-    localtime_r(&(inittv.tv_sec), &now);
++    localtime_r((time_t*)&(inittv.tv_sec), &now);
+     strftime(t, sizeof("yyyy-mm-dd hh:mm:ss"), "%Y-%m-%d %H:%M:%S", &now);
+   }
+ 
+diff -u -r -N trunk/src/check_run.c mloskot-check-5790d29/src/check_run.c
+--- trunk/src/check_run.c	2011-06-01 05:42:35.000000000 -0400
++++ mloskot-check-5790d29/src/check_run.c	2012-01-08 13:37:22.000000000 -0500
+@@ -523,7 +523,11 @@
+   if (sr->fstat == CK_FORK_GETENV) {
+     char *env = getenv ("CK_FORK");
+     if (env == NULL)
++#ifdef _POSIX_VERSION
+       return CK_FORK;
++#else
++      return CK_NOFORK;
++#endif
+     if (strcmp (env,"no") == 0)
+       return CK_NOFORK;
+     else {
+diff -u -r -N trunk/tests/CMakeLists.txt mloskot-check-5790d29/tests/CMakeLists.txt
+--- trunk/tests/CMakeLists.txt	1969-12-31 19:00:00.000000000 -0500
++++ mloskot-check-5790d29/tests/CMakeLists.txt	2012-01-08 13:37:22.000000000 -0500
+@@ -0,0 +1,46 @@
++#
++# Check: a unit test framework for C
++#
++# Copyright (C) 2011 Mateusz Loskot
++# Copyright (C) 2001, 2002 Arien Malec
++#
++# This library is free software; you can redistribute it and/or
++# modify it under the terms of the GNU Lesser General Public
++# License as published by the Free Software Foundation; either
++# version 2.1 of the License, or (at your option) any later version.
++#
++# This library is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++# Lesser General Public License for more details.
++#
++# You should have received a copy of the GNU Lesser General Public
++# License along with this library; if not, write to the
++# Free Software Foundation, Inc., 59 Temple Place - Suite 330,
++# Boston, MA 02111-1307, USA.
++#
++
++include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
++# Enable finding check.h
++include_directories(${CMAKE_CURRENT_BINARY_DIR}/../src)
++
++set(CHECK_CHECK_SOURCES
++  check_check_exit.c
++  check_check_fixture.c
++  check_check_fork.c
++  check_check_limit.c
++  check_check_log.c
++  check_check_log_internal.c
++  check_check_main.c
++  check_check_master.c
++  check_check_msg.c
++  check_check_pack.c
++  check_check_selective.c
++  check_check_sub.c
++  check_list.c)
++
++set(CHECK_CHECK_HEADERS check_check.h)
++
++add_executable(check_check ${CHECK_CHECK_HEADERS} ${CHECK_CHECK_SOURCES})
++
++target_link_libraries(check_check check compat)
+\ No newline at end of file
+diff -u -r -N trunk/tests/check_check.h mloskot-check-5790d29/tests/check_check.h
+--- trunk/tests/check_check.h	2010-02-26 08:38:58.000000000 -0500
++++ mloskot-check-5790d29/tests/check_check.h	2012-01-08 13:37:22.000000000 -0500
+@@ -2,7 +2,9 @@
+ #define CHECK_CHECK_H
+ 
+ #ifndef TIMEOUT_TESTS_ENABLED
++#ifdef _POSIX_VERSION
+ #define TIMEOUT_TESTS_ENABLED 1
++#endif /* _POSIX_VERSION */
+ #endif
+ 
+ int sub_nfailed;
+diff -u -r -N trunk/tests/check_check_exit.c mloskot-check-5790d29/tests/check_check_exit.c
+--- trunk/tests/check_check_exit.c	2009-02-03 12:03:08.000000000 -0500
++++ mloskot-check-5790d29/tests/check_check_exit.c	2012-01-08 13:37:22.000000000 -0500
+@@ -1,7 +1,8 @@
++#include "../lib/libcompat.h"
++
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include <string.h>
+-#include <unistd.h>
+ 
+ #include "check.h"
+ #include "check_check.h"
+diff -u -r -N trunk/tests/check_check_main.c mloskot-check-5790d29/tests/check_check_main.c
+--- trunk/tests/check_check_main.c	2010-02-18 14:37:32.000000000 -0500
++++ mloskot-check-5790d29/tests/check_check_main.c	2012-01-08 13:37:22.000000000 -0500
+@@ -13,9 +13,10 @@
+ #ifdef _POSIX_VERSION
+   fork_setup();
+   setup_fixture();
+-  setup();
+ #endif /* _POSIX_VERSION */
+-
++  
++  setup();
++  
+   sr = srunner_create (make_master_suite());
+   srunner_add_suite(sr, make_list_suite());
+   srunner_add_suite(sr, make_msg_suite());
+@@ -27,7 +28,7 @@
+   srunner_add_suite(sr, make_pack_suite());
+   srunner_add_suite(sr, make_exit_suite());
+   srunner_add_suite(sr, make_selective_suite());
+-  
++
+   printf ("Ran %d tests in subordinate suite\n", sub_ntests);
+   srunner_run_all (sr, CK_VERBOSE);
+   cleanup();
+diff -u -r -N trunk/tests/check_check_master.c mloskot-check-5790d29/tests/check_check_master.c
+--- trunk/tests/check_check_master.c	2010-12-12 17:30:58.000000000 -0500
++++ mloskot-check-5790d29/tests/check_check_master.c	2012-01-08 13:37:22.000000000 -0500
+@@ -360,8 +360,11 @@
+   init_master_tests_lineno();
+   init_signal_strings();
+ 
++#ifdef _POSIX_VERSION
+   srunner_add_suite(sr, make_sub2_suite());
+   srunner_run_all(sr, CK_VERBOSE);
++#endif /* _POSIX_VERSION */
++
+   tr_fail_array = srunner_failures(sr);
+   tr_all_array = srunner_results(sr);
+   sub_nfailed = srunner_ntests_failed(sr);
+diff -u -r -N trunk/tests/check_check_sub.c mloskot-check-5790d29/tests/check_check_sub.c
+--- trunk/tests/check_check_sub.c	2011-06-01 05:51:20.000000000 -0400
++++ mloskot-check-5790d29/tests/check_check_sub.c	2012-01-08 13:37:22.000000000 -0500
+@@ -305,14 +305,17 @@
+ START_TEST(test_segv)
+   #define LINENO_segv _STR(__LINE__)
+ {
++#ifdef _POSIX_VERSION
+   raise (SIGSEGV);
++#endif /* _POSIX_VERSION */
+ }
+ END_TEST
+ 
+-
+ START_TEST(test_fpe)
+ {
++#ifdef _POSIX_VERSION
+   raise (SIGFPE);
++#endif /* _POSIX_VERSION */
+ }
+ END_TEST
+ 
+@@ -325,8 +328,10 @@
+   i = 0;
+   i++;
+   mark_point();
++#ifdef _POSIX_VERSION
+   raise(SIGFPE);
+   fail("Shouldn't reach here");
++#endif /* _POSIX_VERSION */
+ }
+ END_TEST
+ 

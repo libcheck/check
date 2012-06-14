@@ -1,5 +1,9 @@
 In development.
 
+* A more complete CMake / MSVC patch for those interested in pursuing
+  Windows development with Check and Visual Studio.  See
+  patches/mloskot.windows.patch.
+
 * Added instructions for improving the speed and output of `make
   check' when using Automake.  See contrib/improved_make_check/.
 
