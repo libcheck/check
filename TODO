@@ -18,7 +18,7 @@ Documentation
 [0.9.4] * Update tutorial so that it works with modern tools.
 [0.9.5] * Clarify looping tests and give example of usage.
 [     ] * Document pkg-config usage, note that old macro usage is not recommended.
-[     ] * Document selective running of tests with CK_RUN_SUITE and CK_RUN_CASE
+[0.9.9] * Document selective running of tests with CK_RUN_SUITE and CK_RUN_CASE
           environment variables.
 
 Interface
