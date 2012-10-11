@@ -1,5 +1,7 @@
 In development.
 
+* Make tests/test_vars.in bourne shell compatible, bug #3472578 on SF.
+
 * Added ck_ prefix to mutex_lock variable, to avoid name clash on Solaris.
   Solves bug #3472574 on SF.
 
