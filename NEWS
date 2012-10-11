@@ -1,5 +1,8 @@
 In development.
 
+* In autoconf, request system extensions to generate 64-bit safe code,
+  solution from patch #2803433 on SF.
+
 * Fix for mutex deadlock when killing threads, patch #3564640 on SF.
 
 * Make XML output well-formed, solution from patch #3575642 on SF.

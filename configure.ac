@@ -28,7 +28,8 @@ AC_USE_SYSTEM_EXTENSIONS
 # really severe build strictness
 AM_INIT_AUTOMAKE([-Wall -Werror gnits 1.9.6])
 
-# FIXME: find the other places this stuff is used
+# From patch 2803433, request system extensions to generate 64-bit safe code
+AC_USE_SYSTEM_EXTENSIONS
 
 AC_SUBST(CHECK_MAJOR_VERSION)
 AC_SUBST(CHECK_MINOR_VERSION)
