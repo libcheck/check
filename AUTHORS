@@ -1,11 +1,11 @@
 Original Author:
     Arien Malec <arien dot malec at gmail dot com>
 
-Maintainers:
+Maintainers and Authors:
     Fredrik Hugosson <hugo303 at users dot sourceforge dot net>
     Chris Pickett <chris dot pickett at mail dot mcgill dot ca>
 
-Ex-Maintainer:
+Ex-Maintainer and Author:
     Sven Neumann <sven at convergence dot de>
 
 Patches:
@@ -31,6 +31,10 @@ Patches:
     Bernhard Reiter (configure issues)
     Neil Spring (const fixes)
     Roland Stigge (bug fix: allow fail inside setup)
+    Sebastian Rasmussen (duration bug fix)
+    Elmir Jagudin (well-formed XML and log file via env variables)
+    Diego Elio Petteno (autoconf patch for 64-bit safe code)
+    Jon Kowal (deadlock on thread cancellation fix)
 
 Anybody who has contributed code to Check or Check's build system is
 considered an author.  Send patches to this file to 
