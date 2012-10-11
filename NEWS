@@ -1,5 +1,7 @@
 In development.
 
+* Fix for mutex deadlock when killing threads, patch #3564640 on SF.
+
 * Make XML output well-formed, solution from patch #3575642 on SF.
   Solves bug #3485651 also.
 
