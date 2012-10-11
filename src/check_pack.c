@@ -264,7 +264,7 @@ static void check_type (int type, const char *file, int line)
 }
 
 #ifdef HAVE_PTHREAD
-static pthread_mutex_t mutex_lock = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t ck_mutex_lock = PTHREAD_MUTEX_INITIALIZER;
 void ppack_cleanup( void *mutex )
 {
   pthread_mutex_unlock(mutex);
@@ -282,10 +282,10 @@ void ppack (int fdes, enum ck_msg_type type, CheckMsg *msg)
   if (n > (CK_MAX_MSG_SIZE / 2))
     eprintf("Message string too long", __FILE__, __LINE__ - 2);
 
-  pthread_cleanup_push( ppack_cleanup, &mutex_lock );
-  pthread_mutex_lock(&mutex_lock);
+  pthread_cleanup_push( ppack_cleanup, &ck_mutex_lock );
+  pthread_mutex_lock(&ck_mutex_lock);
   r = write (fdes, buf, n);
-  pthread_mutex_unlock(&mutex_lock);
+  pthread_mutex_unlock(&ck_mutex_lock);
   pthread_cleanup_pop(0);
   if (r == -1)
     eprintf ("Error in call to write:", __FILE__, __LINE__ - 2);

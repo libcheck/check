@@ -1,5 +1,8 @@
 In development.
 
+* Added ck_ prefix to mutex_lock variable, to avoid name clash on Solaris.
+  Solves bug #3472574 on SF.
+
 * In autoconf, request system extensions to generate 64-bit safe code,
   solution from patch #2803433 on SF.
 
