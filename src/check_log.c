@@ -258,7 +258,9 @@ void xml_lfun (SRunner *sr CK_ATTRIBUTE_UNUSED, FILE *file, enum print_output pr
   case CLSTART_S:
     s = obj;
     fprintf(file, "  <suite>\n");
-    fprintf(file, "    <title>%s</title>\n", s->name);
+    fprintf(file, "    <title>", s->name);
+    fprint_xml_esc(file, s->name);
+    fprintf(file,"</title>\n", s->name);
     break;
   case CLEND_SR:
     break;

@@ -88,6 +88,37 @@ static void srunner_fprint_results (FILE *file, SRunner *sr,
   return;
 }
 
+void fprint_xml_esc(FILE *file, const char *str)
+{
+  for (; *str != '\0'; str++) {
+
+    switch (*str) {
+
+    /* handle special characters that must be escaped */
+    case '"':
+      fputs("&quot;", file);
+      break;
+    case '\'':
+      fputs("&apos;", file);
+      break;
+    case '<':
+      fputs("&lt;", file);
+      break;
+    case '>':
+      fputs("&gt;", file);
+      break;
+    case '&':
+      fputs("&amp;", file);
+      break;
+
+    /* regular characters, print as is */
+    default:
+      fputc(*str, file);
+      break;
+    }
+  }
+}
+
 void tr_fprint (FILE *file, TestResult *tr, enum print_output print_mode)
 {
   if (print_mode == CK_ENV) {
@@ -143,8 +174,12 @@ void tr_xmlprint (FILE *file, TestResult *tr, enum print_output print_mode CK_AT
   fprintf(file, "      <fn>%s:%d</fn>\n", file_name, tr->line);
   fprintf(file, "      <id>%s</id>\n", tr->tname);
   fprintf(file, "      <iteration>%d</iteration>\n", tr->iter);
-  fprintf(file, "      <description>%s</description>\n", tr->tcname);
-  fprintf(file, "      <message>%s</message>\n", tr->msg);
+  fprintf(file, "      <description>");
+  fprint_xml_esc(file, tr->tcname);
+  fprintf(file,"</description>\n", tr->tcname);
+  fprintf(file, "      <message>", tr->msg);
+  fprint_xml_esc(file, tr->msg);
+  fprintf(file,"</message>\n", tr->msg);
   fprintf(file, "    </test>\n");
   
   if (slash != NULL) {

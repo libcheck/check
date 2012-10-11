@@ -64,6 +64,16 @@ expected="<?xml version=\"1.0\"?>
       <message>Iteration 2 failed</message>
     </test>
   </suite>
+  <suite>
+    <title>XML escape &quot; &apos; &lt; &gt; &amp; tests</title>
+    <test result=\"failure\">
+      <fn>ex_xml_output.c:40</fn>
+      <id>test_xml_esc_fail_msg</id>
+      <iteration>0</iteration>
+      <description>description &quot; &apos; &lt; &gt; &amp;</description>
+      <message>fail &quot; &apos; &lt; &gt; &amp; message</message>
+    </test>
+  </suite>
 </testsuites>"
 
 ./ex_xml_output > /dev/null

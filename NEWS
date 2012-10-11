@@ -1,5 +1,8 @@
 In development.
 
+* Make XML output well-formed, solution from patch #3575642 on SF.
+  Solves bug #3485651 also.
+
 * Fix buggy duration calculation, bug #3575451 on SF. 
 
 * A more complete CMake / MSVC patch for those interested in pursuing

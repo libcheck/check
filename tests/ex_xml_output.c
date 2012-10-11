@@ -35,6 +35,12 @@ START_TEST(test_loop)
 }
 END_TEST
 
+START_TEST(test_xml_esc_fail_msg)
+{
+  fail("fail \" ' < > & message");
+}
+END_TEST
+
 static Suite *make_s1_suite (void)
 {
   Suite *s;
@@ -64,12 +70,29 @@ static Suite *make_s2_suite (void)
   return s;
 }
 
+/* check that XML special characters are properly escaped in XML log file */
+static Suite *make_xml_esc_suite (void)
+{
+  Suite *s;
+  TCase *tc;
+
+  s = suite_create("XML escape \" ' < > & tests");
+  tc = tcase_create ("description \" ' < > &");
+  suite_add_tcase(s, tc);
+
+  tcase_add_test (tc, test_xml_esc_fail_msg);
+
+  return s;
+}
+
 static void run_tests (int printmode)
 {
   SRunner *sr;
 
   sr = srunner_create(make_s1_suite());
   srunner_add_suite(sr, make_s2_suite());
+  srunner_add_suite(sr, make_xml_esc_suite());
+
   srunner_set_xml(sr, "test.log.xml");
   srunner_run_all(sr, printmode);
   srunner_free(sr);
