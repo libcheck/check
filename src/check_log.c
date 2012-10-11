@@ -222,7 +222,7 @@ void xml_lfun (SRunner *sr CK_ATTRIBUTE_UNUSED, FILE *file, enum print_output pr
 {
   TestResult *tr;
   Suite *s;
-  static struct timeval inittv, endtv;
+  static struct timeval inittv;
   static char t[sizeof "yyyy-mm-dd hh:mm:ss"] = {0};
 
   if (t[0] == 0)
@@ -241,11 +241,17 @@ void xml_lfun (SRunner *sr CK_ATTRIBUTE_UNUSED, FILE *file, enum print_output pr
     fprintf(file, "  <datetime>%s</datetime>\n", t);
     break;
   case CLENDLOG_SR:
-    gettimeofday(&endtv, NULL);
-    fprintf(file, "  <duration>%f</duration>\n",
-        (endtv.tv_sec + (float)(endtv.tv_usec)/1000000) - \
-        (inittv.tv_sec + (float)(inittv.tv_usec/1000000)));
-    fprintf(file, "</testsuites>\n");
+    {
+      struct timeval now;
+
+      /* calculate time the test were running */
+      gettimeofday(&now, NULL);
+      timersub(&now, &inittv, &now);
+
+      fprintf(file, "  <duration>%d.%06d</duration>\n",
+              now.tv_sec, now.tv_usec);
+      fprintf(file, "</testsuites>\n");
+    }
     break;
   case CLSTART_SR:
     break;
