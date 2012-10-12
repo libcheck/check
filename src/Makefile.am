@@ -7,7 +7,7 @@ include_HEADERS		= check.h
 
 EXTRA_DIST		= check.h.in
 
-AM_CFLAGS		= @GCOV_CFLAGS@ @PTHREAD_CFLAGS@
+AM_CFLAGS		= @GCOV_CFLAGS@ @PTHREAD_CFLAGS@ $(LIBSUBUNIT_CFLAGS)
 
 CFILES =\
 	check.c		\
@@ -39,11 +39,11 @@ $(EXPORT_SYM): check.h.in
 libcheck_la_DEPENDENCIES= $(EXPORT_SYM)
 libcheck_la_LDFLAGS	= -no-undefined -export-symbols $(EXPORT_SYM)
 libcheck_la_SOURCES	= $(CFILES) $(HFILES)
-libcheck_la_LIBADD	= @GCOV_LIBS@ @PTHREAD_LIBS@ $(top_builddir)/lib/libcompat.la
+libcheck_la_LIBADD	= @GCOV_LIBS@ @PTHREAD_LIBS@ $(LIBSUBUNIT_LIBS) $(top_builddir)/lib/libcompat.la
 
 libcheckinternal_la_LDFLAGS     = -no-undefined
 libcheckinternal_la_SOURCES	= $(CFILES) $(HFILES)
-libcheckinternal_la_LIBADD	= @GCOV_LIBS@ @PTHREAD_LIBS@ $(top_builddir)/lib/libcompat.la
+libcheckinternal_la_LIBADD	= @GCOV_LIBS@ @PTHREAD_LIBS@ $(LIBSUBUNIT_LIBS) $(top_builddir)/lib/libcompat.la
 
 CLEANFILES	= *~ *.gcno $(EXPORT_SYM)
 

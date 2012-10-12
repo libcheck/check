@@ -131,40 +131,25 @@ AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS([fcntl.h stddef.h stdint.h stdlib.h string.h sys/time.h unistd.h])
 
-if test xfalse != x"$enable_subunit"; then
-AC_CHECK_LIB(subunit, subunit_test_start, ,
-[case "$enable_subunit" in
- autodetect)
-   enable_subunit=false
-   ;;
- true)
-   AC_MSG_ERROR([libsubunit is required for subunit protocol support. The homepage for subunit is https://launchpad.net/subunit/])
-   ;;
- esac
-])
-fi
-if test xfalse != x"$enable_subunit"; then
-AC_CHECK_HEADER([subunit/child.h], ,
-[case "$enable_subunit" in
- autodetect)
-   enable_subunit=false
-   ;;
- true)
-   AC_MSG_ERROR([The header subunit/child.h could not be succesfully included and is required for subunit protocol support. The homepage for subunit is https://launchpad.net/subunit/])
-   ;;
- esac
-])
-fi
+AS_IF([test x"$enable_subunit" != "xfalse" && test x"$enable_subunit" != "xtrue"], [
+	PKG_CHECK_EXISTS([libsubunit], [:], [enable_subunit=false])
+	])
+AS_IF([test x"$enable_subunit" != "xfalse"], [
+	PKG_CHECK_MODULES([LIBSUBUNIT], [libsubunit])
+	])
 if test xfalse = x"$enable_subunit"; then
 ENABLE_SUBUNIT="0"
+LIBSUBUNIT_PC=""
 else
 ENABLE_SUBUNIT="1"
+LIBSUBUNIT_PC="libsubunit"
 fi
 AC_SUBST(ENABLE_SUBUNIT)
+AC_SUBST([LIBSUBUNIT_PC])
 AC_DEFINE_UNQUOTED(ENABLE_SUBUNIT, $ENABLE_SUBUNIT, [Subunit protocol result output])
 
 AM_CONDITIONAL(SUBUNIT, test x"$enable_subunit" != "xfalse")
-
+	
 
 
 # Checks for typedefs, structures, and compiler characteristics.
