@@ -1,5 +1,8 @@
 In development.
 
+* Added support for setting log files via environment variables.
+  Patch #3576713 on SF.
+
 * Added better pkg-config and subunit support, patch #3417041 on SF.
 
 * Make tests/test_vars.in bourne shell compatible, bug #3472578 on SF.

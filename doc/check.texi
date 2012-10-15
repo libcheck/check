@@ -1318,6 +1318,13 @@ Results for all suites run:
 @end verbatim
 @end example
 
+Another way to enable test logging is to use the @code{CK_LOG_FILE_NAME}
+environment variable. When set tests will be logged to the specified file name.
+If log file is specified with both @code{CK_LOG_FILE_NAME} and
+@code{srunner_set_log()}, the name provided to @code{srunner_set_log()} will
+be used.
+
+
 @menu
 * XML Logging::                 
 @end menu
@@ -1338,9 +1345,8 @@ const char *srunner_xml_fname (SRunner *sr);
 @end verbatim
 @end example
 
-The only thing you need to do to get XML output is call
-@code{srunner_set_xml()} before the tests are run.  Here is an example
-of the same log output as before but in XML:
+XML output is enabled by a call to @code{srunner_set_xml()} before the tests
+are run. Here is an example of the same log output as before but in XML:
 @example
 @verbatim
 <?xml version="1.0"?>
@@ -1384,6 +1390,16 @@ of the same log output as before but in XML:
 </testsuites>
 @end verbatim
 @end example
+
+XML logging can be enabled by an environment variable as well. If
+@code{CK_XML_LOG_FILE_NAME} environment variable is set, the XML test log will
+be written to specified file name. If XML log file is specified with both
+@code{CK_XML_LOG_FILE_NAME} and @code{srunner_set_xml()}, the name provided
+to @code{srunner_set_xml()} will be used.
+
+If both plain text and XML log files are specified, by any of above methods,
+then check will log to both files. In other words logging in plain text and XML
+format simultaneously is supported.
 
 @node Subunit Support,  , Test Logging, Advanced Features
 @section Subunit Support

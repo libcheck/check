@@ -46,12 +46,16 @@ void srunner_set_log (SRunner *sr, const char *fname)
 
 int srunner_has_log (SRunner *sr)
 {
-  return sr->log_fname != NULL;
+  return srunner_log_fname(sr) != NULL;
 }
 
 const char *srunner_log_fname (SRunner *sr)
 {
-  return sr->log_fname;
+  /* check if log filename have been set explicitly */
+  if (sr->log_fname != NULL)
+    return sr->log_fname;
+
+  return getenv("CK_LOG_FILE_NAME");
 }
 
 
@@ -64,12 +68,17 @@ void srunner_set_xml (SRunner *sr, const char *fname)
 
 int srunner_has_xml (SRunner *sr)
 {
-  return sr->xml_fname != NULL;
+  return srunner_xml_fname(sr) != NULL;
 }
 
 const char *srunner_xml_fname (SRunner *sr)
 {
-  return sr->xml_fname;
+  /* check if XML log filename have been set explicitly */
+  if (sr->xml_fname != NULL) {
+    return sr->xml_fname;
+  }
+
+  return getenv("CK_XML_LOG_FILE_NAME");
 }
 
 void srunner_register_lfun (SRunner *sr, FILE *lfile, int close,
@@ -344,7 +353,7 @@ FILE *srunner_open_lfile (SRunner *sr)
 {
   FILE *f = NULL;
   if (srunner_has_log (sr)) {
-    f = fopen(sr->log_fname, "w");
+    f = fopen(srunner_log_fname(sr), "w");
     if (f == NULL)
       eprintf ("Error in call to fopen while opening log file %s:", __FILE__, __LINE__ - 2,
 	       sr->log_fname);
@@ -356,7 +365,7 @@ FILE *srunner_open_xmlfile (SRunner *sr)
 {
   FILE *f = NULL;
   if (srunner_has_xml (sr)) {
-    f = fopen(sr->xml_fname, "w");
+    f = fopen(srunner_xml_fname(sr), "w");
     if (f == NULL)
       eprintf ("Error in call to fopen while opening xml file %s:", __FILE__, __LINE__ - 2,
 	       sr->xml_fname);
