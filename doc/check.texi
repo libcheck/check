@@ -13,7 +13,7 @@ This manual is for Check
 (version @value{VERSION}, @value{UPDATED}),
 a unit testing framework for C.
 
-Copyright @copyright{} 2001--2009 Arien Malec, Chris Pickett, Fredrik
+Copyright @copyright{} 2001--2011 Arien Malec, Chris Pickett, Fredrik
 Hugosson, and Robert Lemmen.
 
 @quotation
@@ -1346,32 +1346,39 @@ const char *srunner_xml_fname (SRunner *sr);
 @end example
 
 XML output is enabled by a call to @code{srunner_set_xml()} before the tests
-are run. Here is an example of the same log output as before but in XML:
+are run. Here is an example of an XML log:
 @example
 @verbatim
 <?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="http://check.sourceforge.net/xml/check_unittest.xslt"?>
 <testsuites xmlns="http://check.sourceforge.net/ns">
-  <datetime>2004-08-20 12:53:32</datetime>
+  <datetime>2012-10-19 09:56:06</datetime>
   <suite>
     <title>S1</title>
     <test result="success">
       <path>.</path>
-      <fn>ex_xml_output.c:8</fn>
+      <fn>ex_xml_output.c:10</fn>
       <id>test_pass</id>
+      <iteration>0</iteration>
+      <duration>0.000013</duration>
       <description>Core</description>
       <message>Passed</message>
     </test>
     <test result="failure">
       <path>.</path>
-      <fn>ex_xml_output.c:14</fn>
+      <fn>ex_xml_output.c:16</fn>
       <id>test_fail</id>
+      <iteration>0</iteration>
+      <duration>-1.000000</duration>
       <description>Core</description>
       <message>Failure</message>
     </test>
     <test result="error">
       <path>.</path>
-      <fn>ex_xml_output.c:18</fn>
+      <fn>ex_xml_output.c:20</fn>
       <id>test_exit</id>
+      <iteration>0</iteration>
+      <duration>-1.000000</duration>
       <description>Core</description>
       <message>Early exit with return value 1</message>
     </test>
@@ -1380,13 +1387,54 @@ are run. Here is an example of the same log output as before but in XML:
     <title>S2</title>
     <test result="success">
       <path>.</path>
-      <fn>ex_xml_output.c:26</fn>
+      <fn>ex_xml_output.c:28</fn>
       <id>test_pass2</id>
+      <iteration>0</iteration>
+      <duration>0.000011</duration>
       <description>Core</description>
       <message>Passed</message>
     </test>
+    <test result="failure">
+      <path>.</path>
+      <fn>ex_xml_output.c:34</fn>
+      <id>test_loop</id>
+      <iteration>0</iteration>
+      <duration>-1.000000</duration>
+      <description>Core</description>
+      <message>Iteration 0 failed</message>
+    </test>
+    <test result="success">
+      <path>.</path>
+      <fn>ex_xml_output.c:34</fn>
+      <id>test_loop</id>
+      <iteration>1</iteration>
+      <duration>0.000010</duration>
+      <description>Core</description>
+      <message>Passed</message>
+    </test>
+    <test result="failure">
+      <path>.</path>
+      <fn>ex_xml_output.c:34</fn>
+      <id>test_loop</id>
+      <iteration>2</iteration>
+      <duration>-1.000000</duration>
+      <description>Core</description>
+      <message>Iteration 2 failed</message>
+    </test>
   </suite>
-  <duration>0.304875</duration>
+  <suite>
+    <title>XML escape &quot; &apos; &lt; &gt; &amp; tests</title>
+    <test result="failure">
+      <path>.</path>
+      <fn>ex_xml_output.c:40</fn>
+      <id>test_xml_esc_fail_msg</id>
+      <iteration>0</iteration>
+      <duration>-1.000000</duration>
+      <description>description &quot; &apos; &lt; &gt; &amp;</description>
+      <message>fail &quot; &apos; &lt; &gt; &amp; message</message>
+    </test>
+  </suite>
+  <duration>0.001610</duration>
 </testsuites>
 @end verbatim
 @end example

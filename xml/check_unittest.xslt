@@ -16,7 +16,7 @@ $ xsltproc check_unittest.xslt check_output.xml > check_output.html
   <html><title>Test results</title><body>
   <p>
   <table width="100%" border="1" cellpadding="0">
-  <tr><td colspan="5" style='background:#e5E5f5'><h1>Unittests</h1></td></tr>
+  <tr><td colspan="7" style='background:#e5E5f5'><h1>Unittests</h1></td></tr>
     <xsl:apply-templates/>
   </table></p>
   </body></html>
@@ -28,20 +28,21 @@ $ xsltproc check_unittest.xslt check_output.xml > check_output.html
 
 <xsl:template match="c:title">
   <tr>
-  <th colspan="5">Test suite <xsl:apply-templates/></th>
+  <th colspan="7">Test suite <xsl:apply-templates/></th>
   </tr>
   <tr>
   <td>Path</td>
   <td>Filename</td>
   <td>Test ID</td>
   <td>Iteration</td>
+  <td>Duration</td>
   <td>Description</td>
   <td>Message</td>
   </tr>
 </xsl:template>
 
 <xsl:template match="c:datetime">
-  <tr><th colspan="5">Test ran at: <xsl:apply-templates/></th></tr>
+  <tr><th colspan="7">Test ran at: <xsl:apply-templates/></th></tr>
 </xsl:template>
 
 <xsl:template match="c:test[@result='success']">
@@ -80,8 +81,12 @@ $ xsltproc check_unittest.xslt check_output.xml > check_output.html
   <td><pre><tt><xsl:apply-templates/></tt></pre></td>
 </xsl:template>
 
+<xsl:template match="c:test/c:duration">
+  <td><xsl:apply-templates/></td>
+</xsl:template>
+
 <xsl:template match="c:duration">
-  <tr><th colspan="5">Test duration: <xsl:apply-templates/> seconds</th></tr>
+  <tr><th colspan="7">Test duration: <xsl:apply-templates/> seconds</th></tr>
 </xsl:template>
 
 </xsl:stylesheet>
