@@ -1,5 +1,7 @@
 In development.
 
+* Added contrib/XML_for_JUnit.xsl from feature request #3521371 on SF.
+
 * Added support for setting log files via environment variables.
   Patch #3576713 on SF.
 
