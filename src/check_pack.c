@@ -65,9 +65,11 @@ static char *upack_str  (char **buf);
 static int   pack_ctx   (char **buf, CtxMsg  *cmsg);
 static int   pack_loc   (char **buf, LocMsg  *lmsg);
 static int   pack_fail  (char **buf, FailMsg *fmsg);
+static int   pack_duration  (char **buf, DurationMsg *fmsg);
 static void  upack_ctx  (char **buf, CtxMsg  *cmsg);
 static void  upack_loc  (char **buf, LocMsg  *lmsg);
 static void  upack_fail (char **buf, FailMsg *fmsg);
+static void  upack_duration (char **buf, DurationMsg *fmsg);
 
 static void  check_type (int type, const char *file, int line);
 static enum ck_msg_type upack_type (char **buf);
@@ -86,13 +88,15 @@ typedef void (*upfun) (char **, CheckMsg *);
 static pfun pftab [] = {
   (pfun) pack_ctx,
   (pfun) pack_fail,
-  (pfun) pack_loc
+  (pfun) pack_loc,
+  (pfun) pack_duration
 };
 
 static upfun upftab [] = {
   (upfun) upack_ctx,
   (upfun) upack_fail,
-  (upfun) upack_loc
+  (upfun) upack_loc,
+  (upfun) upack_duration
 };
 
 int pack (enum ck_msg_type type, char **buf, CheckMsg *msg)
@@ -217,6 +221,25 @@ static void upack_ctx (char **buf, CtxMsg *cmsg)
   cmsg->ctx = upack_int (buf);
 }
 
+static int pack_duration (char **buf, DurationMsg *cmsg)
+{
+  char *ptr;
+  int len;
+
+  len = 4 + 4;
+  *buf = ptr = emalloc (len);
+
+  pack_type (&ptr, CK_MSG_DURATION);
+  pack_int (&ptr, cmsg->duration);
+
+  return len;
+}
+
+static void upack_duration (char **buf, DurationMsg *cmsg)
+{
+  cmsg->duration = upack_int (buf);
+}
+
 static int pack_loc (char **buf, LocMsg *lmsg)
 {
   char *ptr;
@@ -337,6 +360,9 @@ static int get_result (char *buf, RcvMsg *rmsg)
       /* Skip subsequent failure messages, only happens for CK_NOFORK */
     }
     free (fmsg->msg);
+  } else if (type == CK_MSG_DURATION) {
+    DurationMsg *cmsg = (DurationMsg *) &msg;
+    rmsg->duration = cmsg->duration;
   } else
     check_type (type, __FILE__, __LINE__);
 
@@ -363,6 +389,7 @@ static RcvMsg *rcvmsg_create (void)
   rmsg->lastctx = CK_CTX_INVALID;
   rmsg->failctx = CK_CTX_INVALID;
   rmsg->msg = NULL;
+  rmsg->duration = -1;
   reset_rcv_test (rmsg);
   reset_rcv_fixture (rmsg);
   return rmsg;

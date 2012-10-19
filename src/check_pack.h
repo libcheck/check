@@ -26,6 +26,7 @@ enum ck_msg_type {
   CK_MSG_CTX,
   CK_MSG_FAIL,
   CK_MSG_LOC,
+  CK_MSG_DURATION,
   CK_MSG_LAST
 };
 
@@ -45,6 +46,11 @@ typedef struct FailMsg
   char *msg;
 } FailMsg;
 
+typedef struct DurationMsg
+{
+  int duration;
+} DurationMsg;
+
 typedef union
 {
   CtxMsg  ctx_msg;
@@ -61,6 +67,7 @@ typedef struct RcvMsg
   char *test_file;
   int test_line;
   char *msg;
+  int duration;
 } RcvMsg;
 
 void rcvmsg_free (RcvMsg *rmsg);

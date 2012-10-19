@@ -1,5 +1,8 @@
 In development.
 
+* Measure test duration and print in XML output.
+  Feature request #3521371 on SF, but reimplemented.
+
 * Added contrib/XML_for_JUnit.xsl from feature request #3521371 on SF.
 
 * Added support for setting log files via environment variables.

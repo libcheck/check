@@ -69,6 +69,7 @@ struct TestResult {
   char *file;    /* File where the test occured */
   int line;      /* Line number where the test occurred */
   int iter;      /* The iteration value for looping tests */
+  int duration;  /* duration of this test */
   const char *tcname;  /* Test case that generated the result */
   const char *tname;  /* Test that generated the result */
   char *msg;     /* Failure message */

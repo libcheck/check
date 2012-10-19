@@ -86,5 +86,17 @@ if [ x"${expected}" != x"${actual}" ]; then
     echo "${actual}";
     exit 1;
 fi
-    
+
+duration_count=`grep -c \<duration\> test.log.xml`
+if [ x"${duration_count}" != x9 ]; then
+    echo "Wrong number of <duration> elements in test.log.xml";
+    exit 1;
+fi
+
+duration_error=`cat test.log.xml | grep \<duration\> | grep -c "\-1\.000000"`
+if [ x"${duration_error}" != x5 ]; then
+    echo "Wrong format for (or number of) error <duration> elements in test.log.xml";
+    exit 1;
+fi
+
 exit 0

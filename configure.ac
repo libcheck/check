@@ -126,6 +126,10 @@ fi
 
 # Checks for libraries.
 
+# Link with rt for clock_gettime
+LIBS=-lrt
+AC_SUBST(LIBS)
+
 # Checks for header files.
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT

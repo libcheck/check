@@ -21,6 +21,7 @@
 #include "../lib/libcompat.h"
 
 #include <sys/types.h>
+#include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -50,6 +51,11 @@ enum tf_type {
 };
 
 
+/** calculate the difference in useconds out of two "struct timeval"s */
+#define DIFF_IN_USEC(begin, end) \
+  ( (((end).tv_sec - (begin).tv_sec) * 1000000) + \
+    ((end).tv_nsec/1000) - ((begin).tv_nsec/1000) )
+
 /* all functions are defined in the same order they are declared.
    functions that depend on forking are gathered all together.
    non-static functions are at the end of the file. */
@@ -69,7 +75,8 @@ static void srunner_run_tcase (SRunner *sr, TCase *tc);
 static TestResult *tcase_run_tfun_nofork (SRunner *sr, TCase *tc, TF *tf, int i);
 static TestResult *receive_result_info_nofork (const char *tcname,
                                                const char *tname,
-                                               int iter);
+                                               int iter,
+                                               int duration);
 static void set_nofork_info (TestResult *tr);
 static char *pass_msg (void);
 
@@ -226,7 +233,7 @@ static int srunner_run_unchecked_setup (SRunner *sr, TCase *tc)
       f->fun();
     }
 
-    tr = receive_result_info_nofork (tc->name, "unchecked_setup", 0);
+    tr = receive_result_info_nofork (tc->name, "unchecked_setup", 0, -1);
 
     if (tr->rtype != CK_PASS) {
       srunner_add_failure(sr, tr);
@@ -269,7 +276,7 @@ static TestResult * tcase_run_checked_setup (SRunner *sr, TCase *tc)
 
     /* Stop the setup and return the failure if nofork mode. */
     if (fstat == CK_NOFORK) {
-      tr = receive_result_info_nofork (tc->name, "checked_setup", 0);
+      tr = receive_result_info_nofork (tc->name, "checked_setup", 0, -1);
       if (tr->rtype != CK_PASS) {
         break;
       }
@@ -316,14 +323,18 @@ static void srunner_run_tcase (SRunner *sr, TCase *tc)
 static TestResult *tcase_run_tfun_nofork (SRunner *sr, TCase *tc, TF *tfun, int i)
 {
   TestResult *tr;
+  struct timespec ts_start, ts_end;
   
   tr = tcase_run_checked_setup(sr, tc);
   if (tr == NULL) {
     if ( 0 == setjmp(error_jmp_buffer) ) {
+      clock_gettime(CLOCK_MONOTONIC, &ts_start);
       tfun->fn(i);
+      clock_gettime(CLOCK_MONOTONIC, &ts_end);
     }
     tcase_run_checked_teardown(tc);
-    return receive_result_info_nofork(tc->name, tfun->name, i);
+    return receive_result_info_nofork(tc->name, tfun->name, i,
+                                      DIFF_IN_USEC(ts_start, ts_end));
   }
   
   return tr;
@@ -331,7 +342,8 @@ static TestResult *tcase_run_tfun_nofork (SRunner *sr, TCase *tc, TF *tfun, int 
 
 static TestResult *receive_result_info_nofork (const char *tcname,
                                                const char *tname,
-                                               int iter)
+                                               int iter,
+                                               int duration)
 {
   TestResult *tr;
 
@@ -342,6 +354,7 @@ static TestResult *receive_result_info_nofork (const char *tcname,
     tr->tcname = tcname;
     tr->tname = tname;
     tr->iter = iter;
+    tr->duration = duration;
     set_nofork_info(tr);
   }
 
@@ -371,6 +384,7 @@ static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun, int i)
   pid_t pid_w;
   pid_t pid;
   int status = 0;
+  struct timespec ts_start, ts_end;
 
   pid = fork();
   if (pid == -1)
@@ -379,8 +393,11 @@ static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun, int i)
     setpgid(0, 0);
     group_pid = getpgrp();
     tcase_run_checked_setup(sr, tc);
+    clock_gettime(CLOCK_MONOTONIC, &ts_start);
     tfun->fn(i);
+    clock_gettime(CLOCK_MONOTONIC, &ts_end);
     tcase_run_checked_teardown(tc);
+    send_duration_info(DIFF_IN_USEC(ts_start, ts_end));
     exit(EXIT_SUCCESS);
   } else {
     group_pid = pid;

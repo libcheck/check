@@ -174,6 +174,9 @@ void tr_xmlprint (FILE *file, TestResult *tr, enum print_output print_mode CK_AT
   fprintf(file, "      <fn>%s:%d</fn>\n", file_name, tr->line);
   fprintf(file, "      <id>%s</id>\n", tr->tname);
   fprintf(file, "      <iteration>%d</iteration>\n", tr->iter);
+  fprintf(file, "      <duration>%d.%06d</duration>\n",
+          tr->duration < 0 ? -1 : tr->duration / 1000000,
+          tr->duration < 0 ? 0 : tr->duration % 1000000);
   fprintf(file, "      <description>");
   fprint_xml_esc(file, tr->tcname);
   fprintf(file,"</description>\n", tr->tcname);

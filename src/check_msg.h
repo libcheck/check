@@ -27,6 +27,7 @@
 void send_failure_info(const char *msg);
 void send_loc_info(const char *file, int line);
 void send_ctx_info(enum ck_result_ctx ctx);
+void send_duration_info(int duration);
 
 TestResult *receive_test_result(int waserror);
 

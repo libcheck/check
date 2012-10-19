@@ -85,6 +85,14 @@ void send_failure_info(const char *msg)
   ppack(fileno(get_pipe()), CK_MSG_FAIL, (CheckMsg *) &fmsg);
 }
 
+void send_duration_info(int duration)
+{
+  DurationMsg dmsg;
+
+  dmsg.duration = duration;
+  ppack(fileno(get_pipe()), CK_MSG_DURATION, (CheckMsg *) &dmsg);
+}
+
 void send_loc_info(const char * file, int line)
 {
   LocMsg lmsg;
@@ -158,6 +166,7 @@ static TestResult *construct_test_result (RcvMsg *rmsg, int waserror)
   } else {
     tr->ctx = CK_CTX_TEST;
     tr->msg = NULL;
+    tr->duration = rmsg->duration;
     tr_set_loc_by_ctx (tr, CK_CTX_TEST, rmsg);
   }
 
