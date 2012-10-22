@@ -1,4 +1,5 @@
-In development.
+Mon, Oct 22, 2012: Released Check 0.9.9
+  based on r637 (2012-10-22 13:54:14 +0200)
 
 * Measure test duration and print in XML output.
   Feature request #3521371 on SF, but reimplemented.
