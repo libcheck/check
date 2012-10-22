@@ -66,21 +66,15 @@ releasevars:
 	svn st -u | grep "Status against revision:" | awk '{ print $$4 }' > $@
 
 preparerelease: releasevars .svnrelease prereleasecheck
-	@echo checking we have can connect properly to do release tasks before tagging:
-	sftp -b /dev/null ${SF_USERNAME}@web.sourceforge.net
-	sftp -b /dev/null ${SF_USERNAME}@frs.sourceforge.net
 	@echo tagging release from `cat .svnrelease`
-	svn cp -m "Tagging for check-${RELEASE_VERSION}" -r`cat .svnrelease` https://svn.sourceforge.net/svnroot/check/trunk https://svn.sourceforge.net/svnroot/check/tags/check-${RELEASE_VERSION}
-	svn co https://svn.sourceforge.net/svnroot/check/tags/check-${RELEASE_VERSION} check-${RELEASE_VERSION}
-	@echo "You need to:"
-	@echo "Update the version number in NEWS."
-	@echo "Update TODO to mark off any completed items."
-	@echo "Update configure.ac with new version numbers."
+	svn cp -m "Tagging for check-${RELEASE_VERSION}" -r`cat .svnrelease` https://check.svn.sourceforge.net/svnroot/check/trunk https://check.svn.sourceforge.net/svnroot/check/tags/check-${RELEASE_VERSION}
+	svn co https://check.svn.sourceforge.net/svnroot/check/tags/check-${RELEASE_VERSION} check-${RELEASE_VERSION}
+	@echo "Any last minute changes? This is your final chance."
 	@echo "CTRL-D when finished or 'exit 1' to abort."
 	@echo "aborting will leave the partially prepared release in" `pwd`
 	cd check-${RELEASE_VERSION} && ${SHELL} && svn ci -m "Release check-${RELEASE_VERSION}" && autoreconf -i && ./configure
 	$(MAKE) -C check-${RELEASE_VERSION} dorelease
-	-svn merge -r`cat .svnrelease`:`svn st -u check-${RELEASE_VERSION} | grep "Status against revision:" | awk '{ print $4 }'` check-${RELEASE_VERSION} .
+	-svn merge -r`cat .svnrelease`:`svn st -u check-${RELEASE_VERSION} | grep "Status against revision:" | awk '{ print $$4 }'` check-${RELEASE_VERSION} .
 	@echo "Please resolve any conflicts. Be sure to also restore the 'In Development:' line to NEWS."
 	${SHELL}
 	svn ci -m "Merge back release ${RELEASE_VERSION}"
@@ -97,21 +91,25 @@ dorelease: releasevars doc/check_html prereleasecheck
 	@echo uploading...
 	rsync -e ssh NEWS-${RELEASE_VERSION}.txt ${SF_USERNAME},check@frs.sourceforge.net:/home/frs/project/c/ch/check/check/${RELEASE_VERSION}/
 	rsync -e ssh check-${RELEASE_VERSION}.tar.gz ${SF_USERNAME},check@frs.sourceforge.net:/home/frs/project/c/ch/check/check/${RELEASE_VERSION}/
-	rsync -rlvC . ${SF_USERNAME},check@web.sourceforge.net:htdocs
+	rsync -e ssh -rlvC . ${SF_USERNAME},check@web.sourceforge.net:htdocs
 	@echo
-	@echo Uploaded...
-	@echo "visit https://sourceforge.net/project/admin/explorer.php?group_id=28255"
-	@echo "Mark the NEWS file in check/${RELEASE_VERSION} as being a release note."
-	@echo "And the tar.gz file as being 'all platforms', using the NEWS file for release notes."
+	@echo "Uploaded..."
+	@echo "visit https://sourceforge.net/projects/check/files/"
+	@echo "Mark the NEWS file in check/${RELEASE_VERSION} as being a"
+	@echo "README by clicking the 'i' by the file and change the name to"
+	@echo "NEWS-README-${RELEASE_VERSION}."
+	@echo "Click 'i' by the tar.gz file and at 'Default download for:'"
+	@echo "click 'select all', then save."
 	@echo "visit https://sourceforge.net/projects/check/files/"
 	@echo "Check it looks ok. It may take 15 minutes to show up."
-	@echo Finally, mail check-devel ,announce and users at lists dot sourceforge dot net
-	@echo 'an email (template is in HACKING) about this announcement.'
-	@echo NEWS-release can be found at `pwd`/NEWS-${RELEASE_VERSION}.txt
-	@echo Note that with the tarballs, docs amd NEWS up, the release is done :P
-	@echo "so you'll have to manually roll back if you abort."
+	@echo "Finally, mail"
+	@echo "check-devel ,announce and users at lists dot sourceforge dot net"
+	@echo "an announcement (template is in HACKING) about this release."
+	@echo "NEWS-release can be found at `pwd`/NEWS-${RELEASE_VERSION}.txt"
+	@echo "Note that with the tarballs, docs amd NEWS up, the release"
+	@echo "is done :P so you'll have to manually roll back if you abort."
 	@echo "CTRL-D to complete, or exit 1 to abort."
 	${SHELL}
-	
+
 
 .PHONY: releasevars prereleasecheck preparerelease dorelease .svnrelease

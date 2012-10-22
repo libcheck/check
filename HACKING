@@ -29,12 +29,23 @@ Release Process
 You need 'release tech' access within the project to do this.
 
 Start in a configured in-place build of trunk.
+If you are behind a proxy remember to "socksify" (or similar) your
+'make' and 'sftp' commands. Make sure svn works.
 
-1.  Decide on a X.Y.Z revision suitable for release.
-2.  make SF_USERNAME=username RELEASE_VERSION=X.Y.Z preparerelease
+1.  Fix your ssh connectivity and accept ssh-keys:
+     'sftp <SF_USERNAME>@web.sourceforge.net'
+     'sftp <SF_USERNAME>@frs.sourceforge.net'
+2.  Decide on a X.Y.Z revision suitable for release.
+3.  Update configure.ac with new versions and run
+    'svn commit -m "Update for release" configure.ac'
+4.  Update NEWS with new version number. Use this format:
+    "Mon, Oct 22, 2012: Released Check 0.9.9
+       based on r637 (2012-10-22 13:54:14 +0200)"
+    Now 'svn commit -m "* Update for release" NEWS'
+5.  make SF_USERNAME=username RELEASE_VERSION=X.Y.Z preparerelease
     This will tag trunk as https://svn.sourceforge.net/svnroot/check/tags/check-X.Y.Z
-3.  Follow the prompts. If anything goes wrong see Makefile.am and complete it by hand.
-4.  Use the following template to announce the release:
+6.  Follow the prompts. If anything goes wrong see Makefile.am and complete it by hand.
+7.  Use the following template to announce the release:
 =====
 Subject: check-X.Y.Z released
 Hi,

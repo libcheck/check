@@ -1,3 +1,7 @@
+In development:
+
+* Updated HACKING and release procedure in Makefile.am.
+
 Mon, Oct 22, 2012: Released Check 0.9.9
   based on r637 (2012-10-22 13:54:14 +0200)
 
