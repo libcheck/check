@@ -26,7 +26,7 @@ noinst_PROGRAMS = \
 	ex_xml_output	\
 	ex_log_output
 
-EXTRA_DIST = test_output.sh test_log_output.sh test_vars.in test_xml_output.sh
+EXTRA_DIST = test_output.sh test_check_nofork.sh test_log_output.sh test_vars.in test_xml_output.sh
 
 if NO_TIMEOUT_TESTS
 check_check_CFLAGS = -DTIMEOUT_TESTS_ENABLED=0
