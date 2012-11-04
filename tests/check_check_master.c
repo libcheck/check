@@ -169,7 +169,7 @@ START_TEST(test_check_failure_msgs)
       char *emsg = malloc(MAXSTR);
       snprintf(emsg, MAXSTR,"For test %d: Expected %s, got %s",
                i, expected_msg, got_msg);
-      fail(emsg);
+      ck_abort_msg(emsg);
       free(emsg);
     }
   }
@@ -197,7 +197,7 @@ START_TEST(test_check_failure_lnos)
       char *emsg = malloc(MAXSTR);
       snprintf(emsg, MAXSTR, "For test %d: Expected lno %d, got %d",
                i, line_no, tr_lno(tr));
-      fail(emsg);
+      ck_abort_msg(emsg);
       free(emsg);
     }    
   }
@@ -246,7 +246,7 @@ START_TEST(test_check_tcnames)
     char *emsg = malloc (MAXSTR);
     snprintf(emsg, MAXSTR,"Expected %s, got %s",
              master_tests[_i].tcname, tcname);
-    fail(emsg);
+    ck_abort_msg(emsg);
     free(emsg);
   } 
 }
@@ -261,7 +261,7 @@ START_TEST(test_check_all_msgs)
     char *emsg = malloc (MAXSTR);
     snprintf(emsg, MAXSTR,"Expected %s, got %s",
              master_tests[_i].msg, msg);
-    fail(emsg);
+    ck_abort_msg(emsg);
     free(emsg);
   }
 }

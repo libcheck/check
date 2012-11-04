@@ -13,7 +13,7 @@ static char errm[200];
 
 static void fixture_sub_setup (void)
 {
-  fail("Test failure in fixture");
+  ck_abort_msg("Test failure in fixture");
 }
 
 static SRunner *fixture_sr;
@@ -73,7 +73,7 @@ START_TEST(test_setup_failure_msg)
     snprintf(errm, sizeof(errm),
 	     "Bad setup tr msg (%s)", trm);
     
-    fail (errm);
+    ck_abort_msg (errm);
   }
   free(trm);
 }
@@ -95,9 +95,9 @@ static void sub_ch_teardown_norm(void)
 START_TEST(test_sub_ch_setup_norm)
 {
   if (testval_up == 1)
-    fail("Setup not run correctly");
+    ck_abort_msg("Setup not run correctly");
   else if (testval_up > 3)
-    fail("Test side-effects persist across runs");
+    ck_abort_msg("Test side-effects persist across runs");
   testval_up++;
 }
 END_TEST
@@ -126,12 +126,12 @@ END_TEST
 
 static void setup_sub_fail (void)
 {
-  fail("Failed setup"); /* check_check_fixture.c:129 */
+  ck_abort_msg("Failed setup"); /* check_check_fixture.c:129 */
 }
 
 static void teardown_sub_fail (void)
 {
-  fail("Failed teardown");
+  ck_abort_msg("Failed teardown");
 }
 
 static void setup_sub_signal (void)
@@ -148,7 +148,7 @@ static void teardown_sub_signal(void)
 
 START_TEST(test_sub_fail)
 {
-  fail("Should never run");
+  ck_abort_msg("Should never run");
 }
 END_TEST
 
@@ -194,7 +194,7 @@ START_TEST(test_ch_setup_fail)
     snprintf(errm, sizeof(errm),
 	     "Bad failed checked setup tr msg (%s)", trm);
     
-    fail (errm);
+    ck_abort_msg (errm);
   }
 }
 END_TEST
@@ -309,7 +309,7 @@ START_TEST(test_ch_setup_sig)
     snprintf(errm, sizeof(errm),
 	     "Msg was (%s)", trm);
     
-    fail (errm);
+    ck_abort_msg (errm);
   }
 }
 END_TEST
@@ -391,7 +391,7 @@ START_TEST(test_ch_teardown_fail)
     snprintf(errm, sizeof(errm),
 	     "Bad failed checked teardown tr msg (%s)", trm);
     
-    fail (errm);
+    ck_abort_msg (errm);
   }
   
 }
@@ -434,7 +434,7 @@ START_TEST(test_ch_teardown_sig)
     snprintf(errm, sizeof(errm),
 	     "Bad msg (%s)", trm);
     
-    fail (errm);
+    ck_abort_msg (errm);
   }
   
 }

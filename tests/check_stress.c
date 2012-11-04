@@ -20,7 +20,7 @@ END_TEST
 
 START_TEST(test_fail)
 {
-  fail("This test fails");
+  ck_abort_msg("This test fails");
 }
 END_TEST
 

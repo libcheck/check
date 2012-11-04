@@ -13,7 +13,7 @@ END_TEST
 
 START_TEST(test_fail)
 {
-  fail("Failure");
+  ck_abort_msg("Failure");
 }
 END_TEST
 
@@ -37,7 +37,7 @@ END_TEST
 
 START_TEST(test_xml_esc_fail_msg)
 {
-  fail("fail \" ' < > & message");
+  ck_abort_msg("fail \" ' < > & message");
 }
 END_TEST
 

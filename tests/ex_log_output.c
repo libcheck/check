@@ -13,7 +13,7 @@ END_TEST
 
 START_TEST(test_fail)
 {
-  fail("Failure");
+  ck_abort_msg("Failure");
 }
 END_TEST
 

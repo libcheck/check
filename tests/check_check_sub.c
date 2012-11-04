@@ -11,7 +11,7 @@
 
 START_TEST(test_lno)
 {
-  fail("Failure expected");
+  ck_abort_msg("Failure expected");
   #define LINENO_lno _STR(__LINE__)
 }
 END_TEST
@@ -326,7 +326,7 @@ START_TEST(test_mark_point)
   i++;
   mark_point();
   raise(SIGFPE);
-  fail("Shouldn't reach here");
+  ck_abort_msg("Shouldn't reach here");
 }
 END_TEST
 
@@ -385,7 +385,7 @@ START_TEST(test_null)
   srunner_create(NULL);
   srunner_run_all (NULL, -1);
   srunner_free (NULL);
-  fail("Completed properly");
+  ck_abort_msg("Completed properly");
 }
 END_TEST
 
@@ -394,7 +394,7 @@ START_TEST(test_null_2)
   SRunner *sr = srunner_create(NULL);
   srunner_run_all (sr, CK_NORMAL);
   srunner_free (sr);
-  fail("Completed properly");
+  ck_abort_msg("Completed properly");
 }
 END_TEST
 
@@ -404,7 +404,7 @@ START_TEST(test_fork1p_pass)
   pid_t pid;
 
   if((pid = fork()) < 0) {
-    fail("Failed to fork new process");
+    ck_abort_msg("Failed to fork new process");
   } else if (pid > 0) {
     fail_unless(1, NULL);
     kill(pid, SIGKILL);
@@ -421,9 +421,9 @@ START_TEST(test_fork1p_fail)
   pid_t pid;
   
   if((pid = fork()) < 0) {
-    fail("Failed to fork new process");
+    ck_abort_msg("Failed to fork new process");
   } else if (pid > 0) {
-    fail("Expected fail");
+    ck_abort_msg("Expected fail");
     kill(pid, SIGKILL);
   } else {
     for (;;) {
@@ -438,7 +438,7 @@ START_TEST(test_fork1c_pass)
   pid_t pid;
   
   if((pid = check_fork()) < 0) {
-    fail("Failed to fork new process");
+    ck_abort_msg("Failed to fork new process");
   } else if (pid > 0) {
     check_waitpid_and_exit(pid);
   } else {
@@ -453,9 +453,9 @@ START_TEST(test_fork1c_fail)
   pid_t pid;
   
   if((pid = check_fork()) < 0) {
-    fail("Failed to fork new process");
+    ck_abort_msg("Failed to fork new process");
   } else if (pid == 0) {
-    fail("Expected fail");
+    ck_abort_msg("Expected fail");
     check_waitpid_and_exit(0);
   }
   check_waitpid_and_exit(pid);
@@ -468,10 +468,10 @@ START_TEST(test_fork2_pass)
   pid_t pid2;
   
   if((pid = check_fork()) < 0) {
-    fail("Failed to fork new process");
+    ck_abort_msg("Failed to fork new process");
   } else if (pid > 0) {
     if((pid2 = check_fork()) < 0) {
-      fail("Failed to fork new process");
+      ck_abort_msg("Failed to fork new process");
     } else if (pid2 == 0) {
       fail_unless(1, NULL);
       check_waitpid_and_exit(0);
@@ -488,16 +488,16 @@ START_TEST(test_fork2_fail)
   pid_t pid2;
   
   if((pid = check_fork()) < 0) {
-    fail("Failed to fork new process");
+    ck_abort_msg("Failed to fork new process");
   } else if (pid > 0) {
     if((pid2 = check_fork()) < 0) {
-      fail("Failed to fork new process");
+      ck_abort_msg("Failed to fork new process");
     } else if (pid2 == 0) {
-      fail("Expected fail");
+      ck_abort_msg("Expected fail");
       check_waitpid_and_exit(0);
     }
     check_waitpid_and_exit(pid2);
-    fail("Expected fail");
+    ck_abort_msg("Expected fail");
   }
   check_waitpid_and_exit(pid);
 }
@@ -531,7 +531,7 @@ END_TEST
 
 START_TEST(test_2nd_suite)
 {
-  fail("We failed");
+  ck_abort_msg("We failed");
 }
 END_TEST
 
