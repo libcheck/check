@@ -2,6 +2,23 @@ In development:
 
 * Updated HACKING and release procedure in Makefile.am.
 
+* Detect if the system has clock_gettime() available, and if not use an
+  implementation provided by check. clock_gettime() is used to measure
+  test durations. The implementation for OSX uses OSX specific system calls 
+  to get the time. For all other systems, clock_gettime() does nothing.
+
+* Updated documentation in check.h to reference new check API and avoid
+  mentioning deprecated API.
+
+* Remove usage of deprecated fail(), fail_if(), and fail_unless() calls from
+  check's unit tests.
+
+* Fix implementation of putenv in check's libcompat for systems that do not
+  provide it.
+
+* Fix implementation of unsettenv in check's libcompat for systems that do
+  not provide it. 
+
 Mon, Oct 22, 2012: Released Check 0.9.9
   based on r637 (2012-10-22 13:54:14 +0200)
 
