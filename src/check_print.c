@@ -179,10 +179,10 @@ void tr_xmlprint (FILE *file, TestResult *tr, enum print_output print_mode CK_AT
           tr->duration < 0 ? 0 : tr->duration % 1000000);
   fprintf(file, "      <description>");
   fprint_xml_esc(file, tr->tcname);
-  fprintf(file,"</description>\n", tr->tcname);
-  fprintf(file, "      <message>", tr->msg);
+  fprintf(file,"</description>\n");
+  fprintf(file, "      <message>");
   fprint_xml_esc(file, tr->msg);
-  fprintf(file,"</message>\n", tr->msg);
+  fprintf(file,"</message>\n");
   fprintf(file, "    </test>\n");
   
   if (slash != NULL) {
