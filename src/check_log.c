@@ -257,7 +257,7 @@ void xml_lfun (SRunner *sr CK_ATTRIBUTE_UNUSED, FILE *file, enum print_output pr
       gettimeofday(&now, NULL);
       timersub(&now, &inittv, &now);
 
-      fprintf(file, "  <duration>%d.%06d</duration>\n",
+      fprintf(file, "  <duration>%lu.%06lu</duration>\n",
               now.tv_sec, now.tv_usec);
       fprintf(file, "</testsuites>\n");
     }
