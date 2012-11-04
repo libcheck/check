@@ -85,13 +85,12 @@ START_TEST(test_pack_ctx)
   CtxMsg cmsg;
   char *buf;
   enum ck_msg_type type;
-  int npk, nupk;
 
   cmsg.ctx = CK_CTX_SETUP;
-  npk = pack (CK_MSG_CTX, &buf, (CheckMsg *) &cmsg);
+  pack (CK_MSG_CTX, &buf, (CheckMsg *) &cmsg);
 
   cmsg.ctx = CK_CTX_TEARDOWN;
-  nupk = upack (buf, (CheckMsg *) &cmsg, &type);
+  upack (buf, (CheckMsg *) &cmsg, &type);
 
   fail_unless (type == CK_MSG_CTX,
 	       "Bad type unpacked for CtxMsg");

@@ -377,13 +377,12 @@ START_TEST(test_null)
 {  
   Suite *s;
   TCase *tc;
-  SRunner *sr;
   
   s = suite_create(NULL);
   tc = tcase_create(NULL);
   suite_add_tcase (s, NULL);
   tcase_add_test (tc, NULL);
-  sr = srunner_create(NULL);
+  srunner_create(NULL);
   srunner_run_all (NULL, -1);
   srunner_free (NULL);
   fail("Completed properly");
