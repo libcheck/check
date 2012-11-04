@@ -23,9 +23,9 @@ START_TEST(test_init_logging_subunit)
   SRunner *sr = srunner_create(s);
   srunner_init_logging(sr, CK_SUBUNIT);
   list_front (sr->loglst);
-  fail_if (list_at_end(sr->loglst), "No entries in log list");
+  ck_assert_msg (!list_at_end(sr->loglst), "No entries in log list");
   first_log = list_val(sr->loglst);
-  fail_if (first_log == NULL, "log is NULL");
+  ck_assert_msg (first_log != NULL, "log is NULL");
   list_advance(sr->loglst);
   ck_assert_msg(list_at_end(sr->loglst), "More than one entry in log list");
   ck_assert_msg(first_log->lfun == subunit_lfun,

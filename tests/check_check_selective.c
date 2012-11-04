@@ -116,9 +116,9 @@ START_TEST(test_srunner_run_no_suite)
                NULL, /* NULL tcase name. */
                CK_VERBOSE);
   
-  fail_if (test_tc11_executed
+  ck_assert_msg (!(test_tc11_executed
            || test_tc12_executed
-           || test_tc21_executed,
+           || test_tc21_executed),
            "An unexpected test was executed.");
 
   reset_executed ();
@@ -152,9 +152,9 @@ START_TEST(test_srunner_no_tcase)
                "non-existant-test-case",
                CK_VERBOSE);
 
-  fail_if (test_tc11_executed
+  ck_assert_msg (!(test_tc11_executed
            || test_tc12_executed
-           || test_tc21_executed,
+           || test_tc21_executed),
            "An unexpected test was executed.");
 
   reset_executed ();
@@ -188,9 +188,9 @@ START_TEST(test_srunner_suite_no_tcase)
                "non-existant-test-case",
                CK_VERBOSE);
 
-  fail_if (test_tc11_executed
+  ck_assert_msg (!(test_tc11_executed
            || test_tc12_executed
-           || test_tc21_executed,
+           || test_tc21_executed),
            "An unexpected test was executed.");
 
   reset_executed ();
@@ -222,9 +222,9 @@ START_TEST(test_srunner_run_no_suite_env)
   setenv ("CK_RUN_SUITE", "non-existing-suite", 1);
   srunner_run_all (sr, CK_VERBOSE);
   
-  fail_if (test_tc11_executed
+  ck_assert_msg (!(test_tc11_executed
            || test_tc12_executed
-           || test_tc21_executed,
+           || test_tc21_executed),
            "An unexpected test was executed.");
 
   reset_executed ();
@@ -256,9 +256,9 @@ START_TEST(test_srunner_no_tcase_env)
   setenv ("CK_RUN_CASE", "non-existant-test-case", 1);
   srunner_run_all (sr, CK_VERBOSE);
 
-  fail_if (test_tc11_executed
+  ck_assert_msg (!(test_tc11_executed
            || test_tc12_executed
-           || test_tc21_executed,
+           || test_tc21_executed),
            "An unexpected test was executed.");
 
   reset_executed ();
@@ -293,9 +293,9 @@ START_TEST(test_srunner_suite_no_tcase_env)
   setenv ("CK_RUN_CASE", "non-existant-test-case", 1);
   srunner_run_all (sr, CK_VERBOSE);
 
-  fail_if (test_tc11_executed
+  ck_assert_msg (!(test_tc11_executed
            || test_tc12_executed
-           || test_tc21_executed,
+           || test_tc21_executed),
            "An unexpected test was executed.");
 
   reset_executed ();

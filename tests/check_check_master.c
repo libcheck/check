@@ -160,7 +160,7 @@ START_TEST(test_check_failure_msgs)
       continue;
     }
 
-    fail_if(i - passed > sub_nfailed, NULL);
+    ck_assert_msg(i - passed <= sub_nfailed, NULL);
     tr = tr_fail_array[i - passed];
     ck_assert_msg(tr != NULL, NULL);
     got_msg = tr_msg(tr);
@@ -189,7 +189,7 @@ START_TEST(test_check_failure_lnos)
       continue;
     }
 
-    fail_if(i - passed > sub_nfailed, NULL);
+    ck_assert_msg(i - passed <= sub_nfailed, NULL);
     tr = tr_fail_array[i - passed];
     ck_assert_msg(tr != NULL, NULL);
     line_no = master_tests_lineno[i];
@@ -216,7 +216,7 @@ START_TEST(test_check_failure_ftypes)
       continue;
     }
 
-    fail_if(i - passed > sub_nfailed, NULL);
+    ck_assert_msg(i - passed <= sub_nfailed, NULL);
     tr = tr_fail_array[i - passed];
     ck_assert_msg(tr != NULL, NULL);
     ck_assert_msg(master_tests[i].failure_type == tr_rtype(tr),
