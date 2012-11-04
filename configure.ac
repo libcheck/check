@@ -117,7 +117,7 @@ AC_CHECK_PROGS(GCOV, gcov, false)
 AC_CHECK_PROGS(LCOV, lcov, false)
 AC_CHECK_PROGS(GENHTML, genhtml, false)
 AC_CHECK_PROGS(TEX, tex, false)
-if test -n "$TEX"; then
+if test "$TEX" = "false"; then
     # Make it [somewhat] clear to maintainers that tex is missing. Not an error
     # though because 'make install' (which users need) does not build the docs
     # anyway.
