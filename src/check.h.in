@@ -35,9 +35,30 @@
    can be used within source code editors and IDEs.
 
    Unit tests are created with the START_TEST/END_TEST macro
-   pair. The fail_unless and fail macros are used for creating
-   checks within unit tests; the mark_point macro is useful for
-   trapping the location of signals and/or early exits.
+   pair. The mark_point macro is useful for trapping the location 
+   of signals and/or early exits. The following calls are used for
+   creating checks within unit tests, where ... represents arguments
+   given to a printf:
+      Asserting an expression:
+         ck_assert(expr)
+         ck_assert_msg(expr, ...)
+      Aborting a test:
+         ck_abort()
+         ck_abort_msg(...)
+      Check the relationship between two integers:
+         ck_assert_int_eq
+         ck_assert_int_ne
+         ck_assert_int_lt
+         ck_assert_int_le
+         ck_assert_int_gt
+         ck_assert_int_ge
+      Check the relationship between two strings:
+         ck_assert_str_eq
+         ck_assert_str_ne
+         ck_assert_str_lt
+         ck_assert_str_le
+         ck_assert_str_gt
+         ck_assert_str_ge
 
 
    Test cases are created with tcase_create, unit tests are added
