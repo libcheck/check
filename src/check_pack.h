@@ -79,5 +79,9 @@ int upack (char *buf, CheckMsg *msg, enum ck_msg_type *type);
 void ppack (int fdes, enum ck_msg_type type, CheckMsg *msg);
 RcvMsg *punpack (int fdes);
 
+#ifdef HAVE_PTHREAD
+void ppack_cleanup( void *mutex );
+#endif
+
 
 #endif /*CHECK_PACK_H */
