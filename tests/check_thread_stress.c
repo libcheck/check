@@ -15,7 +15,7 @@ sendinfo (void *userdata CK_ATTRIBUTE_UNUSED)
   unsigned int i;
   for (i = 0; i < 999; i++)
     {
-      fail_unless (1, "Shouldn't see this message");
+      ck_assert_msg (1, "Shouldn't see this message");
     }
   return NULL;
 }

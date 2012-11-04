@@ -21,15 +21,15 @@ START_TEST(test_send)
   tr = receive_test_result(0);
   teardown_messaging();
 
-  fail_unless (tr != NULL,
+  ck_assert_msg (tr != NULL,
 	       "No test result received");
-  fail_unless (tr_ctx(tr) == CK_CTX_TEST,
+  ck_assert_msg (tr_ctx(tr) == CK_CTX_TEST,
 	       "Bad CTX received");
-  fail_unless (strcmp(tr_msg(tr), "Oops") == 0,
+  ck_assert_msg (strcmp(tr_msg(tr), "Oops") == 0,
 	       "Bad failure msg received");
-  fail_unless (strcmp(tr_lfile(tr), "abc125.c") == 0,
+  ck_assert_msg (strcmp(tr_lfile(tr), "abc125.c") == 0,
 	       "Bad loc file received");
-  fail_unless (tr_lno(tr) == 25,
+  ck_assert_msg (tr_lno(tr) == 25,
 	       "Bad loc line received");
   if (tr != NULL)
     free(tr);
@@ -52,13 +52,13 @@ START_TEST(test_send_big)
   tr = receive_test_result(0);
   teardown_messaging();
 
-  fail_unless (tr != NULL,
+  ck_assert_msg (tr != NULL,
 	       "No test result received");
-  fail_unless (tr_ctx(tr) == CK_CTX_TEST,
+  ck_assert_msg (tr_ctx(tr) == CK_CTX_TEST,
 	       "Bad CTX received");
-  fail_unless (strcmp(tr_lfile(tr), "abc124.c") == 0,
+  ck_assert_msg (strcmp(tr_lfile(tr), "abc124.c") == 0,
 	       "Bad loc file received");
-  fail_unless (tr_lno(tr) == i -1,
+  ck_assert_msg (tr_lno(tr) == i -1,
 	       "Bad loc line received");
   if (tr != NULL)
     free(tr);
@@ -78,13 +78,13 @@ START_TEST(test_send_test_error)
   tr = receive_test_result(1);
   teardown_messaging();
 
-  fail_unless (tr != NULL,
+  ck_assert_msg (tr != NULL,
 	       "No test result received");
-  fail_unless (tr_ctx(tr) == CK_CTX_TEST,
+  ck_assert_msg (tr_ctx(tr) == CK_CTX_TEST,
 	       "Bad CTX received");
-  fail_unless (strcmp(tr_lfile(tr), "abc125.c") == 0,
+  ck_assert_msg (strcmp(tr_lfile(tr), "abc125.c") == 0,
 	       "Bad loc file received");
-  fail_unless (tr_lno(tr) == 25,
+  ck_assert_msg (tr_lno(tr) == 25,
 	       "Bad loc line received");
   if (tr != NULL)
     free(tr);
@@ -105,15 +105,15 @@ START_TEST(test_send_with_passing_teardown)
   tr = receive_test_result(0);
   teardown_messaging();
 
-  fail_unless (tr != NULL,
+  ck_assert_msg (tr != NULL,
 	       "No test result received");
-  fail_unless (tr_ctx(tr) == CK_CTX_TEST,
+  ck_assert_msg (tr_ctx(tr) == CK_CTX_TEST,
 	       "Bad CTX received");
-  fail_unless (tr_msg(tr) == NULL,
+  ck_assert_msg (tr_msg(tr) == NULL,
 	       "Bad failure msg received");
-  fail_unless (strcmp(tr_lfile(tr), "abc125.c") == 0,
+  ck_assert_msg (strcmp(tr_lfile(tr), "abc125.c") == 0,
 	       "Bad loc file received");
-  fail_unless (tr_lno(tr) == 25,
+  ck_assert_msg (tr_lno(tr) == 25,
 	       "Bad loc line received");
   if (tr != NULL)
     free(tr);
@@ -134,15 +134,15 @@ START_TEST(test_send_with_error_teardown)
   tr = receive_test_result(1);
   teardown_messaging();
 
-  fail_unless (tr != NULL,
+  ck_assert_msg (tr != NULL,
 	       "No test result received");
-  fail_unless (tr_ctx(tr) == CK_CTX_TEARDOWN,
+  ck_assert_msg (tr_ctx(tr) == CK_CTX_TEARDOWN,
 	       "Bad CTX received");
-  fail_unless (tr_msg(tr) == NULL,
+  ck_assert_msg (tr_msg(tr) == NULL,
 	       "Bad failure msg received");
-  fail_unless (strcmp(tr_lfile(tr), "abc126.c") == 0,
+  ck_assert_msg (strcmp(tr_lfile(tr), "abc126.c") == 0,
 	       "Bad loc file received");
-  fail_unless (tr_lno(tr) == 54,
+  ck_assert_msg (tr_lno(tr) == 54,
 	       "Bad loc line received");
   if (tr != NULL)
     free(tr);

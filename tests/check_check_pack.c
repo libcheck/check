@@ -26,7 +26,7 @@ START_TEST(test_pack_fmsg)
   fmsg->msg = (char *) "";
   upack (buf, (CheckMsg *) fmsg, &type);
 
-  fail_unless (type == CK_MSG_FAIL,
+  ck_assert_msg (type == CK_MSG_FAIL,
 	       "Bad type unpacked for FailMsg");
 
   if (strcmp (fmsg->msg, "Hello, world!") != 0) {
@@ -57,7 +57,7 @@ START_TEST(test_pack_loc)
   lmsg->line = 0;
   upack (buf, (CheckMsg *) lmsg, &type);
 
-  fail_unless (type == CK_MSG_LOC,
+  ck_assert_msg (type == CK_MSG_LOC,
 	       "Bad type unpacked for LocMsg");
 
   if (lmsg->line != 125) {
@@ -92,7 +92,7 @@ START_TEST(test_pack_ctx)
   cmsg.ctx = CK_CTX_TEARDOWN;
   upack (buf, (CheckMsg *) &cmsg, &type);
 
-  fail_unless (type == CK_MSG_CTX,
+  ck_assert_msg (type == CK_MSG_CTX,
 	       "Bad type unpacked for CtxMsg");
 
   if (cmsg.ctx != CK_CTX_SETUP) {
@@ -116,10 +116,10 @@ START_TEST(test_pack_len)
 
   cmsg.ctx = CK_CTX_TEST;
   n = pack (CK_MSG_CTX, &buf, (CheckMsg *) &cmsg);
-  fail_unless (n > 0, "Return val from pack not set correctly");
+  ck_assert_msg (n > 0, "Return val from pack not set correctly");
 
   /* Value below may change with different implementations of pack */
-  fail_unless (n == 8, "Return val from pack not correct");
+  ck_assert_msg (n == 8, "Return val from pack not correct");
   n = 0;
   n = upack (buf, (CheckMsg *) &cmsg, &type);
   if (n != 8) {
@@ -155,7 +155,7 @@ START_TEST(test_pack_fail_limit)
   fmsg.msg = (char *) "abc";
   upack (buf, (CheckMsg *) &fmsg, &type);
   free (buf);
-  fail_unless (strcmp (fmsg.msg, "") == 0, 
+  ck_assert_msg (strcmp (fmsg.msg, "") == 0, 
                "Empty string not handled properly");
 
   free (fmsg.msg);
@@ -178,7 +178,7 @@ START_TEST(test_pack_loc_limit)
   pack (CK_MSG_LOC, &buf, (CheckMsg *) &lmsg);
   lmsg.file = (char *) "abc";
   upack (buf, (CheckMsg *) &lmsg, &type);
-  fail_unless (strcmp (lmsg.file, "") == 0,
+  ck_assert_msg (strcmp (lmsg.file, "") == 0,
 	       "Empty string not handled properly");
   free (lmsg.file);
   lmsg.file = NULL;
@@ -211,19 +211,19 @@ START_TEST(test_ppack)
   close (filedes[1]);
   rmsg = punpack (filedes[0]);
 
-  fail_unless (rmsg != NULL,
+  ck_assert_msg (rmsg != NULL,
 	       "Return value from ppack should always be malloc'ed");
-  fail_unless (rmsg->lastctx == CK_CTX_TEST,
+  ck_assert_msg (rmsg->lastctx == CK_CTX_TEST,
 	       "CTX not set correctly in ppack");
-  fail_unless (rmsg->fixture_line == -1,
+  ck_assert_msg (rmsg->fixture_line == -1,
 	       "Default fixture loc not correct");
-  fail_unless (rmsg->fixture_file == NULL,
+  ck_assert_msg (rmsg->fixture_file == NULL,
 	       "Default fixture loc not correct");
-  fail_unless (rmsg->test_line == 10,
+  ck_assert_msg (rmsg->test_line == 10,
 	       "Test line not received correctly");
-  fail_unless (strcmp(rmsg->test_file,"abc123.c") == 0,
+  ck_assert_msg (strcmp(rmsg->test_file,"abc123.c") == 0,
 	       "Test file not received correctly");
-  fail_unless (strcmp(rmsg->msg, "oops") == 0,
+  ck_assert_msg (strcmp(rmsg->msg, "oops") == 0,
 	       "Failure message not received correctly");
 
   free(rmsg);
@@ -248,7 +248,7 @@ START_TEST(test_ppack_noctx)
   close (filedes[1]);
   rmsg = punpack (filedes[0]);
 
-  fail_unless (rmsg == NULL,
+  ck_assert_msg (rmsg == NULL,
 	       "Result should be NULL with no CTX");
 
   if (rmsg != NULL)
@@ -270,11 +270,11 @@ START_TEST(test_ppack_onlyctx)
   close (filedes[1]);
   rmsg = punpack (filedes[0]);
 
-  fail_unless (rmsg->msg == NULL,
+  ck_assert_msg (rmsg->msg == NULL,
 	       "Result message should be NULL with only CTX");
-  fail_unless (rmsg->fixture_line == -1,
+  ck_assert_msg (rmsg->fixture_line == -1,
 	       "Result loc line should be -1 with only CTX");
-  fail_unless (rmsg->test_line == -1,
+  ck_assert_msg (rmsg->test_line == -1,
 	       "Result loc line should be -1 with only CTX");
 
   if (rmsg != NULL)
@@ -305,10 +305,10 @@ START_TEST(test_ppack_multictx)
   close (filedes[1]);
   rmsg = punpack (filedes[0]);
 
-  fail_unless (rmsg->test_line == 5,
+  ck_assert_msg (rmsg->test_line == 5,
 	       "Test loc not being preserved on CTX change");
 
-  fail_unless (rmsg->fixture_line == -1,
+  ck_assert_msg (rmsg->fixture_line == -1,
 	       "Fixture not reset on CTX change");
   if (rmsg != NULL)
     free (rmsg);
@@ -333,7 +333,7 @@ START_TEST(test_ppack_nofail)
   close (filedes[1]);
   rmsg = punpack (filedes[0]);
 
-  fail_unless (rmsg->msg == NULL,
+  ck_assert_msg (rmsg->msg == NULL,
 	       "Failure result should be NULL with no failure message");
   if (rmsg != NULL)
     free (rmsg);
@@ -367,15 +367,15 @@ START_TEST(test_ppack_big)
   close (filedes[1]);
   rmsg = punpack (filedes[0]);
 
-  fail_unless (rmsg != NULL,
+  ck_assert_msg (rmsg != NULL,
 	       "Return value from ppack should always be malloc'ed");
-  fail_unless (rmsg->lastctx == CK_CTX_TEST,
+  ck_assert_msg (rmsg->lastctx == CK_CTX_TEST,
 	       "CTX not set correctly in ppack");
-  fail_unless (rmsg->test_line == 10,
+  ck_assert_msg (rmsg->test_line == 10,
 	       "Test line not received correctly");
-  fail_unless (strcmp (rmsg->test_file, lmsg.file) == 0,
+  ck_assert_msg (strcmp (rmsg->test_file, lmsg.file) == 0,
 	       "Test file not received correctly");
-  fail_unless (strcmp (rmsg->msg, fmsg.msg) == 0,
+  ck_assert_msg (strcmp (rmsg->msg, fmsg.msg) == 0,
 	       "Failure message not received correctly");
   
   free (rmsg);

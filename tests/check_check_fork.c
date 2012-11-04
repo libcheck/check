@@ -23,14 +23,14 @@ END_TEST
 
 START_TEST(test_nofork_sideeffects)
 {
-  fail_unless(counter == 1,
+  ck_assert_msg(counter == 1,
 	      "Side effects not seen across tests");
 }
 END_TEST
 
 START_TEST(test_nofork_pid)
 {
-  fail_unless(mypid == getpid(),
+  ck_assert_msg(mypid == getpid(),
 	      "Unit test is in a different adresss space from setup code");
 }
 END_TEST
@@ -71,7 +71,7 @@ void fork_teardown (void)
 
 START_TEST(test_default_fork)
 {
-  fail_unless(srunner_fork_status(fork_dummy_sr) == CK_FORK,
+  ck_assert_msg(srunner_fork_status(fork_dummy_sr) == CK_FORK,
 	      "Default fork status not set correctly");
 }
 END_TEST
@@ -79,7 +79,7 @@ END_TEST
 START_TEST(test_set_fork)
 {
   srunner_set_fork_status(fork_dummy_sr, CK_NOFORK);
-  fail_unless(srunner_fork_status(fork_dummy_sr) == CK_NOFORK,
+  ck_assert_msg(srunner_fork_status(fork_dummy_sr) == CK_NOFORK,
 	      "Fork status not changed correctly");
 }
 END_TEST
@@ -87,7 +87,7 @@ END_TEST
 START_TEST(test_env)
 {
   putenv((char *) "CK_FORK=no");
-  fail_unless(srunner_fork_status(fork_dummy_sr) == CK_NOFORK,
+  ck_assert_msg(srunner_fork_status(fork_dummy_sr) == CK_NOFORK,
 	      "Fork status does not obey environment variable");
 }
 END_TEST
@@ -96,7 +96,7 @@ START_TEST(test_env_and_set)
 {
   putenv((char *) "CK_FORK=no");
   srunner_set_fork_status(fork_dummy_sr, CK_FORK);  
-  fail_unless(srunner_fork_status(fork_dummy_sr) == CK_FORK,
+  ck_assert_msg(srunner_fork_status(fork_dummy_sr) == CK_FORK,
 	      "Explicit setting of fork status should override env");
 }
 END_TEST
@@ -104,7 +104,7 @@ END_TEST
 
 START_TEST(test_nofork)
 {
-  fail_unless(srunner_ntests_failed(fork_sr) == 0,
+  ck_assert_msg(srunner_ntests_failed(fork_sr) == 0,
 	      "Errors on nofork test");
 }
 END_TEST

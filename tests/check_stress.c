@@ -14,7 +14,7 @@ SRunner *sr;
 
 START_TEST(test_pass)
 {
-  fail_unless(1,"Shouldn't see this message");
+  ck_assert_msg(1,"Shouldn't see this message");
 }
 END_TEST
 

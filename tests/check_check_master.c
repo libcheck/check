@@ -133,7 +133,7 @@ START_TEST(test_check_nfailures)
       failed++;
     }
   }
-  fail_unless (sub_nfailed == failed,
+  ck_assert_msg (sub_nfailed == failed,
                "Unexpected number of failures received, %d, expected %d.",
                sub_nfailed, failed);
 }
@@ -141,7 +141,7 @@ END_TEST
 
 START_TEST(test_check_ntests_run)
 {
-  fail_unless (sub_ntests == nr_of_master_tests,
+  ck_assert_msg (sub_ntests == nr_of_master_tests,
                "Unexpected number of tests run, %d.", sub_ntests);
 }
 END_TEST
@@ -162,7 +162,7 @@ START_TEST(test_check_failure_msgs)
 
     fail_if(i - passed > sub_nfailed, NULL);
     tr = tr_fail_array[i - passed];
-    fail_unless(tr != NULL, NULL);
+    ck_assert_msg(tr != NULL, NULL);
     got_msg = tr_msg(tr);
     expected_msg = master_tests[i].msg;
     if (strcmp(got_msg, expected_msg) != 0) {      
@@ -191,7 +191,7 @@ START_TEST(test_check_failure_lnos)
 
     fail_if(i - passed > sub_nfailed, NULL);
     tr = tr_fail_array[i - passed];
-    fail_unless(tr != NULL, NULL);
+    ck_assert_msg(tr != NULL, NULL);
     line_no = master_tests_lineno[i];
     if (line_no > 0 && tr_lno(tr) != line_no) {
       char *emsg = malloc(MAXSTR);
@@ -218,8 +218,8 @@ START_TEST(test_check_failure_ftypes)
 
     fail_if(i - passed > sub_nfailed, NULL);
     tr = tr_fail_array[i - passed];
-    fail_unless(tr != NULL, NULL);
-    fail_unless(master_tests[i].failure_type == tr_rtype(tr),
+    ck_assert_msg(tr != NULL, NULL);
+    ck_assert_msg(master_tests[i].failure_type == tr_rtype(tr),
                 "Failure type wrong for test %d", i);
   }
 }
@@ -230,9 +230,9 @@ START_TEST(test_check_failure_lfiles)
   int i;
   for (i = 0; i < sub_nfailed; i++) {
     TestResult *tr = tr_fail_array[i];
-    fail_unless(tr != NULL, NULL);
-    fail_unless(tr_lfile(tr) != NULL, "Bad file name for test %d", i);
-    fail_unless(strstr(tr_lfile(tr), "check_check_sub.c") != 0,
+    ck_assert_msg(tr != NULL, NULL);
+    ck_assert_msg(tr_lfile(tr) != NULL, "Bad file name for test %d", i);
+    ck_assert_msg(strstr(tr_lfile(tr), "check_check_sub.c") != 0,
                 "Bad file name for test %d", i);
   }
 }
@@ -269,7 +269,7 @@ END_TEST
 
 START_TEST(test_check_all_ftypes)
 {
-  fail_unless(master_tests[_i].failure_type == tr_rtype(tr_all_array[_i]),
+  ck_assert_msg(master_tests[_i].failure_type == tr_rtype(tr_all_array[_i]),
               "Failure type wrong for test %d", _i);
 }
 END_TEST
@@ -282,7 +282,7 @@ static void test_fixture_setup(void)
 
 START_TEST(test_setup)
 {
-  fail_unless (test_fixture_val == 1,
+  ck_assert_msg (test_fixture_val == 1,
 	       "Value not setup or changed across tests correctly");
   test_fixture_val = 2;
 }
@@ -295,7 +295,7 @@ static void test_fixture_teardown (void)
 
 START_TEST(test_teardown)
 {
-  fail_unless (test_fixture_val == 3,
+  ck_assert_msg (test_fixture_val == 3,
 	       "Value not changed correctly in teardown");
 }
 END_TEST  

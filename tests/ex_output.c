@@ -8,7 +8,7 @@
 
 START_TEST(test_pass)
 {
-  fail_unless (1==1, "Shouldn't see this");
+  ck_assert_msg (1==1, "Shouldn't see this");
 }
 END_TEST
 

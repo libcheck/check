@@ -82,7 +82,7 @@ START_TEST(test_srunner_run_run_all)
                NULL, /* NULL tcase name.  */
                CK_VERBOSE);
 
-  fail_unless (srunner_ntests_run(sr) == 3,
+  ck_assert_msg (srunner_ntests_run(sr) == 3,
                "Not all tests were executed.");
 
   reset_executed ();
@@ -98,7 +98,7 @@ START_TEST(test_srunner_run_suite)
                NULL,  /* NULL tcase name.  */
                CK_VERBOSE);
 
-  fail_unless (test_tc11_executed 
+  ck_assert_msg (test_tc11_executed 
                && test_tc12_executed
                && !test_tc21_executed,
                "Expected tests were not executed.");
@@ -134,7 +134,7 @@ START_TEST(test_srunner_run_tcase)
                "tcase12",
                CK_VERBOSE);
 
-  fail_unless (!test_tc11_executed
+  ck_assert_msg (!test_tc11_executed
                && test_tc12_executed
                && !test_tc21_executed,
                "Expected tests were not executed.");
@@ -170,7 +170,7 @@ START_TEST(test_srunner_suite_tcase)
                "tcase21",
                CK_VERBOSE);
   
-  fail_unless (!test_tc11_executed
+  ck_assert_msg (!test_tc11_executed
                && !test_tc12_executed
                && test_tc21_executed,
                "Expected tests were not executed.");
@@ -205,7 +205,7 @@ START_TEST(test_srunner_run_suite_env)
   setenv ("CK_RUN_SUITE", "suite1", 1);
   srunner_run_all (sr, CK_VERBOSE);
 
-  fail_unless (test_tc11_executed 
+  ck_assert_msg (test_tc11_executed 
                && test_tc12_executed
                && !test_tc21_executed,
                "Expected tests were not executed.");
@@ -239,7 +239,7 @@ START_TEST(test_srunner_run_tcase_env)
   setenv ("CK_RUN_CASE", "tcase12", 1);
   srunner_run_all (sr, CK_VERBOSE);
 
-  fail_unless (!test_tc11_executed
+  ck_assert_msg (!test_tc11_executed
                && test_tc12_executed
                && !test_tc21_executed,
                "Expected tests were not executed.");
@@ -274,7 +274,7 @@ START_TEST(test_srunner_suite_tcase_env)
   setenv ("CK_RUN_CASE", "tcase21", 1);
   srunner_run_all (sr, CK_VERBOSE);
   
-  fail_unless (!test_tc11_executed
+  ck_assert_msg (!test_tc11_executed
                && !test_tc12_executed
                && test_tc21_executed,
                "Expected tests were not executed.");

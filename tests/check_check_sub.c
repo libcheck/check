@@ -28,8 +28,8 @@ START_TEST(test_mark_lno)
 END_TEST
 START_TEST(test_pass)
 {
-  fail_unless(1 == 1, "This test should pass");
-  fail_unless(9999, "This test should pass");
+  ck_assert_msg(1 == 1, "This test should pass");
+  ck_assert_msg(9999, "This test should pass");
 }
 END_TEST
 
@@ -406,7 +406,7 @@ START_TEST(test_fork1p_pass)
   if((pid = fork()) < 0) {
     ck_abort_msg("Failed to fork new process");
   } else if (pid > 0) {
-    fail_unless(1, NULL);
+    ck_assert_msg(1, NULL);
     kill(pid, SIGKILL);
   } else {
     for (;;) {
@@ -442,7 +442,7 @@ START_TEST(test_fork1c_pass)
   } else if (pid > 0) {
     check_waitpid_and_exit(pid);
   } else {
-    fail_unless(1, NULL);
+    ck_assert_msg(1, NULL);
     check_waitpid_and_exit(0);
   }
 }
@@ -473,7 +473,7 @@ START_TEST(test_fork2_pass)
     if((pid2 = check_fork()) < 0) {
       ck_abort_msg("Failed to fork new process");
     } else if (pid2 == 0) {
-      fail_unless(1, NULL);
+      ck_assert_msg(1, NULL);
       check_waitpid_and_exit(0);
     }
     check_waitpid_and_exit(pid2);
@@ -510,21 +510,21 @@ START_TEST(test_srunner)
   SRunner *sr;
 
   s = suite_create("Check Servant3");
-  fail_unless(s != NULL, NULL);
+  ck_assert_msg(s != NULL, NULL);
   sr = srunner_create(NULL);
-  fail_unless(sr != NULL, NULL);
+  ck_assert_msg(sr != NULL, NULL);
   srunner_add_suite(sr, s);
   srunner_free(sr);
 
   sr = srunner_create(NULL);
-  fail_unless(sr != NULL, NULL);
+  ck_assert_msg(sr != NULL, NULL);
   srunner_add_suite(sr, NULL);
   srunner_free(sr);
 
   s = suite_create("Check Servant3");
-  fail_unless(s != NULL, NULL);
+  ck_assert_msg(s != NULL, NULL);
   sr = srunner_create(s);
-  fail_unless(sr != NULL, NULL);
+  ck_assert_msg(sr != NULL, NULL);
   srunner_free(sr);
 }
 END_TEST

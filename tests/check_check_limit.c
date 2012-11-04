@@ -23,7 +23,7 @@ static void limit_teardown (void)
 
 START_TEST(test_summary)
 {
-  fail_unless(strcmp(sr_stat_str(sr),
+  ck_assert_msg(strcmp(sr_stat_str(sr),
 		     "100%: Checks: 0, Failures: 0, Errors: 0") == 0,
 	      "Bad statistics string for empty suite");
 }

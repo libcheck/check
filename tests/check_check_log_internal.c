@@ -27,8 +27,8 @@ START_TEST(test_init_logging_subunit)
   first_log = list_val(sr->loglst);
   fail_if (first_log == NULL, "log is NULL");
   list_advance(sr->loglst);
-  fail_unless(list_at_end(sr->loglst), "More than one entry in log list");
-  fail_unless(first_log->lfun == subunit_lfun,
+  ck_assert_msg(list_at_end(sr->loglst), "More than one entry in log list");
+  ck_assert_msg(first_log->lfun == subunit_lfun,
               "Log function is not the subunit lfun.");
   srunner_end_logging(sr);
   srunner_free(sr);
