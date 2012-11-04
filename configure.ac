@@ -126,9 +126,9 @@ fi
 
 # Checks for libraries.
 
-# Link with rt for clock_gettime
-LIBS=-lrt
-AC_SUBST(LIBS)
+# Check if clock_gettime is available in lib rt, and if so,
+# add -lrt to LIBS
+AC_CHECK_LIB([rt], [clock_gettime])
 
 # Checks for header files.
 AC_HEADER_STDC
@@ -153,7 +153,6 @@ AC_SUBST([LIBSUBUNIT_PC])
 AC_DEFINE_UNQUOTED(ENABLE_SUBUNIT, $ENABLE_SUBUNIT, [Subunit protocol result output])
 
 AM_CONDITIONAL(SUBUNIT, test x"$enable_subunit" != "xfalse")
-	
 
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -170,8 +169,8 @@ AC_CHECK_SIZEOF(long, 4)
 # Checks for library functions.
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
-AC_REPLACE_FUNCS([fileno localtime_r pipe putenv setenv sleep strdup strsignal unsetenv])
-AC_CHECK_DECLS([fileno, localtime_r, pipe, putenv, setenv, sleep, strdup, strsignal, unsetenv])
+AC_REPLACE_FUNCS([clock_gettime fileno localtime_r pipe putenv setenv sleep strdup strsignal unsetenv])
+AC_CHECK_DECLS([clock_gettime, fileno, localtime_r, pipe, putenv, setenv, sleep, strdup, strsignal, unsetenv])
 
 # Checks for pthread implementation.
 ACX_PTHREAD

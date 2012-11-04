@@ -102,6 +102,20 @@ const char *strsignal (int sig);
 int unsetenv (const char *name);
 #endif /* !HAVE_DECL_UNSETENV */
 
+#ifndef HAVE_LIBRT
+/* 
+ * On systems where clock_gettime() is not available, the
+ * definition for CLOCK_MONOTONIC will also not be available.
+ * This variable should define which type of clock clock_gettime()
+ * should use. We define it here if it is not defined simply
+ * so the reimplementation can ignore it.
+ */
+#ifndef CLOCK_MONOTONIC
+#define CLOCK_MONOTONIC 0
+#endif
+int clock_gettime(int clk_id, struct timespec *ts);
+#endif /* HAVE_LIBRT */
+
 /* silence warnings about an empty library */
 void ck_do_nothing (void);
 
