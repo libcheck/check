@@ -197,12 +197,14 @@ START_TEST(test_ppack)
   LocMsg lmsg;
   FailMsg fmsg;
   RcvMsg *rmsg;
-
+  int pipe_result;
+  
   cmsg.ctx = CK_CTX_TEST;
   lmsg.file = (char *) "abc123.c";
   lmsg.line = 10;
   fmsg.msg = (char *) "oops";
-  pipe (filedes);
+  pipe_result = pipe (filedes);
+  ck_assert_msg (pipe_result == 0, "Failed to create pipe");
   ppack (filedes[1], CK_MSG_CTX, (CheckMsg *) &cmsg);
   ppack (filedes[1], CK_MSG_LOC, (CheckMsg *) &lmsg);
   ppack (filedes[1], CK_MSG_FAIL, (CheckMsg *) &fmsg);
@@ -234,11 +236,13 @@ START_TEST(test_ppack_noctx)
   LocMsg lmsg;
   FailMsg fmsg;
   RcvMsg *rmsg;
-
+  int pipe_result;
+  
   lmsg.file = (char *) "abc123.c";
   lmsg.line = 10;
   fmsg.msg = (char *) "oops";
-  pipe (filedes);
+  pipe_result = pipe (filedes);
+  ck_assert_msg (pipe_result == 0, "Failed to create pipe");
   ppack (filedes[1], CK_MSG_LOC, (CheckMsg *) &lmsg);
   ppack (filedes[1], CK_MSG_FAIL, (CheckMsg *) &fmsg);
   close (filedes[1]);
@@ -257,9 +261,11 @@ START_TEST(test_ppack_onlyctx)
   int filedes[2];
   CtxMsg cmsg;
   RcvMsg *rmsg;
-
+  int pipe_result;
+  
   cmsg.ctx = CK_CTX_SETUP;
-  pipe (filedes);
+  pipe_result = pipe (filedes);
+  ck_assert_msg (pipe_result == 0, "Failed to create pipe");
   ppack (filedes[1], CK_MSG_CTX, (CheckMsg *) &cmsg);
   close (filedes[1]);
   rmsg = punpack (filedes[0]);
@@ -282,11 +288,13 @@ START_TEST(test_ppack_multictx)
   CtxMsg cmsg;
   LocMsg lmsg;
   RcvMsg *rmsg;
-
+  int pipe_result;
+  
   cmsg.ctx = CK_CTX_SETUP;
   lmsg.line = 5;
   lmsg.file = (char *) "abc123.c";
-  pipe (filedes);
+  pipe_result = pipe (filedes);
+  ck_assert_msg (pipe_result == 0, "Failed to create pipe");
   ppack (filedes[1], CK_MSG_CTX, (CheckMsg *) &cmsg);
   ppack (filedes[1], CK_MSG_LOC, (CheckMsg *) &lmsg);
   cmsg.ctx = CK_CTX_TEST;
@@ -313,11 +321,13 @@ START_TEST(test_ppack_nofail)
   CtxMsg cmsg;
   LocMsg lmsg;
   RcvMsg *rmsg;
+  int pipe_result;
 
   lmsg.file = (char *) "abc123.c";
   lmsg.line = 10;
   cmsg.ctx = CK_CTX_SETUP;
-  pipe (filedes);
+  pipe_result = pipe (filedes);
+  ck_assert_msg (pipe_result == 0, "Failed to create pipe");
   ppack (filedes[1], CK_MSG_CTX, (CheckMsg *) &cmsg);
   ppack (filedes[1], CK_MSG_LOC, (CheckMsg *) &lmsg);
   close (filedes[1]);
@@ -339,6 +349,7 @@ START_TEST(test_ppack_big)
   LocMsg lmsg;
   FailMsg fmsg;
   RcvMsg *rmsg;
+  int pipe_result;
 
   cmsg.ctx = CK_CTX_TEST;
   lmsg.file = emalloc (BIG_MSG_LEN);
@@ -348,7 +359,8 @@ START_TEST(test_ppack_big)
   fmsg.msg = emalloc (BIG_MSG_LEN);
   memset (fmsg.msg, 'a', BIG_MSG_LEN - 1);
   fmsg.msg[BIG_MSG_LEN - 1] = '\0';
-  pipe (filedes);
+  pipe_result = pipe (filedes);
+  ck_assert_msg (pipe_result == 0, "Failed to create pipe");
   ppack (filedes[1], CK_MSG_CTX, (CheckMsg *) &cmsg);
   ppack (filedes[1], CK_MSG_LOC, (CheckMsg *) &lmsg);
   ppack (filedes[1], CK_MSG_FAIL, (CheckMsg *) &fmsg);
