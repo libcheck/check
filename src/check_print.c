@@ -136,8 +136,8 @@ void tr_fprint (FILE *file, TestResult *tr, enum print_output print_mode)
 void tr_xmlprint (FILE *file, TestResult *tr, enum print_output print_mode CK_ATTRIBUTE_UNUSED)
 {
   char result[10];
-  char *path_name = "";
-  char *file_name = "";
+  char *path_name = (char*)"";
+  char *file_name = (char*)"";
   char *slash = NULL;
 
   switch (tr->rtype) {
