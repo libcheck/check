@@ -99,7 +99,7 @@ const char *strsignal (int sig);
 #endif /* !HAVE_DECL_STRSIGNAL */
 
 #if !HAVE_DECL_UNSETENV
-void unsetenv (const char *name);
+int unsetenv (const char *name);
 #endif /* !HAVE_DECL_UNSETENV */
 
 /* silence warnings about an empty library */
