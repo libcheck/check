@@ -141,7 +141,7 @@ AS_IF([test x"$enable_subunit" != "xfalse" && test x"$enable_subunit" != "xtrue"
 AS_IF([test x"$enable_subunit" != "xfalse"], [
 	PKG_CHECK_MODULES([LIBSUBUNIT], [libsubunit])
 	])
-if test xfalse = x"$enable_subunit"; then
+if test "xfalse" = x"$enable_subunit"; then
 ENABLE_SUBUNIT="0"
 LIBSUBUNIT_PC=""
 else
