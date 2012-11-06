@@ -270,7 +270,7 @@ START_TEST(test_ppack_onlyctx)
   close (filedes[1]);
   rmsg = punpack (filedes[0]);
 
-  ck_assert_msg (rmsg->msg == NULL,
+  ck_assert_msg (rmsg != NULL && rmsg->msg == NULL,
 	       "Result message should be NULL with only CTX");
   ck_assert_msg (rmsg->fixture_line == -1,
 	       "Result loc line should be -1 with only CTX");
@@ -305,13 +305,13 @@ START_TEST(test_ppack_multictx)
   close (filedes[1]);
   rmsg = punpack (filedes[0]);
 
-  ck_assert_msg (rmsg->test_line == 5,
+  ck_assert_msg (rmsg != NULL && rmsg->test_line == 5,
 	       "Test loc not being preserved on CTX change");
 
   ck_assert_msg (rmsg->fixture_line == -1,
 	       "Fixture not reset on CTX change");
-  if (rmsg != NULL)
-    free (rmsg);
+
+  free (rmsg);
 }
 END_TEST
 
@@ -333,10 +333,10 @@ START_TEST(test_ppack_nofail)
   close (filedes[1]);
   rmsg = punpack (filedes[0]);
 
-  ck_assert_msg (rmsg->msg == NULL,
+  ck_assert_msg (rmsg != NULL && rmsg->msg == NULL,
 	       "Failure result should be NULL with no failure message");
-  if (rmsg != NULL)
-    free (rmsg);
+  
+  free (rmsg);
 }
 END_TEST
 
