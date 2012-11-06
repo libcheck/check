@@ -385,6 +385,7 @@ static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun, int i)
   pid_t pid;
   int status = 0;
   struct timespec ts_start, ts_end;
+  TestResult * tr;
 
   pid = fork();
   if (pid == -1)
@@ -392,7 +393,8 @@ static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun, int i)
   if (pid == 0) {
     setpgid(0, 0);
     group_pid = getpgrp();
-    tcase_run_checked_setup(sr, tc);
+    tr = tcase_run_checked_setup(sr, tc);
+    free(tr);
     clock_gettime(CLOCK_MONOTONIC, &ts_start);
     tfun->fn(i);
     clock_gettime(CLOCK_MONOTONIC, &ts_end);
