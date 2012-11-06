@@ -351,8 +351,7 @@ static int get_result (char *buf, RcvMsg *rmsg)
     FailMsg *fmsg = (FailMsg *) &msg;
     if (rmsg->msg == NULL)
     {
-      rmsg->msg = emalloc (strlen (fmsg->msg) + 1);
-      strcpy (rmsg->msg, fmsg->msg);
+      rmsg->msg = strdup(fmsg->msg);
       rmsg->failctx = rmsg->lastctx;
     }
     else
@@ -420,13 +419,11 @@ static void rcvmsg_update_loc (RcvMsg *rmsg, const char *file, int line)
   if (rmsg->lastctx == CK_CTX_TEST) {
     free(rmsg->test_file);
     rmsg->test_line = line;
-    rmsg->test_file = emalloc (flen + 1);
-    strcpy (rmsg->test_file, file);
+    rmsg->test_file = strdup(file);
   } else {
     free(rmsg->fixture_file);
     rmsg->fixture_line = line;
-    rmsg->fixture_file = emalloc (flen + 1);
-    strcpy (rmsg->fixture_file, file);
+    rmsg->fixture_file = strdup(file);
   }
 }
   

@@ -142,13 +142,13 @@ void tr_xmlprint (FILE *file, TestResult *tr, enum print_output print_mode CK_AT
 
   switch (tr->rtype) {
   case CK_PASS:
-    strcpy(result, "success");
+    snprintf(result, sizeof(result), "%s", "success");
     break;
   case CK_FAILURE:
-    strcpy(result, "failure");
+    snprintf(result, sizeof(result), "%s", "failure");
     break;
   case CK_ERROR:
-    strcpy(result, "error");
+    snprintf(result, sizeof(result), "%s", "error");
     break;
   case CK_TEST_RESULT_INVALID:
   default:

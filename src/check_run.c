@@ -373,9 +373,7 @@ static void set_nofork_info (TestResult *tr)
 
 static char *pass_msg (void)
 {
-  char *msg = emalloc(sizeof("Passed"));
-  strcpy (msg, "Passed");
-  return msg;
+  return strdup("Passed");
 }
 
 #ifdef _POSIX_VERSION
