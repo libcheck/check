@@ -327,17 +327,17 @@ void subunit_lfun (SRunner *sr, FILE *file, enum print_output printmode,
       char *name = ck_strdup_printf ("%s:%s", tr->tcname, tr->tname);
       char *msg = tr_short_str (tr);
       switch (tr->rtype) {
-	case CK_PASS:
-	  subunit_test_pass(name);
-	  break;
-	case CK_FAILURE:
-	  subunit_test_fail(name, msg);
-	  break;
-	case CK_ERROR:
-	  subunit_test_error(name, msg);
-	  break;
-	default:
-	  eprintf("Bad result type in subunit_lfun", __FILE__, __LINE__);
+      case CK_PASS:
+        subunit_test_pass(name);
+        break;
+      case CK_FAILURE:
+        subunit_test_fail(name, msg);
+        break;
+      case CK_ERROR:
+        subunit_test_error(name, msg);
+        break;
+      default:
+        eprintf("Bad result type in subunit_lfun", __FILE__, __LINE__);
         free(name);
         free(msg);
       }
