@@ -47,8 +47,6 @@ Suite *make_log_internal_suite(void)
   tc_core_subunit = tcase_create("Core SubUnit");
   suite_add_tcase(s, tc_core_subunit);
   tcase_add_test(tc_core_subunit, test_init_logging_subunit);
-#else
-  tcase_create("Core SubUnit");
 #endif
   
   return s;

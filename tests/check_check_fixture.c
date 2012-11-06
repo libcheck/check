@@ -184,7 +184,7 @@ START_TEST(test_ch_setup_fail)
   ck_assert_msg(strcmp(strstat,
 		     "0%: Checks: 1, Failures: 1, Errors: 0") == 0,
 	      "SRunner stat string incorrect with checked setup failure");
-
+  free(strstat);
 
   trm = tr_str(srunner_failures(sr)[0]);
    /* Search for check_check_fixture.c:129 if this fails. */
@@ -196,6 +196,7 @@ START_TEST(test_ch_setup_fail)
     
     ck_abort_msg (errm);
   }
+  free(trm);
 }
 END_TEST
 
@@ -298,7 +299,7 @@ START_TEST(test_ch_setup_sig)
   ck_assert_msg(strcmp(strstat,
 		     "0%: Checks: 1, Failures: 0, Errors: 1") == 0,
 	      "SRunner stat string incorrect with checked setup signal");
-
+  free(strstat);
 
   trm = tr_str(srunner_failures(sr)[0]);
 
@@ -311,6 +312,7 @@ START_TEST(test_ch_setup_sig)
     
     ck_abort_msg (errm);
   }
+  free(trm);
 }
 END_TEST
 
@@ -381,7 +383,7 @@ START_TEST(test_ch_teardown_fail)
   ck_assert_msg(strcmp(strstat,
 		     "0%: Checks: 1, Failures: 1, Errors: 0") == 0,
 	      "SRunner stat string incorrect with checked setup failure");
-
+  free(strstat);
 
   trm = tr_str(srunner_failures(sr)[0]);
 
@@ -393,7 +395,7 @@ START_TEST(test_ch_teardown_fail)
     
     ck_abort_msg (errm);
   }
-  
+  free(trm);
 }
 END_TEST
 
@@ -423,7 +425,7 @@ START_TEST(test_ch_teardown_sig)
   ck_assert_msg(strcmp(strstat,
 		     "0%: Checks: 1, Failures: 0, Errors: 1") == 0,
 	      "SRunner stat string incorrect with checked teardown signal");
-
+  free(strstat);
 
   trm = tr_str(srunner_failures(sr)[0]);
 
@@ -436,7 +438,7 @@ START_TEST(test_ch_teardown_sig)
     
     ck_abort_msg (errm);
   }
-  
+  free(trm);
 }
 END_TEST
 
@@ -484,6 +486,7 @@ START_TEST(test_ch_teardown_two_teardowns_fork)
     for (i = 0; i < nr_of_failures; i++) {
       char *trm = tr_str(tra[i]);
       if (strlen(errm) + strlen(trm) > 1022) {
+        free(trm);
         break;
       } 
       strcat(errm, trm);

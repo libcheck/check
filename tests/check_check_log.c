@@ -38,6 +38,8 @@ START_TEST(test_set_log)
   ck_assert_msg (srunner_has_log (sr), "SRunner not logging");
   ck_assert_msg (strcmp(srunner_log_fname(sr), "test_log") == 0,
 	       "Bad file name returned");
+
+  srunner_free(sr);
 }
 END_TEST
 
@@ -67,6 +69,8 @@ START_TEST(test_set_log_env)
   /* restore old environment */
   ck_assert_msg(restore_env("CK_LOG_FILE_NAME", old_val) == 0,
               "Failed to restore environment variable");
+
+  srunner_free(sr);
 }
 END_TEST
 
@@ -77,6 +81,8 @@ START_TEST(test_no_set_log)
 
   ck_assert_msg (!srunner_has_log (sr), "SRunner not logging");
   ck_assert_msg (srunner_log_fname(sr) == NULL, "Bad file name returned");
+
+  srunner_free(sr);
 }
 END_TEST
 
@@ -90,6 +96,8 @@ START_TEST(test_double_set_log)
 
   ck_assert_msg(strcmp(srunner_log_fname(sr), "test_log") == 0,
 	      "Log file is initialize only and shouldn't be changeable once set");
+
+  srunner_free(sr);
 }
 END_TEST
 
@@ -104,6 +112,8 @@ START_TEST(test_set_xml)
   ck_assert_msg (srunner_has_xml (sr), "SRunner not logging XML");
   ck_assert_msg (strcmp(srunner_xml_fname(sr), "test_log.xml") == 0,
 	       "Bad file name returned");
+         
+  srunner_free(sr);
 }
 END_TEST
 
@@ -133,6 +143,8 @@ START_TEST(test_set_xml_env)
   /* restore old environment */
   ck_assert_msg(restore_env("CK_XML_LOG_FILE_NAME", old_val) == 0,
               "Failed to restore environment variable");
+  
+  srunner_free(sr);
 }
 END_TEST
 
@@ -143,6 +155,8 @@ START_TEST(test_no_set_xml)
 
   ck_assert_msg (!srunner_has_xml (sr), "SRunner not logging XML");
   ck_assert_msg (srunner_xml_fname(sr) == NULL, "Bad file name returned");
+  
+  srunner_free(sr);
 }
 END_TEST
 
@@ -156,6 +170,8 @@ START_TEST(test_double_set_xml)
 
   ck_assert_msg(strcmp(srunner_xml_fname(sr), "test_log.xml") == 0,
 	      "XML Log file is initialize only and shouldn't be changeable once set");
+  
+  srunner_free(sr);
 }
 END_TEST
 
