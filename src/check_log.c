@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <check.h>
-#if HAVE_SUBUNIT_CHILD_H
+#if ENABLE_SUBUNIT
 #include <subunit/child.h>
 #endif
 
