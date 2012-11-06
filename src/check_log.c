@@ -293,7 +293,6 @@ void subunit_lfun (SRunner *sr, FILE *file, enum print_output printmode,
 		  void *obj, enum cl_event evt)
 {
   TestResult *tr;
-  Suite *s;
   char const * name;
   
   /* assert(printmode == CK_SUBUNIT); */
@@ -306,7 +305,6 @@ void subunit_lfun (SRunner *sr, FILE *file, enum print_output printmode,
   case CLSTART_SR:
     break;
   case CLSTART_S:
-    s = obj;
     break;
   case CLEND_SR:
     if (printmode > CK_SILENT) {
@@ -315,7 +313,6 @@ void subunit_lfun (SRunner *sr, FILE *file, enum print_output printmode,
     }
     break;
   case CLEND_S:
-    s = obj;
     break;
   case CLSTART_T:
     name = obj;
