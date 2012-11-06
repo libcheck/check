@@ -382,7 +382,7 @@ START_TEST(test_null)
   tc = tcase_create(NULL);
   suite_add_tcase (s, NULL);
   tcase_add_test (tc, NULL);
-  srunner_create(NULL);
+  srunner_free(srunner_create(NULL));
   srunner_run_all (NULL, -1);
   srunner_free (NULL);
   ck_abort_msg("Completed properly");
