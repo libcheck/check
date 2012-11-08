@@ -273,7 +273,7 @@ void CK_EXPORT _ck_assert_msg (int result, const char *file,
 #define ck_abort() ck_abort_msg(NULL)
 #define ck_abort_msg(...) _ck_assert_msg(0, __FILE__, __LINE__, "Failed" , ## __VA_ARGS__, NULL)
 
-/* Integer comparsion macros with improved output compared to fail_unless(). */
+/* Integer comparsion macros with improved output compared to ck_assert(). */
 /* OP may be any comparion operator. */
 #define _ck_assert_int(X, OP, Y) do { \
   int _ck_x = (X); \
@@ -287,7 +287,7 @@ void CK_EXPORT _ck_assert_msg (int result, const char *file,
 #define ck_assert_int_gt(X, Y) _ck_assert_int(X, >, Y)
 #define ck_assert_int_ge(X, Y) _ck_assert_int(X, >=, Y)
 
-/* String comparsion macros with improved output compared to fail_unless() */
+/* String comparsion macros with improved output compared to ck_assert() */
 /* OP might be any operator that can be used in '0 OP strcmp(X,Y)' comparison */
 /* The x and y parameter swap in strcmp() is needed to handle >, >=, <, <= operators */
 #define _ck_assert_str(X, OP, Y) do { \
