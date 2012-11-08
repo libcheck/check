@@ -59,7 +59,9 @@
          ck_assert_str_le
          ck_assert_str_gt
          ck_assert_str_ge
-
+      Check the relationship between two pointers:
+         ck_assert_ptr_eq
+         ck_assert_ptr_ne
 
    Test cases are created with tcase_create, unit tests are added
    with tcase_add_test
@@ -303,6 +305,15 @@ void CK_EXPORT _ck_assert_msg (int result, const char *file,
 #define ck_assert_str_gt(X, Y) _ck_assert_str(X, >, Y)
 #define ck_assert_str_ge(X, Y) _ck_assert_str(X, >=, Y)
 
+/* Pointer comparsion macros with improved output compared to ck_assert(). */
+/* OP may only be == or !=  */
+#define _ck_assert_ptr(X, OP, Y) do { \
+  void* _ck_x = (X); \
+  void* _ck_y = (Y); \
+  ck_assert_msg(_ck_x OP _ck_y, "Assertion '"#X#OP#Y"' failed: "#X"==%p, "#Y"==%p", _ck_x, _ck_y); \
+} while (0)
+#define ck_assert_ptr_eq(X, Y) _ck_assert_ptr(X, ==, Y)
+#define ck_assert_ptr_ne(X, Y) _ck_assert_ptr(X, !=, Y)
 
 /* Mark the last point reached in a unit test
    (useful for tracking down where a segfault, etc. occurs)

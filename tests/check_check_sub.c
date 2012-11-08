@@ -302,6 +302,30 @@ START_TEST(test_ck_assert_str_expr)
 }
 END_TEST
 
+START_TEST(test_ck_assert_ptr_eq)
+{
+  int * x = (int*)0x1;
+  int * y = (int*)0x2;
+  ck_assert_ptr_eq(NULL, NULL);
+  ck_assert_ptr_eq(x,    x);
+  ck_assert_ptr_eq(x,    y);
+  #define LINENO_ck_assert_ptr_eq _STR(__LINE__)
+}
+END_TEST
+
+START_TEST(test_ck_assert_ptr_ne)
+{
+  int * x = (int*)0x1;
+  int * y = (int*)0x2;
+  int * z = x;
+  ck_assert_ptr_ne(x,    y);
+  ck_assert_ptr_ne(x,    NULL);
+  ck_assert_ptr_ne(NULL, y);
+  ck_assert_ptr_ne(x,    z);
+  #define LINENO_ck_assert_ptr_ne _STR(__LINE__)
+}
+END_TEST
+
 START_TEST(test_segv)
   #define LINENO_segv _STR(__LINE__)
 {
@@ -582,6 +606,8 @@ void init_master_tests_lineno(void) {
     LINENO_ck_assert_str_gt,
     LINENO_ck_assert_str_ge,
     LINENO_ck_assert_str_expr,
+    LINENO_ck_assert_ptr_eq,
+    LINENO_ck_assert_ptr_ne,
 
 /* Signal Tests */
     "-1",
@@ -758,6 +784,8 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_simple, test_ck_assert_str_gt);
   tcase_add_test (tc_simple, test_ck_assert_str_ge);
   tcase_add_test (tc_simple, test_ck_assert_str_expr);
+  tcase_add_test (tc_simple, test_ck_assert_ptr_eq);
+  tcase_add_test (tc_simple, test_ck_assert_ptr_ne);
 
   tcase_add_test (tc_signal, test_segv);
   tcase_add_test_raise_signal (tc_signal, test_segv, 11); /* pass  */

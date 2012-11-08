@@ -19,6 +19,9 @@ In development:
 * Fix implementation of unsettenv in check's libcompat for systems that do
   not provide it. 
 
+* Improvements to the new Check API: new comparison functions for pointers:
+  ck_assert_ptr_(eq|ne).
+
 Mon, Oct 22, 2012: Released Check 0.9.9
   based on r637 (2012-10-22 13:54:14 +0200)
 

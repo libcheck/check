@@ -869,6 +869,15 @@ operator is again indicated by last two letters of the function name.
 @code{ck_assert_str_lt(a, b)} will pass if the unsigned numerical value
 of the character string @code{a} is less than that of @code{b}.
 
+@item ck_assert_ptr_eq
+@itemx ck_assert_ptr_ne
+
+Compares two pointers and displays predefined message with
+condition and values of both input parameters on failure.  The operator
+used for comparison is different for each function and is indicated by
+the last two letters of the function name.  The abbreviations @code{eq} and
+@code{ne} correspond to @code{==} and @code{!=} respectively.
+
 @end ftable
 
 @node Running Multiple Cases, No Fork Mode, Convenience Test Functions, Advanced Features

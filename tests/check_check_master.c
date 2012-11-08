@@ -59,7 +59,9 @@ static master_test_t master_tests[] = {
   { "Simple Tests", CK_FAILURE, "Assertion 't>t' failed: t==\"test2\", t==\"test2\"" },
   { "Simple Tests", CK_FAILURE, "Assertion 's>=t' failed: s==\"test1\", t==\"test2\"" },
   { "Simple Tests", CK_PASS,    "Passed" },
-
+  { "Simple Tests", CK_FAILURE, "Assertion 'x==y' failed: x==0x1, y==0x2" },
+  { "Simple Tests", CK_FAILURE, "Assertion 'x!=z' failed: x==0x1, z==0x1" },
+  
   { "Signal Tests", CK_ERROR,   signal_11_str },
   { "Signal Tests", CK_PASS,    "Passed" },
   { "Signal Tests", CK_ERROR,   signal_11_8_str },
