@@ -359,7 +359,7 @@ void setup (void)
   Suite *s = make_sub_suite();
   SRunner *sr = srunner_create(s);
 
-  init_master_tests_lineno();
+  init_master_tests_lineno(nr_of_master_tests);
   init_signal_strings();
 
   srunner_add_suite(sr, make_sub2_suite());

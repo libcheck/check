@@ -570,7 +570,7 @@ Suite *make_sub2_suite(void)
   return s;
 }
 
-void init_master_tests_lineno(void) {
+void init_master_tests_lineno(int num_master_tests) {
   const char * lineno[] = {
 /* Simple Tests */
     LINENO_lno,
@@ -673,6 +673,13 @@ void init_master_tests_lineno(void) {
   };
   int s = sizeof lineno /sizeof lineno[0];
   int i;
+  
+  if(s != num_master_tests)
+  {
+    fprintf(stderr, "Error: The number of line numbers (%d) does not match the number of tests (%d)\n",
+      s, num_master_tests);
+    exit(1);
+  }
 
   for (i = 0; i < s; i++) {
     master_tests_lineno[i] = atoi(lineno[i]) - 1;
