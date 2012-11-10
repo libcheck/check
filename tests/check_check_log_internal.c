@@ -39,14 +39,15 @@ END_TEST
 Suite *make_log_internal_suite(void)
 {
   Suite *s;
-  
-  s = suite_create("Log");
 
 #if ENABLE_SUBUNIT
   TCase *tc_core_subunit;
+  s = suite_create("Log");
   tc_core_subunit = tcase_create("Core SubUnit");
   suite_add_tcase(s, tc_core_subunit);
   tcase_add_test(tc_core_subunit, test_init_logging_subunit);
+#else
+  s = suite_create("Log");
 #endif
   
   return s;
