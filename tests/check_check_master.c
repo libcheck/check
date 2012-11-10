@@ -144,7 +144,7 @@ END_TEST
 START_TEST(test_check_ntests_run)
 {
   ck_assert_msg (sub_ntests == nr_of_master_tests,
-               "Unexpected number of tests run, %d.", sub_ntests);
+               "Unexpected number of tests run %d vs expected %d", sub_ntests, nr_of_master_tests);
 }
 END_TEST
 
