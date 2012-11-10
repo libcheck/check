@@ -414,8 +414,6 @@ static void rcvmsg_update_ctx (RcvMsg *rmsg, enum ck_result_ctx ctx)
 
 static void rcvmsg_update_loc (RcvMsg *rmsg, const char *file, int line)
 {
-  int flen = strlen(file);
-  
   if (rmsg->lastctx == CK_CTX_TEST) {
     free(rmsg->test_file);
     rmsg->test_line = line;
