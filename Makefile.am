@@ -72,6 +72,8 @@ preparerelease: releasevars .svnrelease prereleasecheck
 	@echo "Any last minute changes? This is your final chance."
 	@echo "CTRL-D when finished or 'exit 1' to abort."
 	@echo "aborting will leave the partially prepared release in" `pwd`
+	@echo "If doing the rest manually, don't forget to"
+	@echo "'make doc/check_html' before rsyncing the release directory."
 	cd check-${RELEASE_VERSION} && ${SHELL} && svn ci -m "Release check-${RELEASE_VERSION}" && autoreconf -i && ./configure
 	$(MAKE) -C check-${RELEASE_VERSION} dorelease
 	-svn merge -r`cat .svnrelease`:`svn st -u check-${RELEASE_VERSION} | grep "Status against revision:" | awk '{ print $$4 }'` check-${RELEASE_VERSION} .
