@@ -51,11 +51,6 @@ enum tf_type {
 };
 
 
-/** calculate the difference in useconds out of two "struct timeval"s */
-#define DIFF_IN_USEC(begin, end) \
-  ( (((end).tv_sec - (begin).tv_sec) * 1000000) + \
-    ((end).tv_nsec/1000) - ((begin).tv_nsec/1000) )
-
 /* all functions are defined in the same order they are declared.
    functions that depend on forking are gathered all together.
    non-static functions are at the end of the file. */

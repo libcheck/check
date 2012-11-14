@@ -27,6 +27,11 @@
    Include stdio.h & list.h before this header
 */
 
+/** calculate the difference in useconds out of two "struct timespec"s */
+#define DIFF_IN_USEC(begin, end) \
+  ( (((end).tv_sec - (begin).tv_sec) * 1000000) + \
+    ((end).tv_nsec/1000) - ((begin).tv_nsec/1000) )
+
 typedef struct TF {
   TFun fn;
   int loop_start;
