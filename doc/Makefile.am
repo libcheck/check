@@ -30,47 +30,47 @@ eg_tests = $(eg_root)/tests
 # think that means there is an error
 money.1-2.h.diff: $(eg_src)/money.1.h $(eg_src)/money.2.h
 	cd $(eg_root); \
-	diff -u src/money.1.h src/money.2.h > @abs_builddir@/$@ || test $$? -eq 1; \
+	diff -U 100 src/money.1.h src/money.2.h > @abs_builddir@/$@ || test $$? -eq 1; \
 	cd -;
 
 money.1-3.c.diff: $(eg_src)/money.1.c $(eg_src)/money.3.c
 	cd $(eg_root); \
-	diff -u src/money.1.c src/money.3.c > @abs_builddir@/$@ || test $$? -eq 1; \
+	diff -U 100 src/money.1.c src/money.3.c > @abs_builddir@/$@ || test $$? -eq 1; \
 	cd -;
 
 money.3-4.c.diff: $(eg_src)/money.3.c $(eg_src)/money.4.c
 	cd $(eg_root); \
-	diff -u src/money.3.c src/money.4.c > @abs_builddir@/$@ || test $$? -eq 1; \
+	diff -U 100 src/money.3.c src/money.4.c > @abs_builddir@/$@ || test $$? -eq 1; \
 	cd -;
 
 money.4-5.c.diff: $(eg_src)/money.4.c $(eg_src)/money.5.c
 	cd $(eg_root); \
-	diff -u src/money.4.c src/money.5.c > @abs_builddir@/$@ || test $$? -eq 1; \
+	diff -U 100 src/money.4.c src/money.5.c > @abs_builddir@/$@ || test $$? -eq 1; \
 	cd -;
 
 money.5-6.c.diff: $(eg_src)/money.5.c $(eg_src)/money.6.c
 	cd $(eg_root); \
-	diff -u src/money.5.c src/money.6.c > @abs_builddir@/$@ || test $$? -eq 1; \
+	diff -U 100 src/money.5.c src/money.6.c > @abs_builddir@/$@ || test $$? -eq 1; \
 	cd -;
 
 check_money.1-2.c.diff: $(eg_tests)/check_money.1.c $(eg_tests)/check_money.2.c
 	cd $(eg_root); \
-	diff -u tests/check_money.1.c tests/check_money.2.c > @abs_builddir@/$@ || test $$? -eq 1; \
+	diff -U 100 tests/check_money.1.c tests/check_money.2.c > @abs_builddir@/$@ || test $$? -eq 1; \
 	cd -;
 
 check_money.2-3.c.diff: $(eg_tests)/check_money.2.c $(eg_tests)/check_money.3.c
 	cd $(eg_root); \
-	diff -u tests/check_money.2.c tests/check_money.3.c > @abs_builddir@/$@ || test $$? -eq 1; \
+	diff -U 100 tests/check_money.2.c tests/check_money.3.c > @abs_builddir@/$@ || test $$? -eq 1; \
 	cd -;
 
 check_money.3-6.c.diff: $(eg_tests)/check_money.3.c $(eg_tests)/check_money.6.c
 	cd $(eg_root); \
-	diff -u tests/check_money.3.c tests/check_money.6.c > @abs_builddir@/$@ || test $$? -eq 1; \
+	diff -U 100 tests/check_money.3.c tests/check_money.6.c > @abs_builddir@/$@ || test $$? -eq 1; \
 	cd -;
 
 check_money.6-7.c.diff: $(eg_tests)/check_money.6.c $(eg_tests)/check_money.7.c
 	cd $(eg_root); \
-	diff -u tests/check_money.6.c tests/check_money.7.c > @abs_builddir@/$@ || test $$? -eq 1; \
+	diff -U 100 tests/check_money.6.c tests/check_money.7.c > @abs_builddir@/$@ || test $$? -eq 1; \
 	cd -;
 
 # explicitly list every file in the example.
