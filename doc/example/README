@@ -4,7 +4,7 @@ You need the following programs installed on your system:
   -- Autoconf 2.59
   -- Automake 1.9.6
   -- Libtool 1.5.22
-  -- Check 0.9.3 
+  -- Check 0.9.9
 
 Somewhat earlier versions of these programs might work.
 

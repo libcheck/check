@@ -13,8 +13,8 @@ This manual is for Check
 (version @value{VERSION}, @value{UPDATED}),
 a unit testing framework for C.
 
-Copyright @copyright{} 2001--2011 Arien Malec, Chris Pickett, Fredrik
-Hugosson, and Robert Lemmen.
+Copyright @copyright{} 2001--2011 Arien Malec, Branden Archer, Chris Pickett, 
+Fredrik Hugosson, and Robert Lemmen.
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
@@ -36,6 +36,7 @@ entitled ``@acronym{GNU} Free Documentation License.''
 @subtitle A Unit Testing Framework for C
 @subtitle for version @value{VERSION}, @value{UPDATED}
 @author Arien Malec 
+@author Branden Archer
 @author Chris Pickett
 @author Fredrik Hugosson
 @author Robert Lemmen
@@ -392,7 +393,7 @@ We set up a directory structure as follows:
 
 Note that this is the output of @command{tree}, a great directory
 visualization tool.  The top-level @file{Makefile.am} is simple; it
-merely tells Automake how to process subdirectories:
+merely tells Automake how to process sub-directories:
 @example
 @verbatim
 SUBDIRS = src . tests
@@ -407,7 +408,7 @@ particular to Check @pxref{AM_PATH_CHECK}.
 
 @file{src/Makefile.am} builds @samp{libmoney} as a Libtool archive,
 and links it to an application simply called @command{main}.  The
-application's behaviour is not important to this tutorial; what's
+application's behavior is not important to this tutorial; what's
 important is that none of the functions we want to unit test appear in
 @file{main.c}; this probably means that the only function in
 @file{main.c} should be @code{main()} itself.  In order to test the
@@ -470,9 +471,9 @@ check}.  If all goes well, @command{make} should report that our tests
 passed.  No surprise, because there aren't any tests to fail.  If you
 have problems, make sure to see @ref{AM_PATH_CHECK}.
 
-This was tested on the i386 ``testing'' distribution of Debian
-GNU/Linux (etch) in March 2006, using Autoconf 2.59, Automake 1.9.6,
-and Libtool 1.5.22.  Please report any problems to
+This was tested on the isadora distribution of Linux Mint
+GNU/Linux in November 2012, using Autoconf 2.65, Automake 1.11.1,
+and Libtool 2.2.6b.  Please report any problems to
 @email{check-devel AT lists.sourceforge.net}.
 
 @node Test a Little, Creating a Suite, Setting Up the Money Build, Tutorial
@@ -494,66 +495,74 @@ Here are the changes to @file{check_money.c} for our first unit test:
 @verbatiminclude check_money.1-2.c.diff
 @end example
 
-@findex fail_unless()
+@findex ck_assert_int_eq
+@findex ck_assert_str_eq
 A unit test should just chug along and complete.  If it exits early,
 or is signaled, it will fail with a generic error message.  (Note: it
 is conceivable that you expect an early exit, or a signal and there is
 functionality in Check to specifically assert that we should expect a
 signal or an early exit.)  If we want to get some information
-about what failed, we need to use the @code{fail_unless()} function.  The
-function (actually a macro) takes a first Boolean argument, and an error
-message to send if the condition is not true.
+about what failed, we need to use some calls that will point out a failure.
+Two such calls are @code{ck_assert_int_eq} (used to determine if two integers
+are equal) and @code{ck_assert_str_eq} (used to determine if two null terminated
+strings are equal). Both of these functions (actually macros) will signal an error 
+if their arguments are not equal.
 
-@findex fail()
+@findex ck_assert
+An alternative to using @code{ck_assert_int_eq} and @code{ck_assert_str_eq}
+is to write the expression under test directly using @code{ck_assert}.
+This takes one Boolean argument which must be True for the check to pass.
+The second test could be rewritten as follows:
+@example
+@verbatim
+ck_assert(strcmp (money_currency (m), "USD") == 0);
+@end verbatim
+@end example
+
+@findex ck_assert_msg
+@code{ck_assert} will find and report failures, but will not print any
+user supplied message in the unit test result. To print a user defined
+message along with any failures found, use @code{ck_assert_msg}. The first
+argument is a Boolean argument. The remaining arguments support @code{varargs} 
+and accept @code{printf}-style format strings and arguments.  This is especially
+useful while debugging. For example, the second test could be rewritten as:
+@example
+@verbatim
+ck_assert_msg(strcmp (money_currency (m), "USD") == 0,
+         "Was expecting a currency of USD, but found %s", money_currency (m));
+@end verbatim
+@end example
+
+@findex ck_abort
+@findex ck_abort_msg
 If the Boolean argument is too complicated to elegantly express within
-@code{fail_unless()}, there is an alternate function @code{fail()}
-that unconditionally fails.  The second test inside
+@code{ck_assert()}, there are the alternate functions @code{ck_abort()}
+and @code{ck_abort_msg()} that unconditionally fail.  The second test inside
 @code{test_money_create} above could be rewritten as follows:
 @example
 @verbatim
 if (strcmp (money_currency (m), "USD") != 0) 
   {
-    fail ("Currency not set correctly on creation");
+    ck_abort_msg ("Currency not set correctly on creation");
   }
 @end verbatim
 @end example
 
-@findex fail_if()
-There is also a @code{fail_if()} function, which is the
-inverse of @code{fail_unless()}.  Using it, the above test then
-looks like this:
-@example
-@verbatim
-fail_if (strcmp (money_currency (m), "USD") != 0,
-         "Currency not set correctly on creation");
-@end verbatim
-@end example
-
-For your convenience all fail functions also accepts NULL as the msg
-argument and substitutes a suitable message for you.  So you could also
+For your convenience ck_assert, which does not accept a user supplied message,
+substitutes a suitable message for you. (This is also equivalent to
+passing a NULL message to ck_assert_msg). So you could also
 write a test as follows:
 @example
 @verbatim
-fail_unless (money_amount (m) == 5, NULL);
+ck_assert (money_amount (m) == 5);
 @end verbatim
 @end example
 
 This is equivalent to:
 @example
 @verbatim
-fail_unless (money_amount (m) == 5, 
+ck_assert (money_amount (m) == 5, 
              "Assertion 'money_amount (m) == 5' failed");
-@end verbatim
-@end example
-
-All fail functions also support @code{varargs} and accept
-@code{printf}-style format strings and arguments.  This is especially
-useful while debugging.  With @code{printf}-style formatting the
-message could look like this:
-@example
-@verbatim
-fail_unless(money_amount (m) == 5,
-            "Amount was %d, instead of 5", money_amount (m));
 @end verbatim
 @end example
 
@@ -625,7 +634,7 @@ encounter linker errors again we try out @code{make check}.  Try it
 for yourself and see.  The reason is that the @file{money.c}
 implementation of the @file{money.h} interface hasn't been created
 yet.  Let's go with the fastest solution possible and implement stubs
-for each of the functions in @code{money.c}:
+for each of the functions in @code{money.c}. Here is the diff:
 
 @example
 @verbatiminclude money.1-3.c.diff
@@ -639,8 +648,8 @@ focus on making the test pass.
 @node SRunner Output,  , Creating a Suite, Tutorial
 @section SRunner Output
 
-@findex srunner_run_all()
-@findex srunner_run()
+@findex srunner_run_all
+@findex srunner_run
 The functions to run tests in an @code{SRunner} are defined as follows:
 @example
 @verbatim
@@ -726,14 +735,14 @@ output:
 @example
 @verbatim
 Running suite(s): Money
-0%: Checks: 1, Failures: 1, Errors: 0 
-check_money.c:10:F:Core:test_money_create: Amount not set correctly on
-creation
+0%: Checks: 1, Failures: 1, Errors: 0
+check_money.c:9:F:Core:test_money_create:0: Assertion 'money_amount (m)==5' failed: 
+money_amount (m)==0, 5==5
 FAIL: check_money
-==================================================
-1 of 1 tests failed
-Please report to check-devel@lists.sourceforge.net
-==================================================
+=====================================================
+1 of 1 test failed
+Please report to check-devel AT lists.sourceforge.net
+=====================================================
 @end verbatim
 @end example
 
@@ -761,21 +770,22 @@ now as follows:
 @verbatim
 Running suite(s): Money
 0%: Checks: 1, Failures: 0, Errors: 1
-check_money.c:5:E:Core:test_money_create: (after this point) Received
-signal 11 (Segmentation fault)
+check_money.c:5:E:Core:test_money_create:0: (after this point) 
+Received signal 11 (Segmentation fault)
 @end verbatim
 @end example
 
-@findex mark_point()
+@findex mark_point
 What does this mean?  Note that we now have an error, rather than a
 failure.  This means that our unit test either exited early, or was
 signaled.  Next note that the failure message says ``after this
 point''; This means that somewhere after the point noted
 (@file{check_money.c}, line 5) there was a problem: signal 11 (a.k.a.
 segmentation fault).  The last point reached is set on entry to the
-unit test, and after every call to @code{fail_unless()},
-@code{fail()}, or the special function @code{mark_point()}.  For
-example, if we wrote some test code as follows:
+unit test, and after every call to the @code{ck_assert()},
+@code{ck_abort()}, @code{ck_assert_int_*()}, @code{ck_assert_str_*()}, 
+or the special function @code{mark_point()}.  For example, if we wrote some test 
+code as follows:
 @example
 @verbatim
 stuff_that_works ();
@@ -789,7 +799,8 @@ then the point returned will be that marked by @code{mark_point()}.
 The reason our test failed so horribly is that we haven't implemented
 @code{money_create()} to create any @code{Money}.  We'll go ahead and
 implement that, the symmetric @code{money_free()}, and
-@code{money_currency()} too, in order to make our unit test pass again:
+@code{money_currency()} too, in order to make our unit test pass again,
+here is a diff:
 
 @example
 @verbatiminclude money.4-5.c.diff
@@ -800,7 +811,7 @@ implement that, the symmetric @code{money_free()}, and
 
 What you've seen so far is all you need for basic unit testing.  The
 features described in this section are additions to Check that make it
-easier for the developer to write, run, and analyse tests.
+easier for the developer to write, run, and analyze tests.
 
 @menu
 * Convenience Test Functions::  
@@ -820,7 +831,7 @@ easier for the developer to write, run, and analyse tests.
 @node Convenience Test Functions, Running Multiple Cases, Advanced Features, Advanced Features
 @section Convenience Test Functions
 
-Using the @code{fail_unless} function for all tests can lead to lot of
+Using the @code{ck_assert} function for all tests can lead to lot of
 repetitive code that is hard to read.  For your convenience Check
 provides a set of functions (actually macros) for testing often used
 conditions.
@@ -833,12 +844,11 @@ Unconditionally fails test with default message.
 Unconditionally fails test with user supplied message.
 
 @item ck_assert
-Fails test if supplied condition evaluates to true. This function is
-equivalent to @code{fail_unless} with @code{NULL} as a message.
+Fails test if supplied condition evaluates to true. .
 
 @item ck_assert_msg
 Fails test if supplied condition evaluates to true and displays user
-provided message. This function is equivalent to @code{fail_unless}.
+provided message.
 
 @item ck_assert_int_eq
 @itemx ck_assert_int_ne
@@ -878,6 +888,18 @@ used for comparison is different for each function and is indicated by
 the last two letters of the function name.  The abbreviations @code{eq} and
 @code{ne} correspond to @code{==} and @code{!=} respectively.
 
+@item fail
+(Deprecated) Unconditionally fails test with user supplied message.
+
+@item fail_if
+(Deprecated) Fails test if supplied condition evaluates to false and 
+displays user provided message.
+
+@item fail_unless
+(Deprecated) Fails test if supplied condition evaluates to true and 
+displays user provided message.
+
+
 @end ftable
 
 @node Running Multiple Cases, No Fork Mode, Convenience Test Functions, Advanced Features
@@ -893,6 +915,7 @@ changed like so:
 @example
 @verbatiminclude check_money.3-6.c.diff
 @end example
+
 
 Now we can rerun our suite, and fix the problem(s). Note that errors
 in the ``Core'' test case will be reported as ``Core'', and errors in
@@ -915,7 +938,7 @@ tools.  To define fork mode for an @code{SRunner} object, you can do
 one of the following:
 
 @vindex CK_FORK
-@findex srunner_set_fork_status()
+@findex srunner_set_fork_status
 @enumerate
 @item
 Define the CK_FORK environment variable to equal ``no''.
@@ -1010,7 +1033,7 @@ In our example, we'll make @code{five_dollars} be a global created and
 freed by @code{setup()} and @code{teardown()} respectively.
 
 @item
-@findex tcase_add_checked_fixture()     
+@findex tcase_add_checked_fixture 
 Add the @code{setup()} and @code{teardown()} functions to the test
 case with @code{tcase_add_checked_fixture()}.  In our example, this
 belongs in the suite setup function @code{money_suite}.
@@ -1023,11 +1046,12 @@ Rewrite tests to use the globals.  We'll rewrite our first to use
 Note that the functions used for setup and teardown do not need to be
 named @code{setup()} and @code{teardown()}, but they must take
 @code{void} and return @code{void}.  We'll update @file{check_money.c}
-as follows:
+with the following patch:
 
 @example
 @verbatiminclude check_money.6-7.c.diff
 @end example
+
 
 @node Checked vs Unchecked Fixtures,  , Test Fixture Examples, Test Fixtures
 @subsection Checked vs Unchecked Fixtures
@@ -1056,7 +1080,7 @@ effects, since the @code{setup()} is run before each unit test.  There
 is an exception for side effects to the total environment in which the
 test program lives: for example, if the @code{setup()} function
 initializes a file that a unit test then changes, the combination of
-the @code{teardown()} function and @code{setup()} fuction must be able
+the @code{teardown()} function and @code{setup()} function must be able
 to restore the environment for the next unit test.
 
 If the @code{setup()} function in a fixture fails, in either checked
@@ -1089,7 +1113,7 @@ Suite *make_pack_suite (void);
 @end verbatim
 @end example
 
-@findex srunner_add_suite()
+@findex srunner_add_suite
 The function @code{srunner_add_suite()} is used to add additional
 suites to an @code{SRunner}.  Here is the code that sets up and runs
 the @code{SRunner} in the @code{main()} function in
@@ -1125,7 +1149,7 @@ running specific tests from within another tool, e.g. an IDE.
 @node Testing Signal Handling and Exit Values, Looping Tests, Selective Running of Tests, Advanced Features
 @section Testing Signal Handling and Exit Values
 
-@findex tcase_add_test_raise_signal()
+@findex tcase_add_test_raise_signal
 
 To enable testing of signal handling, there is a function
 @code{tcase_add_test_raise_signal()} which is used instead of
@@ -1136,7 +1160,7 @@ is received this is logged as an error.
 
 The signal handling functionality only works in CK_FORK mode.
 
-@findex tcase_add_exit_test()
+@findex tcase_add_exit_test
 
 To enable testing of expected exits, there is a function
 @code{tcase_add_exit_test()} which is used instead of @code{tcase_add_test()}.
@@ -1157,7 +1181,7 @@ first error will be shown before the test exits.  However, looping
 tests allow for all errors to be shown at once, which can help out
 with debugging.
 
-@findex tcase_add_loop_test()
+@findex tcase_add_loop_test
 Adding a normal test with @code{tcase_add_loop_test()} instead of
 @code{tcase_add_test()} will make the test function the body of a
 @code{for} loop, with the addition of a fork before each call.  The
@@ -1187,7 +1211,7 @@ static const int primes[5] = {2,3,5,7,11};
 
 START_TEST (check_is_prime)
 {
-  fail_unless (is_prime (primes[_i]));
+  ck_assert (is_prime (primes[_i]));
 }
 END_TEST
 
@@ -1203,7 +1227,7 @@ forking.  This means that only the first error will be shown.
 @node Test Timeouts, Determining Test Coverage, Looping Tests, Advanced Features
 @section Test Timeouts
 
-@findex tcase_set_timeout()
+@findex tcase_set_timeout
 @vindex CK_DEFAULT_TIMEOUT
 @vindex CK_TIMEOUT_MULTIPLIER
 To be certain that a test won't hang indefinitely, all tests are run
@@ -1294,7 +1318,7 @@ to the relevant manuals.
 @node Test Logging, Subunit Support, Determining Test Coverage, Advanced Features
 @section Test Logging
 
-@findex srunner_set_log()
+@findex srunner_set_log
 Check supports an operation to log the results of a test run.  To use
 test logging, call the @code{srunner_set_log()} function with the name
 of the log file you wish to create:
@@ -1341,9 +1365,9 @@ be used.
 @node XML Logging,  , Test Logging, Test Logging
 @subsection XML Logging
 
-@findex srunner_set_xml()
-@findex srunner_has_xml()
-@findex srunner_xml_fname()
+@findex srunner_set_xml
+@findex srunner_has_xml
+@findex srunner_xml_fname
 The log can also be written in XML.  The following functions define
 the interface for XML logs:
 @example
@@ -1463,7 +1487,7 @@ format simultaneously is supported.
 
 Check supports running test suites with subunit output. This can be useful to
 combine test results from multiple languages, or to perform programmatic
-analysis on the results of multiple check test suites or otherise handle test
+analysis on the results of multiple check test suites or otherwise handle test
 results in a programmatic manner. Using subunit with check is very straight
 forward. There are two steps:
 1) In your check test suite driver pass 'CK_SUBUNIT' as the output mode
@@ -1519,7 +1543,7 @@ test-driven development, please send us a patch to this manual.
 
 @node AM_PATH_CHECK, Copying This Manual, Conclusion and References, Top
 @chapter AM_PATH_CHECK
-@findex AM_PATH_CHECK()
+@findex AM_PATH_CHECK
 
 The @code{AM_PATH_CHECK()} macro is defined in the file
 @file{check.m4} which is installed by Check.  It has some optional

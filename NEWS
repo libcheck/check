@@ -7,8 +7,7 @@ In development:
   test durations. The implementation for OSX uses OSX specific system calls 
   to get the time. For all other systems, clock_gettime() does nothing.
 
-* Updated documentation in check.h to reference new check API and avoid
-  mentioning deprecated API.
+* Updated documentation in check.h to reference new check API.
 
 * Remove usage of deprecated fail(), fail_if(), and fail_unless() calls from
   check's unit tests.
