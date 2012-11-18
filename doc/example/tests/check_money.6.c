@@ -6,10 +6,8 @@ START_TEST (test_money_create)
 {
   Money *m;
   m = money_create (5, "USD");
-  fail_unless (money_amount (m) == 5, 
-	       "Amount not set correctly on creation");
-  fail_unless (strcmp (money_currency (m), "USD") == 0,
-	       "Currency not set correctly on creation");
+  ck_assert_int_eq (money_amount (m), 5);
+  ck_assert_str_eq (money_currency (m), "USD");
   money_free (m);
 }
 END_TEST
@@ -17,7 +15,7 @@ END_TEST
 START_TEST (test_money_create_neg)
 {
   Money *m = money_create (-1, "USD");
-  fail_unless (m == NULL,
+  ck_assert_msg (m == NULL,
 	       "NULL should be returned on attempt to create with "
 	       "a negative amount");
 }
@@ -26,8 +24,10 @@ END_TEST
 START_TEST (test_money_create_zero)
 {
   Money *m = money_create (0, "USD");
-  fail_unless (money_amount (m) == 0, 
-	       "Zero is a valid amount of money");
+  if(money_amount (m) != 0)
+  {
+    ck_abort_msg("Zero is a valid amount of money");
+  }
 }
 END_TEST
 
