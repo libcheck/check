@@ -378,7 +378,11 @@ static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun, int i)
   pid_t pid;
   int status = 0;
   struct timespec ts_start, ts_end;
+
+  timer_t timerid;
+  struct itimerspec timer_spec; 
   TestResult * tr;
+
 
   pid = fork();
   if (pid == -1)
@@ -399,10 +403,33 @@ static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun, int i)
   }
 
   alarm_received = 0;
-  alarm(tc->timeout);
-  do {
-    pid_w = waitpid(pid, &status, 0);
-  } while (pid_w == -1);
+  
+  if(timer_create(CLOCK_MONOTONIC, 
+               NULL /* fire SIGALRM if timer expires */,
+               &timerid) == 0)
+  {
+    /* Set the timer to fire once */
+    timer_spec.it_value            = tc->timeout;
+    timer_spec.it_interval.tv_sec  = 0;
+    timer_spec.it_interval.tv_nsec = 0;
+    if(timer_settime (timerid, 0, &timer_spec, NULL) == 0)
+    {
+      do {
+        pid_w = waitpid(pid, &status, 0);
+      } while (pid_w == -1);
+    }
+    else
+    {
+      eprintf("Error in call to timer_settime:", __FILE__, __LINE__);
+    }
+    
+      /* If the timer has not fired, disable it */
+      timer_delete(timerid);
+  }
+  else
+  {
+    eprintf("Error in call to timer_create:", __FILE__, __LINE__);
+  }
   
   killpg(pid, SIGKILL); /* Kill remaining processes. */
 

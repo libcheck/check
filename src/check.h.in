@@ -223,7 +223,7 @@ void CK_EXPORT tcase_add_checked_fixture (TCase *tc, SFun setup, SFun teardown);
    The timeout can also be set globaly with the environment variable
    CK_DEFAULT_TIMEOUT, the specific setting always takes precedence.
 */
-void CK_EXPORT tcase_set_timeout (TCase *tc, int timeout);
+void CK_EXPORT tcase_set_timeout (TCase *tc, double timeout);
  
 /* Internal function to mark the start of a test function */
 void CK_EXPORT tcase_fn_start (const char *fname, const char *file, int line);

@@ -21,10 +21,9 @@
 #ifndef CHECK_IMPL_H
 #define CHECK_IMPL_H
 
-
 /* This header should be included by any module that needs
    to know the implementation details of the check structures
-   Include stdio.h & list.h before this header
+   Include stdio.h, time.h, & list.h before this header
 */
 
 /** calculate the difference in useconds out of two "struct timespec"s */
@@ -54,7 +53,7 @@ typedef struct Fixture
 
 struct TCase {
   const char *name;
-  int timeout;
+  struct timespec timeout;
   List *tflst; /* list of test functions */
   List *unch_sflst;
   List *unch_tflst;

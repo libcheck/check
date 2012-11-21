@@ -363,7 +363,28 @@ START_TEST(test_eternal)
 }
 END_TEST
 
+/* 
+ * Only include sub-second timing tests on systems
+ * that support librt.
+ */
+#ifdef HAVE_LIBRT
+START_TEST(test_sleep0_025)
+  #define LINENO_sleep0_025 _STR(__LINE__)
+{
+  usleep(25*1000);
+}
+END_TEST
+
+START_TEST(test_sleep1)
+  #define LINENO_sleep1 _STR(__LINE__)
+{
+  sleep(1);
+}
+END_TEST
+#endif /* HAVE_LIBRT */
+
 START_TEST(test_sleep2)
+  #define LINENO_sleep2 _STR(__LINE__)
 {
   sleep(2);
 }
@@ -619,37 +640,113 @@ void init_master_tests_lineno(int num_master_tests) {
     "-1",
 
 #if TIMEOUT_TESTS_ENABLED
-/* Timeout Tests */
 #if HAVE_WORKING_SETENV
+/* Environment Integer Timeout Tests */
     LINENO_eternal,
     "-1",
     "-1",
+    LINENO_sleep9,
+/* Environment Double Timeout Tests */
+    LINENO_eternal,
+#ifdef HAVE_LIBRT
+    "-1",
+    LINENO_sleep1,
+#endif /* HAVE_LIBRT */
+    LINENO_sleep2,
+    LINENO_sleep5,
     LINENO_sleep9,
 #endif
+/* Default Timeout Tests */
     LINENO_eternal,
+#ifdef HAVE_LIBRT
+    "-1",
+    "-1",
+#endif /* HAVE_LIBRT */
     "-1",
     LINENO_sleep5,
     LINENO_sleep9,
+/* User Integer Timeout Tests */
     LINENO_eternal,
     "-1",
     "-1",
     LINENO_sleep9,
+/* User Double Timeout Tests */
     LINENO_eternal,
+#ifdef HAVE_LIBRT
+    "-1",
+    LINENO_sleep1,
+#endif /* HAVE_LIBRT */
+    LINENO_sleep2,
+    LINENO_sleep5,
+    LINENO_sleep9,
+    
+/* Default Timeout Tests (again)*/
+    LINENO_eternal,
+#ifdef HAVE_LIBRT
+    "-1",
+    "-1",
+#endif /* HAVE_LIBRT */
     "-1",
     LINENO_sleep5,
     LINENO_sleep9,
 #if HAVE_WORKING_SETENV
+/* Environment Integer Timeout Scaling Tests */
     LINENO_eternal,
+#ifdef HAVE_LIBRT
+    "-1",
+    "-1",
+#endif /* HAVE_LIBRT */
+    "-1",
     "-1",
     "-1",
     LINENO_sleep14,
+/* Environment Double Timeout Scaling Tests */
     LINENO_eternal,
+#ifdef HAVE_LIBRT
     "-1",
+    LINENO_sleep1,
+#endif /* HAVE_LIBRT */
+    LINENO_sleep2,
+    LINENO_sleep5,
+    LINENO_sleep9,
+    LINENO_sleep14,
+/* Timeout Integer Scaling Tests */
+    LINENO_eternal,
+#ifdef HAVE_LIBRT
+    "-1",
+    "-1",
+    "-1",
+#endif /* HAVE_LIBRT */
     "-1",
     LINENO_sleep9,
+/* Timeout Double Scaling Tests */
     LINENO_eternal,
+#ifdef HAVE_LIBRT
     "-1",
     "-1",
+#endif /* HAVE_LIBRT */
+    LINENO_sleep2,
+    LINENO_sleep5,
+    LINENO_sleep9,
+/* User Integer Timeout Scaling Tests */
+    LINENO_eternal,
+#ifdef HAVE_LIBRT
+    "-1",
+    "-1",
+#endif /* HAVE_LIBRT */
+    "-1",
+    "-1",
+    "-1",
+    LINENO_sleep14,
+/* User Integer Timeout Scaling Tests */
+    LINENO_eternal,
+#ifdef HAVE_LIBRT
+    "-1",
+    LINENO_sleep1,
+#endif /* HAVE_LIBRT */
+    LINENO_sleep2,
+    LINENO_sleep5,
+    LINENO_sleep9,
     LINENO_sleep14,
 #endif
 #endif
@@ -694,14 +791,19 @@ Suite *make_sub_suite(void)
   TCase *tc_signal;
 #if TIMEOUT_TESTS_ENABLED
 #if HAVE_WORKING_SETENV
-  TCase *tc_timeout_env;
+  TCase *tc_timeout_env_int;
+  TCase *tc_timeout_env_double;
 #endif /* HAVE_WORKING_SETENV */
-  TCase *tc_timeout;
-  TCase *tc_timeout_usr;
+  TCase *tc_timeout_default;
+  TCase *tc_timeout_usr_int;
+  TCase *tc_timeout_usr_double;
 #if HAVE_WORKING_SETENV
-  TCase *tc_timeout_env_scale;
-  TCase *tc_timeout_scale;
-  TCase *tc_timeout_usr_scale;
+  TCase *tc_timeout_env_scale_int;
+  TCase *tc_timeout_scale_int;
+  TCase *tc_timeout_usr_scale_int;
+  TCase *tc_timeout_env_scale_double;
+  TCase *tc_timeout_scale_double;
+  TCase *tc_timeout_usr_scale_double;
 #endif /* HAVE_WORKING_SETENV */
 #endif
   TCase *tc_limit;
@@ -714,21 +816,33 @@ Suite *make_sub_suite(void)
 #if TIMEOUT_TESTS_ENABLED
 #if HAVE_WORKING_SETENV
   setenv("CK_DEFAULT_TIMEOUT", "6", 1);
-  tc_timeout_env = tcase_create("Environment Timeout Tests");
+  tc_timeout_env_int = tcase_create("Environment Integer Timeout Tests");
+  unsetenv("CK_DEFAULT_TIMEOUT");
+  setenv("CK_DEFAULT_TIMEOUT", "0.5", 1);
+  tc_timeout_env_double = tcase_create("Environment Double Timeout Tests");
   unsetenv("CK_DEFAULT_TIMEOUT");
 #endif /* HAVE_WORKING_SETENV */
-  tc_timeout = tcase_create("Timeout Tests");
-  tc_timeout_usr = tcase_create("User Timeout Tests");
+  tc_timeout_default = tcase_create("Default Timeout Tests");
+  tc_timeout_usr_int = tcase_create("User Integer Timeout Tests");
+  tc_timeout_usr_double = tcase_create("User Double Timeout Tests");
 #if HAVE_WORKING_SETENV
   setenv("CK_TIMEOUT_MULTIPLIER", "2", 1);
-  tc_timeout_scale = tcase_create("Timeout Scaling Tests");
-  tc_timeout_usr_scale = tcase_create("User Timeout Scaling Tests");
+  tc_timeout_scale_int = tcase_create("Timeout Integer Scaling Tests");
+  tc_timeout_usr_scale_int = tcase_create("User Integer Timeout Scaling Tests");
   setenv("CK_DEFAULT_TIMEOUT", "6", 1);
-  tc_timeout_env_scale = tcase_create("Environment Timeout Scaling Tests");
+  tc_timeout_env_scale_int = tcase_create("Environment Integer Timeout Scaling Tests");
   unsetenv("CK_DEFAULT_TIMEOUT");
   unsetenv("CK_TIMEOUT_MULTIPLIER");
-#endif
-#endif
+  
+  setenv("CK_TIMEOUT_MULTIPLIER", "0.4", 1);
+  tc_timeout_scale_double = tcase_create("Timeout Double Scaling Tests");
+  tc_timeout_usr_scale_double = tcase_create("User Double Timeout Scaling Tests");
+  setenv("CK_DEFAULT_TIMEOUT", "0.9", 1);
+  tc_timeout_env_scale_double = tcase_create("Environment Double Timeout Scaling Tests");
+  unsetenv("CK_DEFAULT_TIMEOUT");
+  unsetenv("CK_TIMEOUT_MULTIPLIER");
+#endif /* HAVE_WORKING_SETENV */
+#endif /* TIMEOUT_TESTS_ENABLED */
   tc_limit = tcase_create("Limit Tests");
   tc_messaging_and_fork = tcase_create("Msg and fork Tests");
 
@@ -736,16 +850,22 @@ Suite *make_sub_suite(void)
   suite_add_tcase (s, tc_signal);
 #if TIMEOUT_TESTS_ENABLED
 #if HAVE_WORKING_SETENV
-  suite_add_tcase (s, tc_timeout_env);
+  suite_add_tcase (s, tc_timeout_env_int);
+  suite_add_tcase (s, tc_timeout_env_double);
 #endif /* HAVE_WORKING_SETENV */
-  suite_add_tcase (s, tc_timeout);
-  suite_add_tcase (s, tc_timeout_usr);
+  suite_add_tcase (s, tc_timeout_default);
+  suite_add_tcase (s, tc_timeout_usr_int);
+  suite_add_tcase (s, tc_timeout_usr_double);
+
   /* Add a second time to make sure tcase_set_timeout doesn't contaminate it. */
-  suite_add_tcase (s, tc_timeout);
+  suite_add_tcase (s, tc_timeout_default);
 #if HAVE_WORKING_SETENV
-  suite_add_tcase (s, tc_timeout_env_scale);
-  suite_add_tcase (s, tc_timeout_scale);
-  suite_add_tcase (s, tc_timeout_usr_scale);
+  suite_add_tcase (s, tc_timeout_env_scale_int);
+  suite_add_tcase (s, tc_timeout_env_scale_double);
+  suite_add_tcase (s, tc_timeout_scale_int);
+  suite_add_tcase (s, tc_timeout_scale_double);
+  suite_add_tcase (s, tc_timeout_usr_scale_int);
+  suite_add_tcase (s, tc_timeout_usr_scale_double);
 #endif
 #endif
   suite_add_tcase (s, tc_limit);
@@ -804,42 +924,109 @@ Suite *make_sub_suite(void)
 
 #if TIMEOUT_TESTS_ENABLED
 #if HAVE_WORKING_SETENV
-  tcase_add_test (tc_timeout_env, test_eternal);
-  tcase_add_test (tc_timeout_env, test_sleep2);
-  tcase_add_test (tc_timeout_env, test_sleep5);
-  tcase_add_test (tc_timeout_env, test_sleep9);
+  tcase_add_test (tc_timeout_env_int, test_eternal);
+  tcase_add_test (tc_timeout_env_int, test_sleep2);
+  tcase_add_test (tc_timeout_env_int, test_sleep5);
+  tcase_add_test (tc_timeout_env_int, test_sleep9);
+  tcase_add_test (tc_timeout_env_double, test_eternal);
+#ifdef HAVE_LIBRT
+  tcase_add_test (tc_timeout_env_double, test_sleep0_025);
+  tcase_add_test (tc_timeout_env_double, test_sleep1);
+#endif /* HAVE_LIBRT */
+  tcase_add_test (tc_timeout_env_double, test_sleep2);
+  tcase_add_test (tc_timeout_env_double, test_sleep5);
+  tcase_add_test (tc_timeout_env_double, test_sleep9);
 #endif /* HAVE_WORKING_SETENV */
 
-  tcase_add_test (tc_timeout, test_eternal);
-  tcase_add_test (tc_timeout, test_sleep2);
-  tcase_add_test (tc_timeout, test_sleep5);
-  tcase_add_test (tc_timeout, test_sleep9);
+  tcase_add_test (tc_timeout_default, test_eternal);
+#ifdef HAVE_LIBRT
+  tcase_add_test (tc_timeout_default, test_sleep0_025);
+  tcase_add_test (tc_timeout_default, test_sleep1);
+#endif /* HAVE_LIBRT */
+  tcase_add_test (tc_timeout_default, test_sleep2);
+  tcase_add_test (tc_timeout_default, test_sleep5);
+  tcase_add_test (tc_timeout_default, test_sleep9);
 
-  tcase_set_timeout (tc_timeout_usr, 6);
-  tcase_add_test (tc_timeout_usr, test_eternal);
-  tcase_add_test (tc_timeout_usr, test_sleep2);
-  tcase_add_test (tc_timeout_usr, test_sleep5);
-  tcase_add_test (tc_timeout_usr, test_sleep9);
+  tcase_set_timeout (tc_timeout_usr_int, 6);
+  tcase_add_test (tc_timeout_usr_int, test_eternal);
+  tcase_add_test (tc_timeout_usr_int, test_sleep2);
+  tcase_add_test (tc_timeout_usr_int, test_sleep5);
+  tcase_add_test (tc_timeout_usr_int, test_sleep9);
+
+  tcase_set_timeout (tc_timeout_usr_double, 0.5);
+  tcase_add_test (tc_timeout_usr_double, test_eternal);
+#ifdef HAVE_LIBRT
+  tcase_add_test (tc_timeout_usr_double, test_sleep0_025);
+  tcase_add_test (tc_timeout_usr_double, test_sleep1);
+#endif /* HAVE_LIBRT */
+  tcase_add_test (tc_timeout_usr_double, test_sleep2);
+  tcase_add_test (tc_timeout_usr_double, test_sleep5);
+  tcase_add_test (tc_timeout_usr_double, test_sleep9);
+  
 #if HAVE_WORKING_SETENV
-  tcase_add_test (tc_timeout_env_scale, test_eternal);
-  tcase_add_test (tc_timeout_env_scale, test_sleep5);
-  tcase_add_test (tc_timeout_env_scale, test_sleep9);
-  tcase_add_test (tc_timeout_env_scale, test_sleep14);
-  tcase_add_test (tc_timeout_scale, test_eternal);
-  tcase_add_test (tc_timeout_scale, test_sleep2);
-  tcase_add_test (tc_timeout_scale, test_sleep5);
-  tcase_add_test (tc_timeout_scale, test_sleep9);
+  tcase_add_test (tc_timeout_env_scale_int, test_eternal);
+#ifdef HAVE_LIBRT
+  tcase_add_test (tc_timeout_env_scale_int, test_sleep0_025);
+  tcase_add_test (tc_timeout_env_scale_int, test_sleep1);
+#endif /* HAVE_LIBRT */
+  tcase_add_test (tc_timeout_env_scale_int, test_sleep2);
+  tcase_add_test (tc_timeout_env_scale_int, test_sleep5);
+  tcase_add_test (tc_timeout_env_scale_int, test_sleep9);
+  tcase_add_test (tc_timeout_env_scale_int, test_sleep14);
+
+  tcase_add_test (tc_timeout_env_scale_double, test_eternal);
+#ifdef HAVE_LIBRT
+  tcase_add_test (tc_timeout_env_scale_double, test_sleep0_025);
+  tcase_add_test (tc_timeout_env_scale_double, test_sleep1);
+#endif /* HAVE_LIBRT */
+  tcase_add_test (tc_timeout_env_scale_double, test_sleep2);
+  tcase_add_test (tc_timeout_env_scale_double, test_sleep5);
+  tcase_add_test (tc_timeout_env_scale_double, test_sleep9);
+  tcase_add_test (tc_timeout_env_scale_double, test_sleep14);
+
+  tcase_add_test (tc_timeout_scale_int, test_eternal);
+#ifdef HAVE_LIBRT
+  tcase_add_test (tc_timeout_scale_int, test_sleep0_025);
+  tcase_add_test (tc_timeout_scale_int, test_sleep1);
+  tcase_add_test (tc_timeout_scale_int, test_sleep2);
+#endif /* HAVE_LIBRT */
+  tcase_add_test (tc_timeout_scale_int, test_sleep5);
+  tcase_add_test (tc_timeout_scale_int, test_sleep9);
+
+  tcase_add_test (tc_timeout_scale_double, test_eternal);
+#ifdef HAVE_LIBRT
+  tcase_add_test (tc_timeout_scale_double, test_sleep0_025);
+  tcase_add_test (tc_timeout_scale_double, test_sleep1);
+#endif /* HAVE_LIBRT */
+  tcase_add_test (tc_timeout_scale_double, test_sleep2);
+  tcase_add_test (tc_timeout_scale_double, test_sleep5);
+  tcase_add_test (tc_timeout_scale_double, test_sleep9);
+  
   setenv("CK_TIMEOUT_MULTIPLIER", "2", 1);
-  tcase_set_timeout (tc_timeout_usr_scale, 6);
+  tcase_set_timeout (tc_timeout_usr_scale_int, 6);
   unsetenv("CK_TIMEOUT_MULTIPLIER");
-  tcase_add_test (tc_timeout_usr_scale, test_eternal);
-  tcase_add_test (tc_timeout_usr_scale, test_sleep5);
-  tcase_add_test (tc_timeout_usr_scale, test_sleep9);
-  tcase_add_test (tc_timeout_usr_scale, test_sleep14);
-#endif
-#if 0
-  tcase_set_timeout (tc_timeout_kill, 2);
-  tcase_add_test (tc_timeout_kill, test_sleep);
+  tcase_add_test (tc_timeout_usr_scale_int, test_eternal);
+#ifdef HAVE_LIBRT
+  tcase_add_test (tc_timeout_usr_scale_int, test_sleep0_025);
+  tcase_add_test (tc_timeout_usr_scale_int, test_sleep1);
+#endif /* HAVE_LIBRT */
+  tcase_add_test (tc_timeout_usr_scale_int, test_sleep2);
+  tcase_add_test (tc_timeout_usr_scale_int, test_sleep5);
+  tcase_add_test (tc_timeout_usr_scale_int, test_sleep9);
+  tcase_add_test (tc_timeout_usr_scale_int, test_sleep14);
+  
+  setenv("CK_TIMEOUT_MULTIPLIER", "0.4", 1);
+  tcase_set_timeout (tc_timeout_usr_scale_double, 0.9);
+  unsetenv("CK_TIMEOUT_MULTIPLIER");
+  tcase_add_test (tc_timeout_usr_scale_double, test_eternal);
+#ifdef HAVE_LIBRT
+  tcase_add_test (tc_timeout_usr_scale_double, test_sleep0_025);
+  tcase_add_test (tc_timeout_usr_scale_double, test_sleep1);
+#endif /* HAVE_LIBRT */
+  tcase_add_test (tc_timeout_usr_scale_double, test_sleep2);
+  tcase_add_test (tc_timeout_usr_scale_double, test_sleep5);
+  tcase_add_test (tc_timeout_usr_scale_double, test_sleep9);
+  tcase_add_test (tc_timeout_usr_scale_double, test_sleep14);
 #endif
 #endif
 

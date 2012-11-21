@@ -1243,7 +1243,8 @@ length is to use the @code{CK_TIMEOUT_MULTIPLIER} environment variable,
 which multiplies all timeouts, including those set with
 @code{tcase_set_timeout()}, with the supplied integer value. All timeout
 arguments are in seconds and a timeout of 0 seconds turns off the timeout
-functionality.
+functionality. On systems that support it, the timeout can be specified
+using a nanosecond precision. Otherwise, second precision is used.
 
 Test timeouts are only available in CK_FORK mode.
 

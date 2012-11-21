@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <math.h>
 
 #include "check.h"
 #include "check_error.h"
@@ -34,6 +35,8 @@
 #ifndef DEFAULT_TIMEOUT
 #define DEFAULT_TIMEOUT 4
 #endif
+
+#define NANOS_PER_SECONDS 1000000000
 
 int check_major_version = CHECK_MAJOR_VERSION;
 int check_minor_version = CHECK_MINOR_VERSION;
@@ -93,7 +96,8 @@ static void suite_free (Suite *s)
 TCase *tcase_create (const char *name)
 {
   char *env;
-  int timeout = DEFAULT_TIMEOUT;
+  double timeout_sec = DEFAULT_TIMEOUT;
+  
   TCase *tc = emalloc (sizeof(TCase)); /*freed in tcase_free */
   if (name == NULL)
     tc->name = "";
@@ -102,21 +106,25 @@ TCase *tcase_create (const char *name)
 
   env = getenv("CK_DEFAULT_TIMEOUT");
   if (env != NULL) {
-    int tmp = atoi(env);
-    if (tmp >= 0) {
-      timeout = tmp;
+    char * endptr = NULL;
+    double tmp = strtod(env, &endptr);
+    if (tmp >= 0 && endptr != env && (*endptr) == '\0') {
+      timeout_sec = tmp;
     }
   }
 
   env = getenv("CK_TIMEOUT_MULTIPLIER");
   if (env != NULL) {
-    int tmp = atoi(env);
-    if (tmp >= 0) {
-      timeout = timeout * tmp;
+    char * endptr = NULL;
+    double tmp = strtod(env, &endptr);
+    if (tmp >= 0 && endptr != env && (*endptr) == '\0') {
+      timeout_sec = timeout_sec * tmp;
     }
   }  
 
-  tc->timeout = timeout;
+  tc->timeout.tv_sec   = floor(timeout_sec);
+  tc->timeout.tv_nsec  = ((timeout_sec-floor(timeout_sec)) * (double)NANOS_PER_SECONDS);
+  
   tc->tflst = check_list_create();
   tc->unch_sflst = check_list_create();
   tc->ch_sflst = check_list_create();
@@ -204,17 +212,20 @@ static void tcase_add_fixture (TCase *tc, SFun setup, SFun teardown,
   }
 }
 
-void tcase_set_timeout (TCase *tc, int timeout)
+void tcase_set_timeout (TCase *tc, double timeout)
 {
   if (timeout >= 0) {
     char *env = getenv("CK_TIMEOUT_MULTIPLIER");
     if (env != NULL) {
-      int tmp = atoi(env);
-      if (tmp >= 0) {
+      char * endptr = NULL;
+      double tmp = strtod(env, &endptr);
+      if (tmp >= 0 && endptr != env && (*endptr) == '\0') {
         timeout = timeout * tmp;
       }
     }
-    tc->timeout = timeout;
+    
+  tc->timeout.tv_sec   = floor(timeout);
+  tc->timeout.tv_nsec  = ((timeout-floor(timeout)) * (double)NANOS_PER_SECONDS);
   }
 }
 

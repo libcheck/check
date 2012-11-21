@@ -124,11 +124,17 @@ if test "$TEX" = "false"; then
     AC_MSG_WARN(tex not installed: cannot rebuild HTML documentation.)
 fi
 
-# Checks for libraries.
+# Add math library
+LIBS=-lm
+AC_SUBST(LIBS)
 
-# Check if clock_gettime is available in lib rt, and if so,
+# Check if clock_gettime, timer_create, timer_settime, and timer_delete are available in lib rt, and if so,
 # add -lrt to LIBS
-AC_CHECK_LIB([rt], [clock_gettime])
+AC_CHECK_LIB([rt], [clock_gettime, timer_create, timer_settime, timer_delete])
+
+# check that struct itimerspec is defined in time.h. If not, we need to
+# define it in libcompat.h
+AC_CHECK_MEMBERS([struct itimerspec.it_interval, struct itimerspec.it_value], [], [AC_DEFINE_UNQUOTED(STRUCT_ITIMERSPEC_DEFINITION_MISSING, 1, "Need to define the itimerspec structure")], [#include <time.h>])
 
 # Checks for header files.
 AC_HEADER_STDC
@@ -169,8 +175,8 @@ AC_CHECK_SIZEOF(long, 4)
 # Checks for library functions.
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
-AC_REPLACE_FUNCS([clock_gettime fileno localtime_r pipe putenv setenv sleep strdup strsignal unsetenv])
-AC_CHECK_DECLS([clock_gettime, fileno, localtime_r, pipe, putenv, setenv, sleep, strdup, strsignal, unsetenv])
+AC_REPLACE_FUNCS([clock_gettime timer_create timer_settime timer_delete fileno localtime_r pipe putenv setenv sleep strdup strsignal unsetenv])
+AC_CHECK_DECLS([clock_gettime, timer_create, timer_settime, timer_delete, fileno, localtime_r, pipe, putenv, setenv, sleep, strdup, strsignal, unsetenv])
 
 # Checks for pthread implementation.
 ACX_PTHREAD

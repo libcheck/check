@@ -113,7 +113,29 @@ int unsetenv (const char *name);
 #ifndef CLOCK_MONOTONIC
 #define CLOCK_MONOTONIC 0
 #endif
+
+#ifdef STRUCT_ITIMERSPEC_DEFINITION_MISSING
+/* 
+ * The following structure is defined in POSIX.1b for timer start values and intervals.
+ * If it is not defined in time.h, then we need to define it here.
+ */
+struct itimerspec
+{
+    struct timespec it_interval;
+    struct timespec it_value;
+};
+#endif
+
+/* 
+ * As the functions which use timer_t are not defined on the system, 
+ * the timer_t type probably also is not defined.
+ */
+typedef int timer_t;
+
 int clock_gettime(int clk_id, struct timespec *ts);
+int timer_create(int clockid, struct sigevent *sevp, timer_t *timerid);
+int timer_settime(timer_t timerid, int flags, const struct itimerspec *new_value, struct itimerspec * old_value);
+int timer_delete(timer_t timerid);
 #endif /* HAVE_LIBRT */
 
 /* silence warnings about an empty library */

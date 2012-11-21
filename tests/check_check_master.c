@@ -72,37 +72,112 @@ static master_test_t master_tests[] = {
 
 #if TIMEOUT_TESTS_ENABLED
 #if HAVE_WORKING_SETENV
-  { "Environment Timeout Tests", CK_ERROR,  "Test timeout expired" },
-  { "Environment Timeout Tests", CK_PASS,   "Passed" },
-  { "Environment Timeout Tests", CK_PASS,   "Passed" },
-  { "Environment Timeout Tests", CK_ERROR,  "Test timeout expired" },
+  { "Environment Integer Timeout Tests", CK_ERROR,  "Test timeout expired" },
+  { "Environment Integer Timeout Tests", CK_PASS,   "Passed" },
+  { "Environment Integer Timeout Tests", CK_PASS,   "Passed" },
+  { "Environment Integer Timeout Tests", CK_ERROR,  "Test timeout expired" },
+  
+  { "Environment Double Timeout Tests", CK_ERROR,  "Test timeout expired" },
+#ifdef HAVE_LIBRT
+  { "Environment Double Timeout Tests", CK_PASS,  "Passed" },
+  { "Environment Double Timeout Tests", CK_ERROR,  "Test timeout expired" },
+#endif /* HAVE_LIBRT */
+  { "Environment Double Timeout Tests", CK_ERROR,  "Test timeout expired" },
+  { "Environment Double Timeout Tests", CK_ERROR,  "Test timeout expired" },
+  { "Environment Double Timeout Tests", CK_ERROR,  "Test timeout expired" },
 #endif
-  { "Timeout Tests", CK_ERROR,  "Test timeout expired" },
-  { "Timeout Tests", CK_PASS,   "Passed" },
-  { "Timeout Tests", CK_ERROR,  "Test timeout expired" },
-  { "Timeout Tests", CK_ERROR,  "Test timeout expired" },
-  { "User Timeout Tests", CK_ERROR,  "Test timeout expired" },
-  { "User Timeout Tests", CK_PASS,   "Passed" },
-  { "User Timeout Tests", CK_PASS,   "Passed" },
-  { "User Timeout Tests", CK_ERROR,  "Test timeout expired" },
-  /* Timeout tests are run twice , see check_check_sub.c:make_sub_suite() */
-  { "Timeout Tests", CK_ERROR,  "Test timeout expired" },
-  { "Timeout Tests", CK_PASS,   "Passed" },
-  { "Timeout Tests", CK_ERROR,  "Test timeout expired" },
-  { "Timeout Tests", CK_ERROR,  "Test timeout expired" },
+
+  { "Default Timeout Tests", CK_ERROR,  "Test timeout expired" },
+#ifdef HAVE_LIBRT
+  { "Default Timeout Tests", CK_PASS,   "Passed" },
+  { "Default Timeout Tests", CK_PASS,   "Passed" },
+#endif /* HAVE_LIBRT */
+  { "Default Timeout Tests", CK_PASS,   "Passed" },
+  { "Default Timeout Tests", CK_ERROR,  "Test timeout expired" },
+  { "Default Timeout Tests", CK_ERROR,  "Test timeout expired" },
+  
+  { "User Integer Timeout Tests", CK_ERROR,  "Test timeout expired" },
+  { "User Integer Timeout Tests", CK_PASS,   "Passed" },
+  { "User Integer Timeout Tests", CK_PASS,   "Passed" },
+  { "User Integer Timeout Tests", CK_ERROR,  "Test timeout expired" },
+
+  { "User Double Timeout Tests", CK_ERROR,  "Test timeout expired" },
+#ifdef HAVE_LIBRT
+  { "User Double Timeout Tests", CK_PASS,   "Passed" },
+  { "User Double Timeout Tests", CK_ERROR,  "Test timeout expired" },
+#endif /* HAVE_LIBRT */
+  { "User Double Timeout Tests", CK_ERROR,  "Test timeout expired" },
+  { "User Double Timeout Tests", CK_ERROR,  "Test timeout expired" },
+  { "User Double Timeout Tests", CK_ERROR,  "Test timeout expired" },
+  
+  /* Default Timeout tests are run twice , see check_check_sub.c:make_sub_suite() */
+  { "Default Timeout Tests", CK_ERROR,  "Test timeout expired" },
+#ifdef HAVE_LIBRT
+  { "Default Timeout Tests", CK_PASS,   "Passed" },
+  { "Default Timeout Tests", CK_PASS,   "Passed" },
+#endif /* HAVE_LIBRT */
+  { "Default Timeout Tests", CK_PASS,   "Passed" },
+  { "Default Timeout Tests", CK_ERROR,  "Test timeout expired" },
+  { "Default Timeout Tests", CK_ERROR,  "Test timeout expired" },
+  
 #if HAVE_WORKING_SETENV
-  { "Environment Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
-  { "Environment Timeout Scaling Tests", CK_PASS,   "Passed" },
-  { "Environment Timeout Scaling Tests", CK_PASS,   "Passed" },
-  { "Environment Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
-  { "Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
-  { "Timeout Scaling Tests", CK_PASS,   "Passed" },
-  { "Timeout Scaling Tests", CK_PASS,   "Passed" },
-  { "Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
-  { "User Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
-  { "User Timeout Scaling Tests", CK_PASS,   "Passed" },
-  { "User Timeout Scaling Tests", CK_PASS,   "Passed" },
-  { "User Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
+  { "Environment Integer Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
+#ifdef HAVE_LIBRT
+  { "Environment Integer Timeout Scaling Tests", CK_PASS,   "Passed" },
+  { "Environment Integer Timeout Scaling Tests", CK_PASS,   "Passed" },
+#endif /* HAVE_LIBRT */
+  { "Environment Integer Timeout Scaling Tests", CK_PASS,   "Passed" },
+  { "Environment Integer Timeout Scaling Tests", CK_PASS,   "Passed" },
+  { "Environment Integer Timeout Scaling Tests", CK_PASS,   "Passed" },
+  { "Environment Integer Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
+
+  { "Environment Double Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
+#ifdef HAVE_LIBRT
+  { "Environment Double Timeout Scaling Tests", CK_PASS,   "Passed" },
+  { "Environment Double Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
+#endif /* HAVE_LIBRT */
+  { "Environment Double Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
+  { "Environment Double Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
+  { "Environment Double Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
+  { "Environment Double Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
+  
+  { "Timeout Integer Scaling Tests", CK_ERROR,  "Test timeout expired" },
+#ifdef HAVE_LIBRT
+  { "Timeout Integer Scaling Tests", CK_PASS,   "Passed" },
+  { "Timeout Integer Scaling Tests", CK_PASS,   "Passed" },
+  { "Timeout Integer Scaling Tests", CK_PASS,   "Passed" },
+#endif /* HAVE_LIBRT */
+  { "Timeout Integer Scaling Tests", CK_PASS,   "Passed" },
+  { "Timeout Integer Scaling Tests", CK_ERROR,  "Test timeout expired" },
+  
+  { "Timeout Double Scaling Tests", CK_ERROR,  "Test timeout expired" },
+#ifdef HAVE_LIBRT
+  { "Timeout Double Scaling Tests", CK_PASS,   "Passed" },
+  { "Timeout Double Scaling Tests", CK_PASS,   "Passed" },
+#endif /* HAVE_LIBRT */
+  { "Timeout Double Scaling Tests", CK_ERROR,  "Test timeout expired" },
+  { "Timeout Double Scaling Tests", CK_ERROR,  "Test timeout expired" },
+  { "Timeout Double Scaling Tests", CK_ERROR,  "Test timeout expired" },
+  
+  { "User Integer Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
+#ifdef HAVE_LIBRT
+  { "User Integer Timeout Scaling Tests", CK_PASS,   "Passed" },
+  { "User Integer Timeout Scaling Tests", CK_PASS,   "Passed" },
+#endif /* HAVE_LIBRT */
+  { "User Integer Timeout Scaling Tests", CK_PASS,   "Passed" },
+  { "User Integer Timeout Scaling Tests", CK_PASS,   "Passed" },
+  { "User Integer Timeout Scaling Tests", CK_PASS,   "Passed" },
+  { "User Integer Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
+  
+  { "User Double Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
+#ifdef HAVE_LIBRT
+  { "User Double Timeout Scaling Tests", CK_PASS,   "Passed" },
+  { "User Double Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
+#endif /* HAVE_LIBRT */
+  { "User Double Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
+  { "User Double Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
+  { "User Double Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
+  { "User Double Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
 #endif
 #endif
 
