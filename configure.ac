@@ -48,7 +48,7 @@ AC_HELP_STRING([--enable-gcov],
 esac], [enable_gcov=false ])
 
 if test x$enable_gcov = xtrue ; then
-  if test -n "$GCC"; then
+  if test x"$GCC" != xyes; then
     AC_MSG_ERROR([gcov only works if gcc is used])
   fi
 
