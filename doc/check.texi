@@ -844,10 +844,10 @@ Unconditionally fails test with default message.
 Unconditionally fails test with user supplied message.
 
 @item ck_assert
-Fails test if supplied condition evaluates to true. .
+Fails test if supplied condition evaluates to false.
 
 @item ck_assert_msg
-Fails test if supplied condition evaluates to true and displays user
+Fails test if supplied condition evaluates to false and displays user
 provided message.
 
 @item ck_assert_int_eq
