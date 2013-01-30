@@ -135,8 +135,8 @@ static void srunner_iterate_suites (SRunner *sr,
 
   slst = sr->slst;
 
-  for (list_front(slst); !list_at_end(slst); list_advance(slst)) {
-    Suite *s = list_val(slst);
+  for (check_list_front(slst); !check_list_at_end(slst); check_list_advance(slst)) {
+    Suite *s = check_list_val(slst);
     
     if (((sname != NULL) && (strcmp (sname, s->name) != 0))
         || ((tcname != NULL) && (!suite_tcase (s, tcname))))
@@ -146,8 +146,8 @@ static void srunner_iterate_suites (SRunner *sr,
 
     tcl = s->tclst;
   
-    for (list_front(tcl);!list_at_end (tcl); list_advance (tcl)) {
-      tc = list_val (tcl);
+    for (check_list_front(tcl);!check_list_at_end (tcl); check_list_advance (tcl)) {
+      tc = check_list_val (tcl);
 
       if ((tcname != NULL) && (strcmp (tcname, tc->name) != 0)) {
           continue;
@@ -168,9 +168,9 @@ static void srunner_iterate_tcase_tfuns (SRunner *sr, TCase *tc)
 
   tfl = tc->tflst;
   
-  for (list_front(tfl); !list_at_end (tfl); list_advance (tfl)) {
+  for (check_list_front(tfl); !check_list_at_end (tfl); check_list_advance (tfl)) {
     int i;
-    tfun = list_val (tfl);
+    tfun = check_list_val (tfl);
 
     for (i = tfun->loop_start; i < tfun->loop_end; i++)
     {
@@ -200,7 +200,7 @@ static void srunner_iterate_tcase_tfuns (SRunner *sr, TCase *tc)
 
 static void srunner_add_failure (SRunner *sr, TestResult *tr)
 {  
-  list_add_end (sr->resultlst, tr);
+  check_list_add_end (sr->resultlst, tr);
   sr->stats->n_checked++; /* count checks during setup, test, and teardown */
   if (tr->rtype == CK_FAILURE)
     sr->stats->n_failed++;
@@ -220,9 +220,9 @@ static int srunner_run_unchecked_setup (SRunner *sr, TCase *tc)
 
   l = tc->unch_sflst;
 
-  for (list_front(l); !list_at_end(l); list_advance(l)) {
+  for (check_list_front(l); !check_list_at_end(l); check_list_advance(l)) {
     send_ctx_info(CK_CTX_SETUP);
-    f = list_val(l);
+    f = check_list_val(l);
 
     if ( 0 == setjmp(error_jmp_buffer) ) {
       f->fun();
@@ -256,8 +256,8 @@ static TestResult * tcase_run_checked_setup (SRunner *sr, TCase *tc)
     send_ctx_info(CK_CTX_SETUP);
   }
 
-  for (list_front(l); !list_at_end(l); list_advance(l)) {
-    f = list_val(l);
+  for (check_list_front(l); !check_list_at_end(l); check_list_advance(l)) {
+    f = check_list_val(l);
 
     if (fstat == CK_NOFORK) {
       send_ctx_info(CK_CTX_SETUP);
@@ -290,8 +290,8 @@ static void srunner_run_teardown (List *l)
 {
   Fixture *f;
   
-  for (list_front(l); !list_at_end(l); list_advance(l)) {
-    f = list_val(l);
+  for (check_list_front(l); !check_list_at_end(l); check_list_advance(l)) {
+    f = check_list_val(l);
     send_ctx_info(CK_CTX_TEARDOWN);
     f->fun ();
   }

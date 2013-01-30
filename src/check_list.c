@@ -59,7 +59,7 @@ List *check_list_create (void)
   return lp;
 }
 
-void list_add_front (List *lp, const void *val)
+void check_list_add_front (List *lp, const void *val)
 {
   if (lp == NULL)
     return;
@@ -71,7 +71,7 @@ void list_add_front (List *lp, const void *val)
   lp->data[lp->current] = val;
 }
 
-void list_add_end (List *lp, const void *val)
+void check_list_add_end (List *lp, const void *val)
 {
   if (lp == NULL)
     return;
@@ -82,7 +82,7 @@ void list_add_end (List *lp, const void *val)
   lp->data[lp->current] = val;
 }
 
-int list_at_end (List *lp)
+int check_list_at_end (List *lp)
 {
   if (lp->current == -1)
     return 1;
@@ -90,7 +90,7 @@ int list_at_end (List *lp)
     return (lp->current > lp->last);
 }
 
-void list_front (List *lp)
+void check_list_front (List *lp)
 {
   if (lp->current == -1)
     return;
@@ -98,7 +98,7 @@ void list_front (List *lp)
 }
 
 
-void list_free (List *lp)
+void check_list_free (List *lp)
 {
   if (lp == NULL)
     return;
@@ -107,7 +107,7 @@ void list_free (List *lp)
   free (lp);
 }
 
-void *list_val (List *lp)
+void *check_list_val (List *lp)
 {
   if (lp == NULL)
     return NULL;
@@ -117,23 +117,23 @@ void *list_val (List *lp)
   return (void*) lp->data[lp->current];
 }
 
-void list_advance (List *lp)
+void check_list_advance (List *lp)
 {
   if (lp == NULL)
     return;
-  if (list_at_end(lp))
+  if (check_list_at_end(lp))
     return;
   lp->current++;
 }
 
 
-void list_apply (List *lp, void (*fp) (void *))
+void check_list_apply (List *lp, void (*fp) (void *))
 {
   if (lp == NULL || fp == NULL)
     return;
 
-  for (list_front(lp); !list_at_end(lp); list_advance(lp))
-    fp (list_val(lp));
+  for (check_list_front(lp); !check_list_at_end(lp); check_list_advance(lp))
+    fp (check_list_val(lp));
   
 }
 

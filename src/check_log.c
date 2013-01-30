@@ -94,7 +94,7 @@ void srunner_register_lfun (SRunner *sr, FILE *lfile, int close,
   l->lfun = lfun;
   l->close = close;
   l->mode = printmode;
-  list_add_end (sr->loglst, l);
+  check_list_add_end (sr->loglst, l);
   return;
 }
 
@@ -135,8 +135,8 @@ static void srunner_send_evt (SRunner *sr, void *obj, enum cl_event evt)
   List *l;
   Log *lg;
   l = sr->loglst;
-  for (list_front(l); !list_at_end(l); list_advance(l)) {
-    lg = list_val(l);
+  for (check_list_front(l); !check_list_at_end(l); check_list_advance(l)) {
+    lg = check_list_val(l);
     fflush(lg->lfile);
     lg->lfun (sr, lg->lfile, lg->mode, obj, evt);
     fflush(lg->lfile);
@@ -403,8 +403,8 @@ void srunner_end_logging (SRunner *sr)
   srunner_send_evt (sr, NULL, CLENDLOG_SR);
 
   l = sr->loglst;
-  for (list_front(l); !list_at_end(l); list_advance(l)) {
-    Log *lg = list_val(l);
+  for (check_list_front(l); !check_list_at_end(l); check_list_advance(l)) {
+    Log *lg = check_list_val(l);
     if (lg->close) {
       rval = fclose (lg->lfile);
       if (rval != 0)
@@ -412,6 +412,6 @@ void srunner_end_logging (SRunner *sr)
     }
     free (lg);
   }
-  list_free(l);
+  check_list_free(l);
   sr->loglst = NULL;
 }

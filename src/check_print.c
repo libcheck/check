@@ -81,8 +81,8 @@ static void srunner_fprint_results (FILE *file, SRunner *sr,
   
   resultlst = sr->resultlst;
   
-  for (list_front(resultlst); !list_at_end(resultlst); list_advance(resultlst)) {
-    TestResult *tr = list_val(resultlst);
+  for (check_list_front(resultlst); !check_list_at_end(resultlst); check_list_advance(resultlst)) {
+    TestResult *tr = check_list_val(resultlst);
     tr_fprint (file, tr, print_mode);
   }
   return;

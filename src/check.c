@@ -71,8 +71,8 @@ int suite_tcase (Suite *s, const char *tcname)
     return 0;
 
   l = s->tclst;
-  for (list_front (l); !list_at_end (l); list_advance (l)) {
-    tc = list_val (l);
+  for (check_list_front (l); !check_list_at_end (l); check_list_advance (l)) {
+    tc = check_list_val (l);
     if (strcmp (tcname, tc->name) == 0)
       return 1;
   }
@@ -86,10 +86,10 @@ static void suite_free (Suite *s)
   if (s == NULL)
     return;
   l = s->tclst;
-  for (list_front(l); !list_at_end(l); list_advance (l)) {
-    tcase_free (list_val(l));
+  for (check_list_front(l); !check_list_at_end(l); check_list_advance (l)) {
+    tcase_free (check_list_val(l));
   }
-  list_free (s->tclst);
+  check_list_free (s->tclst);
   free(s);
 }
 
@@ -137,16 +137,16 @@ TCase *tcase_create (const char *name)
 
 static void tcase_free (TCase *tc)
 {
-  list_apply (tc->tflst, free);
-  list_apply (tc->unch_sflst, free);
-  list_apply (tc->ch_sflst, free);
-  list_apply (tc->unch_tflst, free);
-  list_apply (tc->ch_tflst, free);
-  list_free(tc->tflst);
-  list_free(tc->unch_sflst);
-  list_free(tc->ch_sflst);
-  list_free(tc->unch_tflst);
-  list_free(tc->ch_tflst);
+  check_list_apply (tc->tflst, free);
+  check_list_apply (tc->unch_sflst, free);
+  check_list_apply (tc->ch_sflst, free);
+  check_list_apply (tc->unch_tflst, free);
+  check_list_apply (tc->ch_tflst, free);
+  check_list_free(tc->tflst);
+  check_list_free(tc->unch_sflst);
+  check_list_free(tc->ch_sflst);
+  check_list_free(tc->unch_tflst);
+  check_list_free(tc->ch_tflst);
   
   free(tc);
 }
@@ -155,7 +155,7 @@ void suite_add_tcase (Suite *s, TCase *tc)
 {
   if (s == NULL || tc == NULL)
     return;
-  list_add_end (s->tclst, tc);
+  check_list_add_end (s->tclst, tc);
 }
 
 void _tcase_add_test (TCase *tc, TFun fn, const char *name, int _signal, int allowed_exit_value, int start, int end)
@@ -170,7 +170,7 @@ void _tcase_add_test (TCase *tc, TFun fn, const char *name, int _signal, int all
   tf->signal = _signal; /* 0 means no signal expected */
   tf->allowed_exit_value = allowed_exit_value; /* 0 is default successful exit */
   tf->name = name;
-  list_add_end (tc->tflst, tf);
+  check_list_add_end (tc->tflst, tf);
 }
 
 static Fixture *fixture_create (SFun fun, int ischecked)
@@ -198,17 +198,17 @@ static void tcase_add_fixture (TCase *tc, SFun setup, SFun teardown,
 {
   if (setup) {
     if (ischecked)
-      list_add_end (tc->ch_sflst, fixture_create(setup, ischecked));
+      check_list_add_end (tc->ch_sflst, fixture_create(setup, ischecked));
     else
-      list_add_end (tc->unch_sflst, fixture_create(setup, ischecked));
+      check_list_add_end (tc->unch_sflst, fixture_create(setup, ischecked));
   }
 
   /* Add teardowns at front so they are run in reverse order. */
   if (teardown) {
     if (ischecked)
-      list_add_front (tc->ch_tflst, fixture_create(teardown, ischecked));
+      check_list_add_front (tc->ch_tflst, fixture_create(teardown, ischecked));
     else
-      list_add_front (tc->unch_tflst, fixture_create(teardown, ischecked));  
+      check_list_add_front (tc->unch_tflst, fixture_create(teardown, ischecked));  
   }
 }
 
@@ -272,7 +272,7 @@ SRunner *srunner_create (Suite *s)
   SRunner *sr = emalloc (sizeof(SRunner)); /* freed in srunner_free */
   sr->slst = check_list_create();
   if (s != NULL)
-    list_add_end(sr->slst, s);
+    check_list_add_end(sr->slst, s);
   sr->stats = emalloc (sizeof(TestStats)); /* freed in srunner_free */
   sr->stats->n_checked = sr->stats->n_failed = sr->stats->n_errors = 0;
   sr->resultlst = check_list_create();
@@ -288,7 +288,7 @@ void srunner_add_suite (SRunner *sr, Suite *s)
   if (s == NULL)
     return;
 
-  list_add_end(sr->slst, s);
+  check_list_add_end(sr->slst, s);
 }
 
 void srunner_free (SRunner *sr)
@@ -300,19 +300,19 @@ void srunner_free (SRunner *sr)
   
   free (sr->stats);
   l = sr->slst;
-  for (list_front(l); !list_at_end(l); list_advance(l)) {
-    suite_free(list_val(l));
+  for (check_list_front(l); !check_list_at_end(l); check_list_advance(l)) {
+    suite_free(check_list_val(l));
   }
-  list_free(sr->slst);
+  check_list_free(sr->slst);
 
   l = sr->resultlst;
-  for (list_front(l); !list_at_end(l); list_advance(l)) {
-    tr = list_val(l);
+  for (check_list_front(l); !check_list_at_end(l); check_list_advance(l)) {
+    tr = check_list_val(l);
     free(tr->file);
     free(tr->msg);
     free(tr);
   }
-  list_free (sr->resultlst);
+  check_list_free (sr->resultlst);
 
   free (sr);
 }
@@ -335,8 +335,8 @@ TestResult **srunner_failures (SRunner *sr)
   trarray = malloc (sizeof(trarray[0]) * srunner_ntests_failed (sr));
 
   rlst = sr->resultlst;
-  for (list_front(rlst); !list_at_end(rlst); list_advance(rlst)) {
-    TestResult *tr = list_val(rlst);
+  for (check_list_front(rlst); !check_list_at_end(rlst); check_list_advance(rlst)) {
+    TestResult *tr = check_list_val(rlst);
     if (non_pass(tr->rtype))
       trarray[i++] = tr;
     
@@ -353,8 +353,8 @@ TestResult **srunner_results (SRunner *sr)
   trarray = malloc (sizeof(trarray[0]) * srunner_ntests_run (sr));
 
   rlst = sr->resultlst;
-  for (list_front(rlst); !list_at_end(rlst); list_advance(rlst)) {
-    trarray[i++] = list_val(rlst);
+  for (check_list_front(rlst); !check_list_at_end(rlst); check_list_advance(rlst)) {
+    trarray[i++] = check_list_val(rlst);
   }
   return trarray;
 }

@@ -11,30 +11,30 @@ START_TEST(test_create)
 {
   List *lp = NULL;
 
-  ck_assert_msg (list_val(lp) == NULL,
+  ck_assert_msg (check_list_val(lp) == NULL,
 	       "Current list value should be NULL for NULL list");
 
   lp = check_list_create();
 
-  ck_assert_msg (list_val(lp) == NULL,
+  ck_assert_msg (check_list_val(lp) == NULL,
 	       "Current list value should be NULL for newly created list");
 
-  ck_assert_msg (list_at_end(lp),
+  ck_assert_msg (check_list_at_end(lp),
 	       "Newly created list should be at end");
-  list_advance(lp);
-  ck_assert_msg (list_at_end(lp),
+  check_list_advance(lp);
+  ck_assert_msg (check_list_at_end(lp),
 	       "Advancing a list at end should produce a list at end");
-  list_free (lp);
+  check_list_free (lp);
 }
 END_TEST
 
 START_TEST(test_free)
 {
   List *lp = check_list_create();
-  list_add_end (lp, "abc");
-  list_add_end (lp, "123");
-  list_add_end (lp, NULL);
-  list_free (lp);
+  check_list_add_end (lp, "abc");
+  check_list_add_end (lp, "123");
+  check_list_add_end (lp, NULL);
+  check_list_free (lp);
 }
 END_TEST
 
@@ -43,15 +43,15 @@ START_TEST(test_add_end)
   List * lp = check_list_create();
   const char * tval = "abc";
   
-  list_add_end (lp, tval);
+  check_list_add_end (lp, tval);
   
-  ck_assert_msg (list_val (lp) != NULL,
+  ck_assert_msg (check_list_val (lp) != NULL,
 	       "List current val should not be null after new insertion");
-  ck_assert_msg (!list_at_end (lp),
+  ck_assert_msg (!check_list_at_end (lp),
 	       "List should be at end after new insertion");
-  ck_assert_msg (strcmp(tval, (char *) list_val (lp)) == 0,
+  ck_assert_msg (strcmp(tval, (char *) check_list_val (lp)) == 0,
 	       "List current val should equal newly inserted val");
-  list_free (lp);
+  check_list_free (lp);
 }
 END_TEST
 
@@ -60,13 +60,13 @@ START_TEST(test_add_front)
   List * lp = check_list_create();
   const char * tval = "abc";
   
-  list_add_front (lp, tval);
+  check_list_add_front (lp, tval);
   
-  ck_assert_msg (list_val (lp) != NULL,
+  ck_assert_msg (check_list_val (lp) != NULL,
 	       "List current val should not be null after new insertion");
-  ck_assert_msg (strcmp(tval, (char *) list_val (lp)) == 0,
+  ck_assert_msg (strcmp(tval, (char *) check_list_val (lp)) == 0,
 	       "List current val should equal newly inserted val");
-  list_free (lp);
+  check_list_free (lp);
 }
 END_TEST
 
@@ -76,20 +76,20 @@ START_TEST(test_add_end_and_next)
   const char *tval1 = "abc";
   const char *tval2 = "123";
   
-  list_add_end (lp, tval1);
-  list_add_end (lp, tval2);
-  list_front(lp);
-  ck_assert_msg (strcmp (tval1, list_val (lp)) == 0,
+  check_list_add_end (lp, tval1);
+  check_list_add_end (lp, tval2);
+  check_list_front(lp);
+  ck_assert_msg (strcmp (tval1, check_list_val (lp)) == 0,
 	       "List head val should equal first inserted val");
-  list_advance (lp);
-  ck_assert_msg (!list_at_end (lp),
+  check_list_advance (lp);
+  ck_assert_msg (!check_list_at_end (lp),
 	       "List should not be at end after two adds and one next");
-  ck_assert_msg (strcmp (tval2, list_val (lp)) == 0,
+  ck_assert_msg (strcmp (tval2, check_list_val (lp)) == 0,
 	       "List val should equal second inserted val");
-  list_advance(lp);
-  ck_assert_msg (list_at_end (lp),
+  check_list_advance(lp);
+  ck_assert_msg (check_list_at_end (lp),
 	       "List should be at and after two adds and two nexts");
-  list_free (lp);
+  check_list_free (lp);
 }
 END_TEST
 
@@ -100,20 +100,20 @@ START_TEST(test_add_front_and_next)
   const char *tval1 = "abc";
   const char *tval2 = "123";
   
-  list_add_front (lp, tval1);
-  list_add_front (lp, tval2);
-  list_front(lp);
-  ck_assert_msg (strcmp (tval2, list_val (lp)) == 0,
+  check_list_add_front (lp, tval1);
+  check_list_add_front (lp, tval2);
+  check_list_front(lp);
+  ck_assert_msg (strcmp (tval2, check_list_val (lp)) == 0,
 	       "List head val should equal last inserted val");
-  list_advance (lp);
-  ck_assert_msg (!list_at_end (lp),
+  check_list_advance (lp);
+  ck_assert_msg (!check_list_at_end (lp),
 	       "List should not be at end after two adds and one next");
-  ck_assert_msg (strcmp (tval1, list_val (lp)) == 0,
+  ck_assert_msg (strcmp (tval1, check_list_val (lp)) == 0,
 	       "List val should equal first inserted val");
-  list_advance(lp);
-  ck_assert_msg (list_at_end (lp),
+  check_list_advance(lp);
+  ck_assert_msg (check_list_at_end (lp),
 	       "List should be at and after two adds and two nexts");
-  list_free (lp);
+  check_list_free (lp);
 }
 END_TEST
 
@@ -124,10 +124,10 @@ START_TEST(test_add_a_bunch)
   for (i = 0; i < 3; i++) {
     lp = check_list_create();
     for (j = 0; j < 1000; j++) {
-      list_add_end (lp, "abc");
-      list_add_front (lp, "123");
+      check_list_add_end (lp, "abc");
+      check_list_add_front (lp, "123");
     }
-    list_free(lp);
+    check_list_free(lp);
   }
 }
 END_TEST
