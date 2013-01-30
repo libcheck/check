@@ -36,6 +36,7 @@ Patches:
     Elmir Jagudin (well-formed XML and log file via env variables)
     Diego Elio Petteno (autoconf patch for 64-bit safe code)
     Jon Kowal (deadlock on thread cancellation fix)
+    Jerry James (cleanup compiler warnings)
 
 Anybody who has contributed code to Check or Check's build system is
 considered an author.  Send patches to this file to 

@@ -25,6 +25,8 @@ In development:
   call, and CK_DEFAULT_TIMEOUT and CK_TIMEOUT_MULTIPLIER environment
   variables now can accept floating point arguments.
 
+* Cleanup compile warnings, patch #3579199 on SF.
+
 Mon, Oct 22, 2012: Released Check 0.9.9
   based on r637 (2012-10-22 13:54:14 +0200)
 
