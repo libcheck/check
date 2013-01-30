@@ -241,10 +241,10 @@ static void __testname (int _i CK_ATTRIBUTE_UNUSED)\
 
 /* Old check fail API, use new check fail API for newly written code. */
 
-/* Fail the test case unless expr is true */
+/* Fail the test case unless expr is false */
 #define fail_unless ck_assert_msg
 
-/* Fail the test case if expr is true */
+/* Fail the test case if expr is false */
 /* The space before the comma sign before ## is essential to be compatible
    with gcc 2.95.3 and earlier.
    FIXME: these macros may conflict with C89 if expr is
@@ -262,7 +262,7 @@ void CK_EXPORT _ck_assert_msg (int result, const char *file,
 
 /* New check fail API. */
 
-/* Fail the test case if expr is true */
+/* Fail the test case if expr is false */
 /* The space before the comma sign before ## is essential to be compatible
    with gcc 2.95.3 and earlier.
 */
