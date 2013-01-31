@@ -125,9 +125,8 @@ if test "$TEX" = "false"; then
     AC_MSG_WARN(tex not installed: cannot rebuild HTML documentation.)
 fi
 
-# Add math library
-LIBS=-lm
-AC_SUBST(LIBS)
+# Check if floor is in the math library, and if so add -lm to LIBS
+AC_CHECK_LIB([m], [floor])
 
 # Check if clock_gettime, timer_create, timer_settime, and timer_delete are available in lib rt, and if so,
 # add -lrt to LIBS
