@@ -561,8 +561,8 @@ ck_assert (money_amount (m) == 5);
 This is equivalent to:
 @example
 @verbatim
-ck_assert (money_amount (m) == 5, 
-             "Assertion 'money_amount (m) == 5' failed");
+ck_assert_msg (money_amount (m) == 5, 
+              "Assertion 'money_amount (m) == 5' failed");
 @end verbatim
 @end example
 
