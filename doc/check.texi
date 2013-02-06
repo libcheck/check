@@ -561,10 +561,13 @@ ck_assert (money_amount (m) == 5);
 This is equivalent to:
 @example
 @verbatim
-ck_assert_msg (money_amount (m) == 5, 
-              "Assertion 'money_amount (m) == 5' failed");
+ck_assert_msg (money_amount (m) == 5, NULL);
 @end verbatim
 @end example
+
+which will print the file, line number, and the message
+@code{"Assertion 'money_amount (m) == 5' failed"} if
+@code{money_amount (m) != 5}.
 
 When we try to compile and run the test suite now using @command{make
 check}, we get a whole host of compilation errors.  It may seem a bit
