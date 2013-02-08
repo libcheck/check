@@ -868,6 +868,16 @@ by the last two letters of the function name.  The abbreviations @code{eq},
 @code{==}, @code{!=}, @code{<}, @code{<=}, @code{>}, and @code{>=}
 respectively.
 
+@item ck_assert_uint_eq
+@itemx ck_assert_uint_ne
+@itemx ck_assert_uint_lt
+@itemx ck_assert_uint_le
+@itemx ck_assert_uint_gt
+@itemx ck_assert_uint_ge
+
+Similar to @code{ck_assert_int_*}, but compares two unsigned integer values
+(@code{uintmax_t}) instead.
+
 @item ck_assert_str_eq
 @itemx ck_assert_str_ne
 @itemx ck_assert_str_lt

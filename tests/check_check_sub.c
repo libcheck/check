@@ -229,6 +229,79 @@ START_TEST(test_ck_assert_int_expr)
   #define LINENO_ck_assert_int_expr _STR(__LINE__)
 } END_TEST
 
+START_TEST(test_ck_assert_uint_eq)
+{
+  unsigned int x = 3;
+  unsigned int y = 3;
+  ck_assert_uint_eq(x, y);
+  y++;
+  ck_assert_uint_eq(x, y);
+  #define LINENO_ck_assert_uint_eq _STR(__LINE__)
+}
+END_TEST
+
+START_TEST(test_ck_assert_uint_ne)
+{
+  unsigned int x = 3;
+  unsigned int y = 2;
+  ck_assert_uint_ne(x, y);
+  y++;
+  ck_assert_uint_ne(x, y);
+  #define LINENO_ck_assert_uint_ne _STR(__LINE__)
+}
+END_TEST
+
+START_TEST(test_ck_assert_uint_lt)
+{
+  unsigned int x = 2;
+  unsigned int y = 3;
+  ck_assert_uint_lt(x, y);
+  ck_assert_uint_lt(x, x);
+  #define LINENO_ck_assert_uint_lt _STR(__LINE__)
+}
+END_TEST
+
+START_TEST(test_ck_assert_uint_le)
+{
+  unsigned int x = 2;
+  unsigned int y = 3;
+  ck_assert_uint_le(x, y);
+  ck_assert_uint_le(x, x);
+  ck_assert_uint_le(y, x);
+  #define LINENO_ck_assert_uint_le _STR(__LINE__)
+}
+END_TEST
+
+START_TEST(test_ck_assert_uint_gt)
+{
+  unsigned int x = 2;
+  unsigned int y = 3;
+  ck_assert_uint_gt(y, x);
+  ck_assert_uint_gt(y, y);
+  #define LINENO_ck_assert_uint_gt _STR(__LINE__)
+}
+END_TEST
+
+START_TEST(test_ck_assert_uint_ge)
+{
+  unsigned int x = 2;
+  unsigned int y = 3;
+  ck_assert_uint_ge(y, x);
+  ck_assert_uint_ge(y, x);
+  ck_assert_uint_ge(x, y);
+  #define LINENO_ck_assert_uint_ge _STR(__LINE__)
+}
+END_TEST
+
+START_TEST(test_ck_assert_uint_expr)
+{
+  unsigned int x = 1;
+  unsigned int y = 0;
+  ck_assert_uint_eq(x, ++y);
+  ck_assert_uint_eq(x, y);
+  #define LINENO_ck_assert_uint_expr _STR(__LINE__)
+} END_TEST
+
 START_TEST(test_ck_assert_str_eq)
 {
   const char *s = "test2";
@@ -614,12 +687,19 @@ void init_master_tests_lineno(int num_master_tests) {
     LINENO_ck_assert,
     LINENO_ck_assert_null,
     LINENO_ck_assert_int_eq,
+    LINENO_ck_assert_int_eq,
     LINENO_ck_assert_int_ne,
     LINENO_ck_assert_int_lt,
     LINENO_ck_assert_int_le,
     LINENO_ck_assert_int_gt,
     LINENO_ck_assert_int_ge,
     LINENO_ck_assert_int_expr,
+    LINENO_ck_assert_uint_ne,
+    LINENO_ck_assert_uint_lt,
+    LINENO_ck_assert_uint_le,
+    LINENO_ck_assert_uint_gt,
+    LINENO_ck_assert_uint_ge,
+    LINENO_ck_assert_uint_expr,
     LINENO_ck_assert_str_eq,
     LINENO_ck_assert_str_ne,
     LINENO_ck_assert_str_lt,
@@ -904,6 +984,13 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_simple, test_ck_assert_int_gt);
   tcase_add_test (tc_simple, test_ck_assert_int_ge);
   tcase_add_test (tc_simple, test_ck_assert_int_expr);
+  tcase_add_test (tc_simple, test_ck_assert_uint_eq);
+  tcase_add_test (tc_simple, test_ck_assert_uint_ne);
+  tcase_add_test (tc_simple, test_ck_assert_uint_lt);
+  tcase_add_test (tc_simple, test_ck_assert_uint_le);
+  tcase_add_test (tc_simple, test_ck_assert_uint_gt);
+  tcase_add_test (tc_simple, test_ck_assert_uint_ge);
+  tcase_add_test (tc_simple, test_ck_assert_uint_expr);
   tcase_add_test (tc_simple, test_ck_assert_str_eq);
   tcase_add_test (tc_simple, test_ck_assert_str_ne);
   tcase_add_test (tc_simple, test_ck_assert_str_lt);
