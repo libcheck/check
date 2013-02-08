@@ -16,7 +16,7 @@ Installation
 
 Check has the following dependencies:
 
-  automake-1.9.6
+  automake-1.9.6 (1.11.3 on OS X if you are using /usr/bin/ar)
   autoconf-2.59
   libtool-1.5.22
   pkg-config-0.20
