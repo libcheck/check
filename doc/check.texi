@@ -860,10 +860,10 @@ provided message.
 @itemx ck_assert_int_gt
 @itemx ck_assert_int_ge
 
-Compares two @code{int} values and displays predefined message with
-condition and values of both input parameters on failure.  The operator
-used for comparison is different for each function and is indicated by
-the last two letters of the function name.  The abbreviations @code{eq},
+Compares two signed integer values (@code{intmax_t}) and displays predefined
+message with condition and values of both input parameters on failure.  The
+operator used for comparison is different for each function and is indicated
+by the last two letters of the function name.  The abbreviations @code{eq},
 @code{ne}, @code{lt}, @code{le}, @code{gt}, and @code{ge} correspond to
 @code{==}, @code{!=}, @code{<}, @code{<=}, @code{>}, and @code{>=}
 respectively.

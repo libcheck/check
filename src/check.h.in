@@ -22,8 +22,15 @@
 #ifndef CHECK_H
 #define CHECK_H
 
+#if HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stddef.h>
 #include <string.h>
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
+#endif
 
 /* Check: a unit test framework for C
 
@@ -278,12 +285,12 @@ void CK_EXPORT _ck_assert_msg (int result, const char *file,
 /* Integer comparsion macros with improved output compared to ck_assert(). */
 /* OP may be any comparion operator. */
 #define _ck_assert_int(X, OP, Y) do { \
-  int _ck_x = (X); \
-  int _ck_y = (Y); \
-  ck_assert_msg(_ck_x OP _ck_y, "Assertion '"#X#OP#Y"' failed: "#X"==%d, "#Y"==%d", _ck_x, _ck_y); \
+  intmax_t _ck_x = (X); \
+  intmax_t _ck_y = (Y); \
+  ck_assert_msg(_ck_x OP _ck_y, "Assertion '"#X#OP#Y"' failed: "#X"==%jd, "#Y"==%jd", _ck_x, _ck_y); \
 } while (0)
-#define ck_assert_int_eq(X, Y) _ck_assert_int(X, ==, Y) 
-#define ck_assert_int_ne(X, Y) _ck_assert_int(X, !=, Y) 
+#define ck_assert_int_eq(X, Y) _ck_assert_int(X, ==, Y)
+#define ck_assert_int_ne(X, Y) _ck_assert_int(X, !=, Y)
 #define ck_assert_int_lt(X, Y) _ck_assert_int(X, <, Y)
 #define ck_assert_int_le(X, Y) _ck_assert_int(X, <=, Y)
 #define ck_assert_int_gt(X, Y) _ck_assert_int(X, >, Y)
