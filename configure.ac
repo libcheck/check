@@ -102,7 +102,9 @@ AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_INSTALL
 AC_PROG_LN_S
-AM_PROG_AR # for non-POSIX archivers like the one on OS X
+# for non-POSIX archivers like the one on OS X
+# use m4_ifdef to work on older automake (1.11)
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 AC_PROG_LIBTOOL
 
 # add these options to CFLAGS if the compiler supports them
