@@ -22,15 +22,8 @@
 #ifndef CHECK_H
 #define CHECK_H
 
-#if HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <stddef.h>
 #include <string.h>
-#ifdef HAVE_STDINT_H
-#include <stdint.h>
-#endif
 
 /* Check: a unit test framework for C
 
