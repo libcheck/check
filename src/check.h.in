@@ -22,14 +22,14 @@
 #ifndef CHECK_H
 #define CHECK_H
 
-#if HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <stddef.h>
 #include <string.h>
-#ifdef HAVE_STDINT_H
+
+#if @HAVE_STDINT_H@
 #include <stdint.h>
+#else
+typedef long long intmax_t;
+typedef unsigned long long uintmax_t;
 #endif
 
 /* Check: a unit test framework for C
