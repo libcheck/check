@@ -1,43 +1,45 @@
-Original Author:
-    Arien Malec <arien dot malec at gmail dot com>
+Maintainers:
+    Fredrik Hugosson  <hugo303 at users dot sourceforge dot net>     |  hugo303
+    Chris Pickett     <chris dot pickett at mail dot mcgill dot ca>  |  cpickett
 
-Maintainers and Authors:
-    Fredrik Hugosson <hugo303 at users dot sourceforge dot net>
-    Chris Pickett <chris dot pickett at mail dot mcgill dot ca>
-    Branden Archer <b dot m dot archer4 at gmail dot com>
+Ex-Maintainers:
+    Arien Malec       <arien dot malec at gmail dot com>             |  amalec
+    Sven Neumann      <sven at convergence dot de>                   |  neo23
 
-Ex-Maintainer and Author:
-    Sven Neumann <sven at convergence dot de>
-
-Patches:
-    Cesar Ballardini (signals)
-    Friedrich Beckmann (mingw and msvc port #1)
-    Ross Burton (pkg-config patch)
-    Robert Collins (subunit support)
-    Micah Cowan (checkmk tool, docs and tests)
-    Zdenek Crha (new Check API docs, fixes, and tests)
-    Bogdan Cristea (eclipse support in contrib dir)
-    Lucas Di Pentima (signals)
-    Torok Edwin (strsignal and build fixes)
-    Daniel Gollub (pthreads support)
-    Roland Illig (varargs and strsignal portability fixes)
-    Robert Lemmen (gcov description in manual)
-    Mateusz Loskot (msvc port #2)
-    Loic Martin (AM_PATH_CHECK patch)
-    Roy Merkel (specified test exit value)
-    Gilgamesh Nootebos (bug fixes)
-    Frederic Peters (XML output)
-    Dietmar Petras (bug fixes)
-    Rick Poyner (pipe handling, bug fixes)
-    Bernhard Reiter (configure issues)
-    Neil Spring (const fixes)
-    Roland Stigge (bug fix: allow fail inside setup)
-    Sebastian Rasmussen (duration bug fix)
-    Elmir Jagudin (well-formed XML and log file via env variables)
-    Diego Elio Petteno (autoconf patch for 64-bit safe code)
-    Jon Kowal (deadlock on thread cancellation fix)
-    Jerry James (cleanup compiler warnings)
-    Martin Willers (rename check's internal list API to start with check_)
+Committers:
+    Branden Archer        (portability, docs, cleanups, API fixes)   |  brarcher
+    Robert Collins        (subunit support)                          |  rbcollins
+    Micah Cowan           (checkmk tool, docs and tests)             |  micahcowan
+    Zdenek Crha           (new Check API docs, fixes, and tests)     |  zdenekc
+    Mateusz Loskot        (msvc port #2)                             |  mloskot
+    Jose E. Marchesi      (selective testing support)                |  jemarch
+    
+Contributors:
+    Cesar Ballardini      (signals)
+    Friedrich Beckmann    (mingw and msvc port #1)
+    Frank Bergmann        (WIN32 tmpfile workaround)
+    Ross Burton           (pkg-config patch)
+    Bogdan Cristea        (eclipse support in contrib dir)
+    Lucas Di Pentima      (signals)
+    Torok Edwin           (strsignal and build fixes)
+    Daniel Gollub         (pthreads support)
+    Roland Illig          (varargs and strsignal portability fixes)
+    Elmir Jagudin         (well-formed XML and log file via env variables)
+    Jerry James           (cleanup compiler warnings)
+    Jon Kowal             (deadlock on thread cancellation fix)
+    Robert Lemmen         (gcov description in manual)
+    Loic Martin           (AM_PATH_CHECK patch)
+    Roy Merkel            (specified test exit value)
+    Gilgamesh Nootebos    (bug fixes)
+    Diego Elio Petteno    (autoconf patch for 64-bit safe code)
+    Frederic Peters       (XML output)
+    Dietmar Petras        (bug fixes)
+    Rick Poyner           (pipe handling, bug fixes)
+    Bernhard Reiter       (configure issues)
+    Neil Spring           (const fixes)
+    Roland Stigge         (bug fix: allow fail inside setup)
+    Sebastian Rasmussen   (duration bug fix)
+    Martin Willers        (rename check's internal list API to start with check_)
 
 Anybody who has contributed code to Check or Check's build system is
 considered an author.  Send patches to this file to 
