@@ -7,7 +7,7 @@ Ex-Maintainers:
     Sven Neumann      <sven at convergence dot de>                   |  neo23
 
 Committers:
-    Branden Archer        (portability, docs, cleanups, API fixes)   |  brarcher
+    Branden Archer        (portability, docs, cleanups, fixes)       |  brarcher
     Robert Collins        (subunit support)                          |  rbcollins
     Micah Cowan           (checkmk tool, docs and tests)             |  micahcowan
     Zdenek Crha           (new Check API docs, fixes, and tests)     |  zdenekc
@@ -38,7 +38,7 @@ Contributors:
     Bernhard Reiter       (configure issues)
     Neil Spring           (const fixes)
     Roland Stigge         (bug fix: allow fail inside setup)
-    Sebastian Rasmussen   (duration bug fix)
+    Sebastian Rasmussen   (duration bug fix, 64-bit API fix)
     Martin Willers        (rename check's internal list API to start with check_)
 
 Anybody who has contributed code to Check or Check's build system is
