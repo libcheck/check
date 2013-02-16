@@ -1,5 +1,13 @@
 In development:
 
+* Support 64bit int for __ck_assert_int. Patch from bug #3599471
+
+* Add equivalent uint variants for __ck_assert_int. Patch from bug #3600433.
+
+* Detect if the system has a C99 compliant version of the printf related
+  functions for check to use, and if not use an implementation provided by
+  check.
+
 * Updated HACKING and release procedure in Makefile.am.
 
 * Detect if the system has clock_gettime() available, and if not use an
