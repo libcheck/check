@@ -16,6 +16,8 @@ CLEANFILES = *~\
 
 ## what additional things to distribute
 
+include_HEADERS = check_stdint.h
+
 EXTRA_DIST = SVNChangeLog ChangeLogOld check.pc.in $(m4data_DATA) xml/check_unittest.xslt
 
 ## install docs

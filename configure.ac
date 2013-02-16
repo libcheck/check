@@ -142,7 +142,7 @@ AC_CHECK_MEMBERS([struct itimerspec.it_interval, struct itimerspec.it_value], []
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS([fcntl.h stddef.h stdlib.h string.h sys/time.h unistd.h])
-AC_CHECK_HEADER([stdint.h], [AC_SUBST(HAVE_STDINT_H, 1)], [AC_SUBST(HAVE_STDINT_H, 0)])
+AX_CREATE_STDINT_H(check_stdint.h)
 
 AS_IF([test x"$enable_subunit" != "xfalse" && test x"$enable_subunit" != "xtrue"], [
 	PKG_CHECK_EXISTS([libsubunit], [:], [enable_subunit=false])
