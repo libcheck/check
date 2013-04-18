@@ -1,5 +1,5 @@
 Thu, Apr 18, 2013: Released Check 0.9.10
-  based on r740 (2013-04-18 10:54:36 +0200)
+  based on r743 (2013-04-18 11:27:03 +0200)
 
 * Support 64bit int for __ck_assert_int. Patch from bug #3599471
 
