@@ -11,6 +11,7 @@ AM_MAKEINFOFLAGS = -I$(top_srcdir)/doc/example
 ## what to clean
 
 CLEANFILES = *~\
+	check_stdint.h\
 	$(PACKAGE)-$(VERSION).tar.gz\
 	ChangeLog.bak
 
