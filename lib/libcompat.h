@@ -50,6 +50,10 @@
 #endif
 
 /* replacement functions for broken originals */
+#if !HAVE_DECL_ALARM
+unsigned int alarm (unsigned int seconds);
+#endif /* !HAVE_DECL_ALARM */
+
 #if !HAVE_MALLOC
 void *rpl_malloc (size_t n);
 #endif /* !HAVE_MALLOC */

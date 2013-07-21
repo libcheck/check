@@ -181,8 +181,8 @@ AC_CHECK_SIZEOF(long, 4)
 # Checks for library functions.
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
-AC_REPLACE_FUNCS([clock_gettime timer_create timer_settime timer_delete fileno localtime_r pipe putenv setenv sleep strdup strsignal unsetenv])
-AC_CHECK_DECLS([clock_gettime, timer_create, timer_settime, timer_delete, fileno, localtime_r, pipe, putenv, setenv, sleep, strdup, strsignal, unsetenv])
+AC_REPLACE_FUNCS([alarm clock_gettime timer_create timer_settime timer_delete fileno localtime_r pipe putenv setenv sleep strdup strsignal unsetenv])
+AC_CHECK_DECLS([alarm, clock_gettime, timer_create, timer_settime, timer_delete, fileno, localtime_r, pipe, putenv, setenv, sleep, strdup, strsignal, unsetenv])
 
 # Check if the system's snprintf (and its variations) are C99 compliant.
 # If they are not, use the version in libcompat.
