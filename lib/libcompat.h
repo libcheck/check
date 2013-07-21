@@ -132,6 +132,13 @@ struct itimerspec
  */
 typedef int timer_t;
 
+/* 
+ * Do a simple forward declaration in case the struct is not defined.
+ * In the versions of timer_create in libcompat, sigevent is never
+ * used.
+ */
+struct sigevent;
+
 int clock_gettime(int clk_id, struct timespec *ts);
 int timer_create(int clockid, struct sigevent *sevp, timer_t *timerid);
 int timer_settime(timer_t timerid, int flags, const struct itimerspec *new_value, struct itimerspec * old_value);
