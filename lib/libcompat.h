@@ -124,7 +124,7 @@ struct itimerspec
     struct timespec it_interval;
     struct timespec it_value;
 };
-#endif
+#endif /* STRUCT_ITIMERSPEC_DEFINITION_MISSING */
 
 /* 
  * As the functions which use timer_t are not defined on the system, 
