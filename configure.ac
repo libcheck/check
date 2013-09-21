@@ -184,6 +184,8 @@ AC_FUNC_REALLOC
 AC_REPLACE_FUNCS([alarm clock_gettime timer_create timer_settime timer_delete fileno localtime_r pipe putenv setenv sleep strdup strsignal unsetenv])
 AC_CHECK_DECLS([alarm, clock_gettime, timer_create, timer_settime, timer_delete, fileno, localtime_r, pipe, putenv, setenv, sleep, strdup, strsignal, unsetenv])
 
+AC_CHECK_FUNCS([setitimer])
+
 # Check if the system's snprintf (and its variations) are C99 compliant.
 # If they are not, use the version in libcompat.
 HW_FUNC_VSNPRINTF
