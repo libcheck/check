@@ -40,6 +40,7 @@ Contributors:
     Roland Stigge         (bug fix: allow fail inside setup)
     Sebastian Rasmussen   (duration bug fix, 64-bit API fix)
     Martin Willers        (rename check's internal list API to start with check_)
+    bross                 (patches for msys/mingw32 support)
 
 Anybody who has contributed code to Check or Check's build system is
 considered an author.  Send patches to this file to 
