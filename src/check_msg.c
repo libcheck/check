@@ -193,15 +193,13 @@ open_tmp_file (void)
   /* it's also not clear if we need _tempnam instead of tempnam on WIN32 */
   /* and finally, the "b" from "w+b" is ignored on OS X, not sure about WIN32 */
   FILE *file = tmpfile ();
-#ifdef WIN32
   if (file == NULL)
     {
       char *tmp = getenv ("TEMP");
-      char *tmp_file = _tempnam (tmp, "check_");
+      char *tmp_file = tempnam (tmp, "check_");
       file = fopen (tmp_file, "w+b");
       free (tmp_file);
     }
-#endif /* WIN32 */
   return file;
 }
 
