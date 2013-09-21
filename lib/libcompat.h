@@ -109,13 +109,17 @@ int unsetenv (const char *name);
 #ifndef HAVE_LIBRT
 /* 
  * On systems where clock_gettime() is not available, the
- * definition for CLOCK_MONOTONIC will also not be available.
- * This variable should define which type of clock clock_gettime()
- * should use. We define it here if it is not defined simply
- * so the reimplementation can ignore it.
+ * definition for CLOCK_MONOTONIC and CLOCK_REALTIME will
+ * also not be available. This variable should define which
+ * type of clock clock_gettime() should use. We define it
+ * here if it is not defined simply so the reimplementation
+ * can ignore it.
  */
 #ifndef CLOCK_MONOTONIC
 #define CLOCK_MONOTONIC 0
+#endif
+#ifndef CLOCK_REALTIME
+#define CLOCK_REALTIME 0
 #endif
 
 #ifdef STRUCT_ITIMERSPEC_DEFINITION_MISSING
