@@ -1,5 +1,7 @@
 #!/bin/sh
 
+. ./test_vars
+
 if [ "${srcdir}" = "." ]; then
     lsrc=""
 else
@@ -18,10 +20,10 @@ Results for all suites run:
 
 test_log_output ( ) {
     
-    ./ex_log_output "${1}" > /dev/null
+    ./ex_log_output${EXEEXT} "${1}" > /dev/null
     actual=`cat test.log`
     if [ x"${expected}" != x"${actual}" ]; then
-	echo "Problem with ex_log_output ${3}";
+	echo "Problem with ex_log_output${EXEEXT} ${3}";
 	echo "Expected:";
 	echo "${expected}";
 	echo "Got:";

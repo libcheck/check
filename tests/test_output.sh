@@ -31,18 +31,18 @@ error: Core:test_exit [
 ${lsrc}ex_output.c:21: (after this point) Early exit with return value 1
 ]"
 
-op0=`./ex_output CK_SILENT`
-op1=`./ex_output CK_MINIMAL`
-op2=`./ex_output CK_NORMAL`
-op3=`./ex_output CK_VERBOSE`
+op0=`./ex_output${EXEEXT} CK_SILENT`
+op1=`./ex_output${EXEEXT} CK_MINIMAL`
+op2=`./ex_output${EXEEXT} CK_NORMAL`
+op3=`./ex_output${EXEEXT} CK_VERBOSE`
 if test 1 -eq $ENABLE_SUBUNIT; then
-op4=`./ex_output CK_SUBUNIT`
+op4=`./ex_output${EXEEXT} CK_SUBUNIT`
 fi
 
 
 test_output ( ) {
     if [ "${1}" != "${2}" ]; then
-	echo "Problem with ex_output ${3}";
+	echo "Problem with ex_output${EXEEXT} ${3}";
 	echo "Expected:";
 	echo "${1}";
 	echo "Got:";
