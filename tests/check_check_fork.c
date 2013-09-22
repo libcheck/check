@@ -71,8 +71,13 @@ void fork_teardown (void)
 
 START_TEST(test_default_fork)
 {
+#if defined(HAVE_FORK)
   ck_assert_msg(srunner_fork_status(fork_dummy_sr) == CK_FORK,
 	      "Default fork status not set correctly");
+#else
+  ck_assert_msg(srunner_fork_status(fork_dummy_sr) == CK_NOFORK,
+	      "Default fork status not set correctly");
+#endif /* HAVE_FORK */
 }
 END_TEST
 

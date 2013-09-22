@@ -279,7 +279,17 @@ SRunner *srunner_create (Suite *s)
   sr->log_fname = NULL;
   sr->xml_fname = NULL;
   sr->loglst = NULL;
+
+#if defined(HAVE_FORK)
   sr->fstat = CK_FORK_GETENV;
+#else
+  /*
+   * Overriding the default of running tests in fork mode,
+   * as this system does not have fork()
+   */
+  sr->fstat = CK_NOFORK;
+#endif /* HAVE_FORK */
+
   return sr;
 }
 
