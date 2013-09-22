@@ -10,11 +10,9 @@ int main (void)
   int n;
   SRunner *sr;
 
-#ifdef HAVE_FORK
   fork_setup();
   setup_fixture();
   setup();
-#endif /* HAVE_FORK */
 
   sr = srunner_create (make_master_suite());
   srunner_add_suite(sr, make_list_suite());
