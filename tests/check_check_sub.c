@@ -16,16 +16,16 @@ START_TEST(test_lno)
 }
 END_TEST
 
+#ifdef HAVE_FORK
 START_TEST(test_mark_lno)
 {
   mark_point();
   #define LINENO_mark_lno _STR(__LINE__)
-#ifdef HAVE_FORK
   exit(EXIT_FAILURE); /* should fail with mark_point above as line */
-#endif /* HAVE_FORK */
 }
-
 END_TEST
+#endif /* HAVE_FORK */
+
 START_TEST(test_pass)
 {
   ck_assert_msg(1 == 1, "This test should pass");
@@ -668,7 +668,9 @@ void init_master_tests_lineno(int num_master_tests) {
   const char * lineno[] = {
 /* Simple Tests */
     LINENO_lno,
+#ifdef HAVE_FORK
     LINENO_mark_lno,
+#endif
     "-1",
     "-1",
     "-1",
@@ -954,7 +956,9 @@ Suite *make_sub_suite(void)
   suite_add_tcase (s, tc_messaging_and_fork);
 
   tcase_add_test (tc_simple, test_lno);
+#ifdef HAVE_FORK
   tcase_add_test (tc_simple, test_mark_lno);
+#endif
   tcase_add_test (tc_simple, test_pass);
   tcase_add_test (tc_simple, test_fail_unless);
   tcase_add_test (tc_simple, test_fail_if_pass);

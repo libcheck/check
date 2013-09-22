@@ -27,7 +27,9 @@ static char signal_8_str[SIG_STR_LEN];
 /* FIXME: all these line numbers are kind of hard to maintain */
 static master_test_t master_tests[] = {
   { "Simple Tests", CK_FAILURE, "Failure expected" },
+#ifdef HAVE_FORK
   { "Simple Tests", CK_ERROR,   "Early exit with return value 1" },
+#endif
   { "Simple Tests", CK_PASS,    "Passed" },
   { "Simple Tests", CK_FAILURE, "This test should fail" },
   { "Simple Tests", CK_PASS,    "Passed" },
