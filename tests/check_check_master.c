@@ -192,7 +192,9 @@ static master_test_t master_tests[] = {
 #endif /* HAVE_WORKING_SETENV */
 #endif /* TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) */
 
+#ifdef HAVE_FORK
   { "Limit Tests", CK_ERROR,   "Early exit with return value 1" },
+#endif /* HAVE_FORK */
   { "Limit Tests", CK_FAILURE, "Completed properly" },
   { "Limit Tests", CK_FAILURE, "Completed properly" },
 

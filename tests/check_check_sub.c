@@ -485,11 +485,13 @@ START_TEST(test_sleep14)
 END_TEST
 #endif /* TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) */
 
+#ifdef HAVE_FORK
 START_TEST(test_early_exit)
 {
   exit(EXIT_FAILURE);
 }
 END_TEST
+#endif /* HAVE_FORK */
 
 START_TEST(test_null)
 {  
@@ -836,7 +838,9 @@ void init_master_tests_lineno(int num_master_tests) {
 #endif /* TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) */
 
 /* Limit Tests */
+#ifdef HAVE_FORK
     "-1",
+#endif /* HAVE_FORK */
     "-1",
     "-1",
 
@@ -1133,7 +1137,9 @@ Suite *make_sub_suite(void)
 #endif /* HAVE_WORKING_SETENV */
 #endif /* TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) */
 
+#ifdef HAVE_FORK
   tcase_add_test (tc_limit, test_early_exit);
+#endif /* HAVE_FORK */
   tcase_add_test (tc_limit, test_null);
   tcase_add_test (tc_limit, test_null_2);
 
