@@ -15,14 +15,6 @@ int main (void)
   sr = srunner_create (make_master_suite());
   srunner_add_suite(sr, make_log_suite());
   srunner_add_suite(sr, make_fork_suite());
-  
-#if !defined(HAVE_FORK)
-  /*
-   * Overriding the default of running tests in fork mode,
-   * as this system does not have fork()
-   */
-  srunner_set_fork_status(sr,CK_NOFORK);
-#endif /* !HAVE_FORK */
 
   printf ("Ran %d tests in subordinate suite\n", sub_ntests);
   srunner_run_all (sr, CK_VERBOSE);

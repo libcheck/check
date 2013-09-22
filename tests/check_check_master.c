@@ -457,14 +457,6 @@ void setup (void)
 
   srunner_add_suite(sr, make_sub2_suite());
 
-#if !defined(HAVE_FORK)
-  /*
-   * Overriding the default of running tests in fork mode,
-   * as this system does not have fork()
-   */
-  srunner_set_fork_status(sr,CK_NOFORK);
-#endif /* !HAVE_FORK */
-
   srunner_run_all(sr, CK_VERBOSE);
   tr_fail_array = srunner_failures(sr);
   tr_all_array = srunner_results(sr);
