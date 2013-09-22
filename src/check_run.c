@@ -594,6 +594,13 @@ enum fork_status srunner_fork_status (SRunner *sr)
 
 void srunner_set_fork_status (SRunner *sr, enum fork_status fstat)
 {
+#if !defined(HAVE_FORK)
+  /* If fork() is unavailable, do not allow a fork mode to be set */
+  if (fstat != CK_NOFORK)
+  {
+	  eprintf("This version does not support fork", __FILE__, __LINE__);
+  }
+#endif /* ! HAVE_FORK */
   sr->fstat = fstat;
 }
 
