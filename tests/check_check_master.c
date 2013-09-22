@@ -92,7 +92,7 @@ static master_test_t master_tests[] = {
   { "Environment Double Timeout Tests", CK_ERROR,  "Test timeout expired" },
   { "Environment Double Timeout Tests", CK_ERROR,  "Test timeout expired" },
   { "Environment Double Timeout Tests", CK_ERROR,  "Test timeout expired" },
-#endif
+#endif /* HAVE_WORKING_SETENV */
 
   { "Default Timeout Tests", CK_ERROR,  "Test timeout expired" },
 #ifdef HAVE_LIBRT
@@ -185,8 +185,8 @@ static master_test_t master_tests[] = {
   { "User Double Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
   { "User Double Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
   { "User Double Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
-#endif
-#endif
+#endif /* HAVE_WORKING_SETENV */
+#endif /* TIMEOUT_TESTS_ENABLED */
 
   { "Limit Tests", CK_ERROR,   "Early exit with return value 1" },
   { "Limit Tests", CK_FAILURE, "Completed properly" },

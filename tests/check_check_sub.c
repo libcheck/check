@@ -735,7 +735,7 @@ void init_master_tests_lineno(int num_master_tests) {
     LINENO_sleep2,
     LINENO_sleep5,
     LINENO_sleep9,
-#endif
+#endif /* HAVE_WORKING_SETENV */
 /* Default Timeout Tests */
     LINENO_eternal,
 #ifdef HAVE_LIBRT
@@ -828,8 +828,8 @@ void init_master_tests_lineno(int num_master_tests) {
     LINENO_sleep5,
     LINENO_sleep9,
     LINENO_sleep14,
-#endif
-#endif
+#endif /* HAVE_WORKING_SETENV */
+#endif /* TIMEOUT_TESTS_ENABLED */
 
 /* Limit Tests */
     "-1",
@@ -885,7 +885,7 @@ Suite *make_sub_suite(void)
   TCase *tc_timeout_scale_double;
   TCase *tc_timeout_usr_scale_double;
 #endif /* HAVE_WORKING_SETENV */
-#endif
+#endif /* TIMEOUT_TESTS_ENABLED */
   TCase *tc_limit;
   TCase *tc_messaging_and_fork;
 
@@ -946,8 +946,8 @@ Suite *make_sub_suite(void)
   suite_add_tcase (s, tc_timeout_scale_double);
   suite_add_tcase (s, tc_timeout_usr_scale_int);
   suite_add_tcase (s, tc_timeout_usr_scale_double);
-#endif
-#endif
+#endif /* HAVE_WORKING_SETENV */
+#endif /* TIMEOUT_TESTS_ENABLED */
   suite_add_tcase (s, tc_limit);
   suite_add_tcase (s, tc_messaging_and_fork);
 
@@ -1114,8 +1114,8 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_timeout_usr_scale_double, test_sleep5);
   tcase_add_test (tc_timeout_usr_scale_double, test_sleep9);
   tcase_add_test (tc_timeout_usr_scale_double, test_sleep14);
-#endif
-#endif
+#endif /* HAVE_WORKING_SETENV */
+#endif /* TIMEOUT_TESTS_ENABLED */
 
   tcase_add_test (tc_limit, test_early_exit);
   tcase_add_test (tc_limit, test_null);
