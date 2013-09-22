@@ -18,11 +18,17 @@ START_TEST(test_fail)
 }
 END_TEST
 
+/*
+ * This test will fail without fork, as it will result in the
+ * unit test runniner exiting early.
+ */
+#if defined(HAVE_FORK)
 START_TEST(test_exit)
 {
   exit(1);
 }
 END_TEST
+#endif /* HAVE_FORK */
 
 static Suite *make_suite (void)
 {
@@ -34,8 +40,9 @@ static Suite *make_suite (void)
   suite_add_tcase(s, tc);
   tcase_add_test (tc, test_pass);
   tcase_add_test (tc, test_fail);
+#if defined(HAVE_FORK)
   tcase_add_test (tc, test_exit);
-
+#endif /* HAVE_FORK */
   return s;
 }
 

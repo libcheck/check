@@ -14,12 +14,12 @@ t1="xRunning suite(s): Master
 t2="xRunning suite(s): Master
 33%: Checks: 3, Failures: 1, Errors: 1
 ${lsrc}ex_output.c:17:F:Core:test_fail:0: Failure
-${lsrc}ex_output.c:21:E:Core:test_exit:0: (after this point) Early exit with return value 1"
+${lsrc}ex_output.c:26:E:Core:test_exit:0: (after this point) Early exit with return value 1"
 t3="xRunning suite(s): Master
 33%: Checks: 3, Failures: 1, Errors: 1
 ${lsrc}ex_output.c:11:P:Core:test_pass:0: Passed
 ${lsrc}ex_output.c:17:F:Core:test_fail:0: Failure
-${lsrc}ex_output.c:21:E:Core:test_exit:0: (after this point) Early exit with return value 1"
+${lsrc}ex_output.c:26:E:Core:test_exit:0: (after this point) Early exit with return value 1"
 t4="xtest: Core:test_pass
 success: Core:test_pass
 test: Core:test_fail
@@ -28,7 +28,7 @@ ${lsrc}ex_output.c:17: Failure
 ]
 test: Core:test_exit
 error: Core:test_exit [
-${lsrc}ex_output.c:21: (after this point) Early exit with return value 1
+${lsrc}ex_output.c:26: (after this point) Early exit with return value 1
 ]"
 
 op0=`./ex_output${EXEEXT} CK_SILENT`
