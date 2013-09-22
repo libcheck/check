@@ -49,6 +49,10 @@
 #include <pthread.h>
 #endif
 
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
+#endif
+
 /* replacement functions for broken originals */
 #if !HAVE_DECL_ALARM
 unsigned int alarm (unsigned int seconds);

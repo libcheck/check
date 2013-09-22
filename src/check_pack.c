@@ -24,10 +24,6 @@
 #include <string.h>
 #include <stdio.h>
 
-#ifdef HAVE_STDINT_H
-#include <stdint.h>
-#endif
-
 #include "check.h"
 #include "check_error.h"
 #include "check_list.h"
