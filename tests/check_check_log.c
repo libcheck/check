@@ -187,13 +187,17 @@ Suite *make_log_suite(void)
 
   suite_add_tcase(s, tc_core);
   tcase_add_test(tc_core, test_set_log);
+#if HAVE_WORKING_SETENV
   tcase_add_test(tc_core, test_set_log_env);
+#endif /* HAVE_WORKING_SETENV */
   tcase_add_test(tc_core, test_no_set_log);
   tcase_add_test(tc_core, test_double_set_log);
 
   suite_add_tcase(s, tc_core_xml);
   tcase_add_test(tc_core_xml, test_set_xml);
+#if HAVE_WORKING_SETENV
   tcase_add_test(tc_core_xml, test_set_xml_env);
+#endif /* HAVE_WORKING_SETENV */
   tcase_add_test(tc_core_xml, test_no_set_xml);
   tcase_add_test(tc_core_xml, test_double_set_xml);
 
