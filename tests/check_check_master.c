@@ -419,8 +419,11 @@ Suite *make_master_suite (void)
      preservation of fixture values across tests, regardless
      of the order in which tests are added to the test case */
   tcase_add_test (tc_fixture, test_setup);
+#ifdef HAVE_FORK
+  /* The remaining test runs only work if fork() is available. */
   tcase_add_test (tc_fixture, test_setup);
   tcase_add_test (tc_fixture, test_setup);
+#endif /* HAVE_FORK */
   suite_add_tcase (s, tc_fixture);
   tc_post_teardown = tcase_create ("Fixture Teardown Tests");
   tcase_add_test (tc_post_teardown, test_teardown);
