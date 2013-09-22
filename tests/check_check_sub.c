@@ -427,7 +427,7 @@ START_TEST(test_mark_point)
 }
 END_TEST
 
-#if TIMEOUT_TESTS_ENABLED
+#if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK)
 START_TEST(test_eternal)
   #define LINENO_eternal _STR(__LINE__)
 {
@@ -483,7 +483,7 @@ START_TEST(test_sleep14)
   sleep(14);
 }
 END_TEST
-#endif
+#endif /* TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) */
 
 START_TEST(test_early_exit)
 {
@@ -719,7 +719,7 @@ void init_master_tests_lineno(int num_master_tests) {
     "-1",
     "-1",
 
-#if TIMEOUT_TESTS_ENABLED
+#if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK)
 #if HAVE_WORKING_SETENV
 /* Environment Integer Timeout Tests */
     LINENO_eternal,
@@ -829,7 +829,7 @@ void init_master_tests_lineno(int num_master_tests) {
     LINENO_sleep9,
     LINENO_sleep14,
 #endif /* HAVE_WORKING_SETENV */
-#endif /* TIMEOUT_TESTS_ENABLED */
+#endif /* TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) */
 
 /* Limit Tests */
     "-1",
@@ -871,7 +871,7 @@ Suite *make_sub_suite(void)
 
   TCase *tc_simple;
   TCase *tc_signal;
-#if TIMEOUT_TESTS_ENABLED
+#if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK)
 #if HAVE_WORKING_SETENV
   TCase *tc_timeout_env_int;
   TCase *tc_timeout_env_double;
@@ -887,7 +887,7 @@ Suite *make_sub_suite(void)
   TCase *tc_timeout_scale_double;
   TCase *tc_timeout_usr_scale_double;
 #endif /* HAVE_WORKING_SETENV */
-#endif /* TIMEOUT_TESTS_ENABLED */
+#endif /* TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) */
   TCase *tc_limit;
   TCase *tc_messaging_and_fork;
 
@@ -895,7 +895,7 @@ Suite *make_sub_suite(void)
 
   tc_simple = tcase_create("Simple Tests");
   tc_signal = tcase_create("Signal Tests");
-#if TIMEOUT_TESTS_ENABLED
+#if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK)
 #if HAVE_WORKING_SETENV
   setenv("CK_DEFAULT_TIMEOUT", "6", 1);
   tc_timeout_env_int = tcase_create("Environment Integer Timeout Tests");
@@ -924,13 +924,13 @@ Suite *make_sub_suite(void)
   unsetenv("CK_DEFAULT_TIMEOUT");
   unsetenv("CK_TIMEOUT_MULTIPLIER");
 #endif /* HAVE_WORKING_SETENV */
-#endif /* TIMEOUT_TESTS_ENABLED */
+#endif /* TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) */
   tc_limit = tcase_create("Limit Tests");
   tc_messaging_and_fork = tcase_create("Msg and fork Tests");
 
   suite_add_tcase (s, tc_simple);
   suite_add_tcase (s, tc_signal);
-#if TIMEOUT_TESTS_ENABLED
+#if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK)
 #if HAVE_WORKING_SETENV
   suite_add_tcase (s, tc_timeout_env_int);
   suite_add_tcase (s, tc_timeout_env_double);
@@ -949,7 +949,7 @@ Suite *make_sub_suite(void)
   suite_add_tcase (s, tc_timeout_usr_scale_int);
   suite_add_tcase (s, tc_timeout_usr_scale_double);
 #endif /* HAVE_WORKING_SETENV */
-#endif /* TIMEOUT_TESTS_ENABLED */
+#endif /* TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) */
   suite_add_tcase (s, tc_limit);
   suite_add_tcase (s, tc_messaging_and_fork);
 
@@ -1011,7 +1011,7 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_signal, test_fpe);
   tcase_add_test (tc_signal, test_mark_point);
 
-#if TIMEOUT_TESTS_ENABLED
+#if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK)
 #if HAVE_WORKING_SETENV
   tcase_add_test (tc_timeout_env_int, test_eternal);
   tcase_add_test (tc_timeout_env_int, test_sleep2);
@@ -1117,7 +1117,7 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_timeout_usr_scale_double, test_sleep9);
   tcase_add_test (tc_timeout_usr_scale_double, test_sleep14);
 #endif /* HAVE_WORKING_SETENV */
-#endif /* TIMEOUT_TESTS_ENABLED */
+#endif /* TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) */
 
   tcase_add_test (tc_limit, test_early_exit);
   tcase_add_test (tc_limit, test_null);

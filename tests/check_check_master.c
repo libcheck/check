@@ -77,7 +77,7 @@ static master_test_t master_tests[] = {
   { "Signal Tests", CK_ERROR,   signal_8_str },
   { "Signal Tests", CK_ERROR,   signal_8_str },
 
-#if TIMEOUT_TESTS_ENABLED
+#if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK)
 #if HAVE_WORKING_SETENV
   { "Environment Integer Timeout Tests", CK_ERROR,  "Test timeout expired" },
   { "Environment Integer Timeout Tests", CK_PASS,   "Passed" },
@@ -186,7 +186,7 @@ static master_test_t master_tests[] = {
   { "User Double Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
   { "User Double Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
 #endif /* HAVE_WORKING_SETENV */
-#endif /* TIMEOUT_TESTS_ENABLED */
+#endif /* TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) */
 
   { "Limit Tests", CK_ERROR,   "Early exit with return value 1" },
   { "Limit Tests", CK_FAILURE, "Completed properly" },
