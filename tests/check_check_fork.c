@@ -95,6 +95,14 @@ END_TEST
  * CK_NOFORK is considered an error.
  */
 #if defined(HAVE_FORK)
+START_TEST(test_set_fork)
+{
+  srunner_set_fork_status(fork_dummy_sr, CK_FORK);
+  ck_assert_msg(srunner_fork_status(fork_dummy_sr) == CK_FORK,
+	      "Fork status not changed correctly");
+}
+END_TEST
+
 START_TEST(test_env)
 {
   putenv((char *) "CK_FORK=no");
@@ -132,6 +140,7 @@ Suite *make_fork_suite(void)
   tcase_add_test(tc,test_default_fork);
   tcase_add_test(tc,test_set_nofork);
 #if defined(HAVE_FORK)
+  tcase_add_test(tc,test_set_fork);
   tcase_add_test(tc,test_env);
   tcase_add_test(tc,test_env_and_set);
 #endif /* HAVE_FORK */
