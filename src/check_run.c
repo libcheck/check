@@ -75,7 +75,7 @@ static TestResult *receive_result_info_nofork (const char *tcname,
 static void set_nofork_info (TestResult *tr);
 static char *pass_msg (void);
 
-#ifdef _POSIX_VERSION
+#ifdef HAVE_FORK
 static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tf, int i);
 static TestResult *receive_result_info_fork (const char *tcname,
                                              const char *tname,
@@ -104,7 +104,7 @@ static void CK_ATTRIBUTE_UNUSED sig_handler(int sig_nr)
     break;
   }
 }
-#endif /* _POSIX_VERSION */
+#endif /* HAVE_FORK */
 
 #define MSG_LEN 100
 
@@ -177,11 +177,11 @@ static void srunner_iterate_tcase_tfuns (SRunner *sr, TCase *tc)
       log_test_start (sr, tc, tfun);
       switch (srunner_fork_status(sr)) {
       case CK_FORK:
-#ifdef _POSIX_VERSION
+#ifdef HAVE_FORK
         tr = tcase_run_tfun_fork (sr, tc, tfun, i);
-#else /* _POSIX_VERSION */
+#else /* HAVE_FORK */
         eprintf("This version does not support fork", __FILE__, __LINE__);
-#endif /* _POSIX_VERSION */
+#endif /* HAVE_FORK */
         break;
       case CK_NOFORK:
         tr = tcase_run_tfun_nofork (sr, tc, tfun, i);
@@ -371,7 +371,7 @@ static char *pass_msg (void)
   return strdup("Passed");
 }
 
-#ifdef _POSIX_VERSION
+#ifdef HAVE_FORK
 static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun, int i)
 {
   pid_t pid_w;
@@ -570,7 +570,7 @@ static int waserror (int status, int signal_expected)
   return ((was_sig && (signal_received != signal_expected)) ||
           (was_exit && exit_status != 0));
 }
-#endif /* _POSIX_VERSION */
+#endif /* HAVE_FORK */
 
 enum fork_status srunner_fork_status (SRunner *sr)
 {
@@ -581,12 +581,12 @@ enum fork_status srunner_fork_status (SRunner *sr)
     if (strcmp (env,"no") == 0)
       return CK_NOFORK;
     else {
-#ifdef _POSIX_VERSION
+#ifdef HAVE_FORK
       return CK_FORK;
-#else /* _POSIX_VERSION */
+#else /* HAVE_FORK */
       eprintf("This version does not support fork", __FILE__, __LINE__);
       return CK_NOFORK;
-#endif /* _POSIX_VERSION */
+#endif /* HAVE_FORK */
     }
   } else
     return sr->fstat;
@@ -607,10 +607,10 @@ void srunner_run_all (SRunner *sr, enum print_output print_mode)
 
 void srunner_run (SRunner *sr, const char *sname, const char *tcname, enum print_output print_mode)
 {
-#ifdef _POSIX_VERSION
+#ifdef HAVE_SIGACTION
   struct sigaction old_action;
   struct sigaction new_action;
-#endif /* _POSIX_VERSION */
+#endif /* HAVE_SIGACTION */
 
   /*  Get the selected test suite and test case from the
       environment.  */
@@ -624,22 +624,22 @@ void srunner_run (SRunner *sr, const char *sname, const char *tcname, enum print
       eprintf ("Bad print_mode argument to srunner_run_all: %d",
 	      __FILE__, __LINE__, print_mode);
     }
-#ifdef _POSIX_VERSION
+#ifdef HAVE_SIGACTION
   memset(&new_action, 0, sizeof new_action);
   new_action.sa_handler = sig_handler;
   sigaction(SIGALRM, &new_action, &old_action);
-#endif /* _POSIX_VERSION */
+#endif /* HAVE_SIGACTION */
   srunner_run_init (sr, print_mode);
   srunner_iterate_suites (sr, sname, tcname, print_mode);
   srunner_run_end (sr, print_mode);
-#ifdef _POSIX_VERSION
+#ifdef HAVE_SIGACTION
   sigaction(SIGALRM, &old_action, NULL);
-#endif /* _POSIX_VERSION */
+#endif /* HAVE_SIGACTION */
 }
 
 pid_t check_fork (void)
 {
-#ifdef _POSIX_VERSION
+#ifdef HAVE_FORK
   pid_t pid = fork();
   /* Set the process to a process group to be able to kill it easily. */
   if(pid >= 0)
@@ -647,15 +647,15 @@ pid_t check_fork (void)
     setpgid(pid, group_pid);
   }
   return pid;
-#else /* _POSIX_VERSION */
+#else /* HAVE_FORK */
   eprintf("This version does not support fork", __FILE__, __LINE__);
   return 0;
-#endif /* _POSIX_VERSION */
+#endif /* HAVE_FORK */
 }
 
 void check_waitpid_and_exit (pid_t pid CK_ATTRIBUTE_UNUSED)
 {
-#ifdef _POSIX_VERSION
+#ifdef HAVE_FORK
   pid_t pid_w;
   int status;
 
@@ -668,7 +668,7 @@ void check_waitpid_and_exit (pid_t pid CK_ATTRIBUTE_UNUSED)
     }
   }
   exit(EXIT_SUCCESS);
-#else /* _POSIX_VERSION */
+#else /* HAVE_FORK */
   eprintf("This version does not support fork", __FILE__, __LINE__);
-#endif /* _POSIX_VERSION */
+#endif /* HAVE_FORK */
 }  

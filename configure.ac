@@ -186,6 +186,10 @@ AC_CHECK_DECLS([alarm, clock_gettime, timer_create, timer_settime, timer_delete,
 
 AC_CHECK_FUNCS([setitimer])
 
+# Checks for functions not available in Windows
+AC_CHECK_FUNCS([fork])
+AC_CHECK_FUNCS([sigaction])
+
 # Check if the system's snprintf (and its variations) are C99 compliant.
 # If they are not, use the version in libcompat.
 HW_FUNC_VSNPRINTF

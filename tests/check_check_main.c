@@ -10,11 +10,11 @@ int main (void)
   int n;
   SRunner *sr;
 
-#ifdef _POSIX_VERSION
+#ifdef HAVE_FORK
   fork_setup();
   setup_fixture();
   setup();
-#endif /* _POSIX_VERSION */
+#endif /* HAVE_FORK */
 
   sr = srunner_create (make_master_suite());
   srunner_add_suite(sr, make_list_suite());

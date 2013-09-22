@@ -258,9 +258,9 @@ void _ck_assert_msg (int result, const char *file,
     va_end(ap);
     send_failure_info (buf);
     if (cur_fork_status() == CK_FORK) {
-#ifdef _POSIX_VERSION
+#ifdef HAVE_FORK
       exit(1);
-#endif /* _POSIX_VERSION */
+#endif /* HAVE_FORK */
     } else {
       longjmp(error_jmp_buffer, 1);
     }

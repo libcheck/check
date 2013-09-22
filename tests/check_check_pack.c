@@ -189,7 +189,7 @@ START_TEST(test_pack_loc_limit)
 END_TEST
 
 /* the ppack probably means 'pipe' pack */
-#ifdef _POSIX_VERSION
+#ifdef HAVE_FORK
 START_TEST(test_ppack)
 {
   int filedes[2];
@@ -383,7 +383,7 @@ START_TEST(test_ppack_big)
   free (fmsg.msg);
 }
 END_TEST
-#endif /* _POSIX_VERSION */
+#endif /* HAVE_FORK */
 
 Suite *make_pack_suite(void)
 {
@@ -401,20 +401,20 @@ Suite *make_pack_suite(void)
   tcase_add_test (tc_core, test_pack_loc);
   tcase_add_test (tc_core, test_pack_ctx);
   tcase_add_test (tc_core, test_pack_len);
-#ifdef _POSIX_VERSION
+#ifdef HAVE_FORK
   tcase_add_test (tc_core, test_ppack);
   tcase_add_test (tc_core, test_ppack_noctx);
   tcase_add_test (tc_core, test_ppack_onlyctx);
   tcase_add_test (tc_core, test_ppack_multictx);
   tcase_add_test (tc_core, test_ppack_nofail);
-#endif /* _POSIX_VERSION */
+#endif /* HAVE_FORK */
   suite_add_tcase (s, tc_limit);
   tcase_add_test (tc_limit, test_pack_ctx_limit);
   tcase_add_test (tc_limit, test_pack_fail_limit);
   tcase_add_test (tc_limit, test_pack_loc_limit);
-#ifdef _POSIX_VERSION
+#ifdef HAVE_FORK
   tcase_add_test (tc_limit, test_ppack_big);
-#endif /* _POSIX_VERSION */
+#endif /* HAVE_FORK */
 
   return s;
 }

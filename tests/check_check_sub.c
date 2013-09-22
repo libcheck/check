@@ -20,9 +20,9 @@ START_TEST(test_mark_lno)
 {
   mark_point();
   #define LINENO_mark_lno _STR(__LINE__)
-#ifdef _POSIX_VERSION
+#ifdef HAVE_FORK
   exit(EXIT_FAILURE); /* should fail with mark_point above as line */
-#endif /* _POSIX_VERSION */
+#endif /* HAVE_FORK */
 }
 
 END_TEST
@@ -516,7 +516,7 @@ START_TEST(test_null_2)
 }
 END_TEST
 
-#ifdef _POSIX_VERSION
+#ifdef HAVE_FORK
 START_TEST(test_fork1p_pass)
 {
   pid_t pid;
@@ -620,7 +620,7 @@ START_TEST(test_fork2_fail)
   check_waitpid_and_exit(pid);
 }
 END_TEST
-#endif /* _POSIX_VERSION */
+#endif /* HAVE_FORK */
 
 START_TEST(test_srunner)
 {
@@ -1121,14 +1121,14 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_limit, test_null);
   tcase_add_test (tc_limit, test_null_2);
 
-#ifdef _POSIX_VERSION
+#ifdef HAVE_FORK
   tcase_add_test (tc_messaging_and_fork, test_fork1p_pass);
   tcase_add_test (tc_messaging_and_fork, test_fork1p_fail);
   tcase_add_test (tc_messaging_and_fork, test_fork1c_pass);
   tcase_add_test (tc_messaging_and_fork, test_fork1c_fail);
   tcase_add_test (tc_messaging_and_fork, test_fork2_pass);
   tcase_add_test (tc_messaging_and_fork, test_fork2_fail);
-#endif /* _POSIX_VERSION */
+#endif /* HAVE_FORK */
 
   return s;
 }

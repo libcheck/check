@@ -8,7 +8,7 @@ Suite *s;
 TCase *tc;
 SRunner *sr;
 
-#if defined (HAVE_PTHREAD) || defined (_POSIX_VERSION)
+#if defined (HAVE_PTHREAD) || defined (HAVE_FORK)
 static void *
 sendinfo (void *userdata CK_ATTRIBUTE_UNUSED)
 {
@@ -19,7 +19,7 @@ sendinfo (void *userdata CK_ATTRIBUTE_UNUSED)
     }
   return NULL;
 }
-#endif /* HAVE_PTHREAD || _POSIX_VERSION */
+#endif /* HAVE_PTHREAD || HAVE_FORK */
 
 #ifdef HAVE_PTHREAD
 START_TEST (test_stress_threads)
@@ -34,7 +34,7 @@ START_TEST (test_stress_threads)
 END_TEST
 #endif /* HAVE_PTHREAD */
 
-#ifdef _POSIX_VERSION
+#ifdef HAVE_FORK
 START_TEST (test_stress_forks)
 {
   pid_t cpid = fork ();
@@ -51,7 +51,7 @@ START_TEST (test_stress_forks)
     }
 }
 END_TEST
-#endif /* _POSIX_VERSION */
+#endif /* HAVE_FORK */
 
 int
 main (void)
@@ -66,18 +66,18 @@ main (void)
   tcase_add_loop_test (tc, test_stress_threads, 0, 100);
 #endif /* HAVE_PTHREAD */
 
-#ifdef _POSIX_VERSION
+#ifdef HAVE_FORK
   tcase_add_loop_test (tc, test_stress_forks, 0, 100);
-#endif /* _POSIX_VERSION */
+#endif /* HAVE_FORK */
 
   srunner_run_all (sr, CK_VERBOSE);
   nf = srunner_ntests_failed (sr);
   srunner_free (sr);
 
   /* hack to give us XFAIL on non-posix platforms */
-#ifndef _POSIX_VERSION
+#ifndef HAVE_FORK
   nf++;
-#endif /* !_POSIX_VERSION */
+#endif /* !HAVE_FORK */
 
   return nf ? EXIT_FAILURE : EXIT_SUCCESS;
 }
