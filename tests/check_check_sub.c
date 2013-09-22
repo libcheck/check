@@ -836,6 +836,7 @@ void init_master_tests_lineno(int num_master_tests) {
     "-1",
     "-1",
 
+#ifdef HAVE_FORK
 /* Msg and fork Tests */
     "-1",
     "-1",
@@ -843,6 +844,7 @@ void init_master_tests_lineno(int num_master_tests) {
     "-1",
     "-1",
     "-1",
+#endif /* HAVE_FORK */
 
 /* Core */
     "-1",

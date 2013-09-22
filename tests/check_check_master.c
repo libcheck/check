@@ -192,12 +192,14 @@ static master_test_t master_tests[] = {
   { "Limit Tests", CK_FAILURE, "Completed properly" },
   { "Limit Tests", CK_FAILURE, "Completed properly" },
 
+#ifdef HAVE_FORK
   { "Msg and fork Tests", CK_PASS,       "Passed" },
   { "Msg and fork Tests", CK_FAILURE,    "Expected fail" },
   { "Msg and fork Tests", CK_PASS,       "Passed" },
   { "Msg and fork Tests", CK_FAILURE,    "Expected fail" },
   { "Msg and fork Tests", CK_PASS,       "Passed" },
   { "Msg and fork Tests", CK_FAILURE,    "Expected fail" },
+#endif
 
   { "Core", CK_PASS,    "Passed" },
   { "Core", CK_FAILURE, "We failed" }
