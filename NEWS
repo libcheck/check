@@ -2,7 +2,10 @@ In development:
 
 * Check compiles for the Windows using MinGW-w64.
 
-* check_check_export test suite passes for MinGW-w64 builds, tested with wine 1.4. The remaining 5 test suites still fail.
+* The following unit tests now pass for MinGW-w64 builds when run
+  against wine 1.4:
+    - check_check_export
+    - test_output.sh
 
 * On systems without timer_settimer, use setitimer (if available) to get
   subsecond unit test timeouts. If setitimer is unavailable, fallback
