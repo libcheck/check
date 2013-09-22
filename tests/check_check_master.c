@@ -71,6 +71,7 @@ static master_test_t master_tests[] = {
   { "Simple Tests", CK_FAILURE, "Assertion 'x==y' failed: x==0x1, y==0x2" },
   { "Simple Tests", CK_FAILURE, "Assertion 'x!=z' failed: x==0x1, z==0x1" },
   
+#ifdef HAVE_FORK
   { "Signal Tests", CK_ERROR,   signal_11_str },
   { "Signal Tests", CK_PASS,    "Passed" },
   { "Signal Tests", CK_ERROR,   signal_11_8_str },
@@ -78,6 +79,7 @@ static master_test_t master_tests[] = {
   { "Signal Tests", CK_FAILURE, "Early exit with return value 1" },
   { "Signal Tests", CK_ERROR,   signal_8_str },
   { "Signal Tests", CK_ERROR,   signal_8_str },
+#endif
 
 #if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK)
 #if HAVE_WORKING_SETENV
