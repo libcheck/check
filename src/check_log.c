@@ -239,7 +239,7 @@ void xml_lfun (SRunner *sr CK_ATTRIBUTE_UNUSED, FILE *file, enum print_output pr
     struct timeval inittv;
     struct tm now;
     gettimeofday(&inittv, NULL);
-    clock_gettime(CLOCK_MONOTONIC, &ts_start);
+    clock_gettime(check_get_clockid(), &ts_start);
     localtime_r(&(inittv.tv_sec), &now);
     strftime(t, sizeof("yyyy-mm-dd hh:mm:ss"), "%Y-%m-%d %H:%M:%S", &now);
   }
@@ -257,7 +257,7 @@ void xml_lfun (SRunner *sr CK_ATTRIBUTE_UNUSED, FILE *file, enum print_output pr
       unsigned int duration;
 
       /* calculate time the test were running */
-      clock_gettime(CLOCK_MONOTONIC, &ts_end);
+      clock_gettime(check_get_clockid(), &ts_end);
       duration = DIFF_IN_USEC(ts_start, ts_end);
       fprintf(file, "  <duration>%u.%06u</duration>\n",
           duration / 1000000, duration % 1000000);

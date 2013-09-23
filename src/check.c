@@ -445,3 +445,31 @@ enum fork_status cur_fork_status (void)
 {
   return _fstat;
 }
+
+/**
+ * Not all systems support the same clockid_t's. This call checks
+ * if the CLOCK_MONOTONIC clockid_t is valid. If so, that is returned,
+ * otherwise, CLOCK_REALTIME is returned.
+ *
+ * The clockid_t that was found to work on the first call is
+ * cached for subsequent calls.
+ */
+clockid_t check_get_clockid()
+{
+	static clockid_t clockid = -1;
+
+	if(clockid == -1)
+	{
+		struct timespec ts;
+		if(clock_gettime(CLOCK_MONOTONIC, &ts) == 0)
+		{
+			clockid = CLOCK_MONOTONIC;
+		}
+		else
+		{
+			clockid = CLOCK_REALTIME;
+		}
+	}
+
+	return clockid;
+}

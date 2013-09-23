@@ -323,9 +323,9 @@ static TestResult *tcase_run_tfun_nofork (SRunner *sr, TCase *tc, TF *tfun, int 
   tr = tcase_run_checked_setup(sr, tc);
   if (tr == NULL) {
     if ( 0 == setjmp(error_jmp_buffer) ) {
-      clock_gettime(CLOCK_MONOTONIC, &ts_start);
+      clock_gettime(check_get_clockid(), &ts_start);
       tfun->fn(i);
-      clock_gettime(CLOCK_MONOTONIC, &ts_end);
+      clock_gettime(check_get_clockid(), &ts_end);
     }
     tcase_run_checked_teardown(tc);
     return receive_result_info_nofork(tc->name, tfun->name, i,
@@ -379,7 +379,6 @@ static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun, int i)
   int status = 0;
   struct timespec ts_start = {0}, ts_end = {0};
 
-  int timer_create_result;
   timer_t timerid;
   struct itimerspec timer_spec; 
   TestResult * tr;
@@ -393,9 +392,9 @@ static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun, int i)
     group_pid = getpgrp();
     tr = tcase_run_checked_setup(sr, tc);
     free(tr);
-    clock_gettime(CLOCK_MONOTONIC, &ts_start);
+    clock_gettime(check_get_clockid(), &ts_start);
     tfun->fn(i);
-    clock_gettime(CLOCK_MONOTONIC, &ts_end);
+    clock_gettime(check_get_clockid(), &ts_end);
     tcase_run_checked_teardown(tc);
     send_duration_info(DIFF_IN_USEC(ts_start, ts_end));
     exit(EXIT_SUCCESS);
@@ -405,23 +404,9 @@ static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun, int i)
 
   alarm_received = 0;
 
-  timer_create_result = timer_create(CLOCK_MONOTONIC,
-                           NULL /* fire SIGALRM if timer expires */,
-                           &timerid);
-
-  /*
-   * CLOCK_MONOTONIC is not supported on the Cygwin platform
-   * (maybe others as well). If the timer creation fails, attempt with
-   * CLOCK_REALTIME before bailing out.
-   */
-  if(timer_create_result != 0)
-  {
-	  timer_create_result = timer_create(CLOCK_REALTIME,
-                           NULL /* fire SIGALRM if timer expires */,
-                           &timerid);
-  }
-
-  if(timer_create_result == 0)
+  if(timer_create(check_get_clockid(),
+                  NULL /* fire SIGALRM if timer expires */,
+                  &timerid) == 0)
   {
     /* Set the timer to fire once */
     timer_spec.it_value            = tc->timeout;

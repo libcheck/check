@@ -119,4 +119,6 @@ struct SRunner {
 void set_fork_status(enum fork_status fstat);
 enum fork_status cur_fork_status (void);
 
+clockid_t check_get_clockid();
+
 #endif /* CHECK_IMPL_H */
