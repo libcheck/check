@@ -105,6 +105,12 @@ CK_CPPSTART
 #define CK_ATTRIBUTE_UNUSED              
 #endif /* GCC 2.95 */
 
+#if GCC_VERSION_AT_LEAST(2,5)
+#define CK_ATTRIBUTE_NORETURN __attribute__ ((noreturn))
+#else
+#define CK_ATTRIBUTE_NORETURN
+#endif /* GCC 2.5 */
+
 #include <sys/types.h>
 
 /* Used to create the linker script for hiding lib-local symbols. Shall
@@ -487,7 +493,7 @@ void CK_EXPORT srunner_set_fork_status (SRunner *sr, enum fork_status fstat);
 pid_t CK_EXPORT check_fork(void);
 
 /* Wait for the pid and exit. If pid is zero, just exit. */
-void CK_EXPORT check_waitpid_and_exit(pid_t pid);
+void CK_EXPORT check_waitpid_and_exit(pid_t pid) CK_ATTRIBUTE_NORETURN;
 
 #ifdef __cplusplus 
 CK_CPPEND

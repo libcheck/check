@@ -123,7 +123,7 @@ AX_CFLAGS_ADD([-Winit-self])
 AX_CFLAGS_ADD([-Wmissing-include-dirs])
 AX_CFLAGS_ADD([-Wswitch-default])
 AX_CFLAGS_ADD([-Wunknown-pragmas])
-
+AX_CFLAGS_ADD([-Wmissing-noreturn])
 
 AC_CHECK_PROGS(GCOV, gcov, false)
 AC_CHECK_PROGS(LCOV, lcov, false)

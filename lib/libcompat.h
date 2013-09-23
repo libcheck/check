@@ -19,6 +19,12 @@
 #define CK_ATTRIBUTE_UNUSED              
 #endif /* GCC 2.95 */
 
+#if GCC_VERSION_AT_LEAST(2,5)
+#define CK_ATTRIBUTE_NORETURN __attribute__ ((noreturn))
+#else
+#define CK_ATTRIBUTE_NORETURN
+#endif /* GCC 2.5 */
+
 /* defines size_t */
 #include <sys/types.h>
 
@@ -188,6 +194,6 @@ int rpl_asprintf(char **, const char *, ...);
 #endif /* HAVE_STDARG_H */
 
 /* silence warnings about an empty library */
-void ck_do_nothing (void);
+void ck_do_nothing (void) CK_ATTRIBUTE_NORETURN;
 
 #endif /* !LIBCOMPAT_H */

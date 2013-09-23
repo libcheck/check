@@ -21,6 +21,7 @@
 #ifndef ERROR_H
 #define ERROR_H
 
+#include "../lib/libcompat.h"
 #include <setjmp.h>
 
 extern jmp_buf error_jmp_buffer;
@@ -29,7 +30,7 @@ extern jmp_buf error_jmp_buffer;
 
 /* Print error message and die
    If fmt ends in colon, include system error information */
-void eprintf (const char *fmt, const char *file, int line,...);
+void eprintf (const char *fmt, const char *file, int line,...) CK_ATTRIBUTE_NORETURN;
 /* malloc or die */
 void *emalloc(size_t n);
 void *erealloc(void *, size_t n);
