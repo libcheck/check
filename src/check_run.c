@@ -186,6 +186,7 @@ static void srunner_iterate_tcase_tfuns (SRunner *sr, TCase *tc)
       case CK_NOFORK:
         tr = tcase_run_tfun_nofork (sr, tc, tfun, i);
         break;
+      case CK_FORK_GETENV:
       default:
         eprintf("Bad fork status in SRunner", __FILE__, __LINE__);
       }
