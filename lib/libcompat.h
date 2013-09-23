@@ -144,6 +144,12 @@ struct itimerspec
  */
 typedef int timer_t;
 
+/*
+ * As the functions which use clockid_t are not defined on the system,
+ * the clockid_t type probably also is not defined.
+ */
+typedef int clockid_t;
+
 /* 
  * Do a simple forward declaration in case the struct is not defined.
  * In the versions of timer_create in libcompat, sigevent is never
@@ -151,7 +157,7 @@ typedef int timer_t;
  */
 struct sigevent;
 
-int clock_gettime(int clk_id, struct timespec *ts);
+int clock_gettime(clockid_t clk_id, struct timespec *ts);
 int timer_create(int clockid, struct sigevent *sevp, timer_t *timerid);
 int timer_settime(timer_t timerid, int flags, const struct itimerspec *new_value, struct itimerspec * old_value);
 int timer_delete(timer_t timerid);

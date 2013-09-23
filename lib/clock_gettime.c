@@ -15,7 +15,7 @@
 
 
 
-int clock_gettime(int clk_id CK_ATTRIBUTE_UNUSED, struct timespec *ts)
+int clock_gettime(clockid_t clk_id CK_ATTRIBUTE_UNUSED, struct timespec *ts)
 {
   
 #ifdef __MACH__ 
