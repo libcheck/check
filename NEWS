@@ -7,6 +7,7 @@ In development:
     - check_check_export
     - test_output.sh
     - test_check_nofork.sh
+    - test_log_output.sh
 
 * On systems without timer_settimer, use setitimer (if available) to get
   subsecond unit test timeouts. If setitimer is unavailable, fallback
