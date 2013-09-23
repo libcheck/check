@@ -33,8 +33,8 @@ enum {
 };
 
 struct List {
-  int n_elts;
-  int max_elts;
+  unsigned int n_elts;
+  unsigned int max_elts;
   int current; /* pointer to the current node */
   int last; /* pointer to the node before END */
   const void **data;
