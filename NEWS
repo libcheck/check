@@ -6,6 +6,7 @@ In development:
   against wine 1.4:
     - check_check_export
     - test_output.sh
+    - test_check_nofork.sh
 
 * On systems without timer_settimer, use setitimer (if available) to get
   subsecond unit test timeouts. If setitimer is unavailable, fallback
