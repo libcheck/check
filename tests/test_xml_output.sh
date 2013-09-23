@@ -81,6 +81,10 @@ expected_xml="<?xml version=\"1.0\"?>
   </suite>
 </testsuites>"
 expected_duration_count=9
+
+# for fork tests, failures result in exit() being called, which prevents
+# a duration from being sent. This means that every failure results in
+# a -1 for duration, as no duration is known.
 expected_duration_error=5
 else
 expected_xml=`printf "<?xml version=\"1.0\"?>\r
@@ -147,7 +151,10 @@ expected_xml=`printf "<?xml version=\"1.0\"?>\r
 </testsuites>\r
 "`
 expected_duration_count=8
-expected_duration_error=4
+
+# For no-fork mode, all tests 'finish' and do not call exit(). This means
+# that all tests will have a duration >= 0.
+expected_duration_error=0
 fi
 
 ./ex_xml_output${EXEEXT} > /dev/null
