@@ -318,7 +318,7 @@ static void srunner_run_tcase (SRunner *sr, TCase *tc)
 static TestResult *tcase_run_tfun_nofork (SRunner *sr, TCase *tc, TF *tfun, int i)
 {
   TestResult *tr;
-  struct timespec ts_start, ts_end;
+  struct timespec ts_start={0}, ts_end={0};
   
   tr = tcase_run_checked_setup(sr, tc);
   if (tr == NULL) {
@@ -377,7 +377,7 @@ static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun, int i)
   pid_t pid_w;
   pid_t pid;
   int status = 0;
-  struct timespec ts_start, ts_end;
+  struct timespec ts_start = {0}, ts_end = {0};
 
   int timer_create_result;
   timer_t timerid;
