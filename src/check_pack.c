@@ -284,7 +284,7 @@ static void check_type (int type, const char *file, int line)
 
 #ifdef HAVE_PTHREAD
 static pthread_mutex_t ck_mutex_lock = PTHREAD_MUTEX_INITIALIZER;
-void ppack_cleanup( void *mutex )
+static void ppack_cleanup( void *mutex )
 {
   pthread_mutex_unlock(mutex);
 }
