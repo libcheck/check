@@ -122,8 +122,8 @@ TCase *tcase_create (const char *name)
     }
   }  
 
-  tc->timeout.tv_sec   = floor(timeout_sec);
-  tc->timeout.tv_nsec  = ((timeout_sec-floor(timeout_sec)) * (double)NANOS_PER_SECONDS);
+  tc->timeout.tv_sec   = (time_t)floor(timeout_sec);
+  tc->timeout.tv_nsec  = (long)((timeout_sec-floor(timeout_sec)) * (double)NANOS_PER_SECONDS);
   
   tc->tflst = check_list_create();
   tc->unch_sflst = check_list_create();
@@ -224,8 +224,8 @@ void tcase_set_timeout (TCase *tc, double timeout)
       }
     }
     
-  tc->timeout.tv_sec   = floor(timeout);
-  tc->timeout.tv_nsec  = ((timeout-floor(timeout)) * (double)NANOS_PER_SECONDS);
+  tc->timeout.tv_sec   = (time_t)floor(timeout);
+  tc->timeout.tv_nsec  = (long)((timeout-floor(timeout)) * (double)NANOS_PER_SECONDS);
   }
 }
 
