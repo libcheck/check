@@ -23,7 +23,11 @@ int main (void)
   srunner_add_suite(sr, make_fork_suite());
   srunner_add_suite(sr, make_fixture_suite());
   srunner_add_suite(sr, make_pack_suite());
+
+#if defined(HAVE_FORK)
   srunner_add_suite(sr, make_exit_suite());
+#endif
+
   srunner_add_suite(sr, make_selective_suite());
   
   printf ("Ran %d tests in subordinate suite\n", sub_ntests);
