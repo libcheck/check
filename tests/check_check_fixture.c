@@ -79,6 +79,7 @@ START_TEST(test_setup_failure_msg)
 }
 END_TEST
 
+#if defined(HAVE_FORK)
 int testval_up;
 int testval_down;
 
@@ -126,7 +127,7 @@ END_TEST
 
 static void setup_sub_fail (void)
 {
-  ck_abort_msg("Failed setup"); /* check_check_fixture.c:129 */
+  ck_abort_msg("Failed setup"); /* check_check_fixture.c:130 */
 }
 
 static void teardown_sub_fail (void)
@@ -187,9 +188,9 @@ START_TEST(test_ch_setup_fail)
   free(strstat);
 
   trm = tr_str(srunner_failures(sr)[0]);
-   /* Search for check_check_fixture.c:129 if this fails. */
+   /* Search for check_check_fixture.c:130 if this fails. */
   if (strstr(trm,
-	     "check_check_fixture.c:129:S:Setup Fail:test_sub_fail:0: Failed setup")
+	     "check_check_fixture.c:130:S:Setup Fail:test_sub_fail:0: Failed setup")
       == 0) {
     snprintf(errm, sizeof(errm),
 	     "Bad failed checked setup tr msg (%s)", trm);
@@ -273,6 +274,10 @@ START_TEST(test_ch_setup_pass_nofork)
 }
 END_TEST
 
+/*
+ * This test will fail without fork, as it results in a checked
+ * fixture raising a signal, which terminates the test runner early.
+ */
 START_TEST(test_ch_setup_sig)
 {
   TCase *tc;
@@ -304,7 +309,7 @@ START_TEST(test_ch_setup_sig)
   trm = tr_str(srunner_failures(sr)[0]);
 
   if (strstr(trm,
-	     "check_check_fixture.c:139:S:Setup Sig:test_sub_fail:0: "
+	     "check_check_fixture.c:140:S:Setup Sig:test_sub_fail:0: "
 	     "(after this point) Received signal 8")
       == 0) {
     snprintf(errm, sizeof(errm),
@@ -334,6 +339,10 @@ START_TEST(test_sub_two_setups)
 }
 END_TEST
 
+/*
+ * This test will not work without fork, as checked fixtures are
+ * not supported
+ */
 START_TEST(test_ch_setup_two_setups_fork)
 {
   TCase *tc;
@@ -357,6 +366,14 @@ START_TEST(test_ch_setup_two_setups_fork)
 }
 END_TEST
 
+/*
+ * This test will fail without fork. It expects a checked teardown 
+ * fixture to call ck_abort_msg. In fork mode this results in exit() 
+ * being called, which signals to the parent process that the test 
+ * failed. However, without fork, ck_abort_msg call longjmp, which 
+ * jumps to right before the checked teardown fixtures are called.
+ * This results in an infinate loop.
+ */
 START_TEST(test_ch_teardown_fail)
 {
   TCase *tc;
@@ -388,7 +405,7 @@ START_TEST(test_ch_teardown_fail)
   trm = tr_str(srunner_failures(sr)[0]);
 
   if (strstr(trm,
-	     "check_check_fixture.c:134:S:Teardown Fail:test_sub_pass:0: Failed teardown")
+	     "check_check_fixture.c:135:S:Teardown Fail:test_sub_pass:0: Failed teardown")
       == 0) {
     snprintf(errm, sizeof(errm),
 	     "Bad failed checked teardown tr msg (%s)", trm);
@@ -398,6 +415,11 @@ START_TEST(test_ch_teardown_fail)
   free(trm);
 }
 END_TEST
+
+/*
+ * This test will fail without fork, as it results in a checked
+ * fixture raising a signal, which terminates the test runner early.
+ */
 
 START_TEST(test_ch_teardown_sig)
 {
@@ -430,7 +452,7 @@ START_TEST(test_ch_teardown_sig)
   trm = tr_str(srunner_failures(sr)[0]);
 
   if (strstr(trm,
-	     "check_check_fixture.c:145:S:Teardown Sig:test_sub_pass:0: "
+	     "check_check_fixture.c:146:S:Teardown Sig:test_sub_pass:0: "
 	     "(after this point) Received signal 8")
       == 0) {
     snprintf(errm, sizeof(errm),
@@ -460,6 +482,10 @@ START_TEST(test_sub_two_teardowns)
 }
 END_TEST
 
+/*
+ * This test will not work without fork, as checked fixtures are
+ * not supported
+ */
 START_TEST(test_ch_teardown_two_teardowns_fork)
 {
   TCase *tc;
@@ -501,6 +527,7 @@ START_TEST(test_ch_teardown_two_teardowns_fork)
   srunner_free(sr);
 }
 END_TEST
+#endif /* HAVE_FORK */
 
 Suite *make_fixture_suite (void)
 {
@@ -515,6 +542,8 @@ Suite *make_fixture_suite (void)
   tcase_add_test(tc,test_fixture_fail_counts);
   tcase_add_test(tc,test_print_counts);
   tcase_add_test(tc,test_setup_failure_msg);
+
+#if defined(HAVE_FORK)
   tcase_add_test(tc,test_ch_setup);
   tcase_add_test(tc,test_ch_setup_fail);
   tcase_add_test(tc,test_ch_setup_fail_nofork);
@@ -525,5 +554,7 @@ Suite *make_fixture_suite (void)
   tcase_add_test(tc,test_ch_teardown_fail);
   tcase_add_test(tc,test_ch_teardown_sig);
   tcase_add_test(tc,test_ch_teardown_two_teardowns_fork);
+#endif
+
   return s;
 }
