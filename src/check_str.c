@@ -78,7 +78,8 @@ char *sr_stat_str (SRunner *sr)
 char *ck_strdup_printf (const char *fmt, ...)
 {
   /* Guess we need no more than 100 bytes. */
-  int n, size = 100;
+  int n;
+  size_t size = 100;
   char *p;
   va_list ap;
 
@@ -91,12 +92,12 @@ char *ck_strdup_printf (const char *fmt, ...)
       n = vsnprintf (p, size, fmt, ap);
       va_end(ap);
       /* If that worked, return the string. */
-      if (n > -1 && n < size)
+      if (n > -1 && n < (int)size)
         return p;
 
       /* Else try again with more space. */
       if (n > -1)   /* C99 conform vsnprintf() */
-        size = n+1; /* precisely what is needed */
+        size = (size_t)n+1; /* precisely what is needed */
       else          /* glibc 2.0 */
         size *= 2;  /* twice the old size */
 
