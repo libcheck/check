@@ -600,10 +600,10 @@ void srunner_run_all (SRunner *sr, enum print_output print_mode)
 
 void srunner_run (SRunner *sr, const char *sname, const char *tcname, enum print_output print_mode)
 {
-#ifdef HAVE_SIGACTION
+#if defined(HAVE_SIGACTION) && defined(HAVE_FORK)
   struct sigaction old_action;
   struct sigaction new_action;
-#endif /* HAVE_SIGACTION */
+#endif /* HAVE_SIGACTION && HAVE_FORK */
 
   /*  Get the selected test suite and test case from the
       environment.  */
@@ -617,17 +617,17 @@ void srunner_run (SRunner *sr, const char *sname, const char *tcname, enum print
       eprintf ("Bad print_mode argument to srunner_run_all: %d",
 	      __FILE__, __LINE__, print_mode);
     }
-#ifdef HAVE_SIGACTION
+#if defined(HAVE_SIGACTION) && defined(HAVE_FORK)
   memset(&new_action, 0, sizeof new_action);
   new_action.sa_handler = sig_handler;
   sigaction(SIGALRM, &new_action, &old_action);
-#endif /* HAVE_SIGACTION */
+#endif /* HAVE_SIGACTION && HAVE_FORK*/
   srunner_run_init (sr, print_mode);
   srunner_iterate_suites (sr, sname, tcname, print_mode);
   srunner_run_end (sr, print_mode);
-#ifdef HAVE_SIGACTION
+#if defined(HAVE_SIGACTION) && defined(HAVE_FORK)
   sigaction(SIGALRM, &old_action, NULL);
-#endif /* HAVE_SIGACTION */
+#endif /* HAVE_SIGACTION && HAVE_FORK */
 }
 
 pid_t check_fork (void)
