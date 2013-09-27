@@ -1,13 +1,5 @@
 #!/bin/sh
 
-# For this test script, it is assumed that HAVE_FORK=0 implies
-# running in a Windows environment. That means not only are
-# fork-related tests not run, but also line endings are important.
-# In *NIX environments line endings are \n, but in Windows they
-# are expected to be \r\n. For this reason, HAVE_FORK=0 uses
-# printf to generate the comparison strings, so the line endings
-# can be controlled.
-
 . ./test_vars
 
 t0="x"
@@ -16,9 +8,8 @@ if [ $HAVE_FORK -eq 1 ]; then
 t1="xRunning suite(s): Master
 33%: Checks: 3, Failures: 1, Errors: 1"
 else
-t1=`printf "xRunning suite(s): Master\r
-50%%: Checks: 2, Failures: 1, Errors: 0\r
-"`
+t1="xRunning suite(s): Master
+50%: Checks: 2, Failures: 1, Errors: 0"
 fi
 
 if [ $HAVE_FORK -eq 1 ]; then
@@ -27,10 +18,9 @@ t2="xRunning suite(s): Master
 ex_output.c:17:F:Core:test_fail:0: Failure
 ex_output.c:26:E:Core:test_exit:0: (after this point) Early exit with return value 1"
 else
-t2=`printf "xRunning suite(s): Master\r
-50%%: Checks: 2, Failures: 1, Errors: 0\r
-ex_output.c:17:F:Core:test_fail:0: Failure\r
-"`
+t2="xRunning suite(s): Master
+50%: Checks: 2, Failures: 1, Errors: 0
+ex_output.c:17:F:Core:test_fail:0: Failure"
 fi
 
 if [ $HAVE_FORK -eq 1 ]; then
@@ -40,11 +30,10 @@ ex_output.c:11:P:Core:test_pass:0: Passed
 ex_output.c:17:F:Core:test_fail:0: Failure
 ex_output.c:26:E:Core:test_exit:0: (after this point) Early exit with return value 1"
 else
-t3=`printf "xRunning suite(s): Master\r
-50%%: Checks: 2, Failures: 1, Errors: 0\r
-ex_output.c:11:P:Core:test_pass:0: Passed\r
-ex_output.c:17:F:Core:test_fail:0: Failure\r
-"`
+t3="xRunning suite(s): Master
+50%: Checks: 2, Failures: 1, Errors: 0
+ex_output.c:11:P:Core:test_pass:0: Passed
+ex_output.c:17:F:Core:test_fail:0: Failure"
 fi
 
 if [ $HAVE_FORK -eq 1 ]; then
@@ -59,21 +48,20 @@ error: Core:test_exit [
 ex_output.c:26: (after this point) Early exit with return value 1
 ]"
 else
-t4=`printf "xtest: Core:test_pass\r
-success: Core:test_pass\r
-test: Core:test_fail\r
-failure: Core:test_fail [\r
-ex_output.c:17: Failure\r
-]\r
-"`
+t4="xtest: Core:test_pass
+success: Core:test_pass
+test: Core:test_fail
+failure: Core:test_fail [
+ex_output.c:17: Failure
+]"
 fi
 
-op0=`./ex_output${EXEEXT} CK_SILENT`
-op1=`./ex_output${EXEEXT} CK_MINIMAL`
-op2=`./ex_output${EXEEXT} CK_NORMAL`
-op3=`./ex_output${EXEEXT} CK_VERBOSE`
+op0=`./ex_output${EXEEXT} CK_SILENT   | sed 's/\r//g'`
+op1=`./ex_output${EXEEXT} CK_MINIMAL  | sed 's/\r//g'`
+op2=`./ex_output${EXEEXT} CK_NORMAL   | sed 's/\r//g'`
+op3=`./ex_output${EXEEXT} CK_VERBOSE  | sed 's/\r//g'`
 if test 1 -eq $ENABLE_SUBUNIT; then
-op4=`./ex_output${EXEEXT} CK_SUBUNIT`
+op4=`./ex_output${EXEEXT} CK_SUBUNIT  | sed 's/\r//g'`
 fi
 
 
