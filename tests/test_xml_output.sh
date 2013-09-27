@@ -75,11 +75,6 @@ expected_xml="<?xml version=\"1.0\"?>
   </suite>
 </testsuites>"
 expected_duration_count=9
-
-# for fork tests, failures result in exit() being called, which prevents
-# a duration from being sent. This means that every failure results in
-# a -1 for duration, as no duration is known.
-expected_duration_error=5
 else
 expected_xml="<?xml version=\"1.0\"?>
 <?xml-stylesheet type=\"text/xsl\" href=\"http://check.sourceforge.net/xml/check_unittest.xslt\"?>
@@ -144,10 +139,6 @@ expected_xml="<?xml version=\"1.0\"?>
   </suite>
 </testsuites>"
 expected_duration_count=8
-
-# For no-fork mode, all tests 'finish' and do not call exit(). This means
-# that all tests will have a duration >= 0.
-expected_duration_error=0
 fi
 
 ./ex_xml_output${EXEEXT} > /dev/null
@@ -164,12 +155,6 @@ fi
 actual_duration_count=`grep -c \<duration\> test.log.xml`
 if [ x"${expected_duration_count}" != x"${actual_duration_count}" ]; then
     echo "Wrong number of <duration> elements in test.log.xml, ${expected_duration_count} vs ${actual_duration_count}";
-    exit 1;
-fi
-
-actual_duration_error=`cat test.log.xml | grep \<duration\> | grep -c "\-1\.000000"`
-if [ x"${expected_duration_error}" != x"${actual_duration_error}" ]; then
-    echo "Wrong format for (or number of) error <duration> elements in test.log.xml, ${expected_duration_error} vs ${actual_duration_error}";
     exit 1;
 fi
 
