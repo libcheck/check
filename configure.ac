@@ -95,6 +95,15 @@ esac],
 [echo "Subunit support will enable automatically."
  enable_subunit=autodetect])
 
+AC_ARG_ENABLE(fork,
+AC_HELP_STRING([--enable-fork],
+	       [enable support for fork @<:@default=autodetect@:>@]),
+[case "${enableval}" in
+  yes) enable_fork=true ;;
+  no)  enable_fork=false ;;
+  *)   AC_MSG_ERROR(bad value ${enableval} for --enable-fork) ;;
+esac], [enable_fork=true ])
+
 # Checks for programs.
 AC_PROG_AWK
 AC_PROG_CC
@@ -196,7 +205,11 @@ AC_CHECK_DECLS([alarm, clock_gettime, timer_create, timer_settime, timer_delete,
 AC_CHECK_FUNCS([setitimer])
 
 # Checks for functions not available in Windows
-AC_CHECK_FUNCS([fork], HAVE_FORK=1, HAVE_FORK=0)
+if $enable_fork; then
+	AC_CHECK_FUNCS([fork], HAVE_FORK=1, HAVE_FORK=0)
+else
+	HAVE_FORK=0
+fi
 AC_SUBST(HAVE_FORK)
 AC_CHECK_FUNCS([sigaction])
 
