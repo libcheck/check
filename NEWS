@@ -1,9 +1,6 @@
 In development:
 
-* Check compiles for the Windows using MinGW-w64.
-
-* All unit tests except check_check now pass on MinGW-w64 builds tested
-  against wine 1.4.
+* Check compiles for Windows using MinGW-w64 in Linux, and all unit tests pass using wine 1.4.
 
 * On systems without timer_settimer, use setitimer (if available) to get
   subsecond unit test timeouts. If setitimer is unavailable, fallback
