@@ -190,14 +190,25 @@ open_tmp_file (void)
   /* also note that mkstemp is apparently a C90 replacement for tmpfile */
   /* perhaps all we need to do on Windows is set TMPDIR to whatever is
      stored in TEMP for tmpfile to work */
-  /* it's also not clear if we need _tempnam instead of tempnam on WIN32 */
   /* and finally, the "b" from "w+b" is ignored on OS X, not sure about WIN32 */
   FILE *file = tmpfile ();
   if (file == NULL)
     {
       char *tmp = getenv ("TEMP");
       char *tmp_file = tempnam (tmp, "check_");
-      file = fopen (tmp_file, "w+b");
+      /*
+       * Note, tempnam is not enough to get a unique name. Between
+       * getting the name and opening the file, something else also
+       * calling tempnam() could get the same name. It has been observed
+       * on MinGW-w64 builds on Wine that this exact thing happens
+       * if multiple instances of a unit tests are running concurrently.
+       * To prevent two concurrent unit tests from getting the same file,
+       * we append the pid to the file. The pid should be unique on the
+       * system.
+       */
+      char *uniq_tmp_file = ck_strdup_printf("%s.%d",tmp_file, getpid());
+      file = fopen (uniq_tmp_file, "w+b");
+      free(uniq_tmp_file);
       free (tmp_file);
     }
   return file;
