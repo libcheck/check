@@ -54,7 +54,9 @@
  */
 
 static FILE *send_file1;
+static char *send_file1_name;
 static FILE *send_file2;
+static char *send_file2_name;
 
 static FILE * get_pipe(void);
 static void setup_pipe (void);
@@ -189,10 +191,22 @@ void teardown_messaging(void)
   teardown_pipe();
 }
 
-static FILE *
-open_tmp_file (void)
+/**
+ * Open a temporary file.
+ *
+ * If the file could be unlinked upon creation, the name
+ * of the file is not returned via 'name'. However, if the
+ * file could not be unlinked, the name is returned,
+ * expecting the caller to both delete the file and
+ * free the 'name' field after the file is closed.
+ */
+static FILE * open_tmp_file (char ** name)
 {
-  /* workaround from Bug 3314868, but maybe tmpfile works if TMPDIR is set */
+  *name = NULL;
+  /* Windows does not like tmpfile(). This is likely because tmpfile()
+   * call unlink() on the file before returning it, to make sure the
+   * file is deleted when it is closed. The unlink() call also fails
+   * on Windows if the file is still open. */
   /* also note that mkstemp is apparently a C90 replacement for tmpfile */
   /* perhaps all we need to do on Windows is set TMPDIR to whatever is
      stored in TEMP for tmpfile to work */
@@ -214,7 +228,7 @@ open_tmp_file (void)
        */
       char *uniq_tmp_file = ck_strdup_printf("%s.%d",tmp_file, getpid());
       file = fopen (uniq_tmp_file, "w+b");
-      free(uniq_tmp_file);
+      *name = uniq_tmp_file;
       free (tmp_file);
     }
   return file;
@@ -225,12 +239,12 @@ setup_pipe (void)
 {
   if (send_file1 == NULL)
     {
-      send_file1 = open_tmp_file ();
+      send_file1 = open_tmp_file (&send_file1_name);
       return;
     }
   if (send_file2 == NULL)
     {
-      send_file2 = open_tmp_file ();
+      send_file2 = open_tmp_file (&send_file2_name);
       return;
     }
   eprintf ("Only one nesting of suite runs supported", __FILE__, __LINE__);
@@ -241,9 +255,19 @@ static void teardown_pipe(void)
   if (send_file2 != 0) {
     fclose(send_file2);
     send_file2 = 0;
+    if(send_file2_name != NULL) {
+		unlink(send_file2_name);
+		free(send_file2_name);
+		send_file2_name = NULL;
+	}
   } else if (send_file1 != 0) {
     fclose(send_file1);
     send_file1 = 0;
+    if(send_file1_name != NULL) {
+		unlink(send_file1_name);
+		free(send_file1_name);
+		send_file1_name = NULL;
+	}
   } else {
     eprintf("No messaging setup", __FILE__, __LINE__);
   }
