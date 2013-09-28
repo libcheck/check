@@ -56,12 +56,12 @@ ex_output.c:17: Failure
 ]"
 fi
 
-op0=`./ex_output${EXEEXT} CK_SILENT   | sed 's/\r//g'`
-op1=`./ex_output${EXEEXT} CK_MINIMAL  | sed 's/\r//g'`
-op2=`./ex_output${EXEEXT} CK_NORMAL   | sed 's/\r//g'`
-op3=`./ex_output${EXEEXT} CK_VERBOSE  | sed 's/\r//g'`
+op0=`./ex_output${EXEEXT} CK_SILENT   | tr -d "\r"`
+op1=`./ex_output${EXEEXT} CK_MINIMAL  | tr -d "\r"`
+op2=`./ex_output${EXEEXT} CK_NORMAL   | tr -d "\r"`
+op3=`./ex_output${EXEEXT} CK_VERBOSE  | tr -d "\r"`
 if test 1 -eq $ENABLE_SUBUNIT; then
-op4=`./ex_output${EXEEXT} CK_SUBUNIT  | sed 's/\r//g'`
+op4=`./ex_output${EXEEXT} CK_SUBUNIT  | tr -d "\r"`
 fi
 
 

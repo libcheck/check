@@ -142,7 +142,7 @@ expected_duration_count=8
 fi
 
 ./ex_xml_output${EXEEXT} > /dev/null
-actual_xml=`cat ${OUTPUT_FILE} | sed 's/\r//g' | grep -v \<duration\> | grep -v \<datetime\> | grep -v \<path\>`
+actual_xml=`cat ${OUTPUT_FILE} | tr -d "\r" | grep -v \<duration\> | grep -v \<datetime\> | grep -v \<path\>`
 if [ x"${expected_xml}" != x"${actual_xml}" ]; then
     echo "Problem with ex_xml_output${EXEEXT} ${3}";
     echo "Expected:";
