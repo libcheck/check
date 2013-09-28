@@ -155,7 +155,7 @@ static TestResult *construct_test_result (RcvMsg *rmsg, int waserror)
   tr = tr_create();
 
   if (rmsg->msg != NULL || waserror) {
-    tr->ctx = (cur_fork_status () == CK_FORK) ? rmsg->lastctx : rmsg->failctx;
+    tr->ctx = rmsg->lastctx;
     tr->msg = rmsg->msg;
     rmsg->msg = NULL;
     tr_set_loc_by_ctx (tr, tr->ctx, rmsg);
