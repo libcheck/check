@@ -198,6 +198,7 @@ START_TEST(test_srunner_suite_no_tcase)
 END_TEST
 
 
+#if HAVE_WORKING_SETENV
 START_TEST(test_srunner_run_suite_env)
 {
   /* This test makes the srunner_run_all function to run all the test
@@ -303,6 +304,7 @@ START_TEST(test_srunner_suite_no_tcase_env)
   unsetenv ("CK_RUN_CASE");
 }
 END_TEST
+#endif /* HAVE_WORKING_SETENV */
 
 Suite *make_selective_suite (void)
 {
@@ -317,12 +319,15 @@ Suite *make_selective_suite (void)
   tcase_add_test (tc, test_srunner_no_tcase);
   tcase_add_test (tc, test_srunner_suite_tcase);
   tcase_add_test (tc, test_srunner_suite_no_tcase);
+
+#if HAVE_WORKING_SETENV
   tcase_add_test (tc, test_srunner_run_suite_env);
   tcase_add_test (tc, test_srunner_run_no_suite_env);
   tcase_add_test (tc, test_srunner_run_tcase_env);
   tcase_add_test (tc, test_srunner_no_tcase_env);
   tcase_add_test (tc, test_srunner_suite_tcase_env);
   tcase_add_test (tc, test_srunner_suite_no_tcase_env);
+#endif /* HAVE_WORKING_SETENV */
 
   tcase_add_unchecked_fixture (tc,
                                selective_setup,
