@@ -26,7 +26,7 @@ test_log_output ( ) {
     ./ex_log_output${EXEEXT} "${1}" > /dev/null
     actual=`cat test.log | tr -d "\r"`
     if [ x"${expected}" != x"${actual}" ]; then
-	echo "Problem with ex_log_output${EXEEXT} ${3}";
+	echo "Problem with ex_log_output${EXEEXT} ${1}";
 	echo "Expected:";
 	echo "${expected}";
 	echo "Got:";
