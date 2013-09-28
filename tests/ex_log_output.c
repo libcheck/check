@@ -78,7 +78,7 @@ static void run_tests (int printmode)
 
 static void usage(void)
 {
-  printf ("Usage: ex_output (CRSILENT | CRMINIMAL | CRNORMAL | CRVERBOSE)\n");
+  printf ("Usage: ex_output (CK_SILENT | CK_MINIMAL | CK_NORMAL | CK_VERBOSE)\n");
 }
 
 int main (int argc, char **argv)
