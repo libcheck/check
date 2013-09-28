@@ -121,6 +121,12 @@ TestResult *receive_test_result (int waserror)
     eprintf ("Error in call to get_pipe",__FILE__, __LINE__ - 2);
   rewind(fp);
   rmsg = punpack (fileno(fp));
+
+  if(rmsg == NULL)
+  {
+	  eprintf ("Error in call to punpack",__FILE__, __LINE__ - 4);
+  }
+
   teardown_pipe();
   setup_pipe();
 
