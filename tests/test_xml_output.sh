@@ -144,7 +144,7 @@ fi
 ./ex_xml_output${EXEEXT} > /dev/null
 actual_xml=`cat ${OUTPUT_FILE} | tr -d "\r" | grep -v \<duration\> | grep -v \<datetime\> | grep -v \<path\>`
 if [ x"${expected_xml}" != x"${actual_xml}" ]; then
-    echo "Problem with ex_xml_output${EXEEXT} ${3}";
+    echo "Problem with ex_xml_output${EXEEXT}";
     echo "Expected:";
     echo "${expected_xml}";
     echo "Got:";
