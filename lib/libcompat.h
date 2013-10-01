@@ -123,12 +123,17 @@ int unsetenv (const char *name);
  * be available. These should define which type of clock
  * clock_gettime() should use. We define it here if it is
  * not defined simply so the reimplementation can ignore it.
+ *
+ * We set the values of these clocks to some (hopefully)
+ * invalid value, to avoid the case where we define a
+ * clock with a valid value, and unintentionally use
+ * an actual good clock by accident.
  */
 #ifndef CLOCK_MONOTONIC
-#define CLOCK_MONOTONIC 0
+#define CLOCK_MONOTONIC -1
 #endif
 #ifndef CLOCK_REALTIME
-#define CLOCK_REALTIME 0
+#define CLOCK_REALTIME -1
 #endif
 
 #ifndef HAVE_LIBRT
