@@ -31,6 +31,7 @@
 #include "check_impl.h"
 #include "check_msg.h"
 #include "check_pack.h"
+#include "check_str.h"
 
 
 /* 'Pipe' is implemented as a temporary file to overcome message
