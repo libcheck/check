@@ -203,7 +203,9 @@ void teardown_messaging(void)
  */
 static FILE * open_tmp_file (char ** name)
 {
+  FILE *file;
   *name = NULL;
+
   /* Windows does not like tmpfile(). This is likely because tmpfile()
    * call unlink() on the file before returning it, to make sure the
    * file is deleted when it is closed. The unlink() call also fails
@@ -212,7 +214,8 @@ static FILE * open_tmp_file (char ** name)
   /* perhaps all we need to do on Windows is set TMPDIR to whatever is
      stored in TEMP for tmpfile to work */
   /* and finally, the "b" from "w+b" is ignored on OS X, not sure about WIN32 */
-  FILE *file = tmpfile ();
+
+  file = tmpfile ();
   if (file == NULL)
     {
       char *tmp = getenv ("TEMP");
