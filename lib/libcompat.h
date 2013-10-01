@@ -116,14 +116,13 @@ const char *strsignal (int sig);
 int unsetenv (const char *name);
 #endif /* !HAVE_DECL_UNSETENV */
 
-#ifndef HAVE_LIBRT
 /* 
- * On systems where clock_gettime() is not available, the
- * definition for CLOCK_MONOTONIC and CLOCK_REALTIME will
- * also not be available. This variable should define which
- * type of clock clock_gettime() should use. We define it
- * here if it is not defined simply so the reimplementation
- * can ignore it.
+ * On systems where clock_gettime() is not available, or
+ * on systems where some clocks may not be supported, the
+ * definition for CLOCK_MONOTONIC and CLOCK_REALTIME may not
+ * be available. These should define which type of clock
+ * clock_gettime() should use. We define it here if it is
+ * not defined simply so the reimplementation can ignore it.
  */
 #ifndef CLOCK_MONOTONIC
 #define CLOCK_MONOTONIC 0
@@ -132,6 +131,7 @@ int unsetenv (const char *name);
 #define CLOCK_REALTIME 0
 #endif
 
+#ifndef HAVE_LIBRT
 #ifdef STRUCT_ITIMERSPEC_DEFINITION_MISSING
 /* 
  * The following structure is defined in POSIX.1b for timer start values and intervals.
