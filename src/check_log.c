@@ -231,7 +231,7 @@ void xml_lfun (SRunner *sr CK_ATTRIBUTE_UNUSED, FILE *file, enum print_output pr
 {
   TestResult *tr;
   Suite *s;
-  static struct timespec ts_start = {0};
+  static struct timespec ts_start = {0,0};
   static char t[sizeof "yyyy-mm-dd hh:mm:ss"] = {0};
 
   if (t[0] == 0)
@@ -253,7 +253,7 @@ void xml_lfun (SRunner *sr CK_ATTRIBUTE_UNUSED, FILE *file, enum print_output pr
     break;
   case CLENDLOG_SR:
     {
-      struct timespec ts_end = {0};
+      struct timespec ts_end = {0,0};
       unsigned int duration;
 
       /* calculate time the test were running */
