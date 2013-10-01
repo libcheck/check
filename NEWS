@@ -1,5 +1,7 @@
 In development:
 
+* Check compiles for Windows using the Cygwin environment, and all unit tests pass.
+
 * Check compiles for Windows using MinGW-w64 in Linux, and all unit tests pass using wine 1.4.
 
 * On systems without timer_settimer, use setitimer (if available) to get
