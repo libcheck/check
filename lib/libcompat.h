@@ -137,6 +137,19 @@ int unsetenv (const char *name);
 #endif
 
 #ifndef HAVE_LIBRT
+
+#ifdef STRUCT_TIMESPEC_DEFINITION_MISSING
+/*
+ * The following structure is defined in POSIX 1003.1 for times
+ * specified in seconds and nanoseconds. If it is not defined in
+ * time.g, then we need to define it here
+ */
+struct timespec {
+   time_t   tv_sec;
+   long     tv_nsec;
+};
+#endif /* STRUCT_TIMESPEC_DEFINITION_MISSING */
+
 #ifdef STRUCT_ITIMERSPEC_DEFINITION_MISSING
 /* 
  * The following structure is defined in POSIX.1b for timer start values and intervals.

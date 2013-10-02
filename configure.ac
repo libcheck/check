@@ -152,6 +152,10 @@ AC_CHECK_LIB([m], [floor])
 # add -lrt to LIBS
 AC_CHECK_LIB([rt], [clock_gettime, timer_create, timer_settime, timer_delete])
 
+# check that struct timespec is defined in time.h. If not, we need to
+# define it in libcompat.h
+AC_CHECK_MEMBERS([struct timespec.tv_sec, struct timespec.tv_nsec], [], [AC_DEFINE_UNQUOTED(STRUCT_TIMESPEC_DEFINITION_MISSING, 1, "Need to define the timespec structure")], [#include <time.h>])
+
 # check that struct itimerspec is defined in time.h. If not, we need to
 # define it in libcompat.h
 AC_CHECK_MEMBERS([struct itimerspec.it_interval, struct itimerspec.it_value], [], [AC_DEFINE_UNQUOTED(STRUCT_ITIMERSPEC_DEFINITION_MISSING, 1, "Need to define the itimerspec structure")], [#include <time.h>])
