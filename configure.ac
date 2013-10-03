@@ -39,6 +39,8 @@ AC_SUBST(CHECK_MICRO_VERSION)
 AC_SUBST(CHECK_VERSION)
 
 # Configure options.
+# allow `./configure --enable-silent-rules' and `make V=0'
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([no])])
 
 AC_ARG_ENABLE(gcov,
 AC_HELP_STRING([--enable-gcov],
