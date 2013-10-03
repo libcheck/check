@@ -1,5 +1,6 @@
 #include "libcompat.h"
-  
+
+#if !defined(localtime_r)
 struct tm *
 localtime_r (const time_t *clock, struct tm *result)
 {
@@ -14,3 +15,5 @@ localtime_r (const time_t *clock, struct tm *result)
     }
   return result;
 }
+
+#endif

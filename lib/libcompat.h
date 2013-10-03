@@ -78,7 +78,9 @@ int fileno (FILE *stream);
 #endif /* !HAVE_DECL_FILENO */
 
 #if !HAVE_DECL_LOCALTIME_R
+#if !defined(localtime_r)
 struct tm *localtime_r (const time_t *clock, struct tm *result);
+#endif
 #endif /* !HAVE_DECL_LOCALTIME_R */
 
 #if !HAVE_DECL_PIPE
