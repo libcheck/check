@@ -26,7 +26,9 @@ AC_CONFIG_AUX_DIR([build-aux])
 AC_USE_SYSTEM_EXTENSIONS
 
 # really severe build strictness
-AM_INIT_AUTOMAKE([-Wall -Werror gnits 1.9.6])
+AM_INIT_AUTOMAKE([-Wall gnits 1.9.6])
+# Change to using into-in-builddir in the future:
+#AM_INIT_AUTOMAKE([info-in-builddir -Wall -Werror gnits 1.14])
 
 # From patch 2803433, request system extensions to generate 64-bit safe code
 AC_USE_SYSTEM_EXTENSIONS
