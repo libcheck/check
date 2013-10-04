@@ -399,6 +399,7 @@ START_TEST(test_ck_assert_ptr_ne)
 }
 END_TEST
 
+#if defined(HAVE_FORK)
 START_TEST(test_segv)
   #define LINENO_segv _STR(__LINE__)
 {
@@ -426,6 +427,7 @@ START_TEST(test_mark_point)
   ck_abort_msg("Shouldn't reach here");
 }
 END_TEST
+#endif
 
 #if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK)
 START_TEST(test_eternal)

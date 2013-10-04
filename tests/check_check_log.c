@@ -43,6 +43,7 @@ START_TEST(test_set_log)
 }
 END_TEST
 
+#if HAVE_WORKING_SETENV
 /* Test enabling logging via environment variable */
 START_TEST(test_set_log_env)
 {
@@ -73,6 +74,7 @@ START_TEST(test_set_log_env)
   srunner_free(sr);
 }
 END_TEST
+#endif /* HAVE_WORKING_SETENV */
 
 START_TEST(test_no_set_log)
 {
@@ -117,6 +119,7 @@ START_TEST(test_set_xml)
 }
 END_TEST
 
+#if HAVE_WORKING_SETENV
 /* Test enabling XML logging via environment variable */
 START_TEST(test_set_xml_env)
 {
@@ -147,6 +150,7 @@ START_TEST(test_set_xml_env)
   srunner_free(sr);
 }
 END_TEST
+#endif /* HAVE_WORKING_SETENV */
 
 START_TEST(test_no_set_xml)
 {
