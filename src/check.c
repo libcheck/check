@@ -193,6 +193,9 @@ void tcase_add_checked_fixture (TCase *tc, SFun setup, SFun teardown)
 #if defined(HAVE_FORK)
   tcase_add_fixture (tc,setup,teardown,1);
 #else
+  (void)tc;
+  (void)setup;
+  (void)teardown;
   eprintf("This version does not support checked fixtures, as fork is not supported", __FILE__, __LINE__);
 #endif
 }
