@@ -221,6 +221,7 @@ static void tcase_add_fixture (TCase *tc, SFun setup, SFun teardown,
 
 void tcase_set_timeout (TCase *tc, double timeout)
 {
+#if defined(HAVE_FORK)
   if (timeout >= 0) {
     char *env = getenv("CK_TIMEOUT_MULTIPLIER");
     if (env != NULL) {
@@ -234,6 +235,11 @@ void tcase_set_timeout (TCase *tc, double timeout)
   tc->timeout.tv_sec   = (time_t)floor(timeout);
   tc->timeout.tv_nsec  = (long)((timeout-floor(timeout)) * (double)NANOS_PER_SECONDS);
   }
+#else
+  (void)tc;
+  (void)timeout;
+  eprintf("This version does not support timeouts, as fork is not supported", __FILE__, __LINE__);
+#endif /* HAVE_FORK */
 }
 
 void tcase_fn_start (const char *fname CK_ATTRIBUTE_UNUSED, const char *file, int line)
