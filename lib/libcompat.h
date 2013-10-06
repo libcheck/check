@@ -34,6 +34,9 @@
 /* defines FILE */
 #include <stdio.h>
 
+/* defines exit() */
+#include <stdlib.h>
+
 /* provides localtime and struct tm */
 #include <sys/time.h>
 #include <time.h>
