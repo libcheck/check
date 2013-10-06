@@ -6,7 +6,7 @@
 #include <check.h>
 #include "check_check.h"
 
-
+#if HAVE_WORKING_SETENV
 /* save environment variable's value and set new value */
 static int save_set_env(const char *name, const char *value,
                         const char **old_value)
@@ -27,6 +27,7 @@ static int restore_env(const char *name, const char *old_value)
   }
   return res;
 }
+#endif /* HAVE_WORKING_SETENV */
 
 START_TEST(test_set_log)
 {
