@@ -294,6 +294,7 @@
 #endif	/* HAVE_STDARG_H */
 
 #if !HAVE_VASPRINTF
+int rpl_vasprintf(char **, const char *, va_list);
 #if HAVE_STDLIB_H
 #include <stdlib.h>	/* For malloc(3). */
 #endif	/* HAVE_STDLIB_H */
@@ -1530,8 +1531,12 @@ rpl_snprintf(va_alist) va_dcl
 #if !HAVE_ASPRINTF
 #if HAVE_STDARG_H
 int
+rpl_asprintf(char **ret, const char *format, ...);
+int
 rpl_asprintf(char **ret, const char *format, ...)
 #else
+int
+rpl_asprintf(va_alist) va_dcl;
 int
 rpl_asprintf(va_alist) va_dcl
 #endif	/* HAVE_STDARG_H */
