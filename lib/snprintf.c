@@ -480,7 +480,7 @@ static void *mymemcpy(void *, void *, size_t);
 #define PRINT_C_CHAR            1
 #define PRINT_C_SHORT           2
 #define PRINT_C_LONG            3
-#define PRINT_C_LLONG           4
+/*#define PRINT_C_LLONG         4 */
 #define PRINT_C_LDOUBLE         5
 #define PRINT_C_SIZE            6
 #define PRINT_C_PTRDIFF         7
@@ -535,7 +535,9 @@ rpl_vsnprintf(char *str, size_t size, const char *format, va_list args)
 	INTMAX_T *intmaxptr;
 	PTRDIFF_T *ptrdiffptr;
 	SSIZE_T *sizeptr;
+	/* Disabling, as long long is not supported in C90.
 	LLONG *llongptr;
+	*/
 	long int *longptr;
 	int *intptr;
 	short int *shortptr;
@@ -668,10 +670,11 @@ rpl_vsnprintf(char *str, size_t size, const char *format, va_list args)
 				break;
 			case 'l':
 				ch = *format++;
-				if (ch == 'l') {	/* It's a long long. */
+				/*
+				if (ch == 'l') }
 					ch = *format++;
 					cflags = PRINT_C_LLONG;
-				} else
+				} else */
 					cflags = PRINT_C_LONG;
 				break;
 			case 'L':
@@ -711,9 +714,11 @@ rpl_vsnprintf(char *str, size_t size, const char *format, va_list args)
 				case PRINT_C_LONG:
 					value = va_arg(args, long int);
 					break;
+				/*
 				case PRINT_C_LLONG:
 					value = va_arg(args, LLONG);
 					break;
+				*/
 				case PRINT_C_SIZE:
 					value = va_arg(args, SSIZE_T);
 					break;
@@ -756,9 +761,11 @@ rpl_vsnprintf(char *str, size_t size, const char *format, va_list args)
 				case PRINT_C_LONG:
 					value = va_arg(args, unsigned long int);
 					break;
+				/*
 				case PRINT_C_LLONG:
 					value = va_arg(args, ULLONG);
 					break;
+				*/
 				case PRINT_C_SIZE:
 					value = va_arg(args, size_t);
 					break;
@@ -877,10 +884,12 @@ rpl_vsnprintf(char *str, size_t size, const char *format, va_list args)
 					longptr = va_arg(args, long int *);
 					*longptr = len;
 					break;
+				/*
 				case PRINT_C_LLONG:
 					llongptr = va_arg(args, LLONG *);
 					*llongptr = len;
 					break;
+				*/
 				case PRINT_C_SIZE:
 					/*
 					 * C99 says that with the "z" length
