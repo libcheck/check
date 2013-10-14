@@ -221,7 +221,7 @@ AC_CHECK_DECLS([alarm, clock_gettime, timer_create, timer_settime, timer_delete,
 AC_CHECK_FUNCS([setitimer])
 
 # Checks for functions not available in Windows
-if $enable_fork; then
+if test "xtrue" = x"$enable_fork"; then
 	AC_CHECK_FUNCS([fork], HAVE_FORK=1, HAVE_FORK=0)
 else
 	HAVE_FORK=0
