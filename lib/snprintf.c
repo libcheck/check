@@ -690,6 +690,9 @@ rpl_vsnprintf(char *str, size_t size, const char *format, va_list args)
 				cflags = PRINT_C_SIZE;
 				ch = *format++;
 				break;
+			default:
+				/* Lenght modifier is invalid */
+				break;
 			}
 			state = PRINT_S_CONV;
 			break;
@@ -914,6 +917,9 @@ rpl_vsnprintf(char *str, size_t size, const char *format, va_list args)
 			base = cflags = flags = width = 0;
 			precision = -1;
 			break;
+		default:
+			/* This is an invalid state, should not get here */
+			break;
 		}
 out:
 	if (len < size)
@@ -1007,6 +1013,9 @@ fmtint(char *str, size_t *len, size_t size, INTMAX_T value, int base, int width,
 			break;
 		case 16:
 			hexprefix = (flags & PRINT_F_UP) ? 'X' : 'x';
+			break;
+		default:
+			/* Invalid base */
 			break;
 		}
 	}
