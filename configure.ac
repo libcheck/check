@@ -108,6 +108,14 @@ AC_HELP_STRING([--enable-fork],
   *)   AC_MSG_ERROR(bad value ${enableval} for --enable-fork) ;;
 esac], [enable_fork=true ])
 
+AC_ARG_ENABLE(snprintf-replacement,
+AC_HELP_STRING([--enable-snprintf-replacement],
+	       [enable check snprintf replacement, (even if the system provides a C99 compliant version) @<:@default=autodetect@:>@]),
+[case "${enableval}" in
+  yes) enable_snprintf_replacement=true; echo "BMA: yes" ;;
+  *)   AC_MSG_ERROR(bad value ${enableval} for --enable-snprintf-replacement) ;;
+esac], [enable_snprintf_replacement=autodetect; echo "BMA: autodetect" ])
+
 # Checks for programs.
 AC_PROG_AWK
 AC_PROG_CC

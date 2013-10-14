@@ -88,43 +88,52 @@ AC_DEFUN([HW_FUNC___VA_COPY],
 # respectively.  Define HAVE_VSNPRINTF to 1 only if $hw_cv_func_vsnprintf_c99
 # is set to "yes".  Otherwise, define vsnprintf to rpl_vsnprintf and make sure
 # the replacement function will be built.
+#
+# If enable_snprintf_replacement=true, the replacement is forced to be built.
 AC_DEFUN([HW_FUNC_VSNPRINTF],
 [
   AC_PREREQ([2.60])dnl 2.59 should work if some AC_TYPE_* macros are replaced.
   AC_REQUIRE([HW_HEADER_STDARG_H])dnl Our check evaluates HAVE_STDARG_H.
-  AC_CHECK_FUNC([vsnprintf],
-    [hw_cv_func_vsnprintf=yes],
-    [hw_cv_func_vsnprintf=no])
-  AS_IF([test "$hw_cv_func_vsnprintf" = yes],
-    [AC_CACHE_CHECK([whether vsnprintf is C99 compliant],
-      [hw_cv_func_vsnprintf_c99],
-      [AC_RUN_IFELSE(
-        [AC_LANG_PROGRAM(
-          [[#if HAVE_STDARG_H
-          #include <stdarg.h>
-          #endif
-          #include <stdio.h>
-          static int testprintf(char *buf, size_t size, const char *format, ...)
-          {
-            int result;
-            va_list ap;
-            va_start(ap, format);
-            result = vsnprintf(buf, size, format, ap);
-            va_end(ap);
-            return result;
-          }]],
-          [[char buf[43];
-          if (testprintf(buf, 4, "The answer is %27.2g.", 42.0) != 42 ||
-              testprintf(buf, 0, "No, it's %32zu.", (size_t)42) != 42 ||
-              buf[0] != 'T' || buf[3] != '\0')
-            return 1;]])],
-        [hw_cv_func_vsnprintf_c99=yes],
-        [hw_cv_func_vsnprintf_c99=no],
-        [hw_cv_func_vsnprintf_c99=no])])],
-    [hw_cv_func_snprintf_c99=no])
-  AS_IF([test "$hw_cv_func_vsnprintf_c99" = yes],
-    [AC_DEFINE([HAVE_VSNPRINTF], [1],
-      [Define to 1 if you have a C99 compliant `vsnprintf' function.])],
+
+  if test "xtrue" != x"$enable_snprintf_replacement"; then
+	  AC_CHECK_FUNC([vsnprintf],
+		[hw_cv_func_vsnprintf=yes],
+		[hw_cv_func_vsnprintf=no])
+	  AS_IF([test "$hw_cv_func_vsnprintf" = yes],
+		[AC_CACHE_CHECK([whether vsnprintf is C99 compliant],
+		  [hw_cv_func_vsnprintf_c99],
+		  [AC_RUN_IFELSE(
+			[AC_LANG_PROGRAM(
+			  [[#if HAVE_STDARG_H
+			  #include <stdarg.h>
+			  #endif
+			  #include <stdio.h>
+			  static int testprintf(char *buf, size_t size, const char *format, ...)
+			  {
+				int result;
+				va_list ap;
+				va_start(ap, format);
+				result = vsnprintf(buf, size, format, ap);
+				va_end(ap);
+				return result;
+			  }]],
+			  [[char buf[43];
+			  if (testprintf(buf, 4, "The answer is %27.2g.", 42.0) != 42 ||
+				  testprintf(buf, 0, "No, it's %32zu.", (size_t)42) != 42 ||
+				  buf[0] != 'T' || buf[3] != '\0')
+				return 1;]])],
+			[hw_cv_func_vsnprintf_c99=yes],
+			[hw_cv_func_vsnprintf_c99=no],
+			[hw_cv_func_vsnprintf_c99=no])])],
+		[hw_cv_func_snprintf_c99=no])
+	  AS_IF([test "$hw_cv_func_vsnprintf_c99" = yes],
+		[AC_DEFINE([HAVE_VSNPRINTF], [1],
+		  [Define to 1 if you have a C99 compliant 'vsnprintf' function.])])
+  else
+      hw_cv_func_vsnprintf_c99=no
+  fi
+
+  AS_IF([test "$hw_cv_func_vsnprintf_c99" = no],
     [AC_DEFINE([vsnprintf], [rpl_vsnprintf],
       [Define to rpl_vsnprintf if the replacement function should be used.])
     AC_CHECK_HEADERS([inttypes.h locale.h stddef.h stdint.h])
@@ -148,29 +157,37 @@ AC_DEFUN([HW_FUNC_VSNPRINTF],
 # respectively.  Define HAVE_SNPRINTF to 1 only if $hw_cv_func_snprintf_c99
 # is set to "yes".  Otherwise, define snprintf to rpl_snprintf and make sure
 # the replacement function will be built.
+#
+# If enable_snprintf_replacement=true, the replacement is forced to be built.
 AC_DEFUN([HW_FUNC_SNPRINTF],
 [
   AC_REQUIRE([HW_FUNC_VSNPRINTF])dnl Our snprintf(3) calls vsnprintf(3).
-  AC_CHECK_FUNC([snprintf],
-    [hw_cv_func_snprintf=yes],
-    [hw_cv_func_snprintf=no])
-  AS_IF([test "$hw_cv_func_snprintf" = yes],
-    [AC_CACHE_CHECK([whether snprintf is C99 compliant],
-      [hw_cv_func_snprintf_c99],
-      [AC_RUN_IFELSE(
-        [AC_LANG_PROGRAM([[#include <stdio.h>]],
-          [[char buf[43];
-          if (snprintf(buf, 4, "The answer is %27.2g.", 42.0) != 42 ||
-              snprintf(buf, 0, "No, it's %32zu.", (size_t)42) != 42 ||
-              buf[0] != 'T' || buf[3] != '\0')
-            return 1;]])],
-        [hw_cv_func_snprintf_c99=yes],
-        [hw_cv_func_snprintf_c99=no],
-        [hw_cv_func_snprintf_c99=no])])],
-    [hw_cv_func_snprintf_c99=no])
+
+  if test "xtrue" != x"$enable_snprintf_replacement"; then
+	  AC_CHECK_FUNC([snprintf],
+		[hw_cv_func_snprintf=yes],
+		[hw_cv_func_snprintf=no])
+	  AS_IF([test "$hw_cv_func_snprintf" = yes],
+		[AC_CACHE_CHECK([whether snprintf is C99 compliant],
+		  [hw_cv_func_snprintf_c99],
+		  [AC_RUN_IFELSE(
+			[AC_LANG_PROGRAM([[#include <stdio.h>]],
+			  [[char buf[43];
+			  if (snprintf(buf, 4, "The answer is %27.2g.", 42.0) != 42 ||
+				  snprintf(buf, 0, "No, it's %32zu.", (size_t)42) != 42 ||
+				  buf[0] != 'T' || buf[3] != '\0')
+				return 1;]])],
+			[hw_cv_func_snprintf_c99=yes],
+			[hw_cv_func_snprintf_c99=no],
+			[hw_cv_func_snprintf_c99=no])])],
+		[hw_cv_func_snprintf_c99=no])
+  else
+      hw_cv_func_snprintf_c99=no
+  fi
+
   AS_IF([test "$hw_cv_func_snprintf_c99" = yes],
     [AC_DEFINE([HAVE_SNPRINTF], [1],
-      [Define to 1 if you have a C99 compliant `snprintf' function.])],
+      [Define to 1 if you have a C99 compliant 'snprintf' function.])],
     [AC_DEFINE([snprintf], [rpl_snprintf],
       [Define to rpl_snprintf if the replacement function should be used.])
     _HW_FUNC_XPRINTF_REPLACE])
@@ -181,12 +198,20 @@ AC_DEFUN([HW_FUNC_SNPRINTF],
 # Set $hw_cv_func_vasprintf to "yes" or "no".  Define HAVE_VASPRINTF to 1 if
 # $hw_cv_func_vasprintf is set to "yes".  Otherwise, define vasprintf to
 # rpl_vasprintf and make sure the replacement function will be built.
+#
+# If enable_snprintf_replacement=true, the replacement is forced to be built.
 AC_DEFUN([HW_FUNC_VASPRINTF],
 [
   AC_REQUIRE([HW_FUNC_VSNPRINTF])dnl Our vasprintf(3) calls vsnprintf(3).
-  AC_CHECK_FUNCS([vasprintf],
-    [hw_cv_func_vasprintf=yes],
-    [hw_cv_func_vasprintf=no])
+
+  if test "xtrue" != x"$enable_snprintf_replacement"; then
+	  AC_CHECK_FUNCS([vasprintf],
+		[hw_cv_func_vasprintf=yes],
+		[hw_cv_func_vasprintf=no])
+  else
+      hw_cv_func_vasprintf=no
+  fi
+
   AS_IF([test "$hw_cv_func_vasprintf" = no],
     [AC_DEFINE([vasprintf], [rpl_vasprintf],
       [Define to rpl_vasprintf if the replacement function should be used.])
@@ -202,12 +227,20 @@ AC_DEFUN([HW_FUNC_VASPRINTF],
 # Set $hw_cv_func_asprintf to "yes" or "no".  Define HAVE_ASPRINTF to 1 if
 # $hw_cv_func_asprintf is set to "yes".  Otherwise, define asprintf to
 # rpl_asprintf and make sure the replacement function will be built.
+#
+# If enable_snprintf_replacement=true, the replacement is forced to be built.
 AC_DEFUN([HW_FUNC_ASPRINTF],
 [
   AC_REQUIRE([HW_FUNC_VASPRINTF])dnl Our asprintf(3) calls vasprintf(3).
-  AC_CHECK_FUNCS([asprintf],
-    [hw_cv_func_asprintf=yes],
-    [hw_cv_func_asprintf=no])
+
+  if test "xtrue" != x"$enable_snprintf_replacement"; then
+	  AC_CHECK_FUNCS([asprintf],
+		[hw_cv_func_asprintf=yes],
+		[hw_cv_func_asprintf=no])
+  else
+      hw_cv_func_asprintf=no
+  fi
+  
   AS_IF([test "$hw_cv_func_asprintf" = no],
     [AC_DEFINE([asprintf], [rpl_asprintf],
       [Define to rpl_asprintf if the replacement function should be used.])
