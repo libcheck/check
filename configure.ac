@@ -169,12 +169,26 @@ AC_CHECK_LIB([m], [floor])
 AC_CHECK_LIB([rt], [clock_gettime, timer_create, timer_settime, timer_delete])
 
 # check that struct timespec is defined in time.h. If not, we need to
-# define it in libcompat.h
-AC_CHECK_MEMBERS([struct timespec.tv_sec, struct timespec.tv_nsec], [], [AC_DEFINE_UNQUOTED(STRUCT_TIMESPEC_DEFINITION_MISSING, 1, "Need to define the timespec structure")], [#include <time.h>])
+# define it in libcompat.h. Note the optional inclusion of pthread.h.
+# On MinGW and MinGW-w64, the pthread.h file contains the timespec
+# definition.
+AC_CHECK_MEMBERS([struct timespec.tv_sec, struct timespec.tv_nsec], [], [AC_DEFINE_UNQUOTED(STRUCT_TIMESPEC_DEFINITION_MISSING, 1, "Need to define the timespec structure")], [
+#include <time.h>
+#if defined(HAVE_PTHREAD)
+#include <pthread.h>
+#endif /* HAVE_PTHREAD */
+])
 
 # check that struct itimerspec is defined in time.h. If not, we need to
-# define it in libcompat.h
-AC_CHECK_MEMBERS([struct itimerspec.it_interval, struct itimerspec.it_value], [], [AC_DEFINE_UNQUOTED(STRUCT_ITIMERSPEC_DEFINITION_MISSING, 1, "Need to define the itimerspec structure")], [#include <time.h>])
+# define it in libcompat.h.  Note the optional inclusion of pthread.h.
+# On MinGW and MinGW-w64, the pthread.h file contains the itimerspec
+# definition.
+AC_CHECK_MEMBERS([struct itimerspec.it_interval, struct itimerspec.it_value], [], [AC_DEFINE_UNQUOTED(STRUCT_ITIMERSPEC_DEFINITION_MISSING, 1, "Need to define the itimerspec structure")], [
+#include <time.h>
+#if defined(HAVE_PTHREAD)
+#include <pthread.h>
+#endif /* HAVE_PTHREAD */
+])
 
 # Checks for header files.
 AC_HEADER_STDC
