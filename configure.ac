@@ -112,9 +112,9 @@ AC_ARG_ENABLE(snprintf-replacement,
 AC_HELP_STRING([--enable-snprintf-replacement],
 	       [enable check snprintf replacement, (even if the system provides a C99 compliant version) @<:@default=autodetect@:>@]),
 [case "${enableval}" in
-  yes) enable_snprintf_replacement=true; echo "BMA: yes" ;;
+  yes) enable_snprintf_replacement=true ;;
   *)   AC_MSG_ERROR(bad value ${enableval} for --enable-snprintf-replacement) ;;
-esac], [enable_snprintf_replacement=autodetect; echo "BMA: autodetect" ])
+esac], [enable_snprintf_replacement=autodetect ])
 
 # Checks for programs.
 AC_PROG_AWK
