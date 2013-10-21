@@ -157,6 +157,10 @@ if test "$TEX" = "false"; then
     AC_MSG_WARN(tex not installed: cannot rebuild HTML documentation.)
 fi
 
+# Checks for pthread implementation.
+ACX_PTHREAD
+CC="$PTHREAD_CC"
+
 # Check if floor is in the math library, and if so add -lm to LIBS
 AC_CHECK_LIB([m], [floor])
 
@@ -235,10 +239,6 @@ HW_FUNC_VSNPRINTF
 HW_FUNC_SNPRINTF
 HW_FUNC_VASPRINTF
 HW_FUNC_ASPRINTF
-
-# Checks for pthread implementation.
-ACX_PTHREAD
-CC="$PTHREAD_CC"
 
 # Check for whether we can install checkmk (we have a usable awk)
 AC_ARG_VAR([AWK_PATH],[Awk interpreter command])
