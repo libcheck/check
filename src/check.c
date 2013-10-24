@@ -473,15 +473,27 @@ clockid_t check_get_clockid()
 
 	if(clockid == -1)
 	{
-		struct timespec ts;
-		if(clock_gettime(CLOCK_MONOTONIC, &ts) == 0)
+/*
+ * Only check if we have librt available. Otherwise, the clockid
+ * will be ignored anyway, as the clock_gettime() and
+ * timer_create() functions will be re-implemented in libcompat.
+ * Worse, if librt and alarm() are unavailable, this check
+ * will result in an assert(0).
+ */
+#ifdef HAVE_LIBRT
+		timer_t timerid;
+		if(timer_create(CLOCK_MONOTONIC, NULL, &timerid) == 0)
 		{
+			timer_delete(timerid);
 			clockid = CLOCK_MONOTONIC;
 		}
 		else
 		{
 			clockid = CLOCK_REALTIME;
 		}
+#else
+	clockid = CLOCK_MONOTONIC;
+#endif
 	}
 
 	return clockid;
