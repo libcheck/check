@@ -1,4 +1,5 @@
-In development:
+Wed, Oct 30, 2013: Released Check 0.9.11
+  based on r850 (2013-10-29 03:18:17 +0000)
 
 * Check compiles for Windows using the MinGW/msys environment (without using fork), and all unit tests pass.
 
