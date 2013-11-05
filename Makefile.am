@@ -32,6 +32,8 @@ m4data_DATA = check.m4
 pcdatadir = $(libdir)/pkgconfig
 pcdata_DATA = check.pc
 
+DISTCLEANFILES = check_stdint.h
+
 SVNChangeLog:
 	if [ -e .svn ] ; then \
 	svn log -v @abs_top_srcdir@ > $@ ;\
