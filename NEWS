@@ -1,5 +1,7 @@
-Wed, Oct 30, 2013: Released Check 0.9.11
-  based on r850 (2013-10-29 03:18:17 +0000)
+Wed, Nov 4, 2013: Released Check 0.9.11
+  based on r856 (2013-11-04 02:09:21 +0000)
+
+* Check's unit tests pass when compiled out of the source tree.
 
 * Check compiles for Windows using the MinGW/msys environment (without using fork), and all unit tests pass.
 
