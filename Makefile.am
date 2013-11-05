@@ -69,8 +69,8 @@ releasevars:
 
 preparerelease: releasevars .svnrelease prereleasecheck
 	@echo tagging release from `cat .svnrelease`
-	svn cp -m "Tagging for check-${RELEASE_VERSION}" -r`cat .svnrelease` https://check.svn.sourceforge.net/svnroot/check/trunk https://check.svn.sourceforge.net/svnroot/check/tags/check-${RELEASE_VERSION}
-	svn co https://check.svn.sourceforge.net/svnroot/check/tags/check-${RELEASE_VERSION} check-${RELEASE_VERSION}
+	svn cp -m "Tagging for check-${RELEASE_VERSION}" -r`cat .svnrelease` https://svn.code.sf.net/p/check/code/trunk https://svn.code.sf.net/p/check/code/tags/check-${RELEASE_VERSION}
+	svn co https://svn.code.sf.net/p/check/code/tags/check-${RELEASE_VERSION} check-${RELEASE_VERSION}
 	@echo "Any last minute changes? This is your final chance."
 	@echo "CTRL-D when finished or 'exit 1' to abort."
 	@echo "aborting will leave the partially prepared release in" `pwd`

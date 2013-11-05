@@ -43,7 +43,7 @@ If you are behind a proxy remember to "socksify" (or similar) your
        based on r637 (2012-10-22 13:54:14 +0200)"
     Now 'svn commit -m "* Update for release" NEWS'
 5.  make SF_USERNAME=username RELEASE_VERSION=X.Y.Z preparerelease
-    This will tag trunk as https://svn.sourceforge.net/svnroot/check/tags/check-X.Y.Z
+    This will tag trunk as https://svn.code.sf.net/p/check/code/tags/check-X.Y.Z
 6.  Follow the prompts. If anything goes wrong see Makefile.am and complete it by hand.
 7.  Use the following template to announce the release:
 =====
