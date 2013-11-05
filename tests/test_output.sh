@@ -2,6 +2,12 @@
 
 . ./test_vars
 
+if [ x"${SRCDIR}" != x"." ]; then
+    SRCDIR="${SRCDIR}/"
+else
+    SRCDIR=""
+fi
+
 t0="x"
 
 if [ $HAVE_FORK -eq 1 ]; then
@@ -15,25 +21,25 @@ fi
 if [ $HAVE_FORK -eq 1 ]; then
 t2="xRunning suite(s): Master
 33%: Checks: 3, Failures: 1, Errors: 1
-ex_output.c:17:F:Core:test_fail:0: Failure
-ex_output.c:26:E:Core:test_exit:0: (after this point) Early exit with return value 1"
+${SRCDIR}ex_output.c:17:F:Core:test_fail:0: Failure
+${SRCDIR}ex_output.c:26:E:Core:test_exit:0: (after this point) Early exit with return value 1"
 else
 t2="xRunning suite(s): Master
 50%: Checks: 2, Failures: 1, Errors: 0
-ex_output.c:17:F:Core:test_fail:0: Failure"
+${SRCDIR}ex_output.c:17:F:Core:test_fail:0: Failure"
 fi
 
 if [ $HAVE_FORK -eq 1 ]; then
 t3="xRunning suite(s): Master
 33%: Checks: 3, Failures: 1, Errors: 1
-ex_output.c:11:P:Core:test_pass:0: Passed
-ex_output.c:17:F:Core:test_fail:0: Failure
-ex_output.c:26:E:Core:test_exit:0: (after this point) Early exit with return value 1"
+${SRCDIR}ex_output.c:11:P:Core:test_pass:0: Passed
+${SRCDIR}ex_output.c:17:F:Core:test_fail:0: Failure
+${SRCDIR}ex_output.c:26:E:Core:test_exit:0: (after this point) Early exit with return value 1"
 else
 t3="xRunning suite(s): Master
 50%: Checks: 2, Failures: 1, Errors: 0
-ex_output.c:11:P:Core:test_pass:0: Passed
-ex_output.c:17:F:Core:test_fail:0: Failure"
+${SRCDIR}ex_output.c:11:P:Core:test_pass:0: Passed
+${SRCDIR}ex_output.c:17:F:Core:test_fail:0: Failure"
 fi
 
 if [ $HAVE_FORK -eq 1 ]; then
@@ -41,18 +47,18 @@ t4="xtest: Core:test_pass
 success: Core:test_pass
 test: Core:test_fail
 failure: Core:test_fail [
-ex_output.c:17: Failure
+${SRCDIR}ex_output.c:17: Failure
 ]
 test: Core:test_exit
 error: Core:test_exit [
-ex_output.c:26: (after this point) Early exit with return value 1
+${SRCDIR}ex_output.c:26: (after this point) Early exit with return value 1
 ]"
 else
 t4="xtest: Core:test_pass
 success: Core:test_pass
 test: Core:test_fail
 failure: Core:test_fail [
-ex_output.c:17: Failure
+${SRCDIR}ex_output.c:17: Failure
 ]"
 fi
 
