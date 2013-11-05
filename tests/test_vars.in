@@ -5,3 +5,6 @@ EXEEXT=@EXEEXT@
 export EXEEXT
 HAVE_FORK=@HAVE_FORK@
 export HAVE_FORK
+# path of the tests directory
+SRCDIR=@srcdir@
+export SRCDIR
