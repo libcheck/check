@@ -1,13 +1,13 @@
 Maintainers:
     Fredrik Hugosson  <hugo303 at users dot sourceforge dot net>     |  hugo303
     Chris Pickett     <chris dot pickett at mail dot mcgill dot ca>  |  cpickett
+    Branden Archer    <b dot m dot archer4 at gmail dot com          |  brarcher
 
 Ex-Maintainers:
     Arien Malec       <arien dot malec at gmail dot com>             |  amalec
     Sven Neumann      <sven at convergence dot de>                   |  neo23
 
 Committers:
-    Branden Archer        (portability, docs, cleanups, fixes)       |  brarcher
     Robert Collins        (subunit support)                          |  rbcollins
     Micah Cowan           (checkmk tool, docs and tests)             |  micahcowan
     Zdenek Crha           (new Check API docs, fixes, and tests)     |  zdenekc
