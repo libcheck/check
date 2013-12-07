@@ -42,6 +42,7 @@ Contributors:
     Martin Willers        (rename check's internal list API to start with check_)
     bross                 (patches for msys/mingw32 support)
     Pino Toscano          (GNU/Hurd support for subsecond timeouts)
+    lod                   (compiler warning)
 
 Anybody who has contributed code to Check or Check's build system is
 considered an author.  Send patches to this file to 
