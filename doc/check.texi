@@ -195,12 +195,13 @@ test framework will happily note a unit test error, and chug along.
 The Check framework is also designed to play happily with common
 development environments for C programming.  The author designed Check
 around Autoconf/Automake (thus the name Check: @command{make check} is
-the idiom used for testing with Autoconf/Automake), and the test
-failure messages thrown up by Check use the common idiom of
-@samp{filename:linenumber:message} used by @command{gcc} and family to
-report problems in source code.  With (X)Emacs, the output of Check
-allows one to quickly navigate to the location of the unit test that
-failed; presumably that also works in VI and IDEs.
+the idiom used for testing with Autoconf/Automake). Note however that
+Autoconf/Automake are NOT necessary to use Check; any build system
+is sufficent. The test failure messages thrown up by Check use the
+common idiom of @samp{filename:linenumber:message} used by @command{gcc}
+and family to report problems in source code.  With (X)Emacs, the output
+of Check allows one to quickly navigate to the location of the unit test
+that failed; presumably that also works in VI and IDEs.
 
 @menu
 * Other Frameworks for C::      
@@ -353,9 +354,10 @@ and a place to store our unit tests, @file{check_money.c}.  We want to
 integrate these core files into our build system, and will need some
 additional structure. To manage everything we'll use Autoconf,
 Automake, and friends (collectively known as Autotools) for this
-example.  One could do something similar with ordinary Makefiles, but
-in the authors' opinion, it is generally easier to use Autotools than
-bare Makefiles, and they provide built-in support for running tests.
+example.  Note that one could do something similar with ordinary
+Makefiles, or any other builc system. It is in the authors' opinion that
+it is generally easier to use Autotools than bare Makefiles, and they
+provide built-in support for running tests.
 
 Note that this is not the place to explain how Autotools works.  If
 you need help understanding what's going on beyond the explanations
