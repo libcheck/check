@@ -1,0 +1,3 @@
+Copyright: Darren Hester 2006, http://www.designsbydarren.com
+License: Released Under the "Creative Commons License"
+http://creativecommons.org/licenses/by-nc/2.5/

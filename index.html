@@ -1,135 +1,143 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!--
+Copyright: Darren Hester 2006, http://www.designsbydarren.com
+License: Released Under the "Creative Commons License",
+http://creativecommons.org/licenses/by-nc/2.5/
+-->
+
 <head>
-  <title>Check: A unit testing framework for C</title>
+
+<!-- Meta Data -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta name="description" content="Check unit testing framework for C" />
+<meta name="keywords" content="check, unit test, c" />
+
+<!-- Site Title -->
+<title>Check | Unit testing framework for C</title>
+
+<!-- Link to Style External Sheet -->
+<link href="web/css/style.css" type="text/css" rel="stylesheet" />
+
 </head>
+
 <body>
-<h1>Check: A unit testing framework for C</h1>
-<p>Check is a unit testing framework for C. It features a simple interface
+
+<div id="page_wrapper">
+
+<div id="header_wrapper">
+
+<div id="header">
+
+<h1>Check</h1>
+<h2>Unit Testing Framework for C</h2>
+
+</div>
+
+<div id="navcontainer">
+
+<ul id="navlist">
+<li id="active"><a href="#" id="current">Home</a></li>
+<li><a href="./NEWS">NEWS</a></li>
+<li><a href="./doc/check_html/index.html">Reference</a></li>
+<li><a href="http://sourceforge.net/projects/check/files/latest/download">Download</a></li>
+</ul>
+</div>
+
+</div>
+
+<div id="left_side">
+
+<h3>Latest Check Release</h3>
+
+<p>
+<b>Nov. 11, 2013:</b> Check 0.9.11 <a href="http://sourceforge.net/projects/check/files/latest/download">
+is now available for download</a>. Check is available under the
+<a href="./COPYING.LESSER">LGPL license</a>. New features available in
+this release are listed on the <a href="./NEWS">NEWS</a> page.
+</p>
+
+<h3>About Project</h3>
+<p>
+<ul>
+<li><a href="http://sourceforge.net/projects/check/">Project Page</a></li>
+<li><a href="./COPYING.LESSER">LGPL License</a></li>
+<li><a href="./web/users-of-check.html">Users of Check</a></li>
+<li><a href="https://lists.sourceforge.net/lists/listinfo/check-users">Mailing list</a></li>
+</ul>
+</p>
+<!--
+<a href="https://check.ci.cloudbees.com"><img alt="" src="./web/img/Button-Built-on-CB-1.png" style="width: 160px; height: 55px;" /></a>
+-->
+</div>
+
+
+<div id="content">
+
+<h3>What is Check?</h3>
+
+<p>
+Check is a unit testing framework for C. It features a simple interface
 for defining unit tests, putting little in the way of the developer.
-Tests are run in a separate address space, so Check can catch both
-assertion failures and code errors that cause segmentation faults or
-other signals. The output from unit tests can be used within source
-code editors and IDEs..</p>
-<p>Check was inspired by similar frameworks that currently exist for
-most programming languages; the most famous example being JUnit for
-Java (<a href="http://www.junit.org">www.junit.org</a>). There is a
-list of unit testing frameworks for multiple languages
-at <a href="http://www.xprogramming.com/software/">www.xprogramming.com/software/</a>.
-Unit testing has a long history as part of formal quality assurance
-methodologies, but has recently been associated with the lightweight
-methodology called Extreme Programming. In that methodology, the
-characteristic practice involves interspersing unit test writing with
-coding ("test a little, code a little"). While the incremental unit
-test/code approach is indispensable to Extreme Programming, it is also
-applicable, and perhaps indispensable, outside of that
-methodology. </p>
-<p>The incremental test/code approach provides three main benefits to
-the developer:</p>
-<p> </p>
-<ol>
-  <li>Because the unit tests use the interface to the unit being
-tested, they allow the developer to think about how the interface
-should be designed for usage early in the coding process.</li>
-  <li>They help the developer think early about aberrant cases, and
-code accordingly.</li>
-  <li>By providing a documented level of correctness, they allow the
-developer to refactor
-(see <a href="http://www.refactoring.com">www.refactoring.com</a>)
-aggressively.</li>
-</ol>
-<p>That third reason is the one that turns people into unit testing
-addicts. There is nothing so satisfying as doing a wholesale
-replacement of an implementation, and having the unit tests reassure
-you at each step of that change that all is well. It is like the
-difference between exploring the wilderness with and without a good map
-and compass: without the proper gear, you are more likely to proceed
-cautiously and stick to the marked trails; with it, you can take the
-most direct path to where you want to go.</p>
-<p> </p>
-<h2>Information about Check</h2>
-<p>The Check project page is at <a
- href="http://sourceforge.net/projects/check/">http://sourceforge.net/projects/check/</a>
+Tests are run in a separate address space, so both assertion failures
+and code errors that cause segmentation faults or other signals can be
+caught.
 </p>
-<p>The Check <a href="./doc/check_html/index.html">manual</a> contains a good tutorial introduction.
-</p>
-<p>This project has reached a point where it is fairly stable, and it
-does the job well for people that use it.  Therefore it is not that
-actively maintained and long times may pass between checkins.  It does
-not mean that Check is some abandoned piece of unworking junk laying
-around on SourceForge.  We still aim for at least one release per year.
-There are packages in Fedora and Debian, and probably several other
-distributions.<br>
-</p>
-<h2>News<br>
-</h2>
-Project <a href="./NEWS">NEWS</a>, a summarized changelog.<br>
-<h2>Getting Check</h2>
-<p>Check can be dowloaded from <a
- href="http://sourceforge.net/project/showfiles.php?group_id=28255&amp;release_id=37982">here</a>.</p>
-<h2>Contributing</h2>
-<p>The authors welcome any and all help with Check, whether through
-enhancement requests, bug reports, patches, or documentation.&nbsp;
-Mailing lists are preferred to forums as they're easier to
-monitor.&nbsp; Please visit the Check project page at <a
- href="http://sourceforge.net/projects/check/">http://sourceforge.net/projects/check/</a>.
-<br>
-</p>
-<p>Patches to Check, unless trivial, should be against the latest SVN
-trunk, and should include a full set of unit tests testing the new
-behavior. No functionality goes into Check without unit tests, and
-submitting a patch without automated testing guarantees that it will go
-into the request queue, not the "to be applied soon" pool.<br>
-</p>
-<h2>Projects Using Check</h2>
-We know of the following projects using Check:<br>
-<br>
-BitlBee: <a href="http://www.bitlbee.org/">http://www.bitlbee.org/</a><br>
-checkmk: <a href="http://micah.cowan.name/projects/checkmk/">http://micah.cowan.name/projects/checkmk/</a><br>
-ctrlproxy: <a href="http://ctrlproxy.vernstok.nl/">http://ctrlproxy.vernstok.nl/</a><br>
-Daimonin: <a href="http://sourceforge.net/projects/daimonin/">http://sourceforge.net/projects/daimonin/</a><br>
-DBMail: <a href="http://www.dbmail.org/">http://www.dbmail.org/</a><br>
-Enlightenment (Eet and Eina libs): <a href="http://trac.enlightenment.org/e">http://trac.enlightenment.org/e</a><br>
-EXIP: <a href="http://exip.sourceforge.net/">http://exip.sourceforge.net/</a><br>
-Expat: <a href="http://expat.sourceforge.net/">http://expat.sourceforge.net/</a><br>
-GNOME BuildBrigade: <a href="http://live.gnome.org/BuildBrigade/">http://live.gnome.org/BuildBrigade/</a><br>
-GStreamer: <a href="http://gstreamer.freedesktop.org/">http://gstreamer.freedesktop.org/</a><br>
-GNUpdf: <a href="http://www.gnupdf.org/">http://www.gnupdf.org/</a><br>
-Iodine: <a href="http://code.kryo.se/iodine/">http://code.kryo.se/iodine/</a><br>
-Lasso: <a href="http://lasso.entrouvert.org">http://lasso.entrouvert.org/</a><br>
-libspmt: <a href="https://svn.sable.mcgill.ca/sable/spmt/libspmt/">https://svn.sable.mcgill.ca/sable/spmt/libspmt/</a><br>
-Loudmouth: <a href="http://developer.imendio.com/projects/loudmouth/">http://developer.imendio.com/projects/loudmouth/</a><br>
-OpenSync (libopensync and libsyncml): <a href="http://www.opensync.org/">http://www.opensync.org/</a><br>
-Pigment: <a href="https://code.fluendo.com/pigment/trac/wiki">https://code.fluendo.com/pigment/trac/wiki</a><br>
-RAPP: <a href="http://savannah.nongnu.org/projects/rapp">http://savannah.nongnu.org/projects/rapp</a><br>
-RedStore: <a href="http://code.google.com/p/redstore/">http://code.google.com/p/redstore/</a><br>
-SCEW: <a href="http://www.nongnu.org/scew/">http://www.nongnu.org/scew/</a><br>
-SSSD: <a href="https://fedorahosted.org/sssd/">https://fedorahosted.org/sssd/</a><br>
-Tinymail: <a href="http://tinymail.org/">http://tinymail.org/</a><br>
-XCB: <a href="http://xcb.freedesktop.org/">http://xcb.freedesktop.org/</a><br>
-<br>
 
-If you're using Check for an open source project and you're not listed
-here, please subscribe to check-users AT lists.sourceforge.net, send
-us an email, and we'll list you promptly.&nbsp; Particularly if the
-first letter of your project is contained in the second half of the
-alphabet!  Please note that although it's easy for us to add your
-project to our repository, the actual changes might not make it to the
-website until we release the next version.<br>
+<h3>Supported Platforms</h3>
 
-<h2>Todo<br>
-</h2>
-<a href="./TODO">Current bugs and feature requests</a>.<br>
-<h2>SVN access</h2>
-See the project's <a href="http://sourceforge.net/svn/?group_id=28255">Subversion
-page</a> for instructions.&nbsp; You do want to append '/trunk' to that
-URL so that you don't end up checking out all tags and branches as
-well.&nbsp; The CVS repository is now obsolete.<br>
---<br>
-$Date$ <br>
-<br>
-<a href="http://sourceforge.net"><img
- src="http://sourceforge.net/sflogo.php?group_id=28255"
- alt="SourceForge Logo" border="0" height="31" width="88"></a>
+<p>
+Check works on many UNIX compatible environments, such as GNU/Linux and
+Mac OSX. Windows support is available through the Cygwin, MinGW, and
+MinGW-w64 platforms. If Check is compiled on a platform with some
+POSIX functions unavailable (such as fork), Check will disable the
+related features but still remain functional.
+</p>
+
+<h3>Support</h3>
+
+<p>
+Questions are accepted on the mailing list
+<a href="https://lists.sourceforge.net/lists/listinfo/check-users">check-users@sourceforge.net</a>
+and bugs and feature requests can be submitted via the Sourceforge
+page <a href="http://sourceforge.net/p/check/_list/tickets">here</a>.
+</p>
+
+<h3>Contributing</h3>
+
+<p>
+The authors welcome any and all help with Check, whether through
+enhancement requests, bug reports, patches, or documentation. Mailing
+lists are preferred to forums as they are easier to monitor. Please visit
+the Check <a href="http://sourceforge.net/projects/check/">project page</a>.
+</p>
+
+<p>
+Patches to Check, unless trivial, should be against the latest SVN trunk,
+and should include a full set of unit tests verifying the new behavior. No
+functionality goes into Check without unit tests, and submitting a patch
+without automated testing will delay potential acceptable of the patch.
+</p>
+
+<p>
+You can get the latest Check source code through anonymous SVN using the
+following:
+<div id="code"><pre class="command">svn checkout svn://svn.code.sf.net/p/check/code/trunk check-code</pre></div>
+</p>
+
+</div>
+
+<div id="footer">
+<a href="http://sourceforge.net">Sourceforge</a>
+<!--| <a href="http://www.cloudbees.com/foss/index.cb">Cloudbees</a> -->
+<br />
+Template provided by:
+<a href="http://www.designsbydarren.com" target="_blank">DesignsByDarren.com</a>
+</div>
+
+</div>
+
 </body>
+
 </html>
