@@ -120,7 +120,6 @@ START_TEST(test_pack_len)
 
   /* Value below may change with different implementations of pack */
   ck_assert_msg (n == 8, "Return val from pack not correct");
-  n = 0;
   n = upack (buf, (CheckMsg *) &cmsg, &type);
   if (n != 8) {
     snprintf (errm, sizeof (errm), "%d bytes read from upack, should be 8", n);
