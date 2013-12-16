@@ -420,9 +420,11 @@ system testing tool like Autotest.  If you really want to test
 The primary build instructions for our unit tests are in
 @file{tests/Makefile.am}:
 
+@cartouche
 @example
 @verbatiminclude example/tests/Makefile.am
 @end example
+@end cartouche
 
 @code{TESTS} tells Automake which test programs to run for
 @command{make check}.  Similarly, the @code{check_} prefix in
@@ -440,16 +442,20 @@ Now that all this infrastructure is out of the way, we can get on with
 development.  @file{src/money.h} should only contain standard C header
 boilerplate:
 
+@cartouche
 @example
 @verbatiminclude example/src/money.1.h
 @end example
+@end cartouche
 
 @file{src/money.c} should be empty, and @file{tests/check_money.c}
 should only contain an empty @code{main()} function:
 
+@cartouche
 @example
 @verbatiminclude example/tests/check_money.1.c
 @end example
+@end cartouche
 
 Create the GNU Build System for the project and then build @file{main}
 and @file{libmoney.la} as follows:
@@ -491,9 +497,11 @@ software development and OO design).
 
 Here are the changes to @file{check_money.c} for our first unit test:
 
+@cartouche
 @example
 @verbatiminclude check_money.1-2.c.diff
 @end example
+@end cartouche
 
 @findex ck_assert_int_eq
 @findex ck_assert_str_eq
@@ -581,9 +589,11 @@ progress, guided by the unit tests, so that's what we will now do.
 
 We will patch our header @file{money.h} as follows:
 
+@cartouche
 @example
 @verbatiminclude money.1-2.h.diff
 @end example
+@end cartouche
 
 Our code compiles now, and again passes all of the tests.  However,
 once we try to @emph{use} the functions in @code{libmoney} in the
@@ -599,9 +609,11 @@ a bit of overhead, but it is mostly one-off.  Here's a diff for the
 new version of @file{check_money.c}.  Note that we include stdlib.h to
 get the definitions of @code{EXIT_SUCCESS} and @code{EXIT_FAILURE}.
 
+@cartouche
 @example
 @verbatiminclude check_money.2-3.c.diff
 @end example
+@end cartouche
 
 Most of the @code{money_suite()} code should be self-explanatory.  We are
 creating a suite, creating a test case, adding the test case to the
@@ -639,9 +651,11 @@ implementation of the @file{money.h} interface hasn't been created
 yet.  Let's go with the fastest solution possible and implement stubs
 for each of the functions in @code{money.c}. Here is the diff:
 
+@cartouche
 @example
 @verbatiminclude money.1-3.c.diff
 @end example
+@end cartouche
 
 Note that we @code{#include <stdlib.h>} to get the definition of
 @code{NULL}.  Now, the code compiles and links when we run @code{make
@@ -763,9 +777,11 @@ Let's implement the @code{money_amount} function, so that it will pass
 its tests.  We first have to create a Money structure to hold the
 amount, and then implement the function to return the correct amount:
 
+@cartouche
 @example
 @verbatiminclude money.3-4.c.diff
 @end example
+@end cartouche
 
 We will now rerun make check and@dots{} what's this?  The output is
 now as follows:
@@ -805,9 +821,11 @@ implement that, the symmetric @code{money_free()}, and
 @code{money_currency()} too, in order to make our unit test pass again,
 here is a diff:
 
+@cartouche
 @example
 @verbatiminclude money.4-5.c.diff
 @end example
+@end cartouche
 
 @node Advanced Features, Conclusion and References, Tutorial, Top
 @chapter Advanced Features
@@ -925,19 +943,22 @@ we create @code{Money} where @code{amount == 0}.  Let's put these in a
 separate test case called ``Limits'' so that @code{money_suite} is
 changed like so:
 
+@cartouche
 @example
 @verbatiminclude check_money.3-6.c.diff
 @end example
-
+@end cartouche
 
 Now we can rerun our suite, and fix the problem(s). Note that errors
 in the ``Core'' test case will be reported as ``Core'', and errors in
 the ``Limits'' test case will be reported as ``Limits'', giving you
 additional information about where things broke.
 
+@cartouche
 @example
 @verbatiminclude money.5-6.c.diff
 @end example
+@end cartouche
 
 @node No Fork Mode, Test Fixtures, Running Multiple Cases, Advanced Features
 @section No Fork Mode
@@ -1061,10 +1082,11 @@ named @code{setup()} and @code{teardown()}, but they must take
 @code{void} and return @code{void}.  We'll update @file{check_money.c}
 with the following patch:
 
+@cartouche
 @example
 @verbatiminclude check_money.6-7.c.diff
 @end example
-
+@end cartouche
 
 @node Checked vs Unchecked Fixtures,  , Test Fixture Examples, Test Fixtures
 @subsection Checked vs Unchecked Fixtures
