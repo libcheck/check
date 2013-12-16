@@ -253,30 +253,28 @@ void _mark_point (const char *file, int line)
   send_loc_info (file, line);
 }
 
-void _ck_assert_msg (int result, const char *file,
+void _ck_assert_failed (const char *file,
                    int line, const char *expr, ...)
 {
   const char *msg;
-    
+  va_list ap;
+  char buf[BUFSIZ];
+
   send_loc_info (file, line);
-  if (!result) {
-    va_list ap;
-    char buf[BUFSIZ];
-    
-    va_start(ap,expr);
-    msg = (const char*)va_arg(ap, char *);
-    if (msg == NULL)
-      msg = expr;
-    vsnprintf(buf, BUFSIZ, msg, ap);
-    va_end(ap);
-    send_failure_info (buf);
-    if (cur_fork_status() == CK_FORK) {
-#ifdef HAVE_FORK
-      exit(1);
-#endif /* HAVE_FORK */
-    } else {
-      longjmp(error_jmp_buffer, 1);
-    }
+
+  va_start(ap,expr);
+  msg = (const char*)va_arg(ap, char *);
+  if (msg == NULL)
+    msg = expr;
+  vsnprintf(buf, BUFSIZ, msg, ap);
+  va_end(ap);
+  send_failure_info (buf);
+  if (cur_fork_status() == CK_FORK) {
+  #ifdef HAVE_FORK
+    exit(1);
+  #endif /* HAVE_FORK */
+  } else {
+    longjmp(error_jmp_buffer, 1);
   }
 }
 
