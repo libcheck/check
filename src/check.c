@@ -36,8 +36,6 @@
 #define DEFAULT_TIMEOUT 4
 #endif
 
-#define NANOS_PER_SECONDS 1000000000
-
 int check_major_version = CHECK_MAJOR_VERSION;
 int check_minor_version = CHECK_MINOR_VERSION;
 int check_micro_version = CHECK_MICRO_VERSION;

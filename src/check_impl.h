@@ -27,6 +27,7 @@
 */
 
 #define US_PER_SEC 1000000
+#define NANOS_PER_SECONDS 1000000000
 
 /** calculate the difference in useconds out of two "struct timespec"s */
 #define DIFF_IN_USEC(begin, end) \
