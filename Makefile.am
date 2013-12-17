@@ -99,6 +99,12 @@ dorelease: releasevars doc/check_html prereleasecheck
 	@echo "cut out old release news from NEWS-${RELEASE_VERSION}.txt."
 	@echo "CTRL-D to complete, or exit 1 to abort."
 	${SHELL}
+	@echo "You need to:"
+	@echo "Update the release information in index.html"
+	@echo "The current date and release number need to be updated."
+	@echo "Look for the string: <!-- Update this section during a release -->"
+	@echo "CTRL-D to complete, or exit 1 to abort."
+	${SHELL}
 	@echo uploading...
 	rsync -e ssh NEWS-${RELEASE_VERSION}.txt ${SF_USERNAME},check@frs.sourceforge.net:/home/frs/project/c/ch/check/check/${RELEASE_VERSION}/
 	rsync -e ssh check-${RELEASE_VERSION}.tar.gz ${SF_USERNAME},check@frs.sourceforge.net:/home/frs/project/c/ch/check/check/${RELEASE_VERSION}/
