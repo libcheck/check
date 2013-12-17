@@ -61,7 +61,7 @@ START_TEST(test_send_big)
   ck_assert_msg (tr_lno(tr) == i -1,
 	       "Bad loc line received");
   if (tr != NULL)
-    free(tr);
+    tr_free(tr);
 }
 END_TEST
 
@@ -87,7 +87,7 @@ START_TEST(test_send_test_error)
   ck_assert_msg (tr_lno(tr) == 25,
 	       "Bad loc line received");
   if (tr != NULL)
-    free(tr);
+    tr_free(tr);
 }
 END_TEST
 
@@ -116,7 +116,7 @@ START_TEST(test_send_with_passing_teardown)
   ck_assert_msg (tr_lno(tr) == 25,
 	       "Bad loc line received");
   if (tr != NULL)
-    free(tr);
+    tr_free(tr);
 }
 END_TEST
 
@@ -145,7 +145,7 @@ START_TEST(test_send_with_error_teardown)
   ck_assert_msg (tr_lno(tr) == 54,
 	       "Bad loc line received");
   if (tr != NULL)
-    free(tr);
+    tr_free(tr);
 }
 END_TEST
 
