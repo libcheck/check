@@ -122,5 +122,8 @@ dorelease: releasevars doc/check_html prereleasecheck
 	@echo "CTRL-D to complete, or exit 1 to abort."
 	${SHELL}
 
+updateweb: fsusernamecheck
+	@echo uploading...
+	rsync -e ssh -rlvC index.html web ${SF_USERNAME},check@web.sourceforge.net:htdocs
 
 .PHONY: releasevars prereleasecheck preparerelease dorelease .svnrelease
