@@ -1528,8 +1528,10 @@ format simultaneously is supported.
 @findex srunner_set_tap
 @findex srunner_has_tap
 @findex srunner_tap_fname
-The log can also be written in TAP.  The following functions define
-the interface for TAP logs:
+The log can also be written in Test Anything Protocol (TAP) format.
+Refer to the @uref{http://podwiki.hexten.net/TAP/TAP.html,TAP Specification}
+for information on valid TAP output and parsers of TAP. The following
+functions define the interface for TAP logs:
 @example
 @verbatim
 void srunner_set_tap (SRunner *sr, const char *fname);
