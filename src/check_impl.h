@@ -84,6 +84,7 @@ struct TestResult {
 
 TestResult *tr_create(void);
 void tr_reset(TestResult *tr);
+void tr_free(TestResult *tr);
 
 enum cl_event {
   CLINITLOG_SR, /* Initialize log file */

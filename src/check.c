@@ -328,9 +328,7 @@ void srunner_free (SRunner *sr)
   l = sr->resultlst;
   for (check_list_front(l); !check_list_at_end(l); check_list_advance(l)) {
     tr = check_list_val(l);
-    free(tr->file);
-    free(tr->msg);
-    free(tr);
+    tr_free(tr);
   }
   check_list_free (sr->resultlst);
 
@@ -395,6 +393,10 @@ TestResult *tr_create(void)
 
 void tr_reset(TestResult *tr)
 {
+    if(tr->msg != NULL)
+    {
+        printf("BMA: Resetting: %s:%d, %s\n", __FILE__, __LINE__, tr->msg);
+    }
   tr_init(tr);
 }
 
@@ -408,6 +410,13 @@ static void tr_init (TestResult *tr)
   tr->tcname = NULL;
   tr->tname = NULL;
   tr->duration = -1;
+}
+
+void tr_free(TestResult *tr)
+{
+  free(tr->file);
+  free(tr->msg);
+  free(tr);
 }
 
 
