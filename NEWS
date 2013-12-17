@@ -1,5 +1,7 @@
 In development:
 
+* Add support for logging in Test Anything Protocol (TAP) format.
+
 * Refactor Check's assertions to be more like the assert() call in
   assert.h, in that static source code analyzers can use gcc attributes
   in the header to make assumptions about the flow of the code. See
