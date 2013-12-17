@@ -4,22 +4,28 @@ OUTPUT_FILE=test.tap
 
 . ./test_vars
 
+if [ x"${SRCDIR}" != x"." ]; then
+    SRCDIR="${SRCDIR}/"
+else
+    SRCDIR=""
+fi
+
 if [ $HAVE_FORK -eq 1 ]; then
-expected_normal_tap="ok 1
-not ok 2
-not ok 3
-ok 4
+expected_normal_tap="ok 1 - ${SRCDIR}ex_tap_output.c:Core:test_pass: Passed
+not ok 2 - ${SRCDIR}ex_tap_output.c:Core:test_fail: Failure
+not ok 3 - ${SRCDIR}ex_tap_output.c:Core:test_exit: Early exit with return value 1
+ok 4 - ${SRCDIR}ex_tap_output.c:Core:test_pass2: Passed
 1..4"
-expected_aborted_tap="ok 1
-not ok 2
-not ok 3
-not ok 4
-ok 5
+expected_aborted_tap="ok 1 - ${SRCDIR}ex_tap_output.c:Core:test_pass: Passed
+not ok 2 - ${SRCDIR}ex_tap_output.c:Core:test_fail: Failure
+not ok 3 - ${SRCDIR}ex_tap_output.c:Core:test_exit: Early exit with return value 1
+not ok 4 - ${SRCDIR}ex_tap_output.c:Core:test_abort: Early exit with return value 1
+ok 5 - ${SRCDIR}ex_tap_output.c:Core:test_pass2: Passed
 1..5"
 else
-expected_normal_tap="ok 1
-not ok 2
-ok 3
+expected_normal_tap="ok 1 - ${SRCDIR}ex_tap_output.c:Core:test_pass: Passed
+not ok 2 - ${SRCDIR}ex_tap_output.c:Core:test_fail: Failure
+ok 3 - ${SRCDIR}ex_tap_output.c:Core:test_pass2: Passed
 1..3"
 # When fork() is unavailable, one of the tests
 # will invoke exit() which will terminate the
@@ -27,8 +33,8 @@ ok 3
 # results will be incomplete, but the required
 # test plan will be missing, signaling that
 # something bad happened.
-expected_aborted_tap="ok 1
-not ok 2"
+expected_aborted_tap="ok 1 - ${SRCDIR}ex_tap_output.c:Core:test_pass: Passed
+not ok 2 - ${SRCDIR}ex_tap_output.c:Core:test_fail: Failure"
 fi
 
 test_tap_output ( ) {

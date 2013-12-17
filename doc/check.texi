@@ -1542,10 +1542,10 @@ TAP output is enabled by a call to @code{srunner_set_tap()} before the tests
 are run. Here is an example of an TAP log:
 @example
 @verbatim
-ok 1
-ok 2
-not ok 3
-ok 4
+ok 1 - mytests.c:test_suite_name:my_test_1: Passed
+ok 2 - mytests.c:test_suite_name:my_test_2: Passed
+not ok 3 - mytests.c:test_suite_name:my_test_3: Foo happened
+ok 4 - mytests.c:test_suite_name:my_test_1: Passed
 1..4
 @end verbatim
 @end example

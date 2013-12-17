@@ -344,7 +344,7 @@ void tap_lfun (SRunner *sr, FILE *file, enum print_output printmode CK_ATTRIBUTE
     /* Print the test result to the tap file */
     num_tests_run+=1;
     tr = obj;
-    fprintf(file, "%s %d\n", tr->rtype == CK_PASS ? "ok" : "not ok", num_tests_run);
+    fprintf(file, "%s %d - %s:%s:%s: %s\n", tr->rtype == CK_PASS ? "ok" : "not ok", num_tests_run, tr->file, tr->tcname, tr->tname, tr->msg);
     fflush(file);
     break;
   default:
