@@ -112,6 +112,7 @@ Test Fixtures
 Test Logging
 
 * XML Logging::                 
+* TAP Logging::
 
 Copying This Manual
 
@@ -1398,6 +1399,7 @@ be used.
 
 @menu
 * XML Logging::                 
+* TAP Logging::
 @end menu
 
 @node XML Logging,  , Test Logging, Test Logging
@@ -1519,6 +1521,45 @@ to @code{srunner_set_xml()} will be used.
 If both plain text and XML log files are specified, by any of above methods,
 then check will log to both files. In other words logging in plain text and XML
 format simultaneously is supported.
+
+@node TAP Logging,  , Test Logging, Test Logging
+@subsection TAP Logging
+
+@findex srunner_set_tap
+@findex srunner_has_tap
+@findex srunner_tap_fname
+The log can also be written in TAP.  The following functions define
+the interface for TAP logs:
+@example
+@verbatim
+void srunner_set_tap (SRunner *sr, const char *fname);
+int srunner_has_tap (SRunner *sr);
+const char *srunner_tap_fname (SRunner *sr);
+@end verbatim
+@end example
+
+TAP output is enabled by a call to @code{srunner_set_tap()} before the tests
+are run. Here is an example of an TAP log:
+@example
+@verbatim
+ok 1
+ok 2
+not ok 3
+ok 4
+1..4
+@end verbatim
+@end example
+
+TAP logging can be enabled by an environment variable as well. If
+@code{CK_TAP_LOG_FILE_NAME} environment variable is set, the TAP test log will
+be written to specified file name. If TAP log file is specified with both
+@code{CK_TAP_LOG_FILE_NAME} and @code{srunner_set_tap()}, the name provided
+to @code{srunner_set_tap()} will be used.
+
+If both plain text and TAP log files are specified, by any of above methods,
+then check will log to both files. In other words logging in plain text and TAP
+format simultaneously is supported.
+
 
 @node Subunit Support,  , Test Logging, Advanced Features
 @section Subunit Support
