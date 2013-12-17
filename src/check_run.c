@@ -470,27 +470,51 @@ static void set_fork_info (TestResult *tr, int status, int signal_expected, unsi
       if (alarm_received) {
         /* Got alarm instead of signal */
         tr->rtype = CK_ERROR;
+        if(tr->msg != NULL)
+        {
+          free(tr->msg);
+        }
         tr->msg = signal_error_msg(signal_received, signal_expected);
       } else {
         tr->rtype = CK_PASS;
+        if(tr->msg != NULL)
+        {
+          free(tr->msg);
+        }
         tr->msg = pass_msg();
       }
     } else if (signal_expected != 0) {
       /* signal received, but not the expected one */
       tr->rtype = CK_ERROR;
+      if(tr->msg != NULL)
+      {
+        free(tr->msg);
+      }
       tr->msg = signal_error_msg(signal_received, signal_expected);
     } else {
       /* signal received and none expected */
       tr->rtype = CK_ERROR;
+      if(tr->msg != NULL)
+      {
+        free(tr->msg);
+      }
       tr->msg = signal_msg(signal_received);
     }
   } else if (signal_expected == 0) {
     if (was_exit && exit_status == allowed_exit_value) {
       tr->rtype = CK_PASS;
+      if(tr->msg != NULL)
+      {
+        free(tr->msg);
+      }
       tr->msg = pass_msg();
     } else if (was_exit && exit_status != allowed_exit_value) {
       if (tr->msg == NULL) { /* early exit */
         tr->rtype = CK_ERROR;
+        if(tr->msg != NULL)
+        {
+          free(tr->msg);
+        }
         tr->msg = exit_msg(exit_status);
       } else {
         tr->rtype = CK_FAILURE;
@@ -498,6 +522,10 @@ static void set_fork_info (TestResult *tr, int status, int signal_expected, unsi
     }
   } else { /* a signal was expected and none raised */
     if (was_exit) {
+      if(tr->msg != NULL)
+      {
+        free(tr->msg);
+      }
       tr->msg = exit_msg(exit_status);
       if (exit_status == allowed_exit_value)
 	tr->rtype = CK_FAILURE; /* normal exit status */
