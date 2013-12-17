@@ -4,7 +4,7 @@ TESTS = \
 	check_check_export	\
 	check_check		\
 	test_output.sh		\
-	test_check_nofork.sh \
+	test_check_nofork.sh    \
 	test_xml_output.sh	\
 	test_log_output.sh      \
 	test_tap_output.sh
@@ -17,14 +17,14 @@ TESTS = \
 # XFAIL_TESTS = \
 # 	check_thread_stress
 
-noinst_PROGRAMS = \
-	check_check_export \
-	check_check	\
-	check_stress	\
-	check_thread_stress \
-	check_nofork \
-	ex_output	\
-	ex_xml_output	\
+noinst_PROGRAMS =		\
+	check_check_export	\
+	check_check		\
+	check_stress		\
+	check_thread_stress	\
+	check_nofork		\
+	ex_output		\
+	ex_xml_output		\
 	ex_log_output		\
 	ex_tap_output
 
