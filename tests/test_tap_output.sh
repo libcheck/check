@@ -38,6 +38,7 @@ not ok 2 - ${SRCDIR}ex_tap_output.c:Core:test_fail: Failure"
 fi
 
 test_tap_output ( ) {
+    rm -f ${OUTPUT_FILE}
     ./ex_tap_output${EXEEXT} "${1}" > /dev/null
     actual_tap=`cat ${OUTPUT_FILE} | tr -d "\r"`
     expected_tap="${2}"

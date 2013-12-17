@@ -141,6 +141,7 @@ expected_xml="<?xml version=\"1.0\"?>
 expected_duration_count=8
 fi
 
+rm -f ${OUTPUT_FILE}
 ./ex_xml_output${EXEEXT} > /dev/null
 actual_xml=`cat ${OUTPUT_FILE} | tr -d "\r" | grep -v \<duration\> | grep -v \<datetime\> | grep -v \<path\>`
 if [ x"${expected_xml}" != x"${actual_xml}" ]; then

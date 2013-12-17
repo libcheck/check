@@ -30,7 +30,7 @@ Results for all suites run:
 fi
 
 test_log_output ( ) {
-    
+    rm -f ${OUTPUT_FILE}
     ./ex_log_output${EXEEXT} "${1}" > /dev/null
     actual=`cat ${OUTPUT_FILE} | tr -d "\r"`
     if [ x"${expected}" != x"${actual}" ]; then
