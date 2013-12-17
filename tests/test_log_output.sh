@@ -1,5 +1,7 @@
 #!/bin/sh
 
+OUTPUT_FILE=test.log
+
 . ./test_vars
 
 if [ x"${SRCDIR}" != x"." ]; then
@@ -30,7 +32,7 @@ fi
 test_log_output ( ) {
     
     ./ex_log_output${EXEEXT} "${1}" > /dev/null
-    actual=`cat test.log | tr -d "\r"`
+    actual=`cat ${OUTPUT_FILE} | tr -d "\r"`
     if [ x"${expected}" != x"${actual}" ]; then
 	echo "Problem with ex_log_output${EXEEXT} ${1}";
 	echo "Expected:";

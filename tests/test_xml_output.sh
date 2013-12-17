@@ -152,9 +152,9 @@ if [ x"${expected_xml}" != x"${actual_xml}" ]; then
     exit 1;
 fi
 
-actual_duration_count=`grep -c \<duration\> test.log.xml`
+actual_duration_count=`grep -c \<duration\> ${OUTPUT_FILE}`
 if [ x"${expected_duration_count}" != x"${actual_duration_count}" ]; then
-    echo "Wrong number of <duration> elements in test.log.xml, ${expected_duration_count} vs ${actual_duration_count}";
+    echo "Wrong number of <duration> elements in ${OUTPUT_FILE}, ${expected_duration_count} vs ${actual_duration_count}";
     exit 1;
 fi
 
