@@ -1,5 +1,10 @@
 In development:
 
+* Refactor Check's assertions to be more like the assert() call in
+  assert.h, in that static source code analyzers can use gcc attributes
+  in the header to make assumptions about the flow of the code. See
+  feature request #29.
+
 * fix ck_assert_ptr_* causing const compilation warnings. Patch from
   bug #91.
 
