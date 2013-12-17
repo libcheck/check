@@ -81,6 +81,28 @@ const char *srunner_xml_fname (SRunner *sr)
   return getenv("CK_XML_LOG_FILE_NAME");
 }
 
+void srunner_set_tap (SRunner *sr, const char *fname)
+{
+  if (sr->tap_fname)
+    return;
+  sr->tap_fname = fname;
+}
+
+int srunner_has_tap (SRunner *sr)
+{
+  return srunner_tap_fname(sr) != NULL;
+}
+
+const char *srunner_tap_fname (SRunner *sr)
+{
+  /* check if tap log filename have been set explicitly */
+  if (sr->tap_fname != NULL) {
+    return sr->tap_fname;
+  }
+
+  return getenv("CK_TAP_LOG_FILE_NAME");
+}
+
 void srunner_register_lfun (SRunner *sr, FILE *lfile, int close,
 			    LFun lfun, enum print_output printmode)
 {
@@ -290,6 +312,46 @@ void xml_lfun (SRunner *sr CK_ATTRIBUTE_UNUSED, FILE *file, enum print_output pr
 
 }
 
+void tap_lfun (SRunner *sr, FILE *file, enum print_output printmode CK_ATTRIBUTE_UNUSED,
+		 void *obj, enum cl_event evt)
+{
+  TestResult *tr;
+  Suite *s;
+
+  static int num_tests_run = 0;
+
+  switch (evt) {
+  case CLINITLOG_SR:
+    /* As this is a new log file, reset the number of tests executed */
+    num_tests_run = 0;
+    break;
+  case CLENDLOG_SR:
+    /* Output the test plan as the last line */
+    fprintf(file, "1..%d\n", num_tests_run);
+    fflush(file);
+    break;
+  case CLSTART_SR:
+    break;
+  case CLSTART_S:
+    break;
+  case CLEND_SR:
+    break;
+  case CLEND_S:
+    break;
+  case CLSTART_T:
+    break;
+  case CLEND_T:
+    /* Print the test result to the tap file */
+    num_tests_run+=1;
+    tr = obj;
+    fprintf(file, "%s %d\n", tr->rtype == CK_PASS ? "ok" : "not ok", num_tests_run);
+    fflush(file);
+    break;
+  default:
+    eprintf("Bad event type received in tap_lfun", __FILE__, __LINE__);
+  }
+}
+
 #if ENABLE_SUBUNIT
 void subunit_lfun (SRunner *sr, FILE *file, enum print_output printmode,
 		  void *obj, enum cl_event evt)
@@ -372,6 +434,18 @@ FILE *srunner_open_xmlfile (SRunner *sr)
   return f;
 }
 
+FILE *srunner_open_tapfile (SRunner *sr)
+{
+  FILE *f = NULL;
+  if (srunner_has_tap (sr)) {
+    f = fopen(srunner_tap_fname(sr), "w");
+    if (f == NULL)
+      eprintf ("Error in call to fopen while opening tap file %s:", __FILE__, __LINE__ - 2,
+	       sr->tap_fname);
+  }
+  return f;
+}
+
 void srunner_init_logging (SRunner *sr, enum print_output print_mode)
 {
   FILE *f;
@@ -391,6 +465,10 @@ void srunner_init_logging (SRunner *sr, enum print_output print_mode)
   f = srunner_open_xmlfile (sr);
   if (f) {
     srunner_register_lfun (sr, f, 2, xml_lfun, print_mode);
+  }
+  f = srunner_open_tapfile (sr);
+  if (f) {
+    srunner_register_lfun (sr, f, 2, tap_lfun, print_mode);
   }
   srunner_send_evt (sr, NULL, CLINITLOG_SR);
 }

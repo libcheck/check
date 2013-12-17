@@ -109,6 +109,7 @@ struct SRunner {
   List *resultlst; /* List of unit test results */
   const char *log_fname; /* name of log file */
   const char *xml_fname; /* name of xml output file */
+  const char *tap_fname; /* name of tap output file */
   List *loglst; /* list of Log objects */
   enum fork_status fstat; /* controls if suites are forked or not
 			     NOTE: Don't use this value directly,

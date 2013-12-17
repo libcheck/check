@@ -37,6 +37,9 @@ void lfile_lfun (SRunner *sr, FILE *file, enum print_output,
 void xml_lfun (SRunner *sr, FILE *file, enum print_output,
 		  void *obj, enum cl_event evt);
 
+void tap_lfun (SRunner *sr, FILE *file, enum print_output,
+		  void *obj, enum cl_event evt);
+
 void subunit_lfun (SRunner *sr, FILE *file, enum print_output,
 		  void *obj, enum cl_event evt);
 
@@ -45,6 +48,7 @@ void srunner_register_lfun (SRunner *sr, FILE *lfile, int close,
 
 FILE *srunner_open_lfile (SRunner *sr);
 FILE *srunner_open_xmlfile (SRunner *sr);
+FILE *srunner_open_tapfile (SRunner *sr);
 void srunner_init_logging (SRunner *sr, enum print_output print_mode);
 void srunner_end_logging (SRunner *sr);
 

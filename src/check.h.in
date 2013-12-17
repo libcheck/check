@@ -487,6 +487,20 @@ int CK_EXPORT srunner_has_xml (SRunner *sr);
 /* Return the name of the XML file, or NULL if none */
 const char * CK_EXPORT srunner_xml_fname (SRunner *sr);
 
+/* Set a tap file to which to write during test running.
+
+  Log file setting is an initialize only operation -- it should be
+  done immediatly after SRunner creation, and the log file can't be
+  changed after being set.
+*/
+void CK_EXPORT srunner_set_tap (SRunner *sr, const char *fname);
+
+/* Does the SRunner have a tap file? */
+int CK_EXPORT srunner_has_tap (SRunner *sr);
+
+/* Return the name of the tap file, or NULL if none */
+const char * CK_EXPORT srunner_tap_fname (SRunner *sr);
+
 
 /* Control forking */
 enum fork_status {
