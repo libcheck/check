@@ -56,15 +56,20 @@ prereleasecheck: doc/check_html
 
 RELEASE_VERSION ?= unset
 SF_USERNAME ?= unset
-releasevars:
+
+releaseversioncheck:
 	@if [ "unset" = "${RELEASE_VERSION}" ]; then \
 	    echo "set RELEASE_VERSION to something like 0.9.6 to prepare a release."; \
 	    false; \
 	fi
+
+fsusernamecheck:
 	@if [ "unset" = "${SF_USERNAME}" ]; then \
 	    echo "set SF_USERNAME to your sourceforge username"; \
 	    false; \
 	fi
+
+releasevars: releaseversioncheck fsusernamecheck
 
 .svnrelease:
 	svn st -u | grep "Status against revision:" | awk '{ print $$4 }' > $@
