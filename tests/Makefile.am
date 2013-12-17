@@ -6,7 +6,8 @@ TESTS = \
 	test_output.sh		\
 	test_check_nofork.sh \
 	test_xml_output.sh	\
-	test_log_output.sh
+	test_log_output.sh      \
+	test_tap_output.sh
 
 # check_thread_stress is kind of slow.
 # add this line back to TESTS to enable check_thread_stress
@@ -24,7 +25,8 @@ noinst_PROGRAMS = \
 	check_nofork \
 	ex_output	\
 	ex_xml_output	\
-	ex_log_output
+	ex_log_output		\
+	ex_tap_output
 
 EXTRA_DIST = test_output.sh test_check_nofork.sh test_log_output.sh test_vars.in test_xml_output.sh
 
@@ -77,6 +79,9 @@ ex_log_output_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcom
 
 ex_xml_output_SOURCES = ex_xml_output.c
 ex_xml_output_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
+
+ex_tap_output_SOURCES = ex_tap_output.c
+ex_tap_output_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
 
 AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src
 
