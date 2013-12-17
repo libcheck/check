@@ -85,4 +85,4 @@ ex_tap_output_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcom
 
 AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src
 
-CLEANFILES = *~ *.log *.xml test_logfile
+CLEANFILES = *~ *.log *.xml *.tap test_logfile
