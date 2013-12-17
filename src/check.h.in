@@ -278,7 +278,6 @@ void CK_EXPORT _ck_assert_failed (const char *file, int line, const char *expr, 
 #else
 void CK_EXPORT _ck_assert_failed (const char *file, int line, const char *expr, ...);
 #endif
-;
 
 /* New check fail API. */
 
