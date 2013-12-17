@@ -282,7 +282,7 @@ void xml_lfun (SRunner *sr CK_ATTRIBUTE_UNUSED, FILE *file, enum print_output pr
       clock_gettime(check_get_clockid(), &ts_end);
       duration = DIFF_IN_USEC(ts_start, ts_end);
       fprintf(file, "  <duration>%u.%06u</duration>\n",
-          duration / 1000000, duration % 1000000);
+          duration / US_PER_SEC, duration % US_PER_SEC);
       fprintf(file, "</testsuites>\n");
     }
     break;
