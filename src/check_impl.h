@@ -83,14 +83,14 @@ TestResult *tr_create(void);
 void tr_reset(TestResult *tr);
 
 enum cl_event {
-  CLINITLOG_SR,
-  CLENDLOG_SR,
-  CLSTART_SR,
-  CLSTART_S,
-  CLEND_SR,
-  CLEND_S,
-  CLSTART_T, /* A test case is about to run */
-  CLEND_T
+  CLINITLOG_SR, /* Initialize log file */
+  CLENDLOG_SR,  /* Tests are complete */
+  CLSTART_SR,   /* Suite runner start */
+  CLSTART_S,    /* Suite start */
+  CLEND_SR,     /* Suite runner end */
+  CLEND_S,      /* Suite end */
+  CLSTART_T,    /* A test case is about to run */
+  CLEND_T       /* Test case end */
 };
 
 typedef void (*LFun) (SRunner *, FILE*, enum print_output,
