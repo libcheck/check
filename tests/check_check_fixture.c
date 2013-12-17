@@ -220,6 +220,7 @@ START_TEST(test_ch_setup_fail_nofork)
 	       "Test run counts not correct for checked setup failure");
   ck_assert_msg (srunner_ntests_failed(sr) == 1,
 	       "Failure counts not correct for checked setup failure");
+  srunner_free(sr);
 }
 END_TEST
 
@@ -243,6 +244,7 @@ START_TEST(test_ch_setup_fail_nofork_2)
 	       "Test run counts not correct for checked setup failure");
   ck_assert_msg (srunner_ntests_failed(sr) == 1,
 	       "Failure counts not correct for checked setup failure");
+  srunner_free(sr);
 }
 END_TEST
 
@@ -271,6 +273,7 @@ START_TEST(test_ch_setup_pass_nofork)
 	       "Test run counts not correct for checked setup failure");
   ck_assert_msg (srunner_ntests_failed(sr) == 0,
 	       "Failure counts not correct for checked setup failure");
+  srunner_free(sr);
 }
 END_TEST
 
@@ -318,6 +321,7 @@ START_TEST(test_ch_setup_sig)
     ck_abort_msg (errm);
   }
   free(trm);
+  srunner_free(sr);
 }
 END_TEST
 
@@ -461,6 +465,7 @@ START_TEST(test_ch_teardown_sig)
     ck_abort_msg (errm);
   }
   free(trm);
+  srunner_free(sr);
 }
 END_TEST
 
