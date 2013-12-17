@@ -180,15 +180,91 @@ START_TEST(test_double_set_xml)
 }
 END_TEST
 
+START_TEST(test_set_tap)
+{
+  Suite *s = suite_create("Suite");
+  SRunner *sr = srunner_create(s);
+
+  srunner_set_tap (sr, "test_log.tap");
+
+  ck_assert_msg (srunner_has_tap (sr), "SRunner not logging TAP");
+  ck_assert_msg (strcmp(srunner_tap_fname(sr), "test_log.tap") == 0,
+	       "Bad file name returned");
+
+  srunner_free(sr);
+}
+END_TEST
+
+#if HAVE_WORKING_SETENV
+/* Test enabling TAP logging via environment variable */
+START_TEST(test_set_tap_env)
+{
+  const char *old_val;
+  Suite *s = suite_create("Suite");
+  SRunner *sr = srunner_create(s);
+
+  /* check that setting XML log file via environment variable works */
+  ck_assert_msg(save_set_env("CK_TAP_LOG_FILE_NAME", "test_log.tap", &old_val) == 0,
+              "Failed to set environment variable");
+
+  ck_assert_msg (srunner_has_tap (sr), "SRunner not logging TAP");
+  ck_assert_msg (strcmp(srunner_tap_fname(sr), "test_log.tap") == 0,
+	       "Bad file name returned");
+
+  /* check that explicit call to srunner_set_tap()
+     overrides environment variable */
+  srunner_set_tap (sr, "test2_log.tap");
+
+  ck_assert_msg (srunner_has_tap (sr), "SRunner not logging TAP");
+  ck_assert_msg (strcmp(srunner_tap_fname(sr), "test2_log.tap") == 0,
+	       "Bad file name returned");
+
+  /* restore old environment */
+  ck_assert_msg(restore_env("CK_TAP_LOG_FILE_NAME", old_val) == 0,
+              "Failed to restore environment variable");
+
+  srunner_free(sr);
+}
+END_TEST
+#endif /* HAVE_WORKING_SETENV */
+
+START_TEST(test_no_set_tap)
+{
+  Suite *s = suite_create("Suite");
+  SRunner *sr = srunner_create(s);
+
+  ck_assert_msg (!srunner_has_tap (sr), "SRunner not logging TAP");
+  ck_assert_msg (srunner_tap_fname(sr) == NULL, "Bad file name returned");
+
+  srunner_free(sr);
+}
+END_TEST
+
+START_TEST(test_double_set_tap)
+{
+  Suite *s = suite_create("Suite");
+  SRunner *sr = srunner_create(s);
+
+  srunner_set_tap (sr, "test_log.tap");
+  srunner_set_tap (sr, "test2_log.tap");
+
+  ck_assert_msg(strcmp(srunner_tap_fname(sr), "test_log.tap") == 0,
+	      "TAP Log file is initialize only and shouldn't be changeable once set");
+
+  srunner_free(sr);
+}
+END_TEST
+
 Suite *make_log_suite(void)
 {
 
   Suite *s;
-  TCase *tc_core, *tc_core_xml;
+  TCase *tc_core, *tc_core_xml, *tc_core_tap;
 
   s = suite_create("Log");
   tc_core = tcase_create("Core");
   tc_core_xml = tcase_create("Core XML");
+  tc_core_tap = tcase_create("Core TAP");
 
   suite_add_tcase(s, tc_core);
   tcase_add_test(tc_core, test_set_log);
@@ -205,6 +281,14 @@ Suite *make_log_suite(void)
 #endif /* HAVE_WORKING_SETENV */
   tcase_add_test(tc_core_xml, test_no_set_xml);
   tcase_add_test(tc_core_xml, test_double_set_xml);
+
+  suite_add_tcase(s, tc_core_tap);
+  tcase_add_test(tc_core_tap, test_set_tap);
+#if HAVE_WORKING_SETENV
+  tcase_add_test(tc_core_tap, test_set_tap_env);
+#endif /* HAVE_WORKING_SETENV */
+  tcase_add_test(tc_core_tap, test_no_set_tap);
+  tcase_add_test(tc_core_tap, test_double_set_tap);
 
   return s;
 }
