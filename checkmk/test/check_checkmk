@@ -13,7 +13,7 @@ TEST_DIRS="$TEST_DIRS test_chars num_start_test_name"
 TEST_DIRS="$TEST_DIRS no_args clean_mode declarations test_after_main_pre"
 TEST_DIRS="$TEST_DIRS main_pre_multiple main_post main_pre_after_post"
 TEST_DIRS="$TEST_DIRS test_after_main_post main_post_multiple ucn"
-TEST_DIRS="$TEST_DIRS invalid_ucn"
+TEST_DIRS="$TEST_DIRS invalid_ucn argument_ws repeated_argument_tests"
 
 check_dir() {
     status=0

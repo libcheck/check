@@ -24,36 +24,64 @@ BEGIN {
     outfname="/dev/stdout";
 
     # Tokens
-    pp_ws        = "[ \t\f\v\r\n]+";
-    pp_ws_op     = "[ \t\f\v\r\n]*";
-    pp_prefix    = pp_ws_op "#" pp_ws_op;
-    pp_tag       = "([Ss][Uu][Ii][Tt][Ee]|[Tt][Cc][Aa][Ss][Ee])";
-    pp_test_tag  = "[Tt][Ee][Ss][Tt]";
-    pp_main_pre_tag = "[Mm][Aa][Ii][Nn]-[Pp][Rr][Ee]";
+    pp_ws            = "[ \t\f\v\r\n]+";
+    pp_ws_op         = "[ \t\f\v\r\n]*";
+    pp_prefix        = pp_ws_op "#" pp_ws_op;
+    pp_sep           = "[ \t\f\v\r\n]+";
+    pp_name          = ".+";
+    pp_hex_quad      = "[A-F0-9a-f][A-F0-9a-f][A-F0-9a-f][A-F0-9a-f]"
+    pp_ucn           = "\\\\(u" pp_hex_quad "|U" pp_hex_quad pp_hex_quad ")";
+    pp_test_name     = "([A-Za-z_]|" pp_ucn ")([A-Za-z0-9_]|" pp_ucn ")*";
+    pp_tag           = "([Ss][Uu][Ii][Tt][Ee]|[Tt][Cc][Aa][Ss][Ee])";
+    pp_test_tag      = "[Tt][Ee][Ss][Tt]";
+    pp_main_pre_tag  = "[Mm][Aa][Ii][Nn]-[Pp][Rr][Ee]";
     pp_main_post_tag = "[Mm][Aa][Ii][Nn]-[Pp][Oo][Ss][Tt]";
-    pp_sep       = "[ \t\f\v\r\n]+";
-    pp_name      = ".+";
-    pp_hex_quad = "[A-F0-9a-f][A-F0-9a-f][A-F0-9a-f][A-F0-9a-f]"
-    pp_ucn       = "\\\\(u" pp_hex_quad "|U" pp_hex_quad pp_hex_quad ")";
-    pp_test_name = "([A-Za-z_]|" pp_ucn ")([A-Za-z0-9_]|" pp_ucn ")*";
+
+    # Tests with arguments
+    pp_test_exit_tag = "[Tt][Ee][Ss][Tt]-[Ee][Xx][Ii][Tt][[:blank:]]*[(]" \
+        "[[:blank:]]*[+-]?[[:blank:]]*[[:digit:]]+[[:blank:]]*[)]";
+    pp_test_signal_tag = "[Tt][Ee][Ss][Tt]-[Ss][Ii][Gg][Nn][Aa][Ll]" \
+        "[[:blank:]]*[(][[:blank:]]*[+-]?[[:blank:]]*[[:digit:]]+[[:blank:]]*[)]";
+    pp_test_loop_tag = "[Tt][Ee][Ss][Tt]-[Ll][Oo][Oo][Pp][[:blank:]]*[(]" \
+        "[[:blank:]]*[+-]?[[:blank:]]*[[:digit:]]+[[:blank:]]*[,][[:blank:]]*" \
+        "[+-]?[[:blank:]]*[[:digit:]]+[[:blank:]]*[)]";
+    pp_test_loop_exit_tag = "[Tt][Ee][Ss][Tt]-[Ll][Oo][Oo][Pp]-[Ee][Xx][Ii][Tt]" \
+        "[[:blank:]]*[(][[:blank:]]*[+-]?[[:blank:]]*[[:digit:]]+[[:blank:]]*" \
+        "[,][[:blank:]]*[+-]?[[:blank:]]*[[:digit:]]+[[:blank:]]*[,]" \
+        "[[:blank:]]*[+-]?[[:blank:]]*[[:digit:]]+[[:blank:]]*[)]";
+    pp_test_loop_signal_tag = "[Tt][Ee][Ss][Tt]-[Ll][Oo][Oo][Pp]-[Ss][Ii][Gg]" \
+        "[Nn][Aa][Ll][[:blank:]]*[(][[:blank:]]*[+-]?[[:blank:]]*[[:digit:]]+" \
+        "[[:blank:]]*[,][[:blank:]]*[+-]?[[:blank:]]*[[:digit:]]+[[:blank:]]*" \
+        "[,][[:blank:]]*[+-]?[[:blank:]]*[[:digit:]]+[[:blank:]]*[)]";
 
     pp_suite_or_tcase_line = "^" pp_prefix pp_tag pp_ws pp_name "$";
     pp_test_line_prefix = "^" pp_prefix pp_test_tag pp_ws;
+    pp_test_exit_line_prefix = "^" pp_prefix pp_test_exit_tag pp_ws;
+    pp_test_signal_line_prefix = "^" pp_prefix pp_test_signal_tag pp_ws;
+    pp_test_loop_line_prefix = "^" pp_prefix pp_test_loop_tag pp_ws;
+    pp_test_loop_exit_line_prefix = "^" pp_prefix pp_test_loop_exit_tag pp_ws;
+    pp_test_loop_signal_line_prefix = "^" pp_prefix pp_test_loop_signal_tag pp_ws;
     pp_test_line = pp_test_line_prefix pp_name pp_ws_op "$";
+    pp_test_exit_line = pp_test_exit_line_prefix pp_name pp_ws_op "$";
+    pp_test_signal_line = pp_test_signal_line_prefix pp_name pp_ws_op "$";
+    pp_test_loop_line = pp_test_loop_line_prefix pp_name pp_ws_op "$";
+    pp_test_loop_exit_line = pp_test_loop_exit_line_prefix pp_name pp_ws_op "$";
+    pp_test_loop_signal_line = pp_test_loop_signal_line_prefix pp_name pp_ws_op "$";
     pp_main_pre_line = "^" pp_prefix pp_main_pre_tag pp_ws_op "$";
     pp_main_post_line = "^" pp_prefix pp_main_post_tag pp_ws_op "$";
     
     # Global vars
-    num_tests = 0;
+    in_test = needs_line_decl = 0;
     cur_suite = cur_tcase = "Core";
     cur_test = "";
-    in_test = 0;
-    needs_line_decl = 0;
-    exit_okay = 1;
-
-    num_cur_tcases = 0;
-    num_cur_tests = 0;
-    start = 1;
+    exit_okay = start = 1;
+    num_cur_tcases = num_cur_tests = 0;
+    test_type = num_tests = 0;
+    arg1 = 0;
+    arg2 = 1;
+    arg3 = 2;
+    test_name = 0;
+    test_type_flag = 1;
 }
 
 # Run on the first line of the input file.
@@ -100,7 +128,7 @@ $0 ~ pp_suite_or_tcase_line {
         cur_suite = name;
         num_cur_tcases = 0;
     }
-    else if ((name, 0) in tcase_test_map) {
+    else if ((name, 0, 0) in tcase_test_map) {
         error_with_line("Test Case \"" name "\" already exists.");
     }
     cur_tcase = name;
@@ -113,14 +141,9 @@ $0 ~ pp_suite_or_tcase_line {
 }
 
 $0 ~ pp_test_line {
-    if (in_main())
-        in_main_error();
 
-    if (in_test) {
-        finish_test();
-        print "";
-    }
-    ++num_tests;
+    # Pre checks
+    test_pre();
 
     # Get the test name
     match($0, pp_test_line_prefix)
@@ -129,29 +152,132 @@ $0 ~ pp_test_line {
     # Remove trailing ws.
     sub(pp_ws_op "$", "", cur_test);
 
-    # Confirm that the test name is a valid C identifier.
-    if (!match(cur_test, "^" pp_test_name "$")) {
-        error_with_line("Malformed test name \"" cur_test \
-                        "\" (must be a C identifier).");
-    }
+    # Check for duplicate tests / cases and valid names
+    duplicate_check();
 
-    # Verify that it has not already been used.
-    if (cur_test in test_registry) {
-        error_with_line("Test \"" cur_test "\" already exists.");
-    }
+    # Boilerplate printing code
+    test_post();
 
-    # Verify that any implied test case is not a repeat.
-    if (num_cur_tests == 0 && (cur_tcase, 0) in tcase_test_map) {
-        error_with_line("Test Case \"" name "\" already exists.");
-    }
+    # Set type before calling register
+    test_type = 0;
+    register_test();
 
-    # Print preamble
-    print "START_TEST(" cur_test ")";
-    print "{";
-    if (!clean_mode)
-        print "#line " FNR+1;
-    needs_line_decl = 0;
+    print_line = 0;
+    in_test = 1;
+}
 
+$0 ~ pp_test_loop_line {
+
+    test_pre();
+
+    match($0, pp_test_loop_line_prefix)
+    cur_test = substr($0, RLENGTH+1);
+    sub(pp_ws_op "$", "", cur_test);
+
+    duplicate_check();
+
+    # Split the line into an array to extract the arguments
+    split($0, arr, /[[:blank:]]*[(),][[:blank:]]*/);
+
+    # Eliminate possible whitespace between sign and numbers
+    gsub(/[[:space:]]*/, "", arr[2]);
+    gsub(/[[:space:]]*/, "", arr[3]);
+
+    test_post();
+
+    test_type = 1;
+    register_test();
+
+    print_line = 0;
+    in_test = 1;
+}
+
+$0 ~ pp_test_exit_line {
+
+    test_pre();
+
+    match($0, pp_test_exit_line_prefix)
+    cur_test = substr($0, RLENGTH+1);
+    sub(pp_ws_op "$", "", cur_test);
+
+    duplicate_check();
+
+    split($0, arr, /[[:blank:]]*[(),][[:blank:]]*/);
+    gsub(/[[:space:]]*/, "", arr[2]);
+
+    test_post();
+
+    test_type = 2;
+    register_test();
+
+    print_line = 0;
+    in_test = 1;
+}
+
+$0 ~ pp_test_signal_line {
+
+    test_pre();
+
+    match($0, pp_test_signal_line_prefix)
+    cur_test = substr($0, RLENGTH+1);
+    sub(pp_ws_op "$", "", cur_test);
+
+    duplicate_check();
+
+    split($0, arr, /[[:blank:]]*[(),][[:blank:]]*/);
+    gsub(/[[:space:]]*/, "", arr[2]);
+
+    test_post();
+
+    test_type = 3;
+    register_test();
+
+    print_line = 0;
+    in_test = 1;
+}
+
+$0 ~ pp_test_loop_exit_line {
+
+    test_pre();
+
+    match($0, pp_test_loop_exit_line_prefix)
+    cur_test = substr($0, RLENGTH+1);
+    sub(pp_ws_op "$", "", cur_test);
+
+    duplicate_check();
+
+    split($0, arr, /[[:blank:]]*[(),][[:blank:]]*/);
+    gsub(/[[:space:]]*/, "", arr[2]);
+    gsub(/[[:space:]]*/, "", arr[3]);
+    gsub(/[[:space:]]*/, "", arr[4]);
+
+    test_post();
+
+    test_type = 4;
+    register_test();
+
+    print_line = 0;
+    in_test = 1;
+}
+
+$0 ~ pp_test_loop_signal_line {
+
+    test_pre();
+
+    match($0, pp_test_loop_signal_line_prefix)
+    cur_test = substr($0, RLENGTH+1);
+    sub(pp_ws_op "$", "", cur_test);
+
+    duplicate_check();
+
+    split($0, arr, /[[:blank:]]*[(),][[:blank:]]*/);
+    gsub(/[[:space:]]*/, "", arr[2]);
+    gsub(/[[:space:]]*/, "", arr[3]);
+    gsub(/[[:space:]]*/, "", arr[4]);
+
+    test_post();
+
+    test_type = 5;
     register_test();
 
     print_line = 0;
@@ -198,7 +324,6 @@ END {
             print "";
             print "    return nf == 0 ? 0 : 1;";
         }
-
         print "}";
     }
     else {
@@ -207,6 +332,47 @@ END {
 }
 
 ### Functions ###
+
+function test_pre()
+{
+    if (in_main())
+        in_main_error();
+
+    if (in_test) {
+        finish_test();
+        print "";
+    }
+    ++num_tests;
+}
+
+function duplicate_check()
+{
+    # Confirm that the test name is a valid C identifier.
+    if (!match(cur_test, "^" pp_test_name "$")) {
+        error_with_line("Malformed test name \"" cur_test \
+                        "\" (must be a C identifier).");
+    }
+
+    # Verify that it has not already been used.
+    if (cur_test in test_registry) {
+        error_with_line("Test \"" cur_test "\" already exists.");
+    }
+
+    # Verify that any implied test case is not a repeat.
+    if (num_cur_tests == 0 && (cur_tcase, 0, 0) in tcase_test_map) {
+        error_with_line("Test Case \"" name "\" already exists.");
+    }
+}
+
+function test_post()
+{
+    print "START_TEST(" cur_test ")";
+    print "{";
+    if (!clean_mode)
+        print "#line " FNR+1;
+
+    needs_line_decl = 0;
+}
 
 function main_post()
 {
@@ -300,8 +466,34 @@ function print_runner_bindings()
             tcvar = tcase_var_name(i, j);
             print "    suite_add_tcase(" svar ", " tcvar ");";
             for (k=0; k != tcase_num_tests[tc]; ++k) {
-                t = tcase_test_map[tc, k];
-                print "    tcase_add_test(" tcvar ", " t ");";
+                t = tcase_test_map[tc, k, test_name];
+                test_type = tcase_test_map[tc, k, test_type_flag];
+                if (test_type == 0) {
+                    print "    tcase_add_test(" tcvar ", " t ");";
+                }
+                else if (test_type == 1) {
+                    print "    tcase_add_loop_test(" tcvar ", " t ", " \
+                        test_parameters[t, arg1] ", " test_parameters[t, arg2] \
+                        ");";
+                }
+                else if (test_type == 2) {
+                    print "    tcase_add_exit_test(" tcvar ", " t ", " \
+                        test_parameters[t, arg1] ");";
+                }
+                else if (test_type == 3) {
+                    print "    tcase_add_test_raise_signal(" tcvar ", " t ", " \
+                        test_parameters[t, arg1] ");";
+                }
+                else if (test_type == 4) {
+                    print "    tcase_add_loop_exit_test(" tcvar ", " t ", " \
+                        test_parameters[t, arg1] ", " test_parameters[t, arg2] \
+                        ", " test_parameters[t, arg3] ");";
+                }
+                else if (test_type == 5) {
+                    print "    tcase_add_loop_test_raise_signal(" tcvar ", " t \
+                        ", " test_parameters[t, arg1] ", " test_parameters[t, arg2] \
+                        ", " test_parameters[t, arg3] ");";
+                }
             }
         }
     }
@@ -323,9 +515,15 @@ function register_test()
         suite_tcase_map[cur_suite, num_cur_tcases++] = cur_tcase;
         suite_num_tcases[cur_suite] = num_cur_tcases;
     }
-    tcase_test_map[cur_tcase, num_cur_tests++] = cur_test;
+    tcase_test_map[cur_tcase, num_cur_tests, test_name] = cur_test;
+    tcase_test_map[cur_tcase, num_cur_tests++, test_type_flag] = test_type;
     tcase_num_tests[cur_tcase] = num_cur_tests;
     test_registry[cur_test] = 1;
+
+    # Store arguments to array
+    test_parameters[cur_test, arg1] = arr[2];
+    test_parameters[cur_test, arg2] = arr[3];
+    test_parameters[cur_test, arg3] = arr[4];
 }
 
 function finish_test()
