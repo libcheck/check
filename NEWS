@@ -1,5 +1,14 @@
 In development:
 
+* Added additional configure script checks for support of
+  timer_create() on the target system. This allows for
+  OpenBSD to compile and run all Check's unit tests successfully. 
+
+* Added a unit test, check_mem_leaks, which can be used against
+  valgrind to test for memory leaks. No memory leaks were found.
+
+* Added tcase_add_loop_test support in checkm. Patch from patches #46. 
+
 * Add support for logging in Test Anything Protocol (TAP) format.
 
 * Refactor Check's assertions to be more like the assert() call in
