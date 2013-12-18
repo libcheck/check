@@ -243,18 +243,10 @@ AC_CHECK_SIZEOF(long, 4)
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 
-# The timer_create(), timer_settime(), and timer_delete()
-# functions on OpenBSD (and maybe other BSDs) are implemented, but
-# simply set errno=ENOSYS. For this reason, we give the option
-# to use Check's replacement of these functions.
-if test "xtrue" = x"$enable_timer_replacement"; then
-    AC_LIBOBJ([timer_create])
-    AC_LIBOBJ([timer_settime])
-    AC_LIBOBJ([timer_delete])
-else
-    AC_REPLACE_FUNCS([timer_create timer_settime timer_delete])
-    AC_CHECK_DECLS([timer_create, timer_settime, timer_delete])
-fi
+# Check if the timer_create(), timer_settime(), and timer_delete()
+# functions on the system are available and suitable, or need to be
+# replaced with Check's replacement of these functions.
+HW_LIBRT_TIMERS
 
 AC_REPLACE_FUNCS([alarm clock_gettime fileno localtime_r pipe putenv setenv sleep strdup strsignal unsetenv])
 AC_CHECK_DECLS([alarm, clock_gettime, fileno, localtime_r, pipe, putenv, setenv, sleep, strdup, strsignal, unsetenv])
