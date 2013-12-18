@@ -116,6 +116,15 @@ AC_HELP_STRING([--enable-snprintf-replacement],
   *)   AC_MSG_ERROR(bad value ${enableval} for --enable-snprintf-replacement) ;;
 esac], [enable_snprintf_replacement=autodetect ])
 
+AC_ARG_ENABLE(timer-replacement,
+AC_HELP_STRING([--enable-timer-replacement],
+	       [enable check timer replacement, (even if the system provides timer_create, timer_settime, and timer_delete) @<:@default=autodetect@:>@]),
+[case "${enableval}" in
+  yes) enable_timer_replacement=true ;;
+  *)   AC_MSG_ERROR(bad value ${enableval} for --enable-timer-replacement) ;;
+esac], [enable_timer_replacement=autodetect ])
+
+
 # Checks for programs.
 AC_PROG_AWK
 AC_PROG_CC
@@ -233,8 +242,22 @@ AC_CHECK_SIZEOF(long, 4)
 # Checks for library functions.
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
-AC_REPLACE_FUNCS([alarm clock_gettime timer_create timer_settime timer_delete fileno localtime_r pipe putenv setenv sleep strdup strsignal unsetenv])
-AC_CHECK_DECLS([alarm, clock_gettime, timer_create, timer_settime, timer_delete, fileno, localtime_r, pipe, putenv, setenv, sleep, strdup, strsignal, unsetenv])
+
+# The timer_create(), timer_settime(), and timer_delete()
+# functions on OpenBSD (and maybe other BSDs) are implemented, but
+# simply set errno=ENOSYS. For this reason, we give the option
+# to use Check's replacement of these functions.
+if test "xtrue" = x"$enable_timer_replacement"; then
+    AC_LIBOBJ([timer_create])
+    AC_LIBOBJ([timer_settime])
+    AC_LIBOBJ([timer_delete])
+else
+    AC_REPLACE_FUNCS([timer_create timer_settime timer_delete])
+    AC_CHECK_DECLS([timer_create, timer_settime, timer_delete])
+fi
+
+AC_REPLACE_FUNCS([alarm clock_gettime fileno localtime_r pipe putenv setenv sleep strdup strsignal unsetenv])
+AC_CHECK_DECLS([alarm, clock_gettime, fileno, localtime_r, pipe, putenv, setenv, sleep, strdup, strsignal, unsetenv])
 
 AC_CHECK_FUNCS([setitimer])
 
