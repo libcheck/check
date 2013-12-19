@@ -34,7 +34,6 @@ EXTRA_DIST = test_output.sh test_check_nofork.sh test_log_output.sh test_vars.in
 if NO_TIMEOUT_TESTS
 check_check_CFLAGS = -DTIMEOUT_TESTS_ENABLED=0
 check_check_export_CFLAGS = -DTIMEOUT_TESTS_ENABLED=0
-check_mem_leaks_CFLAGS = -DTIMEOUT_TESTS_ENABLED=0
 endif
 
 check_check_export_SOURCES = \
@@ -72,6 +71,7 @@ check_mem_leaks_SOURCES = 	\
 	check_check_sub.c		\
 	check_check_master.c
 check_mem_leaks_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
+check_mem_leaks_CFLAGS = -DTIMEOUT_TESTS_ENABLED=0 -DMEMORY_LEAKING_TESTS_ENABLED=0
 
 check_stress_SOURCES = check_stress.c
 check_stress_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
