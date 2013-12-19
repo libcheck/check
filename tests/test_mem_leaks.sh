@@ -10,7 +10,7 @@ LEAK_MESSAGE="are definitely lost"
 # file for details on the leak.
 
 rm -f ${VALGRIND_LOG_FILE}
-valgrind --leak-check=full ${UNIT_TEST} 2>&1 | tee ${VALGRIND_LOG_FILE}
+libtool --mode=execute valgrind --leak-check=full ${UNIT_TEST} 2>&1 | tee ${VALGRIND_LOG_FILE}
 
 NUM_LEAKS=$(grep "${LEAK_MESSAGE}" ${VALGRIND_LOG_FILE} | wc -l)
 
