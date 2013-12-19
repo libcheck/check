@@ -5,6 +5,15 @@
 #define TIMEOUT_TESTS_ENABLED 1
 #endif
 
+/*
+ * Certain unit tests are known to leak memory. This
+ * #define will prevent those unit tests from being built
+ * if the program is to be used against valgrind.
+ */
+#ifndef MEMORY_LEAKING_TESTS_ENABLED
+#define MEMORY_LEAKING_TESTS_ENABLED 1
+#endif
+
 int sub_nfailed;
 int sub_ntests;
 
