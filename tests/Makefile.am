@@ -3,6 +3,7 @@
 TESTS = \
 	check_check_export	\
 	check_check		\
+	check_mem_leaks		\
 	test_output.sh		\
 	test_check_nofork.sh    \
 	test_xml_output.sh	\
