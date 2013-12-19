@@ -41,7 +41,6 @@ int main (int argc, char **argv)
     fork_setup();
 
     sr = srunner_create (make_log_suite());
-    srunner_add_suite(sr, make_limit_suite());
     srunner_add_suite(sr, make_fork_suite());
 
 #if defined(HAVE_FORK)

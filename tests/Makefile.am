@@ -66,14 +66,12 @@ check_check_LDADD = $(top_builddir)/src/libcheckinternal.la $(top_builddir)/lib/
 check_mem_leaks_SOURCES = 	\
 	check_mem_leaks.c 		\
 	check_check_log.c		\
-	check_check_limit.c		\
-	check_check_fixture.c	\
 	check_check_fork.c		\
 	check_check_exit.c		\
 	check_check_selective.c	\
 	check_check_sub.c		\
 	check_check_master.c
-check_mem_leaks_LDADD = $(top_builddir)/src/libcheckinternal.la $(top_builddir)/lib/libcompat.la
+check_mem_leaks_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
 
 check_stress_SOURCES = check_stress.c
 check_stress_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
