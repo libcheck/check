@@ -1,4 +1,7 @@
 In development:
+# These lines to be removed, stub to keep distcheck
+# happy on NEWS requirement of having "Check 0.9.11"
+# in the first 15 lines.
 
 * Added additional configure script checks for support of
   timer_create() on the target system. This allows for
