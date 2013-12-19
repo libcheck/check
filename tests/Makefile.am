@@ -30,7 +30,7 @@ noinst_PROGRAMS =		\
 	ex_log_output		\
 	ex_tap_output
 
-EXTRA_DIST = test_output.sh test_check_nofork.sh test_log_output.sh test_vars.in test_xml_output.sh test_tap_output.sh
+EXTRA_DIST = test_output.sh test_check_nofork.sh test_log_output.sh test_vars.in test_xml_output.sh test_tap_output.sh test_mem_leaks.sh
 
 if NO_TIMEOUT_TESTS
 check_check_CFLAGS = -DTIMEOUT_TESTS_ENABLED=0
