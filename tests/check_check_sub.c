@@ -495,6 +495,13 @@ START_TEST(test_early_exit)
 END_TEST
 #endif /* HAVE_FORK */
 
+/*
+ * The following test will leak memory because it is calling
+ * APIs inproperly. The leaked memory cannot be free'd, as
+ * the methods to do so are static. (No user of Check should
+ * call them directly).
+ */
+#if MEMORY_LEAKING_TESTS_ENABLED
 START_TEST(test_null)
 {  
   Suite *s;
@@ -510,6 +517,7 @@ START_TEST(test_null)
   ck_abort_msg("Completed properly");
 }
 END_TEST
+#endif /* MEMORY_LEAKING_TESTS_ENABLED */
 
 START_TEST(test_null_2)
 {
@@ -1142,7 +1150,9 @@ Suite *make_sub_suite(void)
 #ifdef HAVE_FORK
   tcase_add_test (tc_limit, test_early_exit);
 #endif /* HAVE_FORK */
+#if MEMORY_LEAKING_TESTS_ENABLED
   tcase_add_test (tc_limit, test_null);
+#endif /* MEMORY_LEAKING_TESTS_ENABLED */
   tcase_add_test (tc_limit, test_null_2);
 
 #ifdef HAVE_FORK
