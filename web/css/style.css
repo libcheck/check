@@ -163,6 +163,13 @@ A:hover {
   color: #2153AA;
 }
 
+#content ul {
+  font-family: verdana, arial, sans-serif;
+  font-size: 12px;
+  line-height: 18px;
+  color: #333333;
+}
+
 #navlist
 {
   margin-top:1px;
