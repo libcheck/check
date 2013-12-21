@@ -1,0 +1,339 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!--
+Copyright: Darren Hester 2006, http://www.designsbydarren.com
+License: Released Under the "Creative Commons License",
+http://creativecommons.org/licenses/by-nc/2.5/
+-->
+
+<head>
+
+<!-- Meta Data -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta name="description" content="Check unit testing framework for C" />
+<meta name="keywords" content="check, unit test, c" />
+
+<!-- Site Title -->
+<title>Check | Users of Check</title>
+
+<!-- Link to Style External Sheet -->
+<link href="css/style.css" type="text/css" rel="stylesheet" />
+
+</head>
+
+<body>
+
+<div id="page_wrapper">
+
+<div id="header_wrapper">
+
+<div id="header">
+
+<h1>Check</h1>
+<h2>Unit Testing Framework for C</h2>
+
+</div>
+
+<div id="navcontainer">
+
+<ul id="navlist">
+<li><a href="../index.html">Home</a></li>
+<li><a href="../NEWS">NEWS</a></li>
+<li id="active"><a href="#" id="current">Install</a></li>
+<li><a href="../doc/check_html/check_3.html">Tutorial</a></li>
+<li><a href="../doc/check_html/index.html">Reference</a></li>
+<li><a href="http://sourceforge.net/projects/check/files/latest/download">Download</a></li>
+</ul>
+</div>
+
+</div>
+
+
+<div id="content">
+
+<h3>Installing Check</h3>
+
+<p>
+The following instructions show how one can either install Check from
+a package manager or compile from source on one's platform.
+</p>
+
+<ul>
+    <li>GNU/Linux</li>
+    <ul>
+        <li><a href="#aptitude">Ubuntu/Debian via Aptitude</a></li>
+        <li><a href="#yum">Fedora via Yum</a></li>
+        <li><a href="#linuxsource">From Source</a></li>
+    </ul>
+    <li>GNU/Hurd</li>
+    <ul>
+        <li><a href="#hurdsource">Debian GNU/Hurd From Source</a></li>
+    </ul>
+    <li>OSX</li>
+    <ul>
+        <li><a href="#osxmacports">MacPorts</a></li>
+        <li><a href="#osxhomebrew">Homebrew</a></li>
+        <li><a href="#osxsource">From Source</a></li>
+    </ul>
+    <li>BSD</li>
+    <ul>
+        <li><a href="#openbsd">OpenBSD via Packages</a></li>
+        <li><a href="#bsdsource">From Source</a></li>
+    </ul>
+    <li>Windows</li>
+    <ul>
+        <li><a href="#cygwinpackage">Cygwin via Package Manager</a></li>
+        <li><a href="#cygwinsource">Cygwin From Source</a></li>
+        <li><a href="#mingwsource">MinGW/MinGW-w64 From Source</a></li>
+    </ul>
+</ul>
+
+<hr></hr>
+
+<a name="aptitude"></a>
+<h3>Ubuntu/Debian via Aptitude</h3>
+<p>
+Ubuntu and Debian both provide a Check package that can be installed.
+To install, in a terminal, type:
+
+<div id="code"><pre class="command">
+$ sudo apt-get install check
+</pre></div>
+</p>
+<br></br>
+
+
+<a name="yum"></a>
+<h3>Fedora via Yum</h3>
+<p>
+Fedora both provides a Check package that can be installed. To install,
+in a terminal, type:
+
+<div id="code"><pre class="command">
+$ sudo yum install check
+</pre></div>
+</p>
+<br></br>
+
+
+<a name="linuxsource"></a>
+<h3>GNU/Linux From Source</h3>
+<p>
+Check uses autotools as a build system, and the default steps
+work on GNU/Linux systems. After the
+<a href="http://sourceforge.net/projects/check/files/latest/download">latest Check source</a>
+has been downloaded and unpacked, open a terminal in the unpacked
+directory, then:
+</p>
+<div id="code"><pre class="command">
+$ ./configure
+$ make
+$ make check
+$ sudo make install
+</pre></div>
+<p>
+If the "make check" step fails, please send an email to Check's
+<a href="https://lists.sourceforge.net/lists/listinfo/check-devel">mailing list</a>
+and give details as to the failure so it may be investigated and fixed.
+</p>
+<br></br>
+
+
+<a name="hurdsource"></a>
+<h3>Debian GNU/Hurd From Source</h3>
+<p>
+Debian GNU/Hurd does not yet provide a package for Check, so it must
+be compiled from source. Check uses autotools as a build system, and the
+default steps work on Debian GNU/Hurd systems.
+Note that not all unit tests currently pass on GNU/Hurd; this is being
+investigated. After the
+<a href="http://sourceforge.net/projects/check/files/latest/download">latest Check source</a>
+has been downloaded and unpacked, open a terminal in the unpacked
+directory, then:
+</p>
+<div id="code"><pre class="command">
+$ ./configure
+$ make
+$ sudo make install
+</pre></div>
+<br></br>
+
+
+<a name="osxmacports"></a>
+<h3>OSX via MacPorts</h3>
+<p>
+MacPorts provides a Check package that can be installed. First,
+<a href="www.macports.org/install.php">install MacPorts</a>
+if not done already. Then, in a terminal, type:
+
+<div id="code"><pre class="command">
+$ sudo port install check
+</pre></div>
+</p>
+<br></br>
+
+
+<a name="osxhomebrew"></a>
+<h3>OSX via Homebrew</h3>
+<p>
+Homebrew provides a Check package that can be installed. First,
+<a href="brew.sh">install Homebrew</a>
+if not done already. Then, in a terminal, type:
+
+<div id="code"><pre class="command">
+$ brew install check
+</pre></div>
+</p>
+<br></br>
+
+
+<a name="osxsource"></a>
+<h3>OSX From Source</h3>
+<p>
+Check uses autotools as a build system, and the default steps
+work on OSX systems. You must have Xcode installed. After the
+<a href="http://sourceforge.net/projects/check/files/latest/download">latest Check source</a>
+has been downloaded and unpacked, open a terminal in the unpacked
+directory, then:
+</p>
+<div id="code"><pre class="command">
+$ ./configure
+$ make
+$ make check
+$ sudo make install
+</pre></div>
+<p>
+If the "make check" step fails, please send an email to Check's
+<a href="https://lists.sourceforge.net/lists/listinfo/check-devel">mailing list</a>
+and give details as to the failure so it may be investigated and fixed.
+</p>
+<br></br>
+
+
+<a name="openbsd"></a>
+<h3>OpenBSD via Packages</h3>
+<p>
+OpenBSD provides a Check package that can be installed. To install,
+in a terminal, type:
+
+<div id="code"><pre class="command">
+$ sudo pkg_add check
+</pre></div>
+</p>
+<br></br>
+
+
+<a name="bsdsource"></a>
+<h3>BSD From Source</h3>
+<p>
+Check uses autotools as a build system, and the default steps
+work when building on the BSD system. Special care is required when
+cross compiling, which is described below.
+<br></br>
+After the <a href="http://sourceforge.net/projects/check/files/latest/download">latest Check source</a>
+has been downloaded and unpacked, open a terminal in the unpacked
+directory. To compile on the BSD system directly, type:
+</p>
+<div id="code"><pre class="command">
+$ ./configure
+$ make
+$ make check
+$ sudo make install
+</pre></div>
+<p>
+If the "make check" step fails, please send an email to Check's
+<a href="https://lists.sourceforge.net/lists/listinfo/check-devel">mailing list</a>
+and give details as to the failure so it may be investigated and fixed.
+</p>
+<p>
+Cross compiling for BSD may require an additional configure argument:
+<em>--enable-timer-replacement</em> .
+Check attempts to use high resolution timers via the timer_create(),
+timer_settime(), and timer_delete() functions. For some BSD systems
+(e.g. OpenBSD), these functions exist but are non-functional stubs.
+If the functions are available, when compiling on the target system the
+configure script will verify that the calls are not stubs. If they are
+valid, Check will use them. When cross compiling, the validity check
+cannot be performed. To prevent Check from using these when cross
+compiling for affected BSD systems, add the <em>--enable-timer-replacement</em>
+configure option.
+</p>
+<br></br>
+
+
+<a name="cygwinpackage"></a>
+<h3>Cygwin via Package Manager</h3>
+<p>
+Cygwin provides a Check package that can be installed. To install,
+launch the Cygwin setup program, locate the Check package under
+the Devel folder, then install.
+</p>
+<br></br>
+
+
+<a name="cygwinsource"></a>
+<h3>Cygwin From Source</h3>
+<p>
+Check uses autotools as a build system, and the default steps
+work on Cygwin. You must have gcc, and make installed. After the
+<a href="http://sourceforge.net/projects/check/files/latest/download">latest Check source</a>
+has been downloaded and unpacked, open a Cygwin terminal in the unpacked
+directory, then:
+</p>
+<div id="code"><pre class="command">
+$ ./configure
+$ make
+$ make check
+$ sudo make install
+</pre></div>
+<p>
+If the "make check" step fails, please send an email to Check's
+<a href="https://lists.sourceforge.net/lists/listinfo/check-devel">mailing list</a>
+and give details as to the failure so it may be investigated and fixed.
+</p>
+<br></br>
+
+
+<a name="mingwsource"></a>
+<h3>MinGW/MinGW-w64 From Source</h3>
+<p>
+MinGW and MinGW-w64 do not provide a package for Check, so it must be
+compiled from source. Check uses autotools as a build system, and the
+default steps work on both MinGW and MinGW-w64. Note that because both
+MinGW and MinGW-w64 do not provide a fork() alternative, Check's fork
+mode will be disabled. After the
+<a href="http://sourceforge.net/projects/check/files/latest/download">latest Check source</a>
+has been downloaded and unpacked, open a MSYS terminal in the unpacked
+directory, then:
+</p>
+<div id="code"><pre class="command">
+$ ./configure
+$ make
+$ make check
+$ make install
+</pre></div>
+<p>
+If the "make check" step fails, please send an email to Check's
+<a href="https://lists.sourceforge.net/lists/listinfo/check-devel">mailing list</a>
+and give details as to the failure so it may be investigated and fixed.
+</p>
+<br></br>
+
+
+
+</div>
+
+<div id="footer">
+<a href="http://sourceforge.net">Sourceforge</a>
+| <a href="http://www.cloudbees.com/foss/index.cb">Cloudbees</a>
+<br />
+Template provided by:
+<a href="http://www.designsbydarren.com" target="_blank">DesignsByDarren.com</a>
+</div>
+
+</div>
+
+</body>
+
+</html>
