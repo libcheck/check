@@ -61,3 +61,19 @@ Thanks,
 <paste contents of NEWS-release here>
 =====
 8.  Follow the remaining prompts.
+
+
+
+Update website
+==============
+If the website needs to be updated outside of a release,
+the following can be done.
+
+1. Fix your ssh connectivity and accept ssh-keys, as
+   mentioned in the release process above.
+2. Upload the index.html file and web folder to Sourceforge
+   from your workspace with the following:
+   make SF_USERNAME=username updateweb
+
+The changes to the webpage on Sourceforge should take affect
+a few minutes after the upload.
