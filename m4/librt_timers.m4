@@ -15,6 +15,11 @@ AC_DEFUN([HW_HEADER_TIME_H],
 # and timer_delete() functions are used. Otherwise, make sure
 # the replacement functions will be built.
 #
+# In the case where we are cross compiling, the POSIX detection of
+# the timer_create() function is skipped, and instead the usual check
+# for the existence of all the timer_* functions is done using
+# AC_REPLACE_FUNCS.
+#
 # If enable_timer_replacement=true, the replacements is forced to be built.
 AC_DEFUN([HW_LIBRT_TIMERS],
 [
@@ -53,14 +58,22 @@ AC_DEFUN([HW_LIBRT_TIMERS],
 			  [[return test_timer_create();]])],
 			[hw_cv_librt_timers_posix=yes],
 			[hw_cv_librt_timers_posix=no],
-			[hw_cv_librt_timers_posix=no])])],
+			[hw_cv_librt_timers_posix=autodetect])])],
 		[hw_cv_librt_timers_posix=no])
   else
       hw_cv_librt_timers_posix=no
   fi
 
+  # If the system does not have a POSIX timer_create(), then use
+  # Check's reimplementation of the timer_* calls
   AS_IF([test "$hw_cv_librt_timers_posix" = no],
     [_HW_LIBRT_TIMERS_REPLACE])
+
+  # If we are cross compiling, do the normal check for the
+  # timer_* calls.
+  AS_IF([test "$hw_cv_librt_timers_posix" = autodetect],
+    [AC_REPLACE_FUNCS([timer_create timer_settime timer_delete])
+     AC_CHECK_DECLS([timer_create, timer_settime, timer_delete])])
 ])# HW_LIBRT_TIMERS
 
 # _HW_LIBRT_TIMERS_REPLACE
