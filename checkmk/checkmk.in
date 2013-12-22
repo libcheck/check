@@ -13,7 +13,7 @@
 # Redistribution of this program in any form, with or without
 # modifications, is permitted, provided that the above copyright is
 # retained in distributions of this program in source form.
-# 
+#
 # (This is a free, non-copyleft license compatible with pretty much any
 # other free or proprietary license, including the GPL. It's essentially
 # a scaled-down version of the "modified" BSD license.)
@@ -26,6 +26,7 @@ BEGIN {
     # Tokens
     pp_ws            = "[ \t\f\v\r\n]+";
     pp_ws_op         = "[ \t\f\v\r\n]*";
+    pp_digit         = "[0-9]+"
     pp_prefix        = pp_ws_op "#" pp_ws_op;
     pp_sep           = "[ \t\f\v\r\n]+";
     pp_name          = ".+";
@@ -38,21 +39,25 @@ BEGIN {
     pp_main_post_tag = "[Mm][Aa][Ii][Nn]-[Pp][Oo][Ss][Tt]";
 
     # Tests with arguments
-    pp_test_exit_tag = "[Tt][Ee][Ss][Tt]-[Ee][Xx][Ii][Tt][[:blank:]]*[(]" \
-        "[[:blank:]]*[+-]?[[:blank:]]*[[:digit:]]+[[:blank:]]*[)]";
-    pp_test_signal_tag = "[Tt][Ee][Ss][Tt]-[Ss][Ii][Gg][Nn][Aa][Ll]" \
-        "[[:blank:]]*[(][[:blank:]]*[+-]?[[:blank:]]*[[:digit:]]+[[:blank:]]*[)]";
-    pp_test_loop_tag = "[Tt][Ee][Ss][Tt]-[Ll][Oo][Oo][Pp][[:blank:]]*[(]" \
-        "[[:blank:]]*[+-]?[[:blank:]]*[[:digit:]]+[[:blank:]]*[,][[:blank:]]*" \
-        "[+-]?[[:blank:]]*[[:digit:]]+[[:blank:]]*[)]";
+    pp_test_exit_tag = "[Tt][Ee][Ss][Tt]-[Ee][Xx][Ii][Tt]" pp_ws_op "[(]" \
+        pp_ws_op "[+-]?" pp_ws_op pp_digit pp_ws_op "[)]";
+
+    pp_test_signal_tag = "[Tt][Ee][Ss][Tt]-[Ss][Ii][Gg][Nn][Aa][Ll]" pp_ws_op \
+        "[(]" pp_ws_op "[+-]?" pp_ws_op pp_digit pp_ws_op "[)]";
+
+    pp_test_loop_tag = "[Tt][Ee][Ss][Tt]-[Ll][Oo][Oo][Pp]" pp_ws_op "[(]" \
+        pp_ws_op "[+-]?" pp_ws_op pp_digit pp_ws_op "[,]" pp_ws_op \
+        "[+-]?" pp_ws_op pp_digit pp_ws_op "[)]";
+
     pp_test_loop_exit_tag = "[Tt][Ee][Ss][Tt]-[Ll][Oo][Oo][Pp]-[Ee][Xx][Ii][Tt]" \
-        "[[:blank:]]*[(][[:blank:]]*[+-]?[[:blank:]]*[[:digit:]]+[[:blank:]]*" \
-        "[,][[:blank:]]*[+-]?[[:blank:]]*[[:digit:]]+[[:blank:]]*[,]" \
-        "[[:blank:]]*[+-]?[[:blank:]]*[[:digit:]]+[[:blank:]]*[)]";
+        pp_ws_op "[(]" pp_ws_op "[+-]?" pp_ws_op pp_digit pp_ws_op \
+        "[,]" pp_ws_op "[+-]?" pp_ws_op pp_digit pp_ws_op "[,]" \
+        pp_ws_op "[+-]?" pp_ws_op pp_digit pp_ws_op "[)]";
+
     pp_test_loop_signal_tag = "[Tt][Ee][Ss][Tt]-[Ll][Oo][Oo][Pp]-[Ss][Ii][Gg]" \
-        "[Nn][Aa][Ll][[:blank:]]*[(][[:blank:]]*[+-]?[[:blank:]]*[[:digit:]]+" \
-        "[[:blank:]]*[,][[:blank:]]*[+-]?[[:blank:]]*[[:digit:]]+[[:blank:]]*" \
-        "[,][[:blank:]]*[+-]?[[:blank:]]*[[:digit:]]+[[:blank:]]*[)]";
+        "[Nn][Aa][Ll]" pp_ws_op "[(]" pp_ws_op "[+-]?" pp_ws_op pp_digit \
+        pp_ws_op "[,]" pp_ws_op "[+-]?" pp_ws_op pp_digit pp_ws_op \
+        "[,]" pp_ws_op "[+-]?" pp_ws_op pp_digit pp_ws_op "[)]";
 
     pp_suite_or_tcase_line = "^" pp_prefix pp_tag pp_ws pp_name "$";
     pp_test_line_prefix = "^" pp_prefix pp_test_tag pp_ws;
@@ -69,7 +74,7 @@ BEGIN {
     pp_test_loop_signal_line = pp_test_loop_signal_line_prefix pp_name pp_ws_op "$";
     pp_main_pre_line = "^" pp_prefix pp_main_pre_tag pp_ws_op "$";
     pp_main_post_line = "^" pp_prefix pp_main_post_tag pp_ws_op "$";
-    
+
     # Global vars
     in_test = needs_line_decl = 0;
     cur_suite = cur_tcase = "Core";
@@ -177,11 +182,11 @@ $0 ~ pp_test_loop_line {
     duplicate_check();
 
     # Split the line into an array to extract the arguments
-    split($0, arr, /[[:blank:]]*[(),][[:blank:]]*/);
+    split($0, arr, pp_ws_op "[(),]" pp_ws_op);
 
     # Eliminate possible whitespace between sign and numbers
-    gsub(/[[:space:]]*/, "", arr[2]);
-    gsub(/[[:space:]]*/, "", arr[3]);
+    gsub(pp_ws_op, "", arr[2]);
+    gsub(pp_ws_op, "", arr[3]);
 
     test_post();
 
@@ -202,8 +207,8 @@ $0 ~ pp_test_exit_line {
 
     duplicate_check();
 
-    split($0, arr, /[[:blank:]]*[(),][[:blank:]]*/);
-    gsub(/[[:space:]]*/, "", arr[2]);
+    split($0, arr, pp_ws_op "[(),]" pp_ws_op);
+    gsub(pp_ws_op, "", arr[2]);
 
     test_post();
 
@@ -224,8 +229,8 @@ $0 ~ pp_test_signal_line {
 
     duplicate_check();
 
-    split($0, arr, /[[:blank:]]*[(),][[:blank:]]*/);
-    gsub(/[[:space:]]*/, "", arr[2]);
+    split($0, arr, pp_ws_op "[(),]" pp_ws_op);
+    gsub(pp_ws_op, "", arr[2]);
 
     test_post();
 
@@ -246,10 +251,10 @@ $0 ~ pp_test_loop_exit_line {
 
     duplicate_check();
 
-    split($0, arr, /[[:blank:]]*[(),][[:blank:]]*/);
-    gsub(/[[:space:]]*/, "", arr[2]);
-    gsub(/[[:space:]]*/, "", arr[3]);
-    gsub(/[[:space:]]*/, "", arr[4]);
+    split($0, arr, pp_ws_op "[(),]" pp_ws_op);
+    gsub(pp_ws_op, "", arr[2]);
+    gsub(pp_ws_op, "", arr[3]);
+    gsub(pp_ws_op, "", arr[4]);
 
     test_post();
 
@@ -270,10 +275,10 @@ $0 ~ pp_test_loop_signal_line {
 
     duplicate_check();
 
-    split($0, arr, /[[:blank:]]*[(),][[:blank:]]*/);
-    gsub(/[[:space:]]*/, "", arr[2]);
-    gsub(/[[:space:]]*/, "", arr[3]);
-    gsub(/[[:space:]]*/, "", arr[4]);
+    split($0, arr, pp_ws_op "[(),]" pp_ws_op);
+    gsub(pp_ws_op, "", arr[2]);
+    gsub(pp_ws_op, "", arr[3]);
+    gsub(pp_ws_op, "", arr[4]);
 
     test_post();
 
