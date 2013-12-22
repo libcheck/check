@@ -145,9 +145,7 @@ and give details as to the failure so it may be investigated and fixed.
 <p>
 Debian GNU/Hurd does not yet provide a package for Check, so it must
 be compiled from source. Check uses autotools as a build system, and the
-default steps work on Debian GNU/Hurd systems.
-Note that not all unit tests currently pass on GNU/Hurd; this is being
-investigated. After the
+default steps work on Debian GNU/Hurd systems. After the
 <a href="http://sourceforge.net/projects/check/files/latest/download">latest Check source</a>
 has been downloaded and unpacked, open a terminal in the unpacked
 directory, then:
@@ -155,8 +153,14 @@ directory, then:
 <div id="code"><pre class="command">
 $ ./configure
 $ make
+$ make check
 $ sudo make install
 </pre></div>
+<p>
+If the "make check" step fails, please send an email to Check's
+<a href="https://lists.sourceforge.net/lists/listinfo/check-devel">mailing list</a>
+and give details as to the failure so it may be investigated and fixed.
+</p>
 <br></br>
 
 
