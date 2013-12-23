@@ -323,11 +323,11 @@ static TestResult *tcase_run_tfun_nofork (SRunner *sr, TCase *tc, TF *tfun, int 
   
   tr = tcase_run_checked_setup(sr, tc);
   if (tr == NULL) {
+    clock_gettime(check_get_clockid(), &ts_start);
     if ( 0 == setjmp(error_jmp_buffer) ) {
-      clock_gettime(check_get_clockid(), &ts_start);
       tfun->fn(i);
-      clock_gettime(check_get_clockid(), &ts_end);
     }
+    clock_gettime(check_get_clockid(), &ts_end);
     tcase_run_checked_teardown(tc);
     return receive_result_info_nofork(tc->name, tfun->name, i,
                                       DIFF_IN_USEC(ts_start, ts_end));

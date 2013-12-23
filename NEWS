@@ -3,6 +3,11 @@ In development:
 # happy on NEWS requirement of having "Check 0.9.11"
 # in the first 15 lines.
 
+* Always capture the start and end times of tests when using
+  NO_FORK mode. Previously the end time was not captured,
+  resulting in arbitrary durations being recorded when tests
+  failed. Bug #87.
+
 * Added additional configure script checks for support of
   timer_create() on the target system. This allows for
   OpenBSD to compile and run all Check's unit tests successfully. 
