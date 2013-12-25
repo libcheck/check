@@ -373,6 +373,13 @@ if (HAVE_LIBRT)
     ADD_DEFINITIONS(-DHAVE_LIBRT=1)
 endif (HAVE_LIBRT)
 
+check_library_exists(subunit subunit_test_start "" ENABLE_SUBUNIT)
+if (ENABLE_SUBUNIT)
+    set(SUBUNIT "subunit")
+    ADD_DEFINITIONS(-DENABLE_SUBUNIT=1)
+endif (ENABLE_SUBUNIT)
+
+
 ###############################################################################
 # Generate "config.h" from "cmake/config.h.cmake"
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in

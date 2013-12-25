@@ -49,7 +49,7 @@ configure_file(check.h.in check.h)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_library(check STATIC ${SOURCES} ${HEADERS})
-target_link_libraries(check ${LIBM} ${LIBRT})
+target_link_libraries(check ${LIBM} ${LIBRT} ${SUBUNIT})
 
 if(MSVC)
   add_definitions(-DCK_DLL_EXP=_declspec\(dllexport\))
