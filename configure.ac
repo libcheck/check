@@ -251,8 +251,8 @@ AC_FUNC_REALLOC
 # replaced with Check's replacement of these functions.
 HW_LIBRT_TIMERS
 
-AC_REPLACE_FUNCS([alarm clock_gettime gettimeofday fileno localtime_r pipe putenv setenv sleep strdup strsignal unsetenv])
-AC_CHECK_DECLS([alarm, clock_gettime, gettimeofday, fileno, localtime_r, pipe, putenv, setenv, sleep, strdup, strsignal, unsetenv])
+AC_REPLACE_FUNCS([alarm clock_gettime gettimeofday fileno localtime_r putenv setenv sleep strdup strsignal unsetenv])
+AC_CHECK_DECLS([alarm, clock_gettime, gettimeofday, fileno, localtime_r, putenv, setenv, sleep, strdup, strsignal, unsetenv])
 
 AC_CHECK_FUNCS([setitimer])
 

@@ -104,12 +104,6 @@ struct tm *localtime_r (const time_t *clock, struct tm *result);
 #endif
 #endif /* !HAVE_DECL_LOCALTIME_R */
 
-#if !HAVE_DECL_PIPE && !HAVE__PIPE
- int pipe (int *fildes);
-#elif !HAVE_DECL_PIPE && HAVE__PIPE
-#define pipe _pipe;
-#endif /* !HAVE_DECL_PIPE && HAVE__PIPE */
-
 #if !HAVE_DECL_PUTENV && !HAVE__PUTENV
  int putenv (const char *string);
 #elif !HAVE_DECL_PUTENV && HAVE__PUTENV
