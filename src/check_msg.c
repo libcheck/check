@@ -122,7 +122,10 @@ TestResult *receive_test_result (int waserror)
 
   fp = get_pipe();
   if (fp == NULL)
+  {
     eprintf ("Error in call to get_pipe",__FILE__, __LINE__ - 2);
+  }
+
   rewind(fp);
 
   pipe_fileno = fileno(fp);
