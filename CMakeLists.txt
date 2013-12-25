@@ -192,8 +192,10 @@ check_function_exists(_write HAVE__WRITE)
 
 if(HAVE_FORK)
     add_definitions(-DHAVE_FORK=1)
+    set(HAVE_FORK 1)
 else(HAVE_FORK)
     add_definitions(-DHAVE_FORK=0)
+    set(HAVE_FORK 0)
 endif(HAVE_FORK)
 
 ###############################################################################
