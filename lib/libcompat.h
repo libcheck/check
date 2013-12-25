@@ -82,9 +82,15 @@ void *rpl_realloc (void *p, size_t n);
 #endif /* !HAVE_REALLOC */
 
 /* functions that may be undeclared */
-#if !HAVE_DECL_FILENO
+#if !HAVE_DECL_FILENO && !HAVE__FILENO
 int fileno (FILE *stream);
-#endif /* !HAVE_DECL_FILENO */
+#elif !HAVE_FILENO && HAVE__FILENO
+#define fileno _fileno;
+#endif /* !HAVE_DECL_FILENO && !HAVE__FILENO */
+
+#if !HAVE_GETPID && HAVE__GETPID
+#define getpid _getpid;
+#endif /* !HAVE_GETPID && HAVE__GETPID */
 
 #if !HAVE_DECL_LOCALTIME_R
 #if !defined(localtime_r)
@@ -92,13 +98,21 @@ struct tm *localtime_r (const time_t *clock, struct tm *result);
 #endif
 #endif /* !HAVE_DECL_LOCALTIME_R */
 
-#if !HAVE_DECL_PIPE
-int pipe (int *fildes);
-#endif /* !HAVE_DECL_PIPE */
+#if !HAVE_DECL_PIPE && !HAVE__PIPE
+ int pipe (int *fildes);
+#elif !HAVE_DECL_PIPE && HAVE__PIPE
+#define pipe _pipe;
+#endif /* !HAVE_DECL_PIPE && HAVE__PIPE */
 
-#if !HAVE_DECL_PUTENV
-int putenv (const char *string);
-#endif /* !HAVE_DECL_PUTENV */
+#if !HAVE_DECL_PUTENV && !HAVE__PUTENV
+ int putenv (const char *string);
+#elif !HAVE_DECL_PUTENV && HAVE__PUTENV
+#define putenv _putenv;
+#endif /* HAVE_DECL_PUTENV && !HAVE__PUTENV */
+
+#if !HAVE_READ && HAVE__READ
+#define read _read
+#endif /* !HAVE_READ && HAVE__READ */
 
 #if !HAVE_DECL_SETENV
 int setenv (const char *name, const char *value, int overwrite);
@@ -115,9 +129,11 @@ int setenv (const char *name, const char *value, int overwrite);
 unsigned int sleep (unsigned int seconds);
 #endif /* !HAVE_DECL_SLEEP */
 
-#if !HAVE_DECL_STRDUP
-char *strdup (const char *str);
-#endif /* !HAVE_DECL_STRDUP */
+#if !HAVE_DECL_STRDUP && !HAVE__STRDUP
+ char *strdup (const char *str);
+#elif !HAVE_DECL_STRDUP && HAVE__STRDUP
+#define strdup _strdup;
+#endif /* !HAVE_DECL_STRDUP && HAVE__STRDUP */
 
 #if !HAVE_DECL_STRSIGNAL
 const char *strsignal (int sig);
@@ -126,6 +142,10 @@ const char *strsignal (int sig);
 #if !HAVE_DECL_UNSETENV
 int unsetenv (const char *name);
 #endif /* !HAVE_DECL_UNSETENV */
+
+#if !HAVE_WRITE && HAVE_WRITE
+#define write _write
+#endif /* !HAVE_WRITE && HAVE__WRITE */
 
 /* 
  * On systems where clock_gettime() is not available, or
