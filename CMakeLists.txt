@@ -226,11 +226,17 @@ if(NOT HAVE_SYS_TIME_H)
         check_struct_member("struct timeval" tv_sec "Winsock2.h" HAVE_STRUCT_TIMEVAL_TV_SEC)
         check_struct_member("struct timeval" tv_usec "Winsock2.h" HAVE_STRUCT_TIMEVAL_TV_USEC)
         check_struct_member("struct timespec" tv_usec "Winsock2.h" HAVE_STRUCT_TIMESPEC_TV_SEC)
+        check_struct_member("struct itimerspec" it_value "Winsock2.h" HAVE_STRUCT_ITIMERSPEC_IT_VALUE)
 
         if(NOT HAVE_STRUCT_TIMESPEC_TV_SEC)
             add_definitions(-DSTRUCT_TIMESPEC_DEFINITION_MISSING=1)
             set(STRUCT_TIMESPEC_DEFINITION_MISSING 1)
         endif(NOT HAVE_STRUCT_TIMESPEC_TV_SEC)
+        
+        if(NOT HAVE_STRUCT_ITIMERSPEC_IT_VALUE)
+            add_definitions(-DSTRUCT_ITIMERSPEC_DEFINITION_MISSING=1)
+            set(STRUCT_ITIMERSPEC_DEFINITION_MISSING 1)
+        endif(NOT HAVE_STRUCT_ITIMERSPEC_IT_VALUE)
     endif(MSVC)
 endif(NOT HAVE_SYS_TIME_H)
 
