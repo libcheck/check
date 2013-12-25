@@ -362,7 +362,7 @@ endif(HAVE_SIZEOF_WCHAR_T)
 ###############################################################################
 # Check libraries
 
-check_library_exists(m pow "" HAVE_LIBM)
+check_library_exists(m floor "" HAVE_LIBM)
 if (HAVE_LIBM)
     set (LIBM "m")
 endif (HAVE_LIBM)
