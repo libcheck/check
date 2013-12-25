@@ -225,8 +225,8 @@ if(NOT HAVE_SYS_TIME_H)
     if(MSVC)
         check_struct_member("struct timeval" tv_sec "Winsock2.h" HAVE_STRUCT_TIMEVAL_TV_SEC)
         check_struct_member("struct timeval" tv_usec "Winsock2.h" HAVE_STRUCT_TIMEVAL_TV_USEC)
-    endif()
-endif()
+    endif(MSVC)
+endif(NOT HAVE_SYS_TIME_H)
 
 
 ###############################################################################
