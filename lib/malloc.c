@@ -1,5 +1,7 @@
-/* AC_FUNC_MALLOC in configure defines malloc to rpl_malloc if
-   malloc (0) is NULL to provide GNU compatibility */
+`/*
+ * AC_FUNC_MALLOC in configure defines malloc to rpl_malloc if
+ * malloc (0) is NULL to provide GNU compatibility
+ */
 
 #include "libcompat.h"
 
@@ -13,7 +15,7 @@ void *malloc (size_t n);
 void *
 rpl_malloc (size_t n)
 {
-  if (n == 0)
-    n = 1;
-  return malloc (n);
+    if (n == 0)
+        n = 1;
+    return malloc (n);
 }

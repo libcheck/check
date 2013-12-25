@@ -1,8 +1,7 @@
 #include "libcompat.h"
 
-int
-pipe (int *fildes CK_ATTRIBUTE_UNUSED)
+int pipe (int *fildes CK_ATTRIBUTE_UNUSED)
 {
-  assert (0);
-  return 0;
+    assert (0);
+    return 0;
 }
