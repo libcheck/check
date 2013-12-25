@@ -387,6 +387,8 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in
 include_directories(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
 add_definitions(-DHAVE_CONFIG_H)
 set(CONFIG_HEADER ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/tests/test_vars.in
+  ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_vars)
 
 ###############################################################################
 # Subdirectories
