@@ -253,7 +253,11 @@ endif (HAVE_LIBRT)
 check_library_exists(subunit subunit_test_start "" HAVE_SUBUNIT)
 if (HAVE_SUBUNIT)
     set(SUBUNIT "subunit")
-    ADD_DEFINITIONS(-DENABLE_SUBUNIT=1)
+    set(ENABLE_SUBUNIT 1)
+    add_definitions(-DENABLE_SUBUNIT=1)
+else(HAVE_SUBUNIT)
+    set(ENABLE_SUBUNIT 0)
+    add_definitions(-DENABLE_SUBUNIT=0)
 endif (HAVE_SUBUNIT)
 
 
