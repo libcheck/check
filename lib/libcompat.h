@@ -110,10 +110,6 @@ struct tm *localtime_r (const time_t *clock, struct tm *result);
 #define putenv _putenv;
 #endif /* HAVE_DECL_PUTENV && !HAVE__PUTENV */
 
-#if !HAVE_READ && HAVE__READ
-#define read _read
-#endif /* !HAVE_READ && HAVE__READ */
-
 #if !HAVE_DECL_SETENV
 int setenv (const char *name, const char *value, int overwrite);
 #endif /* !HAVE_DECL_SETENV */
@@ -142,10 +138,6 @@ const char *strsignal (int sig);
 #if !HAVE_DECL_UNSETENV
 int unsetenv (const char *name);
 #endif /* !HAVE_DECL_UNSETENV */
-
-#if !HAVE_WRITE && HAVE_WRITE
-#define write _write
-#endif /* !HAVE_WRITE && HAVE__WRITE */
 
 /* 
  * On systems where clock_gettime() is not available, or
