@@ -188,6 +188,10 @@ check_function_exists(_snprintf HAVE__SNPRINTF)
 check_function_exists(_strdup HAVE__STRDUP)
 check_function_exists(_write HAVE__WRITE)
 
+if(HAVE_FORK)
+    add_definitions(-DHAVE_FORK=1)
+endif(HAVE_FORK)
+
 ###############################################################################
 # Check defines
 set(headers "limits.h")
