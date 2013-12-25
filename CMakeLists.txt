@@ -32,6 +32,8 @@ set(CHECK_MICRO_VERSION 6)
 set(CHECK_VERSION
   "${CHECK_MAJOR_VERSION}.${CHECK_MINOR_VERSION}.${CHECK_MICRO_VERSION}")
 
+set(MEMORY_LEAKING_TESTS_ENABLED 1)
+
 ###############################################################################
 # Set build features
 set(CMAKE_BUILD_TYPE Debug)
