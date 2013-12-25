@@ -1,4 +1,4 @@
-`/*
+/*
  * AC_FUNC_MALLOC in configure defines malloc to rpl_malloc if
  * malloc (0) is NULL to provide GNU compatibility
  */
