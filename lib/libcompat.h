@@ -83,13 +83,6 @@ void *rpl_malloc (size_t n);
 void *rpl_realloc (void *p, size_t n);
 #endif /* !HAVE_REALLOC */
 
-/* functions that may be undeclared */
-#if !HAVE_DECL_FILENO && !HAVE__FILENO
-int fileno (FILE *stream);
-#elif !HAVE_FILENO && HAVE__FILENO
-#define fileno _fileno;
-#endif /* !HAVE_DECL_FILENO && !HAVE__FILENO */
-
 #if !HAVE_GETPID && HAVE__GETPID
 #define getpid _getpid;
 #endif /* !HAVE_GETPID && HAVE__GETPID */
