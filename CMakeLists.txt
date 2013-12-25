@@ -38,13 +38,6 @@ set(MEMORY_LEAKING_TESTS_ENABLED 1)
 # Set build features
 set(CMAKE_BUILD_TYPE Debug)
 
-# TODO - look for SubUnit --mloskot
-if(NOT MSVC)
-  set(ENABLE_SUBUNIT 1)
-else(NOT MSVC)
-  set(ENABLE_SUBUNIT 0)
-endif()
-
 ###############################################################################
 # Check system and architecture
 if(WIN32)
