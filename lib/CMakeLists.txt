@@ -58,6 +58,10 @@ endif(NOT HAVE_DECL_SLEEP)
 
 if(NOT HAVE_SNPRINTF AND NOT HAVE__SNPRINTF)
     set(SOURCES ${SOURCES} snprintf.c)
+    add_definitions(-Dsnprintf=rpl_snprintf)
+    set(snprintf rpl_snprintf)
+    add_definitions(-Dvsnprintf=rpl_vsnprintf)
+    set(vsnprintf rpl_vsnprintf)
 endif(NOT HAVE_SNPRINTF AND NOT HAVE__SNPRINTF)
 
 if(NOT HAVE_DECL_STRDUP AND NOT HAVE__STRDUP)
