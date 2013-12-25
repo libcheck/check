@@ -25,6 +25,12 @@
 #define CK_ATTRIBUTE_NORETURN
 #endif /* GCC 2.5 */
 
+#if _MSC_VER
+#include <WinSock2.h> /* struct timeval, API used in gettimeofday implementation */
+#include <io.h> /* read, write */
+#include <process.h> /* getpid */
+#endif /* _MSC_VER */
+
 /* defines size_t */
 #include <sys/types.h>
 
