@@ -207,7 +207,7 @@ void teardown_messaging(void)
  * expecting the caller to both delete the file and
  * free the 'name' field after the file is closed.
  */
-static FILE * open_tmp_file (char ** name)
+FILE * open_tmp_file (char ** name)
 {
   FILE *file;
   *name = NULL;
