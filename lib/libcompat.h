@@ -92,6 +92,10 @@ int fileno (FILE *stream);
 #define getpid _getpid;
 #endif /* !HAVE_GETPID && HAVE__GETPID */
 
+#if !HAVE_GETTIMEOFDAY
+int gettimeofday (struct timeval *tv, void* tz);
+#endif /* !HAVE_LOCALTIME_R */
+
 #if !HAVE_DECL_LOCALTIME_R
 #if !defined(localtime_r)
 struct tm *localtime_r (const time_t *clock, struct tm *result);
