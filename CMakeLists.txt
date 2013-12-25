@@ -387,6 +387,9 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in
 include_directories(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
 add_definitions(-DHAVE_CONFIG_H)
 set(CONFIG_HEADER ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+# For the test_vars.in script, to give the unit test shell script
+# runners the location of the source files
+set(srcdir ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/tests/test_vars.in
   ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_vars)
 
