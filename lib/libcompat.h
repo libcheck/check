@@ -200,18 +200,6 @@ struct itimerspec
 #endif /* STRUCT_ITIMERSPEC_DEFINITION_MISSING */
 
 /* 
- * As the functions which use timer_t are not defined on the system, 
- * the timer_t type probably also is not defined.
- */
-typedef int timer_t;
-
-/*
- * As the functions which use clockid_t are not defined on the system,
- * the clockid_t type probably also is not defined.
- */
-typedef int clockid_t;
-
-/* 
  * Do a simple forward declaration in case the struct is not defined.
  * In the versions of timer_create in libcompat, sigevent is never
  * used.

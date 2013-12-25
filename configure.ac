@@ -239,6 +239,9 @@ AC_CHECK_SIZEOF(int, 4)
 AC_CHECK_SIZEOF(short, 2)
 AC_CHECK_SIZEOF(long, 4)
 
+AC_CHECK_TYPE(clockid_t, int)
+AC_CHECK_TYPE(timer_t, int)
+
 # Checks for library functions.
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC

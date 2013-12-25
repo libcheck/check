@@ -572,6 +572,9 @@ typedef uint64_t uintmax_t;
 #cmakedefine const ${const}
 
 /* Define to `int' if <sys/types.h> doesn't define. */
+#cmakedefine clockid_t ${clockid_t}
+
+/* Define to `int' if <sys/types.h> doesn't define. */
 #cmakedefine gid_t ${gid_t}
 
 /* Define to `unsigned long' if <sys/types.h> does not define. */
@@ -591,6 +594,9 @@ typedef uint64_t uintmax_t;
 
 /* Define to `int' if <sys/types.h> does not define. */
 #cmakedefine ssize_t ${ssize_t}
+
+/* Define to `int' if <sys/types.h> does not define. */
+#cmakedefine timer_t ${timer_t}
 
 /* Define to `int' if <sys/types.h> doesn't define. */
 #cmakedefine uid_t ${uid_t}

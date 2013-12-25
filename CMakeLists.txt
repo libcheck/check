@@ -246,6 +246,12 @@ check_type_size(uint32_t UINT32_T)
 check_type_size(uint64_t UINT64_T)
 check_type_size(uintmax_t UINTMAX_T)
 
+#
+check_type_size(clock_t CLOCK_T)
+if(NOT HAVE_CLOCK_T)
+  set(clock_t int)
+endif(NOT HAVE_CLOCK_T)
+#
 check_type_size(dev_t DEV_T)
 if(NOT HAVE_DEV_T)
   if(MSVC)
@@ -320,6 +326,11 @@ if(NOT HAVE_PID_T)
     MESSAGE(FATAL_ERROR "pid_t doesn't exist on this platform?")
   endif(WIN32)
 endif(NOT HAVE_PID_T)
+#
+check_type_size(timer_t TIMER_T)
+if(NOT HAVE_TIMER_T)
+  set(timer_t int)
+endif(NOT HAVE_TIMER_T)
 #
 check_type_size(intptr_t INTPTR_T)
 if(NOT HAVE_INTPTR_T)
