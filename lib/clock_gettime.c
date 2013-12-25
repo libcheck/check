@@ -1,8 +1,5 @@
 #include "libcompat.h"
 
-#include <time.h>
-#include <sys/time.h>
-
 #ifdef __MACH__
 #include <mach/clock.h>
 #include <mach/mach.h>
