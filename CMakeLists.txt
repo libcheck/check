@@ -260,6 +260,11 @@ if(NOT HAVE_CLOCK_T)
   set(clock_t int)
 endif(NOT HAVE_CLOCK_T)
 #
+check_type_size(clockid_t CLOCKID_T)
+if(NOT HAVE_CLOCKID_T)
+  set(clockid_t int)
+endif(NOT HAVE_CLOCKID_T)
+#
 check_type_size(dev_t DEV_T)
 if(NOT HAVE_DEV_T)
   if(MSVC)
