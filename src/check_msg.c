@@ -83,34 +83,30 @@ static FILE * get_pipe(void)
 void send_failure_info(const char *msg)
 {
   FailMsg fmsg;
-  int pipe_fileno = fileno(get_pipe());
   fmsg.msg = (char *) msg;
-  ppack(pipe_fileno, CK_MSG_FAIL, (CheckMsg *) &fmsg);
+  ppack(get_pipe(), CK_MSG_FAIL, (CheckMsg *) &fmsg);
 }
 
 void send_duration_info(int duration)
 {
   DurationMsg dmsg;
-  int pipe_fileno = fileno(get_pipe());
   dmsg.duration = duration;
-  ppack(pipe_fileno, CK_MSG_DURATION, (CheckMsg *) &dmsg);
+  ppack(get_pipe(), CK_MSG_DURATION, (CheckMsg *) &dmsg);
 }
 
 void send_loc_info(const char * file, int line)
 {
   LocMsg lmsg;
-  int pipe_fileno = fileno(get_pipe());
   lmsg.file = (char *) file;
   lmsg.line = line;
-  ppack(pipe_fileno, CK_MSG_LOC, (CheckMsg *) &lmsg);
+  ppack(get_pipe(), CK_MSG_LOC, (CheckMsg *) &lmsg);
 }
 
 void send_ctx_info(enum ck_result_ctx ctx)
 {
   CtxMsg cmsg;
-  int pipe_fileno = fileno(get_pipe());
   cmsg.ctx = ctx;
-  ppack(pipe_fileno, CK_MSG_CTX, (CheckMsg *) &cmsg);
+  ppack(get_pipe(), CK_MSG_CTX, (CheckMsg *) &cmsg);
 }
 
 TestResult *receive_test_result (int waserror)
@@ -118,7 +114,6 @@ TestResult *receive_test_result (int waserror)
   FILE *fp;
   RcvMsg *rmsg;
   TestResult *result;
-  int pipe_fileno;
 
   fp = get_pipe();
   if (fp == NULL)
@@ -127,9 +122,7 @@ TestResult *receive_test_result (int waserror)
   }
 
   rewind(fp);
-
-  pipe_fileno = fileno(fp);
-  rmsg = punpack (pipe_fileno);
+  rmsg = punpack (fp);
 
   if(rmsg == NULL)
   {

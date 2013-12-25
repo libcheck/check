@@ -34,4 +34,6 @@ TestResult *receive_test_result(int waserror);
 void setup_messaging(void);
 void teardown_messaging(void);
 
+FILE * open_tmp_file (char ** name);
+
 #endif /*CHECK_MSG_NEW_H */

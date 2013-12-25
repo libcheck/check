@@ -71,7 +71,7 @@ static void  check_type (int type, const char *file, int line);
 static enum ck_msg_type upack_type (char **buf);
 static void  pack_type  (char **buf, enum ck_msg_type type);
 
-static int   read_buf   (int fdes, int size, char *buf);
+static int   read_buf   (FILE* fdes, int size, char *buf);
 static int   get_result (char *buf, RcvMsg *rmsg);
 static void  rcvmsg_update_ctx (RcvMsg *rmsg, enum ck_result_ctx ctx);
 static void  rcvmsg_update_loc (RcvMsg *rmsg, const char *file, int line);
@@ -290,7 +290,7 @@ static void ppack_cleanup( void *mutex )
 }
 #endif
 
-void ppack (int fdes, enum ck_msg_type type, CheckMsg *msg)
+void ppack (FILE* fdes, enum ck_msg_type type, CheckMsg *msg)
 {
   char *buf;
   int n;
@@ -303,22 +303,25 @@ void ppack (int fdes, enum ck_msg_type type, CheckMsg *msg)
 
   pthread_cleanup_push( ppack_cleanup, &ck_mutex_lock );
   pthread_mutex_lock(&ck_mutex_lock);
-  r = write (fdes, buf, n);
+  r = fwrite(buf, 1, n, fdes);
+  fflush(fdes);
   pthread_mutex_unlock(&ck_mutex_lock);
   pthread_cleanup_pop(0);
-  if (r == -1)
-    eprintf ("Error in call to write:", __FILE__, __LINE__ - 2);
+  if (r != n)
+    eprintf ("Error in call to fwrite:", __FILE__, __LINE__ - 2);
 
   free (buf);
 }
 
-static int read_buf (int fdes, int size, char *buf)
+static int read_buf (FILE* fdes, int size, char *buf)
 {
   int n;
+  n = fread(buf, 1, size, fdes);
 
-  n = read (fdes, buf, size);
-  if (n == -1)
-    eprintf ("Error in call to read:", __FILE__, __LINE__ - 4);
+  if (ferror(fdes))
+  {
+    eprintf ("Error in call to fread:", __FILE__, __LINE__ - 4);
+  }
 
   return n;
 }    
@@ -421,7 +424,7 @@ static void rcvmsg_update_loc (RcvMsg *rmsg, const char *file, int line)
   }
 }
   
-RcvMsg *punpack (int fdes)
+RcvMsg *punpack (FILE* fdes)
 {
   int nread, nparse, n;
   char *buf;
