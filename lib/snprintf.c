@@ -362,7 +362,7 @@ static void *mymemcpy(void *, void *, size_t);
 #ifdef UINTMAX_T
 #undef UINTMAX_T
 #endif	/* defined(UINTMAX_T) */
-#if HAVE_UINTMAX_T || defined(uintmax_t)
+#if defined(HAVE_UINTMAX_T) || defined(uintmax_t)
 #define UINTMAX_T uintmax_t
 #ifndef UINTMAX_MAX
 #define UINTMAX_MAX ULLONG_MAX
@@ -395,7 +395,7 @@ static void *mymemcpy(void *, void *, size_t);
 
 /* Support for intmax_t. */
 #ifndef INTMAX_T
-#if HAVE_INTMAX_T || defined(intmax_t)
+#if defined(HAVE_INTMAX_T) || defined(intmax_t)
 #define INTMAX_T intmax_t
 #else
 #define INTMAX_T LLONG
@@ -404,7 +404,7 @@ static void *mymemcpy(void *, void *, size_t);
 
 /* Support for uintptr_t. */
 #ifndef UINTPTR_T
-#if HAVE_UINTPTR_T || defined(uintptr_t)
+#if defined(HAVE_UINTPTR_T) || defined(uintptr_t)
 #define UINTPTR_T uintptr_t
 #else
 #define UINTPTR_T unsigned long int
@@ -413,7 +413,7 @@ static void *mymemcpy(void *, void *, size_t);
 
 /* Support for ptrdiff_t. */
 #ifndef PTRDIFF_T
-#if HAVE_PTRDIFF_T || defined(ptrdiff_t)
+#if defined(HAVE_PTRDIFF_T) || defined(ptrdiff_t)
 #define PTRDIFF_T ptrdiff_t
 #else
 #define PTRDIFF_T long int
