@@ -6,7 +6,6 @@
 build-aux
 Makefile.in
 Makefile
-CMakeLists.txt
 .libs
 INSTALL
 SVNChangeLog
@@ -17,7 +16,6 @@ check.pc
 check_stdint.h
 test.out
 config.h
-config.h.in
 config.log
 config.status
 configure
