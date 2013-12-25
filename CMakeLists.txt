@@ -395,3 +395,8 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/tests/test_vars.in
 add_subdirectory(lib)
 add_subdirectory(src)
 add_subdirectory(tests)
+
+###############################################################################
+# Unit tests
+enable_testing()
+add_test(NAME check_check COMMAND check_check)
