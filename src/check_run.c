@@ -595,7 +595,11 @@ enum fork_status srunner_fork_status (SRunner *sr)
   if (sr->fstat == CK_FORK_GETENV) {
     char *env = getenv ("CK_FORK");
     if (env == NULL)
+#ifdef HAVE_FORK
       return CK_FORK;
+#else
+      return CK_NOFORK;
+#endif
     if (strcmp (env,"no") == 0)
       return CK_NOFORK;
     else {
