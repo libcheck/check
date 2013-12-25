@@ -25,6 +25,15 @@
 #define CK_ATTRIBUTE_NORETURN
 #endif /* GCC 2.5 */
 
+/*
+ * Used for MSVC to create the export attribute
+ * CK_DLL_EXP is defined during the compilation of the library
+ * on the command line.
+ */
+#ifndef CK_DLL_EXP
+#define CK_DLL_EXP
+#endif
+
 #if _MSC_VER
 #include <WinSock2.h> /* struct timeval, API used in gettimeofday implementation */
 #include <io.h> /* read, write */
@@ -72,15 +81,15 @@
 
 /* replacement functions for broken originals */
 #if !HAVE_DECL_ALARM
-unsigned int alarm (unsigned int seconds);
+CK_DLL_EXP unsigned int alarm (unsigned int seconds);
 #endif /* !HAVE_DECL_ALARM */
 
 #if !HAVE_MALLOC
-void *rpl_malloc (size_t n);
+CK_DLL_EXP void *rpl_malloc (size_t n);
 #endif /* !HAVE_MALLOC */
 
 #if !HAVE_REALLOC
-void *rpl_realloc (void *p, size_t n);
+CK_DLL_EXP void *rpl_realloc (void *p, size_t n);
 #endif /* !HAVE_REALLOC */
 
 #if !HAVE_GETPID && HAVE__GETPID
@@ -88,23 +97,23 @@ void *rpl_realloc (void *p, size_t n);
 #endif /* !HAVE_GETPID && HAVE__GETPID */
 
 #if !HAVE_GETTIMEOFDAY
-int gettimeofday (struct timeval *tv, void* tz);
+CK_DLL_EXP int gettimeofday (struct timeval *tv, void* tz);
 #endif /* !HAVE_LOCALTIME_R */
 
 #if !HAVE_DECL_LOCALTIME_R
 #if !defined(localtime_r)
-struct tm *localtime_r (const time_t *clock, struct tm *result);
+CK_DLL_EXP struct tm *localtime_r (const time_t *clock, struct tm *result);
 #endif
 #endif /* !HAVE_DECL_LOCALTIME_R */
 
 #if !HAVE_DECL_PUTENV && !HAVE__PUTENV
- int putenv (const char *string);
+CK_DLL_EXP int putenv (const char *string);
 #elif !HAVE_DECL_PUTENV && HAVE__PUTENV
 #define putenv _putenv;
 #endif /* HAVE_DECL_PUTENV && !HAVE__PUTENV */
 
 #if !HAVE_DECL_SETENV
-int setenv (const char *name, const char *value, int overwrite);
+CK_DLL_EXP int setenv (const char *name, const char *value, int overwrite);
 #endif /* !HAVE_DECL_SETENV */
 
 /* our setenv implementation is currently broken */
@@ -115,21 +124,21 @@ int setenv (const char *name, const char *value, int overwrite);
 #endif
 
 #if !HAVE_DECL_SLEEP
-unsigned int sleep (unsigned int seconds);
+CK_DLL_EXP unsigned int sleep (unsigned int seconds);
 #endif /* !HAVE_DECL_SLEEP */
 
 #if !HAVE_DECL_STRDUP && !HAVE__STRDUP
- char *strdup (const char *str);
+CK_DLL_EXP char *strdup (const char *str);
 #elif !HAVE_DECL_STRDUP && HAVE__STRDUP
 #define strdup _strdup;
 #endif /* !HAVE_DECL_STRDUP && HAVE__STRDUP */
 
 #if !HAVE_DECL_STRSIGNAL
-const char *strsignal (int sig);
+CK_DLL_EXP const char *strsignal (int sig);
 #endif /* !HAVE_DECL_STRSIGNAL */
 
 #if !HAVE_DECL_UNSETENV
-int unsetenv (const char *name);
+CK_DLL_EXP int unsetenv (const char *name);
 #endif /* !HAVE_DECL_UNSETENV */
 
 /* 
@@ -185,10 +194,10 @@ struct itimerspec
  */
 struct sigevent;
 
-int clock_gettime(clockid_t clk_id, struct timespec *ts);
-int timer_create(int clockid, struct sigevent *sevp, timer_t *timerid);
-int timer_settime(timer_t timerid, int flags, const struct itimerspec *new_value, struct itimerspec * old_value);
-int timer_delete(timer_t timerid);
+CK_DLL_EXP int clock_gettime(clockid_t clk_id, struct timespec *ts);
+CK_DLL_EXP int timer_create(int clockid, struct sigevent *sevp, timer_t *timerid);
+CK_DLL_EXP int timer_settime(timer_t timerid, int flags, const struct itimerspec *new_value, struct itimerspec * old_value);
+CK_DLL_EXP int timer_delete(timer_t timerid);
 #endif /* HAVE_LIBRT */
 
 /*
@@ -207,20 +216,14 @@ int timer_delete(timer_t timerid);
 #endif /* HAVE_SNPRINTF && HAVE__SNPRINTF */
 
 #if !HAVE_VSNPRINTF
-int rpl_vsnprintf(char *, size_t, const char *, va_list);
+CK_DLL_EXP int rpl_vsnprintf(char *, size_t, const char *, va_list);
 #endif
 #if !HAVE_SNPRINTF
-int rpl_snprintf(char *, size_t, const char *, ...);
-#endif
-#if !HAVE_VASPRINTF
-int rpl_vasprintf(char **, const char *, va_list);
-#endif
-#if !HAVE_ASPRINTF
-int rpl_asprintf(char **, const char *, ...);
+CK_DLL_EXP int rpl_snprintf(char *, size_t, const char *, ...);
 #endif
 #endif /* HAVE_STDARG_H */
 
 /* silence warnings about an empty library */
-void ck_do_nothing (void) CK_ATTRIBUTE_NORETURN;
+CK_DLL_EXP void ck_do_nothing (void) CK_ATTRIBUTE_NORETURN;
 
 #endif /* !LIBCOMPAT_H */
