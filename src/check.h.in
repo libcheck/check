@@ -117,15 +117,24 @@ CK_CPPSTART
    be put directly in front of the exported symbol. */
 #define CK_EXPORT
 
+/*
+ * Used for MSVC to create the export attribute
+ * CK_DLL_EXP is defined during the compilation of the library
+ * on the command line.
+ */
+#ifndef CK_DLL_EXP
+#define CK_DLL_EXP
+#endif
+
 /* check version numbers */
   
 #define CHECK_MAJOR_VERSION (@CHECK_MAJOR_VERSION@)
 #define CHECK_MINOR_VERSION (@CHECK_MINOR_VERSION@)
 #define CHECK_MICRO_VERSION (@CHECK_MICRO_VERSION@)
 
-extern int CK_EXPORT check_major_version;
-extern int CK_EXPORT check_minor_version;
-extern int CK_EXPORT check_micro_version;
+CK_DLL_EXP extern int CK_EXPORT check_major_version;
+CK_DLL_EXP extern int CK_EXPORT check_minor_version;
+CK_DLL_EXP extern int CK_EXPORT check_micro_version;
 
 #ifndef NULL
 #define NULL ((void*)0)
@@ -149,17 +158,17 @@ typedef void (*SFun) (void);
 typedef struct Suite Suite;
  
 /* Creates a test suite with the given name */
-Suite * CK_EXPORT suite_create (const char *name);
+CK_DLL_EXP Suite * CK_EXPORT suite_create (const char *name);
 
 /* Determines whether a given test suite contains a case named after a
    given string.  */
-int suite_tcase (Suite *s, const char *tcname);
+CK_DLL_EXP int suite_tcase (Suite *s, const char *tcname);
 
 /* Add a test case to a suite */
-void CK_EXPORT suite_add_tcase (Suite *s, TCase *tc);
+CK_DLL_EXP void CK_EXPORT suite_add_tcase (Suite *s, TCase *tc);
 
 /* Create a test case */
-TCase * CK_EXPORT tcase_create (const char *name);
+CK_DLL_EXP TCase * CK_EXPORT tcase_create (const char *name);
 
 /* Add a test function to a test case (macro version) */
 #define tcase_add_test(tc,tf) tcase_add_test_raise_signal(tc,tf,0)
@@ -194,7 +203,7 @@ TCase * CK_EXPORT tcase_create (const char *name);
 /* Add a test function to a test case
   (function version -- use this when the macro won't work
 */
-void CK_EXPORT _tcase_add_test (TCase *tc, TFun tf, const char *fname, int _signal, int allowed_exit_value, int start, int end);
+CK_DLL_EXP void CK_EXPORT _tcase_add_test (TCase *tc, TFun tf, const char *fname, int _signal, int allowed_exit_value, int start, int end);
 
 /* Add unchecked fixture setup/teardown functions to a test case
 
@@ -208,7 +217,7 @@ void CK_EXPORT _tcase_add_test (TCase *tc, TFun tf, const char *fname, int _sign
    lead to different unit test behavior IF unit tests change data
    setup by the fixture functions.
 */
-void CK_EXPORT tcase_add_unchecked_fixture (TCase *tc, SFun setup, SFun teardown);
+CK_DLL_EXP void CK_EXPORT tcase_add_unchecked_fixture (TCase *tc, SFun setup, SFun teardown);
 
 /* Add fixture setup/teardown functions to a test case
 
@@ -224,17 +233,17 @@ void CK_EXPORT tcase_add_unchecked_fixture (TCase *tc, SFun setup, SFun teardown
    test, they should not be expensive code.
 
 */ 
-void CK_EXPORT tcase_add_checked_fixture (TCase *tc, SFun setup, SFun teardown);
+CK_DLL_EXP void CK_EXPORT tcase_add_checked_fixture (TCase *tc, SFun setup, SFun teardown);
 
 /* Set the timeout for all tests in a test case. A test that lasts longer
    than the timeout (in seconds) will be killed and thus fail with an error.
    The timeout can also be set globaly with the environment variable
    CK_DEFAULT_TIMEOUT, the specific setting always takes precedence.
 */
-void CK_EXPORT tcase_set_timeout (TCase *tc, double timeout);
+CK_DLL_EXP void CK_EXPORT tcase_set_timeout (TCase *tc, double timeout);
  
 /* Internal function to mark the start of a test function */
-void CK_EXPORT tcase_fn_start (const char *fname, const char *file, int line);
+CK_DLL_EXP void CK_EXPORT tcase_fn_start (const char *fname, const char *file, int line);
 
 /* Start a unit test with START_TEST(unit_name), end with END_TEST
    One must use braces within a START_/END_ pair to declare new variables
@@ -274,9 +283,9 @@ static void __testname (int _i CK_ATTRIBUTE_UNUSED)\
  * which are not valid, as longjmp() is like a return.
  */
 #if @HAVE_FORK@
-void CK_EXPORT _ck_assert_failed (const char *file, int line, const char *expr, ...) CK_ATTRIBUTE_NORETURN;
+CK_DLL_EXP void CK_EXPORT _ck_assert_failed (const char *file, int line, const char *expr, ...) CK_ATTRIBUTE_NORETURN;
 #else
-void CK_EXPORT _ck_assert_failed (const char *file, int line, const char *expr, ...);
+CK_DLL_EXP void CK_EXPORT _ck_assert_failed (const char *file, int line, const char *expr, ...);
 #endif
 
 /* New check fail API. */
@@ -353,7 +362,7 @@ void CK_EXPORT _ck_assert_failed (const char *file, int line, const char *expr, 
 #define mark_point() _mark_point(__FILE__,__LINE__)
 
 /* Non macro version of #mark_point */
-void CK_EXPORT _mark_point (const char *file, int line);
+CK_DLL_EXP void CK_EXPORT _mark_point (const char *file, int line);
 
 /* Result of a test */
 enum test_result {
@@ -392,47 +401,47 @@ enum ck_result_ctx {
 };
 
 /* Type of result */
-int CK_EXPORT tr_rtype (TestResult *tr);
+CK_DLL_EXP int CK_EXPORT tr_rtype (TestResult *tr);
 /* Context in which the result occurred */ 
-enum ck_result_ctx CK_EXPORT tr_ctx (TestResult *tr); 
+CK_DLL_EXP enum ck_result_ctx CK_EXPORT tr_ctx (TestResult *tr); 
 /* Failure message */
-const char * CK_EXPORT tr_msg (TestResult *tr);
+CK_DLL_EXP const char * CK_EXPORT tr_msg (TestResult *tr);
 /* Line number at which failure occured */
-int CK_EXPORT tr_lno (TestResult *tr);
+CK_DLL_EXP int CK_EXPORT tr_lno (TestResult *tr);
 /* File name at which failure occured */
-const char * CK_EXPORT tr_lfile (TestResult *tr);
+CK_DLL_EXP const char * CK_EXPORT tr_lfile (TestResult *tr);
 /* Test case in which unit test was run */
-const char * CK_EXPORT tr_tcname (TestResult *tr);
+CK_DLL_EXP const char * CK_EXPORT tr_tcname (TestResult *tr);
 
 /* Creates an SRunner for the given suite */
-SRunner * CK_EXPORT srunner_create (Suite *s);
+CK_DLL_EXP SRunner * CK_EXPORT srunner_create (Suite *s);
 
 /* Adds a Suite to an SRunner */
-void CK_EXPORT srunner_add_suite (SRunner *sr, Suite *s);
+CK_DLL_EXP void CK_EXPORT srunner_add_suite (SRunner *sr, Suite *s);
 
 /* Frees an SRunner, all suites added to it and all contained test cases */
-void CK_EXPORT srunner_free (SRunner *sr);
+CK_DLL_EXP void CK_EXPORT srunner_free (SRunner *sr);
 
  
 /* Test running */
 
 /* Runs an SRunner, printing results as specified (see enum print_output) */
-void CK_EXPORT srunner_run_all (SRunner *sr, enum print_output print_mode);
+CK_DLL_EXP void CK_EXPORT srunner_run_all (SRunner *sr, enum print_output print_mode);
 
 /* Runs an SRunner specifying test suite and test case by name,
    printing results as specified (see enum print_output).  A NULL
    value means "any test suite" or "any test case".  */
-void CK_EXPORT srunner_run (SRunner *sr, const char *sname, const char *tcname, enum print_output print_mode);
+CK_DLL_EXP void CK_EXPORT srunner_run (SRunner *sr, const char *sname, const char *tcname, enum print_output print_mode);
 
  
 /* Next functions are valid only after the suite has been
    completely run, of course */
 
 /* Number of failed tests in a run suite. Includes failures + errors */
-int CK_EXPORT srunner_ntests_failed (SRunner *sr);
+CK_DLL_EXP int CK_EXPORT srunner_ntests_failed (SRunner *sr);
 
 /* Total number of tests run in a run suite */
-int CK_EXPORT srunner_ntests_run (SRunner *sr);
+CK_DLL_EXP int CK_EXPORT srunner_ntests_run (SRunner *sr);
 
 /* Return an array of results for all failures
   
@@ -440,7 +449,7 @@ int CK_EXPORT srunner_ntests_run (SRunner *sr);
    the array is malloc'ed and must be freed, but individual TestResults
    must not
 */
-TestResult ** CK_EXPORT srunner_failures (SRunner *sr);
+CK_DLL_EXP TestResult ** CK_EXPORT srunner_failures (SRunner *sr);
 
 /* Return an array of results for all run tests
 
@@ -450,13 +459,13 @@ TestResult ** CK_EXPORT srunner_failures (SRunner *sr);
    Memory is malloc'ed and must be freed, but individual TestResults
    must not
 */  
-TestResult ** CK_EXPORT srunner_results (SRunner *sr);
+CK_DLL_EXP TestResult ** CK_EXPORT srunner_results (SRunner *sr);
 
  
 /* Printing */
 
 /* Print the results contained in an SRunner */
-void CK_EXPORT srunner_print (SRunner *sr, enum print_output print_mode);
+CK_DLL_EXP void CK_EXPORT srunner_print (SRunner *sr, enum print_output print_mode);
   
   
 /* Set a log file to which to write during test running.
@@ -465,13 +474,13 @@ void CK_EXPORT srunner_print (SRunner *sr, enum print_output print_mode);
   done immediatly after SRunner creation, and the log file can't be
   changed after being set.
 */
-void CK_EXPORT srunner_set_log (SRunner *sr, const char *fname);
+CK_DLL_EXP void CK_EXPORT srunner_set_log (SRunner *sr, const char *fname);
 
 /* Does the SRunner have a log file? */
-int CK_EXPORT srunner_has_log (SRunner *sr);
+CK_DLL_EXP int CK_EXPORT srunner_has_log (SRunner *sr);
 
 /* Return the name of the log file, or NULL if none */
-const char * CK_EXPORT srunner_log_fname (SRunner *sr);
+CK_DLL_EXP const char * CK_EXPORT srunner_log_fname (SRunner *sr);
 
 /* Set a xml file to which to write during test running.
 
@@ -479,13 +488,13 @@ const char * CK_EXPORT srunner_log_fname (SRunner *sr);
   done immediatly after SRunner creation, and the XML file can't be
   changed after being set.
 */
-void CK_EXPORT srunner_set_xml (SRunner *sr, const char *fname);
+CK_DLL_EXP void CK_EXPORT srunner_set_xml (SRunner *sr, const char *fname);
 
 /* Does the SRunner have an XML log file? */
-int CK_EXPORT srunner_has_xml (SRunner *sr);
+CK_DLL_EXP int CK_EXPORT srunner_has_xml (SRunner *sr);
 
 /* Return the name of the XML file, or NULL if none */
-const char * CK_EXPORT srunner_xml_fname (SRunner *sr);
+CK_DLL_EXP const char * CK_EXPORT srunner_xml_fname (SRunner *sr);
 
 /* Set a tap file to which to write during test running.
 
@@ -493,13 +502,13 @@ const char * CK_EXPORT srunner_xml_fname (SRunner *sr);
   done immediatly after SRunner creation, and the log file can't be
   changed after being set.
 */
-void CK_EXPORT srunner_set_tap (SRunner *sr, const char *fname);
+CK_DLL_EXP void CK_EXPORT srunner_set_tap (SRunner *sr, const char *fname);
 
 /* Does the SRunner have a tap file? */
-int CK_EXPORT srunner_has_tap (SRunner *sr);
+CK_DLL_EXP int CK_EXPORT srunner_has_tap (SRunner *sr);
 
 /* Return the name of the tap file, or NULL if none */
-const char * CK_EXPORT srunner_tap_fname (SRunner *sr);
+CK_DLL_EXP const char * CK_EXPORT srunner_tap_fname (SRunner *sr);
 
 
 /* Control forking */
@@ -510,16 +519,16 @@ enum fork_status {
 };
  
 /* Get the current fork status */
-enum fork_status CK_EXPORT srunner_fork_status (SRunner *sr);
+CK_DLL_EXP enum fork_status CK_EXPORT srunner_fork_status (SRunner *sr);
 
 /* Set the current fork status */
-void CK_EXPORT srunner_set_fork_status (SRunner *sr, enum fork_status fstat); 
+CK_DLL_EXP void CK_EXPORT srunner_set_fork_status (SRunner *sr, enum fork_status fstat); 
   
 /* Fork in a test and make sure messaging and tests work. */
-pid_t CK_EXPORT check_fork(void);
+CK_DLL_EXP pid_t CK_EXPORT check_fork(void);
 
 /* Wait for the pid and exit. If pid is zero, just exit. */
-void CK_EXPORT check_waitpid_and_exit(pid_t pid) CK_ATTRIBUTE_NORETURN;
+CK_DLL_EXP void CK_EXPORT check_waitpid_and_exit(pid_t pid) CK_ATTRIBUTE_NORETURN;
 
 #ifdef __cplusplus 
 CK_CPPEND
