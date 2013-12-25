@@ -27,7 +27,7 @@ static char signal_8_str[SIG_STR_LEN];
 /* FIXME: all these line numbers are kind of hard to maintain */
 static master_test_t master_tests[] = {
   { "Simple Tests", CK_FAILURE, "Failure expected" },
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
   { "Simple Tests", CK_ERROR,   "Early exit with return value 1" },
 #endif
   { "Simple Tests", CK_PASS,    "Passed" },
@@ -71,7 +71,7 @@ static master_test_t master_tests[] = {
   { "Simple Tests", CK_FAILURE, "Assertion 'x==y' failed: x==0x1, y==0x2" },
   { "Simple Tests", CK_FAILURE, "Assertion 'x!=z' failed: x==0x1, z==0x1" },
   
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
   { "Signal Tests", CK_ERROR,   signal_11_str },
   { "Signal Tests", CK_PASS,    "Passed" },
   { "Signal Tests", CK_ERROR,   signal_11_8_str },
@@ -81,7 +81,7 @@ static master_test_t master_tests[] = {
   { "Signal Tests", CK_ERROR,   signal_8_str },
 #endif
 
-#if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK)
+#if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) && HAVE_FORK==1
 #if HAVE_WORKING_SETENV
   { "Environment Integer Timeout Tests", CK_ERROR,  "Test timeout expired" },
   { "Environment Integer Timeout Tests", CK_PASS,   "Passed" },
@@ -192,7 +192,7 @@ static master_test_t master_tests[] = {
 #endif /* HAVE_WORKING_SETENV */
 #endif /* TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) */
 
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
   { "Limit Tests", CK_ERROR,   "Early exit with return value 1" },
 #endif /* HAVE_FORK */
 #if MEMORY_LEAKING_TESTS_ENABLED
@@ -200,7 +200,7 @@ static master_test_t master_tests[] = {
 #endif /* MEMORY_LEAKING_TESTS_ENABLED */
   { "Limit Tests", CK_FAILURE, "Completed properly" },
 
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
   { "Msg and fork Tests", CK_PASS,       "Passed" },
   { "Msg and fork Tests", CK_FAILURE,    "Expected fail" },
   { "Msg and fork Tests", CK_PASS,       "Passed" },
@@ -421,7 +421,7 @@ Suite *make_master_suite (void)
      preservation of fixture values across tests, regardless
      of the order in which tests are added to the test case */
   tcase_add_test (tc_fixture, test_setup);
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
   /* The remaining test runs only work if fork() is available. */
   tcase_add_test (tc_fixture, test_setup);
   tcase_add_test (tc_fixture, test_setup);

@@ -75,7 +75,7 @@ static TestResult *receive_result_info_nofork (const char *tcname,
 static void set_nofork_info (TestResult *tr);
 static char *pass_msg (void);
 
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
 static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tf, int i);
 static TestResult *receive_result_info_fork (const char *tcname,
                                              const char *tname,
@@ -177,7 +177,7 @@ static void srunner_iterate_tcase_tfuns (SRunner *sr, TCase *tc)
       log_test_start (sr, tc, tfun);
       switch (srunner_fork_status(sr)) {
       case CK_FORK:
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
         tr = tcase_run_tfun_fork (sr, tc, tfun, i);
 #else /* HAVE_FORK */
         eprintf("This version does not support fork", __FILE__, __LINE__);
@@ -372,7 +372,7 @@ static char *pass_msg (void)
   return strdup("Passed");
 }
 
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
 static TestResult *tcase_run_tfun_fork (SRunner *sr, TCase *tc, TF *tfun, int i)
 {
   pid_t pid_w;
@@ -595,7 +595,7 @@ enum fork_status srunner_fork_status (SRunner *sr)
   if (sr->fstat == CK_FORK_GETENV) {
     char *env = getenv ("CK_FORK");
     if (env == NULL)
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
       return CK_FORK;
 #else
       return CK_NOFORK;
@@ -603,7 +603,7 @@ enum fork_status srunner_fork_status (SRunner *sr)
     if (strcmp (env,"no") == 0)
       return CK_NOFORK;
     else {
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
       return CK_FORK;
 #else /* HAVE_FORK */
       eprintf("This version does not support fork", __FILE__, __LINE__);
@@ -668,7 +668,7 @@ void srunner_run (SRunner *sr, const char *sname, const char *tcname, enum print
 
 pid_t check_fork (void)
 {
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
   pid_t pid = fork();
   /* Set the process to a process group to be able to kill it easily. */
   if(pid >= 0)
@@ -684,7 +684,7 @@ pid_t check_fork (void)
 
 void check_waitpid_and_exit (pid_t pid CK_ATTRIBUTE_UNUSED)
 {
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
   pid_t pid_w;
   int status;
 

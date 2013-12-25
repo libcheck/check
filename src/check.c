@@ -268,7 +268,7 @@ void _ck_assert_failed (const char *file,
   va_end(ap);
   send_failure_info (buf);
   if (cur_fork_status() == CK_FORK) {
-  #ifdef HAVE_FORK
+  #if defined(HAVE_FORK) && HAVE_FORK==1
     exit(1);
   #endif /* HAVE_FORK */
   } else {

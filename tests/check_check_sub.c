@@ -16,7 +16,7 @@ START_TEST(test_lno)
 }
 END_TEST
 
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
 START_TEST(test_mark_lno)
 {
   mark_point();
@@ -399,7 +399,7 @@ START_TEST(test_ck_assert_ptr_ne)
 }
 END_TEST
 
-#if defined(HAVE_FORK)
+#if defined(HAVE_FORK) && HAVE_FORK == 1
 START_TEST(test_segv)
   #define LINENO_segv _STR(__LINE__)
 {
@@ -429,7 +429,7 @@ START_TEST(test_mark_point)
 END_TEST
 #endif
 
-#if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK)
+#if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) && HAVE_FORK == 1
 START_TEST(test_eternal)
   #define LINENO_eternal _STR(__LINE__)
 {
@@ -487,7 +487,7 @@ START_TEST(test_sleep14)
 END_TEST
 #endif /* TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) */
 
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
 START_TEST(test_early_exit)
 {
   exit(EXIT_FAILURE);
@@ -528,7 +528,7 @@ START_TEST(test_null_2)
 }
 END_TEST
 
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
 START_TEST(test_fork1p_pass)
 {
   pid_t pid;
@@ -680,7 +680,7 @@ void init_master_tests_lineno(int num_master_tests) {
   const char * lineno[] = {
 /* Simple Tests */
     LINENO_lno,
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
     LINENO_mark_lno,
 #endif
     "-1",
@@ -724,7 +724,7 @@ void init_master_tests_lineno(int num_master_tests) {
     LINENO_ck_assert_ptr_eq,
     LINENO_ck_assert_ptr_ne,
 
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
 /* Signal Tests */
     "-1",
     "-1",
@@ -735,7 +735,7 @@ void init_master_tests_lineno(int num_master_tests) {
     "-1",
 #endif /* HAVE_FORK */
 
-#if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK)
+#if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) && HAVE_FORK == 1
 #if HAVE_WORKING_SETENV
 /* Environment Integer Timeout Tests */
     LINENO_eternal,
@@ -848,13 +848,13 @@ void init_master_tests_lineno(int num_master_tests) {
 #endif /* TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) */
 
 /* Limit Tests */
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
     "-1",
 #endif /* HAVE_FORK */
     "-1",
     "-1",
 
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
 /* Msg and fork Tests */
     "-1",
     "-1",
@@ -888,10 +888,10 @@ Suite *make_sub_suite(void)
   Suite *s;
 
   TCase *tc_simple;
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
   TCase *tc_signal;
 #endif
-#if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK)
+#if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) && HAVE_FORK == 1
 #if HAVE_WORKING_SETENV
   TCase *tc_timeout_env_int;
   TCase *tc_timeout_env_double;
@@ -914,10 +914,10 @@ Suite *make_sub_suite(void)
   s = suite_create("Check Servant");
 
   tc_simple = tcase_create("Simple Tests");
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
   tc_signal = tcase_create("Signal Tests");
 #endif /* HAVE_FORK */
-#if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK)
+#if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) && HAVE_FORK == 1
 #if HAVE_WORKING_SETENV
   setenv("CK_DEFAULT_TIMEOUT", "6", 1);
   tc_timeout_env_int = tcase_create("Environment Integer Timeout Tests");
@@ -951,10 +951,10 @@ Suite *make_sub_suite(void)
   tc_messaging_and_fork = tcase_create("Msg and fork Tests");
 
   suite_add_tcase (s, tc_simple);
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
   suite_add_tcase (s, tc_signal);
 #endif /* HAVE_FORK */
-#if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK)
+#if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) && HAVE_FORK == 1
 #if HAVE_WORKING_SETENV
   suite_add_tcase (s, tc_timeout_env_int);
   suite_add_tcase (s, tc_timeout_env_double);
@@ -978,7 +978,7 @@ Suite *make_sub_suite(void)
   suite_add_tcase (s, tc_messaging_and_fork);
 
   tcase_add_test (tc_simple, test_lno);
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
   tcase_add_test (tc_simple, test_mark_lno);
 #endif
   tcase_add_test (tc_simple, test_pass);
@@ -1029,7 +1029,7 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_simple, test_ck_assert_ptr_eq);
   tcase_add_test (tc_simple, test_ck_assert_ptr_ne);
 
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
   tcase_add_test (tc_signal, test_segv);
   tcase_add_test_raise_signal (tc_signal, test_segv, 11); /* pass  */
   tcase_add_test_raise_signal (tc_signal, test_segv, 8);  /* error */
@@ -1039,7 +1039,7 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_signal, test_mark_point);
 #endif /* HAVE_FORK */
 
-#if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK)
+#if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) && HAVE_FORK == 1
 #if HAVE_WORKING_SETENV
   tcase_add_test (tc_timeout_env_int, test_eternal);
   tcase_add_test (tc_timeout_env_int, test_sleep2);
@@ -1147,7 +1147,7 @@ Suite *make_sub_suite(void)
 #endif /* HAVE_WORKING_SETENV */
 #endif /* TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) */
 
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
   tcase_add_test (tc_limit, test_early_exit);
 #endif /* HAVE_FORK */
 #if MEMORY_LEAKING_TESTS_ENABLED
@@ -1155,7 +1155,7 @@ Suite *make_sub_suite(void)
 #endif /* MEMORY_LEAKING_TESTS_ENABLED */
   tcase_add_test (tc_limit, test_null_2);
 
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
   tcase_add_test (tc_messaging_and_fork, test_fork1p_pass);
   tcase_add_test (tc_messaging_and_fork, test_fork1p_fail);
   tcase_add_test (tc_messaging_and_fork, test_fork1c_pass);

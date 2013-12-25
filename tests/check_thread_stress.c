@@ -34,7 +34,7 @@ START_TEST (test_stress_threads)
 END_TEST
 #endif /* HAVE_PTHREAD */
 
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
 START_TEST (test_stress_forks)
 {
   pid_t cpid = fork ();
@@ -66,7 +66,7 @@ main (void)
   tcase_add_loop_test (tc, test_stress_threads, 0, 100);
 #endif /* HAVE_PTHREAD */
 
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
   tcase_add_loop_test (tc, test_stress_forks, 0, 100);
 #endif /* HAVE_FORK */
 

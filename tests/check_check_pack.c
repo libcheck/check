@@ -188,7 +188,7 @@ START_TEST(test_pack_loc_limit)
 END_TEST
 
 /* the ppack probably means 'pipe' pack */
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
 START_TEST(test_ppack)
 {
   int filedes[2];
@@ -400,7 +400,7 @@ Suite *make_pack_suite(void)
   tcase_add_test (tc_core, test_pack_loc);
   tcase_add_test (tc_core, test_pack_ctx);
   tcase_add_test (tc_core, test_pack_len);
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
   tcase_add_test (tc_core, test_ppack);
   tcase_add_test (tc_core, test_ppack_noctx);
   tcase_add_test (tc_core, test_ppack_onlyctx);
@@ -411,7 +411,7 @@ Suite *make_pack_suite(void)
   tcase_add_test (tc_limit, test_pack_ctx_limit);
   tcase_add_test (tc_limit, test_pack_fail_limit);
   tcase_add_test (tc_limit, test_pack_loc_limit);
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && HAVE_FORK==1
   tcase_add_test (tc_limit, test_ppack_big);
 #endif /* HAVE_FORK */
 
