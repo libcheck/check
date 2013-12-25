@@ -125,7 +125,7 @@ int setenv (const char *name, const char *value, int overwrite);
 #endif /* !HAVE_DECL_SETENV */
 
 /* our setenv implementation is currently broken */
-#if !HAVE_SETENV
+#if !HAVE_DECL_SETENV
 #define HAVE_WORKING_SETENV 0
 #else
 #define HAVE_WORKING_SETENV 1
