@@ -44,7 +44,9 @@
 #include <stdlib.h>
 
 /* provides localtime and struct tm */
+#ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
+#endif /* !HAVE_SYS_TIME_H */
 #include <time.h>
 
 /* declares fork(), _POSIX_VERSION.  according to Autoconf.info,
