@@ -21,6 +21,13 @@
 
 set(SOURCES libcompat.c)
 
+if (NOT HAVE_LIBRT)
+  set(SOURCES ${SOURCES} clock_gettime.c)
+  set(SOURCES ${SOURCES} timer_create.c)
+  set(SOURCES ${SOURCES} timer_delete.c)
+  set(SOURCES ${SOURCES} timer_settime.c)
+endif(NOT HAVE_LIBRT)
+
 if(NOT HAVE_DECL_FILENO AND NOT HAVE__FILENO)
   set(SOURCES ${SOURCES} fileno.c)
 endif(NOT HAVE_DECL_FILENO AND NOT HAVE__FILENO)
