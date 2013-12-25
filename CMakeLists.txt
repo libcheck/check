@@ -36,8 +36,6 @@ set(CHECK_VERSION
 # Set build features
 set(CMAKE_BUILD_TYPE Debug)
 
-set(TIMEOUT_TESTS_ENABLED 0)
-
 # TODO - look for SubUnit --mloskot
 if(NOT MSVC)
   set(ENABLE_SUBUNIT 1)
