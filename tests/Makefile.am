@@ -24,10 +24,7 @@ noinst_PROGRAMS =		\
 	check_thread_stress	\
 	check_nofork		\
 	check_mem_leaks		\
-	ex_output		\
-	ex_xml_output		\
-	ex_log_output		\
-	ex_tap_output
+	ex_output
 
 EXTRA_DIST = test_output.sh test_check_nofork.sh test_log_output.sh test_vars.in test_xml_output.sh test_tap_output.sh test_mem_leaks.sh
 
@@ -85,15 +82,6 @@ check_nofork_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcomp
 
 ex_output_SOURCES = ex_output.c
 ex_output_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
-
-ex_log_output_SOURCES = ex_log_output.c
-ex_log_output_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
-
-ex_xml_output_SOURCES = ex_xml_output.c
-ex_xml_output_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
-
-ex_tap_output_SOURCES = ex_tap_output.c
-ex_tap_output_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
 
 AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src
 
