@@ -45,15 +45,3 @@ target_link_libraries(check_check check compat)
 set(EX_OUTPUT_SOURCES ex_output.c)
 add_executable(ex_output ${EX_OUTPUT_SOURCES})
 target_link_libraries(ex_output check compat)
-
-set(EX_LOG_OUTPUT_SOURCES ex_log_output.c)
-add_executable(ex_log_output ${EX_LOG_OUTPUT_SOURCES})
-target_link_libraries(ex_log_output check compat)
-
-set(EX_XML_OUTPUT_SOURCES ex_xml_output.c)
-add_executable(ex_xml_output ${EX_XML_OUTPUT_SOURCES})
-target_link_libraries(ex_xml_output check compat)
-
-set(EX_TAP_OUTPUT_SOURCES ex_tap_output.c)
-add_executable(ex_tap_output ${EX_TAP_OUTPUT_SOURCES})
-target_link_libraries(ex_tap_output check compat)
