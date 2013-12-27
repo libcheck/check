@@ -1,6 +1,6 @@
 #!/bin/sh
 
-OUTPUT_FILE=test.log.xml
+OUTPUT_FILE=test.xml
 CK_DEFAULT_TIMEOUT=4
 
 . ./test_vars
@@ -12,21 +12,21 @@ expected_xml="<?xml version=\"1.0\"?>
   <suite>
     <title>S1</title>
     <test result=\"success\">
-      <fn>ex_xml_output.c:10</fn>
+      <fn>ex_output.c:11</fn>
       <id>test_pass</id>
       <iteration>0</iteration>
       <description>Core</description>
       <message>Passed</message>
     </test>
     <test result=\"failure\">
-      <fn>ex_xml_output.c:16</fn>
+      <fn>ex_output.c:17</fn>
       <id>test_fail</id>
       <iteration>0</iteration>
       <description>Core</description>
       <message>Failure</message>
     </test>
     <test result=\"error\">
-      <fn>ex_xml_output.c:25</fn>
+      <fn>ex_output.c:26</fn>
       <id>test_exit</id>
       <iteration>0</iteration>
       <description>Core</description>
@@ -36,28 +36,28 @@ expected_xml="<?xml version=\"1.0\"?>
   <suite>
     <title>S2</title>
     <test result=\"success\">
-      <fn>ex_xml_output.c:34</fn>
+      <fn>ex_output.c:46</fn>
       <id>test_pass2</id>
       <iteration>0</iteration>
       <description>Core</description>
       <message>Passed</message>
     </test>
     <test result=\"failure\">
-      <fn>ex_xml_output.c:40</fn>
+      <fn>ex_output.c:52</fn>
       <id>test_loop</id>
       <iteration>0</iteration>
       <description>Core</description>
       <message>Iteration 0 failed</message>
     </test>
     <test result=\"success\">
-      <fn>ex_xml_output.c:40</fn>
+      <fn>ex_output.c:52</fn>
       <id>test_loop</id>
       <iteration>1</iteration>
       <description>Core</description>
       <message>Passed</message>
     </test>
     <test result=\"failure\">
-      <fn>ex_xml_output.c:40</fn>
+      <fn>ex_output.c:52</fn>
       <id>test_loop</id>
       <iteration>2</iteration>
       <description>Core</description>
@@ -67,7 +67,7 @@ expected_xml="<?xml version=\"1.0\"?>
   <suite>
     <title>XML escape &quot; &apos; &lt; &gt; &amp; tests</title>
     <test result=\"failure\">
-      <fn>ex_xml_output.c:46</fn>
+      <fn>ex_output.c:58</fn>
       <id>test_xml_esc_fail_msg</id>
       <iteration>0</iteration>
       <description>description &quot; &apos; &lt; &gt; &amp;</description>
@@ -83,14 +83,14 @@ expected_xml="<?xml version=\"1.0\"?>
   <suite>
     <title>S1</title>
     <test result=\"success\">
-      <fn>ex_xml_output.c:10</fn>
+      <fn>ex_output.c:11</fn>
       <id>test_pass</id>
       <iteration>0</iteration>
       <description>Core</description>
       <message>Passed</message>
     </test>
     <test result=\"failure\">
-      <fn>ex_xml_output.c:16</fn>
+      <fn>ex_output.c:17</fn>
       <id>test_fail</id>
       <iteration>0</iteration>
       <description>Core</description>
@@ -100,28 +100,28 @@ expected_xml="<?xml version=\"1.0\"?>
   <suite>
     <title>S2</title>
     <test result=\"success\">
-      <fn>ex_xml_output.c:34</fn>
+      <fn>ex_output.c:46</fn>
       <id>test_pass2</id>
       <iteration>0</iteration>
       <description>Core</description>
       <message>Passed</message>
     </test>
     <test result=\"failure\">
-      <fn>ex_xml_output.c:40</fn>
+      <fn>ex_output.c:52</fn>
       <id>test_loop</id>
       <iteration>0</iteration>
       <description>Core</description>
       <message>Iteration 0 failed</message>
     </test>
     <test result=\"success\">
-      <fn>ex_xml_output.c:40</fn>
+      <fn>ex_output.c:52</fn>
       <id>test_loop</id>
       <iteration>1</iteration>
       <description>Core</description>
       <message>Passed</message>
     </test>
     <test result=\"failure\">
-      <fn>ex_xml_output.c:40</fn>
+      <fn>ex_output.c:52</fn>
       <id>test_loop</id>
       <iteration>2</iteration>
       <description>Core</description>
@@ -131,7 +131,7 @@ expected_xml="<?xml version=\"1.0\"?>
   <suite>
     <title>XML escape &quot; &apos; &lt; &gt; &amp; tests</title>
     <test result=\"failure\">
-      <fn>ex_xml_output.c:46</fn>
+      <fn>ex_output.c:58</fn>
       <id>test_xml_esc_fail_msg</id>
       <iteration>0</iteration>
       <description>description &quot; &apos; &lt; &gt; &amp;</description>
@@ -144,7 +144,7 @@ fi
 
 rm -f ${OUTPUT_FILE}
 export CK_DEFAULT_TIMEOUT
-./ex_xml_output${EXEEXT} > /dev/null
+./ex_output${EXEEXT} CK_MINIMAL XML NORMAL > /dev/null
 actual_xml=`cat ${OUTPUT_FILE} | tr -d "\r" | grep -v \<duration\> | grep -v \<datetime\> | grep -v \<path\>`
 if [ x"${expected_xml}" != x"${actual_xml}" ]; then
     echo "Problem with ex_xml_output${EXEEXT}";

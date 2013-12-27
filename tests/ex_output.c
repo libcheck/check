@@ -30,12 +30,41 @@ START_TEST(test_exit)
 END_TEST
 #endif /* HAVE_FORK */
 
-static Suite *make_suite (void)
+/*
+ * This test will intentionally mess up the unit testing program
+ * when fork is unavailable. The purpose of including it is to
+ * ensure that the tap output is correct when a test crashes.
+ */
+START_TEST(test_abort)
+{
+  exit(1);
+}
+END_TEST
+
+START_TEST(test_pass2)
+{
+  ck_assert_msg (1==1, "Shouldn't see this");
+}
+END_TEST
+
+START_TEST(test_loop)
+{
+  ck_assert_msg (_i==1, "Iteration %d failed", _i);
+}
+END_TEST
+
+START_TEST(test_xml_esc_fail_msg)
+{
+  ck_abort_msg("fail \" ' < > & message");
+}
+END_TEST
+
+static Suite *make_log1_suite (void)
 {
   Suite *s;
   TCase *tc;
 
-  s = suite_create("Master");
+  s = suite_create("S1");
   tc = tcase_create ("Core");
   suite_add_tcase(s, tc);
   tcase_add_test (tc, test_pass);
@@ -43,19 +72,43 @@ static Suite *make_suite (void)
 #if defined(HAVE_FORK) && HAVE_FORK==1
   tcase_add_test (tc, test_exit);
 #endif /* HAVE_FORK */
+
   return s;
 }
 
-static void run_tests (int printmode)
+static Suite *make_log2_suite (int include_exit_test)
 {
-  SRunner *sr;
   Suite *s;
+  TCase *tc;
 
-  s = make_suite();
-  sr = srunner_create(s);
-  srunner_run_all(sr, printmode);
-  srunner_free(sr);
+  s = suite_create("S2");
+  tc = tcase_create ("Core");
+  suite_add_tcase(s, tc);
+  if(include_exit_test == 1)
+  {
+     tcase_add_test (tc, test_abort);
+  }
+  tcase_add_test (tc, test_pass2);
+  tcase_add_loop_test(tc, test_loop, 0, 3);
+
+  return s;
 }
+
+/* check that XML special characters are properly escaped in XML log file */
+static Suite *make_xml_esc_suite (void)
+{
+  Suite *s;
+  TCase *tc;
+
+  s = suite_create("XML escape \" ' < > & tests");
+  tc = tcase_create ("description \" ' < > &");
+  suite_add_tcase(s, tc);
+
+  tcase_add_test (tc, test_xml_esc_fail_msg);
+
+  return s;
+}
+
 
 static void print_usage(void)
 {
@@ -63,35 +116,101 @@ static void print_usage(void)
 #if ENABLE_SUBUNIT
     printf (" | CK_SUBUNIT");
 #endif
-    printf (")\n");
+    printf (") (STDOUT | LOG | TAP | XML) (NORMAL | EXIT_TEST)\n");
 }
 
+static void run_tests (int printmode, char * log_type, int include_exit_test)
+{
+    SRunner *sr;
+
+    sr = srunner_create(make_log1_suite());
+    srunner_add_suite(sr, make_log2_suite(include_exit_test));
+    srunner_add_suite(sr, make_xml_esc_suite());
+
+    if(strcmp(log_type, "STDOUT") == 0)
+    {
+        /* Nothing else to do here */
+    }
+    else if(strcmp(log_type, "LOG") == 0)
+    {
+        srunner_set_log(sr, "test.log");
+    }
+    else if(strcmp(log_type, "TAP") == 0)
+    {
+        srunner_set_tap(sr, "test.tap");
+    }
+    else if(strcmp(log_type, "XML") == 0)
+    {
+        srunner_set_xml(sr, "test.xml");
+    }
+    else
+    {
+        print_usage();
+        exit(EXIT_FAILURE);
+    }
+
+    srunner_run_all(sr, printmode);
+    srunner_free(sr);
+}
+
+#define OUTPUT_TYPE_ARG       1
+#define LOG_TYPE_ARG          2
+#define INCLUDE_EXIT_TEST_ARG 3
 int main (int argc, char **argv)
 {
-  
-  if (argc != 2) {
-    print_usage();
-    return EXIT_FAILURE;
-  }
+    int printmode;
+    int include_exit_test;
 
-  if (strcmp (argv[1], "CK_SILENT") == 0)
-    run_tests(CK_SILENT);
-  else if (strcmp (argv[1], "CK_MINIMAL") == 0)
-    run_tests(CK_MINIMAL);
-  else if (strcmp (argv[1], "CK_NORMAL") == 0)
-    run_tests(CK_NORMAL);
-  else if (strcmp (argv[1], "CK_VERBOSE") == 0)
-    run_tests(CK_VERBOSE);
-#if ENABLE_SUBUNIT
-  else if (strcmp (argv[1], "CK_SUBUNIT") == 0)
-    run_tests(CK_SUBUNIT);
-#endif
-  else {
-    print_usage();
-    return EXIT_FAILURE;
-  }    
-    
+    if (argc != 4)
+    {
+        print_usage();
+        return EXIT_FAILURE;
+    }
 
-  return EXIT_SUCCESS;
+    if (strcmp (argv[OUTPUT_TYPE_ARG], "CK_SILENT") == 0)
+    {
+        printmode = CK_SILENT;
+    }
+    else if (strcmp (argv[OUTPUT_TYPE_ARG], "CK_MINIMAL") == 0)
+    {
+        printmode = CK_MINIMAL;
+    }
+    else if (strcmp (argv[OUTPUT_TYPE_ARG], "CK_NORMAL") == 0)
+    {
+        printmode = CK_NORMAL;
+    }
+    else if (strcmp (argv[OUTPUT_TYPE_ARG], "CK_VERBOSE") == 0)
+    {
+        printmode = CK_VERBOSE;
+    }
+    #if ENABLE_SUBUNIT
+    else if (strcmp (argv[OUTPUT_TYPE_ARG], "CK_SUBUNIT") == 0)
+    {
+        printmode = CK_SUBUNIT;
+    }
+    #endif
+    else
+    {
+        print_usage();
+        return EXIT_FAILURE;
+    }
+
+    if (strcmp (argv[INCLUDE_EXIT_TEST_ARG], "NORMAL") == 0)
+    {
+        include_exit_test = 0;
+    }
+    else if (strcmp (argv[INCLUDE_EXIT_TEST_ARG], "EXIT_TEST") == 0)
+    {
+        include_exit_test = 1;
+    }
+    else
+    {
+        print_usage();
+        return EXIT_FAILURE;
+    }
+
+    run_tests(printmode, argv[LOG_TYPE_ARG], include_exit_test);
+
+    return EXIT_SUCCESS;
 }
-  
+
