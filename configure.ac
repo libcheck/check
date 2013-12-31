@@ -239,8 +239,23 @@ AC_CHECK_SIZEOF(int, 4)
 AC_CHECK_SIZEOF(short, 2)
 AC_CHECK_SIZEOF(long, 4)
 
-AC_CHECK_TYPE(clockid_t, int)
-AC_CHECK_TYPE(timer_t, int)
+# The following two checks will attempt to include pthread.h. The
+# reason is MinGW and MinGW-w64 have been known to put the time
+# related definitions in the pthread headers. Without include
+# pthread.h, these checks may mistakenly fail to find the
+# definitions.
+AC_CHECK_TYPE(clockid_t, [], [AC_DEFINE([clockid_t], [int], [clockid_t])], [
+AC_INCLUDES_DEFAULT
+#if defined(HAVE_PTHREAD)
+#include <pthread.h>
+#endif /* HAVE_PTHREAD */
+])
+AC_CHECK_TYPE(timer_t, [], [AC_DEFINE([timer_t], [int], [timer_t])], [
+AC_INCLUDES_DEFAULT
+#if defined(HAVE_PTHREAD)
+#include <pthread.h>
+#endif /* HAVE_PTHREAD */
+])
 
 # Checks for library functions.
 AC_FUNC_MALLOC
