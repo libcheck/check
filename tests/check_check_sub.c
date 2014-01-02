@@ -688,13 +688,19 @@ void init_master_tests_lineno(int num_master_tests) {
     "-1",
     "-1",
     "-1",
+#if defined(__GNUC__)
+    "-1",
+#endif /* __GNUC__ */
+    "-1",
+#if defined(__GNUC__)
+    "-1",
+#endif /* __GNUC__ */
     "-1",
     "-1",
     "-1",
+#if defined(__GNUC__)
     "-1",
-    "-1",
-    "-1",
-    "-1",
+#endif /* __GNUC__ */
     LINENO_ck_abort,
     LINENO_ck_abort_msg,
     LINENO_ck_abort_msg_null,

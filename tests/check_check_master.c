@@ -35,13 +35,19 @@ static master_test_t master_tests[] = {
   { "Simple Tests", CK_PASS,    "Passed" },
   { "Simple Tests", CK_FAILURE, "This test should fail" },
   { "Simple Tests", CK_FAILURE, "Assertion '2 == 3' failed" },
+#if defined(__GNUC__)
   { "Simple Tests", CK_FAILURE, "Assertion '4 == 5' failed" },
+#endif /* __GNUC__ */
   { "Simple Tests", CK_FAILURE, "Failure '2 != 3' occured" },
+#if defined(__GNUC__)
   { "Simple Tests", CK_FAILURE, "Failure '4 != 5' occured" },
+#endif /* __GNUC__ */
   { "Simple Tests", CK_FAILURE, "3 != 4" },
   { "Simple Tests", CK_FAILURE, "5 != 6" },
   { "Simple Tests", CK_FAILURE, "7 == 7" },
+#if defined(__GNUC__)
   { "Simple Tests", CK_FAILURE, "Failed" },
+#endif /* __GNUC__ */
   { "Simple Tests", CK_FAILURE, "Failed" },
   { "Simple Tests", CK_FAILURE, "Failure expected" },
   { "Simple Tests", CK_FAILURE, "Failed" },
