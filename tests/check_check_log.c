@@ -6,7 +6,7 @@
 #include <check.h>
 #include "check_check.h"
 
-#if HAVE_WORKING_SETENV
+#if HAVE_DECL_SETENV
 /* save environment variable's value and set new value */
 static int save_set_env(const char *name, const char *value,
                         const char **old_value)
@@ -27,7 +27,7 @@ static int restore_env(const char *name, const char *old_value)
   }
   return res;
 }
-#endif /* HAVE_WORKING_SETENV */
+#endif /* HAVE_DECL_SETENV */
 
 START_TEST(test_set_log)
 {
@@ -44,7 +44,7 @@ START_TEST(test_set_log)
 }
 END_TEST
 
-#if HAVE_WORKING_SETENV
+#if HAVE_DECL_SETENV
 /* Test enabling logging via environment variable */
 START_TEST(test_set_log_env)
 {
@@ -75,7 +75,7 @@ START_TEST(test_set_log_env)
   srunner_free(sr);
 }
 END_TEST
-#endif /* HAVE_WORKING_SETENV */
+#endif /* HAVE_DECL_SETENV */
 
 START_TEST(test_no_set_log)
 {
@@ -120,7 +120,7 @@ START_TEST(test_set_xml)
 }
 END_TEST
 
-#if HAVE_WORKING_SETENV
+#if HAVE_DECL_SETENV
 /* Test enabling XML logging via environment variable */
 START_TEST(test_set_xml_env)
 {
@@ -151,7 +151,7 @@ START_TEST(test_set_xml_env)
   srunner_free(sr);
 }
 END_TEST
-#endif /* HAVE_WORKING_SETENV */
+#endif /* HAVE_DECL_SETENV */
 
 START_TEST(test_no_set_xml)
 {
@@ -195,7 +195,7 @@ START_TEST(test_set_tap)
 }
 END_TEST
 
-#if HAVE_WORKING_SETENV
+#if HAVE_DECL_SETENV
 /* Test enabling TAP logging via environment variable */
 START_TEST(test_set_tap_env)
 {
@@ -226,7 +226,7 @@ START_TEST(test_set_tap_env)
   srunner_free(sr);
 }
 END_TEST
-#endif /* HAVE_WORKING_SETENV */
+#endif /* HAVE_DECL_SETENV */
 
 START_TEST(test_no_set_tap)
 {
@@ -268,25 +268,25 @@ Suite *make_log_suite(void)
 
   suite_add_tcase(s, tc_core);
   tcase_add_test(tc_core, test_set_log);
-#if HAVE_WORKING_SETENV
+#if HAVE_DECL_SETENV
   tcase_add_test(tc_core, test_set_log_env);
-#endif /* HAVE_WORKING_SETENV */
+#endif /* HAVE_DECL_SETENV */
   tcase_add_test(tc_core, test_no_set_log);
   tcase_add_test(tc_core, test_double_set_log);
 
   suite_add_tcase(s, tc_core_xml);
   tcase_add_test(tc_core_xml, test_set_xml);
-#if HAVE_WORKING_SETENV
+#if HAVE_DECL_SETENV
   tcase_add_test(tc_core_xml, test_set_xml_env);
-#endif /* HAVE_WORKING_SETENV */
+#endif /* HAVE_DECL_SETENV */
   tcase_add_test(tc_core_xml, test_no_set_xml);
   tcase_add_test(tc_core_xml, test_double_set_xml);
 
   suite_add_tcase(s, tc_core_tap);
   tcase_add_test(tc_core_tap, test_set_tap);
-#if HAVE_WORKING_SETENV
+#if HAVE_DECL_SETENV
   tcase_add_test(tc_core_tap, test_set_tap_env);
-#endif /* HAVE_WORKING_SETENV */
+#endif /* HAVE_DECL_SETENV */
   tcase_add_test(tc_core_tap, test_no_set_tap);
   tcase_add_test(tc_core_tap, test_double_set_tap);
 

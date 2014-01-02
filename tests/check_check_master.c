@@ -82,7 +82,7 @@ static master_test_t master_tests[] = {
 #endif
 
 #if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) && HAVE_FORK==1
-#if HAVE_WORKING_SETENV
+#if HAVE_DECL_SETENV
   { "Environment Integer Timeout Tests", CK_ERROR,  "Test timeout expired" },
   { "Environment Integer Timeout Tests", CK_PASS,   "Passed" },
   { "Environment Integer Timeout Tests", CK_PASS,   "Passed" },
@@ -96,7 +96,7 @@ static master_test_t master_tests[] = {
   { "Environment Double Timeout Tests", CK_ERROR,  "Test timeout expired" },
   { "Environment Double Timeout Tests", CK_ERROR,  "Test timeout expired" },
   { "Environment Double Timeout Tests", CK_ERROR,  "Test timeout expired" },
-#endif /* HAVE_WORKING_SETENV */
+#endif /* HAVE_DECL_SETENV */
 
   { "Default Timeout Tests", CK_ERROR,  "Test timeout expired" },
 #ifdef HAVE_LIBRT
@@ -131,7 +131,7 @@ static master_test_t master_tests[] = {
   { "Default Timeout Tests", CK_ERROR,  "Test timeout expired" },
   { "Default Timeout Tests", CK_ERROR,  "Test timeout expired" },
   
-#if HAVE_WORKING_SETENV
+#if HAVE_DECL_SETENV
   { "Environment Integer Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
 #ifdef HAVE_LIBRT
   { "Environment Integer Timeout Scaling Tests", CK_PASS,   "Passed" },
@@ -189,7 +189,7 @@ static master_test_t master_tests[] = {
   { "User Double Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
   { "User Double Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
   { "User Double Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
-#endif /* HAVE_WORKING_SETENV */
+#endif /* HAVE_DECL_SETENV */
 #endif /* TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) */
 
 #if defined(HAVE_FORK) && HAVE_FORK==1
