@@ -120,10 +120,6 @@ CK_DLL_EXP char *strdup (const char *str);
 CK_DLL_EXP const char *strsignal (int sig);
 #endif /* !HAVE_DECL_STRSIGNAL */
 
-#if !HAVE_DECL_UNSETENV
-CK_DLL_EXP int unsetenv (const char *name);
-#endif /* !HAVE_DECL_UNSETENV */
-
 /* 
  * On systems where clock_gettime() is not available, or
  * on systems where some clocks may not be supported, the

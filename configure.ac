@@ -267,8 +267,8 @@ AC_FUNC_REALLOC
 HW_LIBRT_TIMERS
 
 # The following checks will replace missing functions from libcompat
-AC_REPLACE_FUNCS([alarm clock_gettime gettimeofday localtime_r sleep strdup strsignal unsetenv])
-AC_CHECK_DECLS([alarm, clock_gettime, gettimeofday, localtime_r, sleep, strdup, strsignal, unsetenv])
+AC_REPLACE_FUNCS([alarm clock_gettime gettimeofday localtime_r sleep strdup strsignal])
+AC_CHECK_DECLS([alarm, clock_gettime, gettimeofday, localtime_r, sleep, strdup, strsignal])
 
 # The following checks are to only detect if the functions exist, but
 # not replace them

@@ -64,11 +64,6 @@ if(NOT HAVE_DECL_STRSIGNAL)
   set(SOURCES ${SOURCES} strsignal.c)
 endif(NOT HAVE_DECL_STRSIGNAL)
 
-if(NOT HAVE_DECL_UNSETENV)
-  set(SOURCES ${SOURCES} unsetenv.c)
-endif(NOT HAVE_DECL_UNSETENV)
-
-
 
 set(HEADERS libcompat.h)
 
