@@ -857,7 +857,9 @@ void init_master_tests_lineno(int num_master_tests) {
 #if defined(HAVE_FORK) && HAVE_FORK==1
     "-1",
 #endif /* HAVE_FORK */
+#if MEMORY_LEAKING_TESTS_ENABLED
     "-1",
+#endif /* MEMORY_LEAKING_TESTS_ENABLED */
     "-1",
 
 #if defined(HAVE_FORK) && HAVE_FORK==1
