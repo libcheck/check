@@ -186,10 +186,6 @@ CK_DLL_EXP int timer_delete(timer_t timerid);
 #if HAVE_STDARG_H
 #include <stdarg.h>
 
-#if !HAVE_SNPRINTF && HAVE__SNPRINTF
-#define snprintf _snprintf;
-#endif /* HAVE_SNPRINTF && HAVE__SNPRINTF */
-
 #if !HAVE_VSNPRINTF
 CK_DLL_EXP int rpl_vsnprintf(char *, size_t, const char *, va_list);
 #endif
