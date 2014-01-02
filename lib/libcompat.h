@@ -93,7 +93,7 @@ CK_DLL_EXP void *rpl_realloc (void *p, size_t n);
 #endif /* !HAVE_REALLOC */
 
 #if !HAVE_GETPID && HAVE__GETPID
-#define getpid _getpid;
+#define getpid _getpid
 #endif /* !HAVE_GETPID && HAVE__GETPID */
 
 #if !HAVE_GETTIMEOFDAY
@@ -109,7 +109,7 @@ CK_DLL_EXP struct tm *localtime_r (const time_t *clock, struct tm *result);
 #if !HAVE_DECL_STRDUP && !HAVE__STRDUP
 CK_DLL_EXP char *strdup (const char *str);
 #elif !HAVE_DECL_STRDUP && HAVE__STRDUP
-#define strdup _strdup;
+#define strdup _strdup
 #endif /* !HAVE_DECL_STRDUP && HAVE__STRDUP */
 
 #if !HAVE_DECL_STRSIGNAL
