@@ -24,10 +24,15 @@ project(check C)
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-# TODO: extract from configure.ac
-set(CHECK_MAJOR_VERSION 0)
-set(CHECK_MINOR_VERSION 9)
-set(CHECK_MICRO_VERSION 6)
+macro(extract_version file setting_name)
+  file(STRINGS ${file} VERSION_NUMBER REGEX "^${setting_name}")
+  string(REPLACE "=" ";" VERSION_NUMBER_LIST ${VERSION_NUMBER})
+  list(GET VERSION_NUMBER_LIST 1 ${setting_name})
+endmacro(extract_version)
+
+extract_version(configure.ac CHECK_MAJOR_VERSION)
+extract_version(configure.ac CHECK_MINOR_VERSION)
+extract_version(configure.ac CHECK_MICRO_VERSION)
 
 set(CHECK_VERSION
   "${CHECK_MAJOR_VERSION}.${CHECK_MINOR_VERSION}.${CHECK_MICRO_VERSION}")
