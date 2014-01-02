@@ -434,7 +434,7 @@ START_TEST(test_eternal)
   #define LINENO_eternal _STR(__LINE__)
 {
   for (;;)
-    ;
+    sleep(1);
 }
 END_TEST
 
