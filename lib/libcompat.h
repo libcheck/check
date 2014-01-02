@@ -112,10 +112,6 @@ CK_DLL_EXP int putenv (const char *string);
 #define putenv _putenv;
 #endif /* HAVE_DECL_PUTENV && !HAVE__PUTENV */
 
-#if !HAVE_DECL_SETENV
-CK_DLL_EXP int setenv (const char *name, const char *value, int overwrite);
-#endif /* !HAVE_DECL_SETENV */
-
 #if !HAVE_DECL_SLEEP
 CK_DLL_EXP unsigned int sleep (unsigned int seconds);
 #endif /* !HAVE_DECL_SLEEP */
