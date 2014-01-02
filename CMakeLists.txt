@@ -289,3 +289,4 @@ add_test(NAME test_output.sh WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
 add_test(NAME test_log_output.sh WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests COMMAND sh test_log_output.sh)
 add_test(NAME test_xml_output.sh WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests COMMAND sh test_xml_output.sh)
 add_test(NAME test_tap_output.sh WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests COMMAND sh test_tap_output.sh)
+add_test(NAME test_check_nofork.sh WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests COMMAND sh test_check_nofork.sh)
