@@ -106,12 +106,6 @@ CK_DLL_EXP struct tm *localtime_r (const time_t *clock, struct tm *result);
 #endif
 #endif /* !HAVE_DECL_LOCALTIME_R */
 
-#if !HAVE_DECL_PUTENV && !HAVE__PUTENV
-CK_DLL_EXP int putenv (const char *string);
-#elif !HAVE_DECL_PUTENV && HAVE__PUTENV
-#define putenv _putenv;
-#endif /* HAVE_DECL_PUTENV && !HAVE__PUTENV */
-
 #if !HAVE_DECL_SLEEP
 CK_DLL_EXP unsigned int sleep (unsigned int seconds);
 #endif /* !HAVE_DECL_SLEEP */
