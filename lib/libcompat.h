@@ -106,10 +106,6 @@ CK_DLL_EXP struct tm *localtime_r (const time_t *clock, struct tm *result);
 #endif
 #endif /* !HAVE_DECL_LOCALTIME_R */
 
-#if !HAVE_DECL_SLEEP
-CK_DLL_EXP unsigned int sleep (unsigned int seconds);
-#endif /* !HAVE_DECL_SLEEP */
-
 #if !HAVE_DECL_STRDUP && !HAVE__STRDUP
 CK_DLL_EXP char *strdup (const char *str);
 #elif !HAVE_DECL_STRDUP && HAVE__STRDUP

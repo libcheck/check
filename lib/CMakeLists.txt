@@ -44,10 +44,6 @@ if(NOT HAVE_REALLOC)
   set(SOURCES ${SOURCES} realloc.c)
 endif(NOT HAVE_REALLOC)
 
-if(NOT HAVE_DECL_SLEEP)
-  set(SOURCES ${SOURCES} sleep.c)
-endif(NOT HAVE_DECL_SLEEP)
-
 if(NOT HAVE_SNPRINTF AND NOT HAVE__SNPRINTF)
     set(SOURCES ${SOURCES} snprintf.c)
     add_definitions(-Dsnprintf=rpl_snprintf)
