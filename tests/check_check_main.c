@@ -24,7 +24,7 @@ int main (void)
   srunner_add_suite(sr, make_fixture_suite());
   srunner_add_suite(sr, make_pack_suite());
 
-#if defined(HAVE_FORK)
+#if defined(HAVE_FORK) && HAVE_FORK==1
   srunner_add_suite(sr, make_exit_suite());
 #endif
 

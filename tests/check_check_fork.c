@@ -71,7 +71,7 @@ void fork_teardown (void)
 
 START_TEST(test_default_fork)
 {
-#if defined(HAVE_FORK)
+#if defined(HAVE_FORK) && HAVE_FORK == 1
   ck_assert_msg(srunner_fork_status(fork_dummy_sr) == CK_FORK,
 	      "Default fork status not set correctly");
 #else
@@ -94,7 +94,7 @@ END_TEST
  * attempting to set the fork mode as anything but
  * CK_NOFORK is considered an error.
  */
-#if defined(HAVE_FORK)
+#if defined(HAVE_FORK) && HAVE_FORK==1
 START_TEST(test_set_fork)
 {
   srunner_set_fork_status(fork_dummy_sr, CK_FORK);
@@ -139,7 +139,7 @@ Suite *make_fork_suite(void)
   suite_add_tcase(s, tc);
   tcase_add_test(tc,test_default_fork);
   tcase_add_test(tc,test_set_nofork);
-#if defined(HAVE_FORK)
+#if defined(HAVE_FORK) && HAVE_FORK==1
   tcase_add_test(tc,test_set_fork);
   tcase_add_test(tc,test_env);
   tcase_add_test(tc,test_env_and_set);

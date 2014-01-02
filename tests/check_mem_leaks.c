@@ -43,7 +43,7 @@ int main (int argc, char **argv)
     sr = srunner_create (make_log_suite());
     srunner_add_suite(sr, make_fork_suite());
 
-#if defined(HAVE_FORK)
+#if defined(HAVE_FORK) && HAVE_FORK==1
     srunner_add_suite(sr, make_exit_suite());
 #endif
 
