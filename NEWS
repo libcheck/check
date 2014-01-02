@@ -3,6 +3,9 @@ In development:
 # happy on NEWS requirement of having "Check 0.9.11"
 # in the first 15 lines.
 
+* Check now compiles on Windows using Visual Studio 10
+  when using CMake. check_check passes.
+
 * Always capture the start and end times of tests when using
   NO_FORK mode. Previously the end time was not captured,
   resulting in arbitrary durations being recorded when tests
