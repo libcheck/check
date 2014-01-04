@@ -635,6 +635,9 @@ START_TEST(test_fork2_fail)
 END_TEST
 #endif /* HAVE_FORK */
 
+#if defined(HAVE_FORK) && HAVE_FORK == 1
+#endif /* HAVE_FORK */
+
 START_TEST(test_srunner)
 {
   Suite *s;
@@ -873,6 +876,10 @@ void init_master_tests_lineno(int num_master_tests) {
     "-1",
 #endif /* HAVE_FORK */
 
+#if defined(HAVE_FORK) && HAVE_FORK==1
+/* Check Errors Tests */
+#endif /* HAVE_FORK */
+
 /* Core */
     "-1",
     "-1"
@@ -920,6 +927,7 @@ Suite *make_sub_suite(void)
   TCase *tc_limit;
 #if defined(HAVE_FORK) && HAVE_FORK==1
   TCase *tc_messaging_and_fork;
+  TCase *tc_errors;
 #endif
 
   s = suite_create("Check Servant");
@@ -961,6 +969,7 @@ Suite *make_sub_suite(void)
   tc_limit = tcase_create("Limit Tests");
 #if defined(HAVE_FORK) && HAVE_FORK==1
   tc_messaging_and_fork = tcase_create("Msg and fork Tests");
+  tc_errors = tcase_create("Check Errors Tests");
 #endif /* HAVE_FORK */
 
   suite_add_tcase (s, tc_simple);
