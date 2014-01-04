@@ -131,6 +131,22 @@ START_TEST(test_pack_len)
 }
 END_TEST
 
+START_TEST(test_pack_abuse)
+{
+  char *buf;
+  CtxMsg cmsg;
+
+  /* Should report -1 (e.g. invalid) if no buffer is passed */
+  ck_assert_int_eq(pack(CK_MSG_CTX, NULL, (CheckMsg *) &cmsg), -1);
+
+  /* Should report 0 (e.g. nothing packed) if no message is passed */
+  ck_assert_int_eq(pack(CK_MSG_CTX, &buf, NULL), 0);
+
+  /* Should report -1 (e.g. invalid) if no buffer is passed */
+  ck_assert_int_eq(upack(NULL, (CheckMsg *) &cmsg, CK_MSG_CTX), -1);
+}
+END_TEST
+
 START_TEST(test_pack_ctx_limit)
 {
   CtxMsg cmsg;
@@ -403,6 +419,7 @@ Suite *make_pack_suite(void)
   tcase_add_test (tc_core, test_pack_loc);
   tcase_add_test (tc_core, test_pack_ctx);
   tcase_add_test (tc_core, test_pack_len);
+  tcase_add_test (tc_core, test_pack_abuse);
 #if defined(HAVE_FORK) && HAVE_FORK==1
   tcase_add_test (tc_core, test_ppack);
   tcase_add_test (tc_core, test_ppack_noctx);
