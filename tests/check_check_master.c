@@ -213,7 +213,7 @@ static master_test_t master_tests[] = {
   { "Msg and fork Tests", CK_FAILURE,    "Expected fail" },
   { "Msg and fork Tests", CK_PASS,       "Passed" },
   { "Msg and fork Tests", CK_FAILURE,    "Expected fail" },
-#endif
+#endif  /* HAVE_FORK */
 
   { "Core", CK_PASS,    "Passed" },
   { "Core", CK_FAILURE, "We failed" }
