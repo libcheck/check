@@ -636,6 +636,20 @@ END_TEST
 #endif /* HAVE_FORK */
 
 #if defined(HAVE_FORK) && HAVE_FORK == 1
+START_TEST(test_invalid_set_fork_status)
+  #define LINENO_invalid_set_fork_status _STR(__LINE__)
+{
+   Suite *s1;
+   TCase *tc1;
+   SRunner *sr;
+   s1 = suite_create ("suite1");
+   tc1 = tcase_create ("tcase1");
+   tcase_add_test (tc1, test_pass);
+   sr = srunner_create(s1);
+   srunner_set_fork_status (sr, -1);
+   srunner_run_all(sr, CK_SILENT);
+}
+END_TEST
 #endif /* HAVE_FORK */
 
 START_TEST(test_srunner)
@@ -878,6 +892,7 @@ void init_master_tests_lineno(int num_master_tests) {
 
 #if defined(HAVE_FORK) && HAVE_FORK==1
 /* Check Errors Tests */
+    LINENO_invalid_set_fork_status,
 #endif /* HAVE_FORK */
 
 /* Core */
@@ -1187,6 +1202,8 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_messaging_and_fork, test_fork1c_fail);
   tcase_add_test (tc_messaging_and_fork, test_fork2_pass);
   tcase_add_test (tc_messaging_and_fork, test_fork2_fail);
+
+  tcase_add_test_raise_signal (tc_errors, test_invalid_set_fork_status, 2);
 #endif /* HAVE_FORK */
 
   return s;

@@ -216,6 +216,7 @@ static master_test_t master_tests[] = {
 #endif  /* HAVE_FORK */
 
 #if defined(HAVE_FORK) && HAVE_FORK==1
+  { "Check Errors Tests", CK_FAILURE,    "Early exit with return value 2" },
 #endif /* HAVE_FORK */
 
   { "Core", CK_PASS,    "Passed" },
