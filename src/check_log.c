@@ -169,10 +169,6 @@ void stdout_lfun (SRunner *sr, FILE *file, enum print_output printmode,
 		  void *obj, enum cl_event evt)
 {
   Suite *s;
-  
-  if (printmode == CK_ENV) {
-    printmode = get_env_printmode();
-  }
 
   switch (evt) {
   case CLINITLOG_SR:
