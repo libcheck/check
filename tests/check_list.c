@@ -132,6 +132,13 @@ START_TEST(test_add_a_bunch)
 }
 END_TEST
 
+START_TEST(test_list_abuse)
+{
+    check_list_advance(NULL);
+    /* Should not crash */
+}
+END_TEST
+
 
 Suite *make_list_suite (void)
 {
@@ -146,5 +153,7 @@ Suite *make_list_suite (void)
   tcase_add_test (tc, test_add_end_and_next);
   tcase_add_test (tc, test_add_front_and_next);
   tcase_add_test (tc, test_add_a_bunch);
+  tcase_add_test (tc, test_list_abuse);
+
   return s;
 }
