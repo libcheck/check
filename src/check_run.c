@@ -616,7 +616,7 @@ enum fork_status srunner_fork_status (SRunner *sr)
 
 void srunner_set_fork_status (SRunner *sr, enum fork_status fstat)
 {
-#if !defined(HAVE_FORK)
+#if !defined(HAVE_FORK) || HAVE_FORK==0
   /* If fork() is unavailable, do not allow a fork mode to be set */
   if (fstat != CK_NOFORK)
   {
