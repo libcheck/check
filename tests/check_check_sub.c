@@ -636,6 +636,7 @@ END_TEST
 #endif /* HAVE_FORK */
 
 #if defined(HAVE_FORK) && HAVE_FORK == 1
+#if MEMORY_LEAKING_TESTS_ENABLED
 START_TEST(test_invalid_set_fork_status)
   #define LINENO_invalid_set_fork_status _STR(__LINE__)
 {
@@ -650,6 +651,7 @@ START_TEST(test_invalid_set_fork_status)
    srunner_run_all(sr, CK_SILENT);
 }
 END_TEST
+#endif /* MEMORY_LEAKING_TESTS_ENABLED */
 #endif /* HAVE_FORK */
 
 START_TEST(test_srunner)
@@ -892,7 +894,9 @@ void init_master_tests_lineno(int num_master_tests) {
 
 #if defined(HAVE_FORK) && HAVE_FORK==1
 /* Check Errors Tests */
+#if MEMORY_LEAKING_TESTS_ENABLED
     LINENO_invalid_set_fork_status,
+#endif
 #endif /* HAVE_FORK */
 
 /* Core */
@@ -1203,7 +1207,9 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_messaging_and_fork, test_fork2_pass);
   tcase_add_test (tc_messaging_and_fork, test_fork2_fail);
 
+#if MEMORY_LEAKING_TESTS_ENABLED
   tcase_add_test_raise_signal (tc_errors, test_invalid_set_fork_status, 2);
+#endif
 #endif /* HAVE_FORK */
 
   return s;

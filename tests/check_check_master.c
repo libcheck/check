@@ -216,7 +216,9 @@ static master_test_t master_tests[] = {
 #endif  /* HAVE_FORK */
 
 #if defined(HAVE_FORK) && HAVE_FORK==1
+#if MEMORY_LEAKING_TESTS_ENABLED
   { "Check Errors Tests", CK_FAILURE,    "Early exit with return value 2" },
+#endif
 #endif /* HAVE_FORK */
 
   { "Core", CK_PASS,    "Passed" },
