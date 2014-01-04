@@ -393,10 +393,6 @@ TestResult *tr_create(void)
 
 void tr_reset(TestResult *tr)
 {
-    if(tr->msg != NULL)
-    {
-        printf("BMA: Resetting: %s:%d, %s\n", __FILE__, __LINE__, tr->msg);
-    }
   tr_init(tr);
 }
 
