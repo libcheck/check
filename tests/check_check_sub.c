@@ -524,6 +524,7 @@ START_TEST(test_null_2)
   SRunner *sr = srunner_create(NULL);
   srunner_run_all (sr, CK_NORMAL);
   srunner_free (sr);
+  ck_assert_int_eq(suite_tcase(NULL, NULL), 0);
   ck_abort_msg("Completed properly");
 }
 END_TEST
