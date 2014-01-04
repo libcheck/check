@@ -8,46 +8,40 @@ else
     SRCDIR=""
 fi
 
+suite_output="Running suite(s): S1
+ S2
+ XML escape \" ' < > & tests"
+
 exp_silent=""
 
 if [ $HAVE_FORK -eq 1 ]; then
-exp_minimal="Running suite(s): S1
- S2
- XML escape \" ' < > & tests
-37%: Checks: 8, Failures: 4, Errors: 1"
+exp_minimal_result="37%: Checks: 8, Failures: 4, Errors: 1"
 else
-exp_minimal="Running suite(s): S1
- S2
- XML escape \" ' < > & tests
-42%: Checks: 7, Failures: 4, Errors: 0"
+exp_minimal_result="42%: Checks: 7, Failures: 4, Errors: 0"
 fi
+exp_minimal="$suite_output
+$exp_minimal_result"
 
 if [ $HAVE_FORK -eq 1 ]; then
-exp_normal="Running suite(s): S1
- S2
- XML escape \" ' < > & tests
-37%: Checks: 8, Failures: 4, Errors: 1
+exp_normal_result="37%: Checks: 8, Failures: 4, Errors: 1
 ${SRCDIR}ex_output.c:17:F:Core:test_fail:0: Failure
 ${SRCDIR}ex_output.c:26:E:Core:test_exit:0: (after this point) Early exit with return value 1
 ${SRCDIR}ex_output.c:52:F:Core:test_loop:0: Iteration 0 failed
 ${SRCDIR}ex_output.c:52:F:Core:test_loop:2: Iteration 2 failed
 ${SRCDIR}ex_output.c:58:F:description \" ' < > &:test_xml_esc_fail_msg:0: fail \" ' < > & message"
 else
-exp_normal="Running suite(s): S1
- S2
- XML escape \" ' < > & tests
-42%: Checks: 7, Failures: 4, Errors: 0
+exp_normal_result="42%: Checks: 7, Failures: 4, Errors: 0
 ${SRCDIR}ex_output.c:17:F:Core:test_fail:0: Failure
 ${SRCDIR}ex_output.c:52:F:Core:test_loop:0: Iteration 0 failed
 ${SRCDIR}ex_output.c:52:F:Core:test_loop:2: Iteration 2 failed
 ${SRCDIR}ex_output.c:58:F:description \" ' < > &:test_xml_esc_fail_msg:0: fail \" ' < > & message"
 fi
+exp_normal="$suite_output
+$exp_normal_result"
+
 
 if [ $HAVE_FORK -eq 1 ]; then
-exp_verbose="Running suite(s): S1
- S2
- XML escape \" ' < > & tests
-37%: Checks: 8, Failures: 4, Errors: 1
+exp_verbose_result="37%: Checks: 8, Failures: 4, Errors: 1
 ${SRCDIR}ex_output.c:11:P:Core:test_pass:0: Passed
 ${SRCDIR}ex_output.c:17:F:Core:test_fail:0: Failure
 ${SRCDIR}ex_output.c:26:E:Core:test_exit:0: (after this point) Early exit with return value 1
@@ -57,10 +51,7 @@ ${SRCDIR}ex_output.c:52:P:Core:test_loop:1: Passed
 ${SRCDIR}ex_output.c:52:F:Core:test_loop:2: Iteration 2 failed
 ${SRCDIR}ex_output.c:58:F:description \" ' < > &:test_xml_esc_fail_msg:0: fail \" ' < > & message"
 else
-exp_verbose="Running suite(s): S1
- S2
- XML escape \" ' < > & tests
-42%: Checks: 7, Failures: 4, Errors: 0
+exp_verbose="42%: Checks: 7, Failures: 4, Errors: 0
 ${SRCDIR}ex_output.c:11:P:Core:test_pass:0: Passed
 ${SRCDIR}ex_output.c:17:F:Core:test_fail:0: Failure
 ${SRCDIR}ex_output.c:46:P:Core:test_pass2:0: Passed
@@ -69,6 +60,8 @@ ${SRCDIR}ex_output.c:52:P:Core:test_loop:1: Passed
 ${SRCDIR}ex_output.c:52:F:Core:test_loop:2: Iteration 2 failed
 ${SRCDIR}ex_output.c:58:F:description \" ' < > &:test_xml_esc_fail_msg:0: fail \" ' < > & message"
 fi
+exp_verbose="$suite_output
+$exp_verbose_result"
 
 if [ $HAVE_FORK -eq 1 ]; then
 exp_subunit="test: Core:test_pass
