@@ -152,7 +152,8 @@ test_output "$exp_normal"  "$act_normal_env_blank"   "CK_ENV STDOUT NORMAL";
 test_output "$exp_normal"  "$act_normal_env_invalid" "CK_ENV STDOUT NORMAL";
 test_output "$exp_verbose" "$act_verbose"            "CK_VERBOSE STDOUT NORMAL";
 test_output "$exp_verbose" "$act_verbose_env"        "CK_ENV STDOUT NORMAL";
+
 if test 1 -eq $ENABLE_SUBUNIT; then
-test_output "$exp_subunit" "$act_subunit" "CK_SUBUNIT STDOUT NORMAL";
+    test_output "$exp_subunit" "$act_subunit" "CK_SUBUNIT STDOUT NORMAL";
 fi
 exit 0
