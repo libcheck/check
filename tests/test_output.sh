@@ -8,22 +8,22 @@ else
     SRCDIR=""
 fi
 
-t0="x"
+exp_silent="x"
 
 if [ $HAVE_FORK -eq 1 ]; then
-t1="xRunning suite(s): S1
+exp_minimal="xRunning suite(s): S1
  S2
  XML escape \" ' < > & tests
 37%: Checks: 8, Failures: 4, Errors: 1"
 else
-t1="xRunning suite(s): S1
+exp_minimal="xRunning suite(s): S1
  S2
  XML escape \" ' < > & tests
 42%: Checks: 7, Failures: 4, Errors: 0"
 fi
 
 if [ $HAVE_FORK -eq 1 ]; then
-t2="xRunning suite(s): S1
+exp_normal="xRunning suite(s): S1
  S2
  XML escape \" ' < > & tests
 37%: Checks: 8, Failures: 4, Errors: 1
@@ -33,7 +33,7 @@ ${SRCDIR}ex_output.c:52:F:Core:test_loop:0: Iteration 0 failed
 ${SRCDIR}ex_output.c:52:F:Core:test_loop:2: Iteration 2 failed
 ${SRCDIR}ex_output.c:58:F:description \" ' < > &:test_xml_esc_fail_msg:0: fail \" ' < > & message"
 else
-t2="xRunning suite(s): S1
+exp_normal="xRunning suite(s): S1
  S2
  XML escape \" ' < > & tests
 42%: Checks: 7, Failures: 4, Errors: 0
@@ -44,7 +44,7 @@ ${SRCDIR}ex_output.c:58:F:description \" ' < > &:test_xml_esc_fail_msg:0: fail \
 fi
 
 if [ $HAVE_FORK -eq 1 ]; then
-t3="xRunning suite(s): S1
+exp_verbose="xRunning suite(s): S1
  S2
  XML escape \" ' < > & tests
 37%: Checks: 8, Failures: 4, Errors: 1
@@ -57,7 +57,7 @@ ${SRCDIR}ex_output.c:52:P:Core:test_loop:1: Passed
 ${SRCDIR}ex_output.c:52:F:Core:test_loop:2: Iteration 2 failed
 ${SRCDIR}ex_output.c:58:F:description \" ' < > &:test_xml_esc_fail_msg:0: fail \" ' < > & message"
 else
-t3="xRunning suite(s): S1
+exp_verbose="xRunning suite(s): S1
  S2
  XML escape \" ' < > & tests
 42%: Checks: 7, Failures: 4, Errors: 0
@@ -71,7 +71,7 @@ ${SRCDIR}ex_output.c:58:F:description \" ' < > &:test_xml_esc_fail_msg:0: fail \
 fi
 
 if [ $HAVE_FORK -eq 1 ]; then
-t4="xtest: Core:test_pass
+exp_subunit="xtest: Core:test_pass
 success: Core:test_pass
 test: Core:test_fail
 failure: Core:test_fail [
@@ -98,7 +98,7 @@ failure: description \" ' < > &:test_xml_esc_fail_msg [
 ${SRCDIR}ex_output.c:58: fail \" ' < > & message
 ]"
 else
-t4="xtest: Core:test_pass
+exp_subunit="xtest: Core:test_pass
 success: Core:test_pass
 test: Core:test_fail
 failure: Core:test_fail [
@@ -122,12 +122,12 @@ ${SRCDIR}ex_output.c:58: fail \" ' < > & message
 ]"
 fi
 
-op0=`./ex_output${EXEEXT} CK_SILENT STDOUT NORMAL  | tr -d "\r"`
-op1=`./ex_output${EXEEXT} CK_MINIMAL STDOUT NORMAL | tr -d "\r"`
-op2=`./ex_output${EXEEXT} CK_NORMAL  STDOUT NORMAL | tr -d "\r"`
-op3=`./ex_output${EXEEXT} CK_VERBOSE STDOUT NORMAL | tr -d "\r"`
+act_silent=`./ex_output${EXEEXT} CK_SILENT STDOUT NORMAL  | tr -d "\r"`
+act_minimal=`./ex_output${EXEEXT} CK_MINIMAL STDOUT NORMAL | tr -d "\r"`
+act_normal=`./ex_output${EXEEXT} CK_NORMAL  STDOUT NORMAL | tr -d "\r"`
+act_verbose=`./ex_output${EXEEXT} CK_VERBOSE STDOUT NORMAL | tr -d "\r"`
 if test 1 -eq $ENABLE_SUBUNIT; then
-op4=`./ex_output${EXEEXT} CK_SUBUNIT STDOUT NORMAL | tr -d "\r"`
+act_subunit=`./ex_output${EXEEXT} CK_SUBUNIT STDOUT NORMAL | tr -d "\r"`
 fi
 
 
@@ -143,11 +143,11 @@ test_output ( ) {
     
 }
 
-test_output "$t0" x"$op0" "CK_SILENT STDOUT NORMAL";
-test_output "$t1" x"$op1" "CK_MINIMAL STDOUT NORMAL";
-test_output "$t2" x"$op2" "CK_NORMAL STDOUT NORMAL";
-test_output "$t3" x"$op3" "CK_VERBOSE STDOUT NORMAL";
+test_output "$exp_silent" x"$act_silent" "CK_SILENT STDOUT NORMAL";
+test_output "$exp_minimal" x"$act_minimal" "CK_MINIMAL STDOUT NORMAL";
+test_output "$exp_normal" x"$act_normal" "CK_NORMAL STDOUT NORMAL";
+test_output "$exp_verbose" x"$act_verbose" "CK_VERBOSE STDOUT NORMAL";
 if test 1 -eq $ENABLE_SUBUNIT; then
-test_output "$t4" x"$op4" "CK_SUBUNIT STDOUT NORMAL";
+test_output "$exp_subunit" x"$act_subunit" "CK_SUBUNIT STDOUT NORMAL";
 fi
 exit 0
