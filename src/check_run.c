@@ -511,10 +511,6 @@ static void set_fork_info (TestResult *tr, int status, int signal_expected, unsi
     } else if (was_exit && exit_status != allowed_exit_value) {
       if (tr->msg == NULL) { /* early exit */
         tr->rtype = CK_ERROR;
-        if(tr->msg != NULL)
-        {
-          free(tr->msg);
-        }
         tr->msg = exit_msg(exit_status);
       } else {
         tr->rtype = CK_FAILURE;
