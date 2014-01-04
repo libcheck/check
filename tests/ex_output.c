@@ -112,11 +112,14 @@ static Suite *make_xml_esc_suite (void)
 
 static void print_usage(void)
 {
-    printf ("Usage: ex_output (CK_SILENT | CK_MINIMAL | CK_NORMAL | CK_VERBOSE");
+    printf ("Usage: ex_output (CK_SILENT | CK_MINIMAL | CK_NORMAL | CK_VERBOSE | CK_ENV");
 #if ENABLE_SUBUNIT
     printf (" | CK_SUBUNIT");
 #endif
     printf (") (STDOUT | LOG | TAP | XML) (NORMAL | EXIT_TEST)\n");
+    printf("   If CK_ENV is used, the environment variable CK_VERBOSITY can be set to\n");
+    printf("   one of these: silent, minimal, or verbose. If it is not set to these, or\n");
+    printf("   if CK_VERBOSITY is not set, then CK_NORMAL will be used\n");
 }
 
 static void run_tests (int printmode, char * log_type, int include_exit_test)
@@ -182,6 +185,10 @@ int main (int argc, char **argv)
     else if (strcmp (argv[OUTPUT_TYPE_ARG], "CK_VERBOSE") == 0)
     {
         printmode = CK_VERBOSE;
+    }
+    else if (strcmp (argv[OUTPUT_TYPE_ARG], "CK_ENV") == 0)
+    {
+        printmode = CK_ENV;
     }
     #if ENABLE_SUBUNIT
     else if (strcmp (argv[OUTPUT_TYPE_ARG], "CK_SUBUNIT") == 0)

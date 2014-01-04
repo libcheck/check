@@ -123,9 +123,15 @@ ${SRCDIR}ex_output.c:58: fail \" ' < > & message
 fi
 
 act_silent=`./ex_output${EXEEXT} CK_SILENT STDOUT NORMAL  | tr -d "\r"`
+act_silent_env=`CK_VERBOSITY=silent ./ex_output${EXEEXT} CK_ENV STDOUT NORMAL  | tr -d "\r"`
 act_minimal=`./ex_output${EXEEXT} CK_MINIMAL STDOUT NORMAL | tr -d "\r"`
+act_minimal_env=`CK_VERBOSITY=minimal ./ex_output${EXEEXT} CK_ENV STDOUT NORMAL | tr -d "\r"`
 act_normal=`./ex_output${EXEEXT} CK_NORMAL  STDOUT NORMAL | tr -d "\r"`
+act_normal_env=`CK_VERBOSITY=normal CK_VERBOSITY='' ./ex_output${EXEEXT} CK_ENV  STDOUT NORMAL | tr -d "\r"`
+act_normal_env_blank=`CK_VERBOSITY='' ./ex_output${EXEEXT} CK_ENV  STDOUT NORMAL | tr -d "\r"`
+act_normal_env_invalid=`CK_VERBOSITY='BLARGS' ./ex_output${EXEEXT} CK_ENV  STDOUT NORMAL | tr -d "\r"`
 act_verbose=`./ex_output${EXEEXT} CK_VERBOSE STDOUT NORMAL | tr -d "\r"`
+act_verbose_env=`CK_VERBOSITY=verbose ./ex_output${EXEEXT} CK_ENV STDOUT NORMAL | tr -d "\r"`
 if test 1 -eq $ENABLE_SUBUNIT; then
 act_subunit=`./ex_output${EXEEXT} CK_SUBUNIT STDOUT NORMAL | tr -d "\r"`
 fi
@@ -144,9 +150,15 @@ test_output ( ) {
 }
 
 test_output "$exp_silent" "$act_silent" "CK_SILENT STDOUT NORMAL";
+test_output "$exp_silent" "$act_silent_env" "CK_ENV STDOUT NORMAL";
 test_output "$exp_minimal" "$act_minimal" "CK_MINIMAL STDOUT NORMAL";
+test_output "$exp_minimal" "$act_minimal_env" "CK_ENV STDOUT NORMAL";
 test_output "$exp_normal" "$act_normal" "CK_NORMAL STDOUT NORMAL";
+test_output "$exp_normal" "$act_normal_env" "CK_ENV STDOUT NORMAL";
+test_output "$exp_normal" "$act_normal_env_blank" "CK_ENV STDOUT NORMAL";
+test_output "$exp_normal" "$act_normal_env_invalid" "CK_ENV STDOUT NORMAL";
 test_output "$exp_verbose" "$act_verbose" "CK_VERBOSE STDOUT NORMAL";
+test_output "$exp_verbose" "$act_verbose_env" "CK_ENV STDOUT NORMAL";
 if test 1 -eq $ENABLE_SUBUNIT; then
 test_output "$exp_subunit" "$act_subunit" "CK_SUBUNIT STDOUT NORMAL";
 fi
