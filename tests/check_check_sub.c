@@ -918,7 +918,9 @@ Suite *make_sub_suite(void)
 #endif /* HAVE_DECL_SETENV */
 #endif /* TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) */
   TCase *tc_limit;
+#if defined(HAVE_FORK) && HAVE_FORK==1
   TCase *tc_messaging_and_fork;
+#endif
 
   s = suite_create("Check Servant");
 
@@ -957,7 +959,9 @@ Suite *make_sub_suite(void)
 #endif /* HAVE_DECL_SETENV */
 #endif /* TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) */
   tc_limit = tcase_create("Limit Tests");
+#if defined(HAVE_FORK) && HAVE_FORK==1
   tc_messaging_and_fork = tcase_create("Msg and fork Tests");
+#endif /* HAVE_FORK */
 
   suite_add_tcase (s, tc_simple);
 #if defined(HAVE_FORK) && HAVE_FORK==1
@@ -984,7 +988,10 @@ Suite *make_sub_suite(void)
 #endif /* HAVE_DECL_SETENV */
 #endif /* TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) */
   suite_add_tcase (s, tc_limit);
+#if defined(HAVE_FORK) && HAVE_FORK == 1
   suite_add_tcase (s, tc_messaging_and_fork);
+  suite_add_tcase (s, tc_errors);
+#endif
 
   tcase_add_test (tc_simple, test_lno);
 #if defined(HAVE_FORK) && HAVE_FORK==1
