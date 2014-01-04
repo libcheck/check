@@ -116,7 +116,7 @@ static void print_usage(void)
 #if ENABLE_SUBUNIT
     printf (" | CK_SUBUNIT");
 #endif
-    printf (") (STDOUT | LOG | TAP | XML) (NORMAL | EXIT_TEST)\n");
+    printf (") (STDOUT | STDOUT_DUMP | LOG | TAP | XML) (NORMAL | EXIT_TEST)\n");
     printf("   If CK_ENV is used, the environment variable CK_VERBOSITY can be set to\n");
     printf("   one of these: silent, minimal, or verbose. If it is not set to these, or\n");
     printf("   if CK_VERBOSITY is not set, then CK_NORMAL will be used\n");
@@ -125,6 +125,7 @@ static void print_usage(void)
 static void run_tests (int printmode, char * log_type, int include_exit_test)
 {
     SRunner *sr;
+    int dump_everything_to_stdout = 0;
 
     sr = srunner_create(make_log1_suite());
     srunner_add_suite(sr, make_log2_suite(include_exit_test));
@@ -133,6 +134,14 @@ static void run_tests (int printmode, char * log_type, int include_exit_test)
     if(strcmp(log_type, "STDOUT") == 0)
     {
         /* Nothing else to do here */
+    }
+    else if(strcmp(log_type, "STDOUT_DUMP") == 0)
+    {
+        /*
+         * Dump each type to stdout, in addition to printing out
+         * the configured print level.
+         */
+        dump_everything_to_stdout = 1;
     }
     else if(strcmp(log_type, "LOG") == 0)
     {
@@ -153,6 +162,23 @@ static void run_tests (int printmode, char * log_type, int include_exit_test)
     }
 
     srunner_run_all(sr, printmode);
+
+    if(dump_everything_to_stdout)
+    {
+        srunner_print(sr, CK_SILENT);
+        srunner_print(sr, CK_MINIMAL);
+        srunner_print(sr, CK_NORMAL);
+        srunner_print(sr, CK_VERBOSE);
+        srunner_print(sr, CK_ENV);
+#if ENABLE_SUBUNIT
+        /*
+         * Note that this call does not contribute anything, as
+         * subunit is not fully considered an 'output mode'.
+         */
+        srunner_print(sr, CK_SUBUNIT);
+#endif
+    }
+
     srunner_free(sr);
 }
 
