@@ -391,11 +391,6 @@ TestResult *tr_create(void)
   return tr;
 }
 
-void tr_reset(TestResult *tr)
-{
-  tr_init(tr);
-}
-
 static void tr_init (TestResult *tr)
 {
   tr->ctx = CK_CTX_INVALID;
