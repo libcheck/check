@@ -51,7 +51,7 @@ ${SRCDIR}ex_output.c:52:P:Core:test_loop:1: Passed
 ${SRCDIR}ex_output.c:52:F:Core:test_loop:2: Iteration 2 failed
 ${SRCDIR}ex_output.c:58:F:description \" ' < > &:test_xml_esc_fail_msg:0: fail \" ' < > & message"
 else
-exp_verbose="42%: Checks: 7, Failures: 4, Errors: 0
+exp_verbose_result="42%: Checks: 7, Failures: 4, Errors: 0
 ${SRCDIR}ex_output.c:11:P:Core:test_pass:0: Passed
 ${SRCDIR}ex_output.c:17:F:Core:test_fail:0: Failure
 ${SRCDIR}ex_output.c:46:P:Core:test_pass2:0: Passed
