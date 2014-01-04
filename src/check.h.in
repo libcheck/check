@@ -162,7 +162,7 @@ CK_DLL_EXP Suite * CK_EXPORT suite_create (const char *name);
 
 /* Determines whether a given test suite contains a case named after a
    given string.  */
-CK_DLL_EXP int suite_tcase (Suite *s, const char *tcname);
+CK_DLL_EXP int CK_EXPORT suite_tcase (Suite *s, const char *tcname);
 
 /* Add a test case to a suite */
 CK_DLL_EXP void CK_EXPORT suite_add_tcase (Suite *s, TCase *tc);
