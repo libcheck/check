@@ -86,6 +86,7 @@ a package manager or compile from source on one's platform.
         <li><a href="#cygwinpackage">Cygwin via Package Manager</a></li>
         <li><a href="#cygwinsource">Cygwin From Source</a></li>
         <li><a href="#mingwsource">MinGW/MinGW-w64 From Source</a></li>
+        <li><a href="#visualstudios">Visual Studios From Source</a></li>
     </ul>
 </ul>
 
@@ -319,6 +320,51 @@ $ make install
 </pre></div>
 <p>
 If the "make check" step fails, please send an email to Check's
+<a href="https://lists.sourceforge.net/lists/listinfo/check-devel">mailing list</a>
+and give details as to the failure so it may be investigated and fixed.
+</p>
+<br></br>
+
+
+<a name="visualstudios"></a>
+<h3>Visual Studios From Source</h3>
+<p>
+Check must be compiled from source for Windows. Note that no fork()
+call is available, and Check's fork mode will be disabled. The CMake build system
+is supported for compiling Check with Visual Studios, so download
+<a href="http://www.cmake.org/cmake/resources/software.html">CMake</a> first.
+</p>
+<p>
+After the
+<a href="http://sourceforge.net/projects/check/files/latest/download">latest Check source</a>
+has been downloaded and unpacked, open the CMake GUI program. Fill in the
+"Where is the source code" and "Where to build the binaries" fields to
+point to the unpacked location of the Check source, and press the
+Configure button. Select the version of Visual Studios to use, and click
+"OK". Once the configuration completes, CMake will highlight two settings,
+CMAKE_CONFIGURATION_TYPES and CMAKE_INSTALL_PREFIX. You may leave them as
+their defaults or modify them. Finally, click "Generate" to create the
+Visual Studio project files.
+</p>
+<p>
+Open Visual Studios and load the generated project files. The following
+is a summary of the important build targets:
+<ul>
+    <li><b>ALL_BUILD</b>: Build Check and all unit tests</li>
+    <li><b>RUN_TESTS</b>: Execute Check's unit tests</li>
+    <li><b>INSTALL</b>: Install Check to the CMAKE_INSTALL_PREFIX location
+                        listed from the CMake GUI</li>
+</ul>
+</p>
+<p>
+To compile, validate, and install Check, run these three targets from
+Visual Studios. Note that the RUN_TESTS target only runs Check's unit
+tests which do not require a shell interpreter. The remaining tests must
+be run in a MSYS or comparable environment.
+</p>
+<p>
+If any of the build targets fail, including the RUN_TESTS target, 
+please send an email to Check's
 <a href="https://lists.sourceforge.net/lists/listinfo/check-devel">mailing list</a>
 and give details as to the failure so it may be investigated and fixed.
 </p>
