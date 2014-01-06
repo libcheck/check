@@ -4,12 +4,6 @@ OUTPUT_FILE=test.log
 
 . ./test_vars
 
-if [ x"${SRCDIR}" != x"." ]; then
-    SRCDIR="${SRCDIR}/"
-else
-    SRCDIR=""
-fi
-
 if [ $HAVE_FORK -eq 1 ]; then
 expected="Running suite S1
 ${SRCDIR}ex_output.c:11:P:Core:test_pass:0: Passed

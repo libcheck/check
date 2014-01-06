@@ -4,12 +4,6 @@ OUTPUT_FILE=test.tap
 
 . ./test_vars
 
-if [ x"${SRCDIR}" != x"." ]; then
-    SRCDIR="${SRCDIR}/"
-else
-    SRCDIR=""
-fi
-
 if [ $HAVE_FORK -eq 1 ]; then
 expected_normal_tap="ok 1 - ${SRCDIR}ex_output.c:Core:test_pass: Passed
 not ok 2 - ${SRCDIR}ex_output.c:Core:test_fail: Failure

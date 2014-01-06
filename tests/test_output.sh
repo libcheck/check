@@ -2,12 +2,6 @@
 
 . ./test_vars
 
-if [ x"${SRCDIR}" != x"." ]; then
-    SRCDIR="${SRCDIR}/"
-else
-    SRCDIR=""
-fi
-
 suite_output="Running suite(s): S1
  S2
  XML escape \" ' < > & tests"
