@@ -158,6 +158,11 @@ void tr_xmlprint (FILE *file, TestResult *tr, enum print_output print_mode CK_AT
 
   if (tr->file) {
     slash = strrchr(tr->file, '/');
+    if(slash == NULL)
+    {
+        slash = strrchr(tr->file, '\\');
+    }
+
     if (slash == NULL) {
       path_name = (char*)".";
       file_name = tr->file;
