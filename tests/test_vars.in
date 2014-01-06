@@ -5,6 +5,16 @@ EXEEXT=@EXEEXT@
 export EXEEXT
 HAVE_FORK=@HAVE_FORK@
 export HAVE_FORK
+
 # path of the tests directory
-SRCDIR=@srcdir@
+if [ x"@srcdir@" != x"." ]; then
+    if [ -z "@IS_MSVC@" ]; then
+       SRCDIR="@srcdir@/"
+    else
+       SRCDIR="@srcdir@\\"
+    fi
+else
+    SRCDIR=""
+fi
+
 export SRCDIR

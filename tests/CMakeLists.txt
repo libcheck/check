@@ -34,6 +34,7 @@ if(WIN32)
   # slashes because the shell scripts will consume srcdir.
   string(REPLACE "/" "\\\\" srcdir "${srcdir}")
   set(EXEEXT ".exe")
+  set(IS_MSVC "1")
 endif(WIN32)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/test_vars.in
