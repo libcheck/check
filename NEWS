@@ -6,6 +6,10 @@ In development:
 * Additional unit tests created for internal and external Check
   APIs.
 
+* Check now compiled on Windows using MSVC when using CMake and
+  NMake. All unit tests pass, though shell script based ones need
+  to be run in the MSYS environment.
+
 * Check now compiles on Windows using Visual Studio 10
   when using CMake. check_check passes when run from Visual Studios.
 
