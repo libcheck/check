@@ -8,7 +8,7 @@ export HAVE_FORK
 
 # path of the tests directory
 if [ x"@srcdir@" != x"." ]; then
-    if [ -z "@IS_MSVC@" ]; then
+    if [ -z "@IS_MSVC@" -o "@IS_MSVC@"!="1" ]; then
        SRCDIR="@srcdir@/"
     else
        SRCDIR="@srcdir@\\"
