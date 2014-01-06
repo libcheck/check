@@ -87,6 +87,7 @@ a package manager or compile from source on one's platform.
         <li><a href="#cygwinsource">Cygwin From Source</a></li>
         <li><a href="#mingwsource">MinGW/MinGW-w64 From Source</a></li>
         <li><a href="#visualstudios">Visual Studios From Source</a></li>
+        <li><a href="#msvc">MSVC From Source</a></li>
     </ul>
 </ul>
 
@@ -365,6 +366,47 @@ be run in a MSYS or comparable environment.
 <p>
 If any of the build targets fail, including the RUN_TESTS target, 
 please send an email to Check's
+<a href="https://lists.sourceforge.net/lists/listinfo/check-devel">mailing list</a>
+and give details as to the failure so it may be investigated and fixed.
+</p>
+<br></br>
+
+
+
+<a name="msvc"></a>
+<h3>MSVC From Source</h3>
+<p>
+Check must be compiled from source for Windows. Note that no fork()
+call is available, and Check's fork mode will be disabled. The CMake build system
+is supported for compiling Check with Visual Studios, so download
+<a href="http://www.cmake.org/cmake/resources/software.html">CMake</a> first.
+</p>
+<p>
+After the
+<a href="http://sourceforge.net/projects/check/files/latest/download">latest Check source</a>
+has been downloaded and unpacked, open a terminal (cmd.exe). If MSVC
+is not in the path, execute the bat file in the MSVC install directory
+to load it into the path. For example, with Visual Studios 10:
+</p>
+<div id="code"><pre class="command">
+> C:\Program Files\Microsoft Visual Studios 10.0\VC\vcvarsall.bat
+</pre></div>
+<p>
+Navigate to the unpacked location of the Check source, then:
+</p>
+<div id="code"><pre class="command">
+> cmake -G "NMake Makefiles" .
+> nmake
+> nmake test
+> nmake install
+</pre></div>
+<p>
+Note that the "nmake test" step only runs Check's unit tests which
+do not require a shell interpreter. The remaining tests must be
+run in a MSYS or comparable environment.
+</p>
+<p>
+If the "make test" step fails, please send an email to Check's
 <a href="https://lists.sourceforge.net/lists/listinfo/check-devel">mailing list</a>
 and give details as to the failure so it may be investigated and fixed.
 </p>
