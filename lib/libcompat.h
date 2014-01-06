@@ -98,7 +98,7 @@ CK_DLL_EXP void *rpl_realloc (void *p, size_t n);
 
 #if !HAVE_GETTIMEOFDAY
 CK_DLL_EXP int gettimeofday (struct timeval *tv, void* tz);
-#endif /* !HAVE_LOCALTIME_R */
+#endif /* !HAVE_GETTIMEOFDAY */
 
 #if !HAVE_DECL_LOCALTIME_R
 #if !defined(localtime_r)
