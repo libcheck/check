@@ -3,6 +3,9 @@ In development:
 # happy on NEWS requirement of having "Check 0.9.11"
 # in the first 15 lines.
 
+* Additional unit tests created for internal and external Check
+  APIs.
+
 * Check now compiles on Windows using Visual Studio 10
   when using CMake. check_check passes.
 
