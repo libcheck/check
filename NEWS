@@ -7,7 +7,7 @@ In development:
   APIs.
 
 * Check now compiles on Windows using Visual Studio 10
-  when using CMake. check_check passes.
+  when using CMake. check_check passes when run from Visual Studios.
 
 * Always capture the start and end times of tests when using
   NO_FORK mode. Previously the end time was not captured,
