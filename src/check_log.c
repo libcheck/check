@@ -258,8 +258,10 @@ void xml_lfun (SRunner *sr CK_ATTRIBUTE_UNUSED, FILE *file, enum print_output pr
     struct tm now;
     gettimeofday(&inittv, NULL);
     clock_gettime(check_get_clockid(), &ts_start);
-    localtime_r((const time_t*)&(inittv.tv_sec), &now);
-    strftime(t, sizeof("yyyy-mm-dd hh:mm:ss"), "%Y-%m-%d %H:%M:%S", &now);
+    if(localtime_r((const time_t*)&(inittv.tv_sec), &now) != NULL)
+    {
+        strftime(t, sizeof("yyyy-mm-dd hh:mm:ss"), "%Y-%m-%d %H:%M:%S", &now);
+    }
   }
 
   switch (evt) {
