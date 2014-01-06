@@ -24,6 +24,21 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
 # Enable finding check.h
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/../src)
 
+# For the test_vars.in script, to give the unit test shell script
+# runners the location of the source files
+set(srcdir "${CMAKE_CURRENT_SOURCE_DIR}")
+
+if(WIN32)
+  # CMake uses Unix slashes for everything, but the tests that
+  # read srcdir expect platform specific slashes. There are two
+  # slashes because the shell scripts will consume srcdir.
+  string(REPLACE "/" "\\\\" srcdir "${srcdir}")
+  set(EXEEXT ".exe")
+endif(WIN32)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/test_vars.in
+  ${CMAKE_CURRENT_SOURCE_DIR}/test_vars)
+
 set(CHECK_CHECK_SOURCES
   check_check_exit.c
   check_check_fixture.c
