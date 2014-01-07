@@ -18,7 +18,9 @@ CLEANFILES = *~\
 
 include_HEADERS = check_stdint.h
 
-EXTRA_DIST = SVNChangeLog ChangeLogOld check.pc.in $(m4data_DATA) xml/check_unittest.xslt
+EXTRA_DIST = SVNChangeLog ChangeLogOld check.pc.in $(m4data_DATA) xml/check_unittest.xslt \
+	CMakeLists.txt src/CMakeLists.txt tests/CMakeLists.txt lib/CMakeLists.txt \
+	cmake
 
 ## install docs
 docdir = $(datadir)/doc/$(PACKAGE)
