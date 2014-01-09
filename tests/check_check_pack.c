@@ -244,6 +244,7 @@ START_TEST(test_ppack)
 	       "Failure message not received correctly");
 
   free(rmsg);
+  fclose(result_file);
 }
 END_TEST
 
@@ -271,6 +272,7 @@ START_TEST(test_ppack_noctx)
 
   if (rmsg != NULL)
     free (rmsg);
+  fclose(result_file);
 }
 END_TEST
 
@@ -297,6 +299,7 @@ START_TEST(test_ppack_onlyctx)
 
   if (rmsg != NULL)
     free (rmsg);
+  fclose(result_file);
 }
 END_TEST
 
@@ -330,6 +333,7 @@ START_TEST(test_ppack_multictx)
 	       "Fixture not reset on CTX change");
 
   free (rmsg);
+  fclose(result_file);
 }
 END_TEST
 
@@ -355,6 +359,7 @@ START_TEST(test_ppack_nofail)
 	       "Failure result should be NULL with no failure message");
   
   free (rmsg);
+  fclose(result_file);
 }
 END_TEST
 
@@ -399,6 +404,7 @@ START_TEST(test_ppack_big)
   free (rmsg);
   free (lmsg.file);
   free (fmsg.msg);
+  fclose(result_file);
 }
 END_TEST
 #endif /* HAVE_FORK */
