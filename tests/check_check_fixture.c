@@ -164,6 +164,7 @@ START_TEST(test_ch_setup_fail)
   TCase *tc;
   Suite *s;
   SRunner *sr;
+  TestResult ** tr;
   char *strstat;
   char *trm;
 
@@ -187,7 +188,8 @@ START_TEST(test_ch_setup_fail)
 	      "SRunner stat string incorrect with checked setup failure");
   free(strstat);
 
-  trm = tr_str(srunner_failures(sr)[0]);
+  tr = srunner_failures(sr);
+  trm = tr_str(tr[0]);
    /* Search for check_check_fixture.c:130 if this fails. */
   if (strstr(trm,
 	     "check_check_fixture.c:130:S:Setup Fail:test_sub_fail:0: Failed setup")
@@ -198,6 +200,7 @@ START_TEST(test_ch_setup_fail)
     ck_abort_msg (errm);
   }
   free(trm);
+  free(tr);
 }
 END_TEST
 
@@ -286,6 +289,7 @@ START_TEST(test_ch_setup_sig)
   TCase *tc;
   Suite *s;
   SRunner *sr;
+  TestResult **tr;
   char *strstat;
   char *trm;
 
@@ -309,7 +313,8 @@ START_TEST(test_ch_setup_sig)
 	      "SRunner stat string incorrect with checked setup signal");
   free(strstat);
 
-  trm = tr_str(srunner_failures(sr)[0]);
+  tr = srunner_failures(sr);
+  trm = tr_str(tr[0]);
 
   if (strstr(trm,
 	     "check_check_fixture.c:140:S:Setup Sig:test_sub_fail:0: "
@@ -322,6 +327,7 @@ START_TEST(test_ch_setup_sig)
   }
   free(trm);
   srunner_free(sr);
+  free(tr);
 }
 END_TEST
 
@@ -383,6 +389,7 @@ START_TEST(test_ch_teardown_fail)
   TCase *tc;
   Suite *s;
   SRunner *sr;
+  TestResult **tr;
   char *strstat;
   char *trm;
 
@@ -406,7 +413,8 @@ START_TEST(test_ch_teardown_fail)
 	      "SRunner stat string incorrect with checked setup failure");
   free(strstat);
 
-  trm = tr_str(srunner_failures(sr)[0]);
+  tr = srunner_failures(sr);
+  trm = tr_str(tr[0]);
 
   if (strstr(trm,
 	     "check_check_fixture.c:135:S:Teardown Fail:test_sub_pass:0: Failed teardown")
@@ -417,6 +425,7 @@ START_TEST(test_ch_teardown_fail)
     ck_abort_msg (errm);
   }
   free(trm);
+  free(tr);
 }
 END_TEST
 
@@ -430,6 +439,7 @@ START_TEST(test_ch_teardown_sig)
   TCase *tc;
   Suite *s;
   SRunner *sr;
+  TestResult **tr;
   char *strstat;
   char *trm;
 
@@ -453,7 +463,8 @@ START_TEST(test_ch_teardown_sig)
 	      "SRunner stat string incorrect with checked teardown signal");
   free(strstat);
 
-  trm = tr_str(srunner_failures(sr)[0]);
+  tr = srunner_failures(sr);
+  trm = tr_str(tr[0]);
 
   if (strstr(trm,
 	     "check_check_fixture.c:146:S:Teardown Sig:test_sub_pass:0: "
@@ -466,6 +477,7 @@ START_TEST(test_ch_teardown_sig)
   }
   free(trm);
   srunner_free(sr);
+  free(tr);
 }
 END_TEST
 
