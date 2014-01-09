@@ -24,11 +24,14 @@ START_TEST(test_pack_fmsg)
   fmsg->msg = (char *) "Hello, world!";
   pack (CK_MSG_FAIL, &buf, (CheckMsg *) fmsg);
 
-  fmsg->msg = (char *) "";
+  fmsg->msg = NULL;
   upack (buf, (CheckMsg *) fmsg, &type);
 
   ck_assert_msg (type == CK_MSG_FAIL,
 	       "Bad type unpacked for FailMsg");
+
+  ck_assert_msg (fmsg->msg != NULL,
+           "Unpacked string is NULL, should be Hello, World!");
 
   if (strcmp (fmsg->msg, "Hello, world!") != 0) {
     snprintf (errm, sizeof(errm),
@@ -168,10 +171,12 @@ START_TEST(test_pack_fail_limit)
 
   fmsg.msg = (char *) "";
   pack (CK_MSG_FAIL, &buf, (CheckMsg *) &fmsg);
-  fmsg.msg = (char *) "abc";
+  fmsg.msg = NULL;
   upack (buf, (CheckMsg *) &fmsg, &type);
   free (buf);
-  ck_assert_msg (strcmp (fmsg.msg, "") == 0, 
+  ck_assert_msg (fmsg.msg != NULL,
+               "Empty string not handled properly");
+  ck_assert_msg (strcmp (fmsg.msg, "") == 0,
                "Empty string not handled properly");
 
   free (fmsg.msg);
@@ -192,8 +197,10 @@ START_TEST(test_pack_loc_limit)
   lmsg.file = (char *) "";
   lmsg.line = 0;
   pack (CK_MSG_LOC, &buf, (CheckMsg *) &lmsg);
-  lmsg.file = (char *) "abc";
+  lmsg.file = NULL;
   upack (buf, (CheckMsg *) &lmsg, &type);
+  ck_assert_msg (lmsg.file != NULL,
+	       "Empty string not handled properly");
   ck_assert_msg (strcmp (lmsg.file, "") == 0,
 	       "Empty string not handled properly");
   free (lmsg.file);
