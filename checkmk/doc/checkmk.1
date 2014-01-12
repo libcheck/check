@@ -165,6 +165,11 @@ below for more details.
 
 .nf
 # test \fItest_name\fR
+# test-signal(\fIsignal\fR) \fItest_name\fR
+# test-exit(\fIexit_code\fR) \fItest_name\fR
+# test-loop(\fIstart\fR, \fIend\fR) \fItest_name\fR
+# test-loop-signal(\fIsignal\fR, \fIstart\fR, \fIend\fR) \fItest_name\fR
+# test-loop-exit(\fIexit_code\fR, \fIstart\fR, \fIend\fR) \fItest_name\fR
 # suite \fITestSuiteName\fR
 # tcase \fITestCaseName\fR
 # main-pre
@@ -183,14 +188,19 @@ used to define test functions and their containers.
 
 .nf
 # test \fItest_name\fR
+# test-signal(\fIsignal\fR) \fItest_name\fR
+# test-exit(\fIexit_code\fR) \fItest_name\fR
+# test-loop(\fIstart\fR, \fIend\fR) \fItest_name\fR
+# test-loop-signal(\fIsignal\fR, \fIstart\fR, \fIend\fR) \fItest_name\fR
+# test-loop-exit(\fIexit_code\fR, \fIstart\fR, \fIend\fR) \fItest_name\fR
 .fi
 .PP
-This is the most basic directive for creating a template
-for input to \fBcheckmk\fR\&. It is the only
-directive that is required: there must be at least one
-#test directive appearing in the template, or
+These are the most basic directives for creating a template
+for input to \fBcheckmk\fR\&. They are the only
+directives that are required: there must be at least one
+#test* directive appearing in the template, or
 \fBcheckmk\fR will fail with an error message. The
-#test directive may be specified several times,
+#test* directives may be specified several times,
 each one beginning the definition of a new test function.
 .PP
 The \fItest_name\fR argument will be
@@ -207,7 +217,7 @@ represent hexadecimal digits.
 .PP
 It is an error to specify the same
 \fItest_name\fR in more than one
-#test directive, regardless of whether they
+#test* directive, regardless of whether they
 are associated with different test cases or suites.
 .PP
 See CHECKMK
