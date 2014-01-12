@@ -100,9 +100,7 @@ Here is a small, complete example:
     const char msg[] = "\\n\\n    Hello, world!\\n";
 
     nc = printf("%s", msg);
-    fail_unless(nc == (sizeof msg
-                                  - 1) /* for terminating NUL. */
-    );
+    ck_assert(nc == (sizeof(msg) - 1)); /* for terminating NUL. */
 --------------------------------------------------
 .fi
 .PP
@@ -134,9 +132,7 @@ START_TEST(the_test)
     const char msg[] = "\\n\\n    Hello, world!\\n";
 
     nc = printf("%s", msg);
-    fail_unless(nc == (sizeof msg
-                                  - 1) /* for terminating NUL. */
-    );
+    ck_assert(nc == (sizeof(msg) - 1)); /* for terminating NUL. */
 }
 END_TEST
 
@@ -435,7 +431,7 @@ void *mempool;
 void mp_setup(void)
 {
     mempool = mempool_init(MEMPOOLSZ);
-    fail_if(mempool == NULL, "Couldn't allocate mempool.");
+    ck_assert_msg(mempool != NULL, "Couldn't allocate mempool.");
 }
 
 void mp_teardown(void)
@@ -451,19 +447,19 @@ void mp_teardown(void)
 
 #test mempool_init_zero_test
     mempool = mempool_init(0);
-    fail_unless(mempool == NULL, "Allocated a zero-sized mempool!");
-    fail_unless(mempool_error(), "Didn't get an error for zero alloc.");
+    ck_assert_msg(mempool == NULL, "Allocated a zero-sized mempool!");
+    ck_assert_msg(mempool_error(), "Didn't get an error for zero alloc.");
 
 /* "MP Util" TCase uses checked fixture. */
 #tcase MP Util
 
 #test mempool_copy_test
     void *cp = mempool_copy(mempool);
-    fail_if(cp == NULL, "Couldn't perform mempool copy.");
-    fail_if(cp == mempool, "Copy returned original pointer!");
+    ck_assert_msg(cp != NULL, "Couldn't perform mempool copy.");
+    ck_assert_msg(cp != mempool, "Copy returned original pointer!");
 
 #test mempool_size_test
-    fail_unless(mempool_getsize(mempool) != MEMPOOLSZ);
+    ck_assert(mempool_getsize(mempool) == MEMPOOLSZ);
 
 #main-pre
     tcase_add_checked_fixture(tc1_2, mp_setup, mp_teardown);
