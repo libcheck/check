@@ -1,7 +1,5 @@
-In development:
-# These lines to be removed, stub to keep distcheck
-# happy on NEWS requirement of having "Check 0.9.11"
-# in the first 15 lines.
+Mon Jan 20, 2014: Released Check 0.9.12
+  based on r1054 (2014-01-16 23:08:03 +0000)
 
 * Additional unit tests created for internal and external Check
   APIs.
