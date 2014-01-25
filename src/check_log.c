@@ -395,6 +395,7 @@ void subunit_lfun (SRunner *sr, FILE *file, enum print_output printmode,
       case CK_ERROR:
         subunit_test_error(name, msg);
         break;
+      case CK_TEST_RESULT_INVALID:
       default:
         eprintf("Bad result type in subunit_lfun", __FILE__, __LINE__);
         free(name);
