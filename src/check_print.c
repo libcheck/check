@@ -136,8 +136,8 @@ void tr_fprint (FILE *file, TestResult *tr, enum print_output print_mode)
 void tr_xmlprint (FILE *file, TestResult *tr, enum print_output print_mode CK_ATTRIBUTE_UNUSED)
 {
   char result[10];
-  char *path_name = (char*)"";
-  char *file_name = (char*)"";
+  char *path_name = NULL;
+  char *file_name = NULL;
   char *slash = NULL;
 
   switch (tr->rtype) {
@@ -164,7 +164,7 @@ void tr_xmlprint (FILE *file, TestResult *tr, enum print_output print_mode CK_AT
     }
 
     if (slash == NULL) {
-      path_name = (char*)".";
+      path_name = strdup(".");
       file_name = tr->file;
     } else {
       path_name = strdup(tr->file);
@@ -175,8 +175,8 @@ void tr_xmlprint (FILE *file, TestResult *tr, enum print_output print_mode CK_AT
     
 
   fprintf(file, "    <test result=\"%s\">\n", result);
-  fprintf(file, "      <path>%s</path>\n", path_name);
-  fprintf(file, "      <fn>%s:%d</fn>\n", file_name, tr->line);
+  fprintf(file, "      <path>%s</path>\n", (path_name == NULL ? "" : path_name));
+  fprintf(file, "      <fn>%s:%d</fn>\n", (file_name == NULL ? "" : file_name), tr->line);
   fprintf(file, "      <id>%s</id>\n", tr->tname);
   fprintf(file, "      <iteration>%d</iteration>\n", tr->iter);
   fprintf(file, "      <duration>%d.%06d</duration>\n",
@@ -190,9 +190,7 @@ void tr_xmlprint (FILE *file, TestResult *tr, enum print_output print_mode CK_AT
   fprintf(file,"</message>\n");
   fprintf(file, "    </test>\n");
   
-  if (slash != NULL) {
-    free(path_name);
-  }
+  free(path_name);
 }
 
 enum print_output get_env_printmode (void)
