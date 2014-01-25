@@ -83,8 +83,9 @@ static FILE * get_pipe(void)
 void send_failure_info(const char *msg)
 {
   FailMsg fmsg;
-  fmsg.msg = (char *) msg;
+  fmsg.msg = strdup(msg);
   ppack(get_pipe(), CK_MSG_FAIL, (CheckMsg *) &fmsg);
+  free(fmsg.msg);
 }
 
 void send_duration_info(int duration)
@@ -97,9 +98,10 @@ void send_duration_info(int duration)
 void send_loc_info(const char * file, int line)
 {
   LocMsg lmsg;
-  lmsg.file = (char *) file;
+  lmsg.file = strdup(file);
   lmsg.line = line;
   ppack(get_pipe(), CK_MSG_LOC, (CheckMsg *) &lmsg);
+  free(lmsg.file);
 }
 
 void send_ctx_info(enum ck_result_ctx ctx)
