@@ -37,7 +37,7 @@ struct List {
   unsigned int max_elts;
   int current; /* pointer to the current node */
   int last; /* pointer to the node before END */
-  const void **data;
+  void **data;
 };
 
 static void maybe_grow (List *lp)
@@ -59,7 +59,7 @@ List *check_list_create (void)
   return lp;
 }
 
-void check_list_add_front (List *lp, const void *val)
+void check_list_add_front (List *lp, void *val)
 {
   if (lp == NULL)
     return;
@@ -71,7 +71,7 @@ void check_list_add_front (List *lp, const void *val)
   lp->data[lp->current] = val;
 }
 
-void check_list_add_end (List *lp, const void *val)
+void check_list_add_end (List *lp, void *val)
 {
   if (lp == NULL)
     return;
@@ -114,7 +114,7 @@ void *check_list_val (List *lp)
   if (lp->current == -1 || lp->current > lp->last)
     return NULL;
   
-  return (void*) lp->data[lp->current];
+  return lp->data[lp->current];
 }
 
 void check_list_advance (List *lp)

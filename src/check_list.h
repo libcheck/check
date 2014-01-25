@@ -35,11 +35,11 @@ void check_list_front(List *lp);
 /* Add a value to the front of the list,
    positioning newly added value as current value.
    More expensive than list_add_end, as it uses memmove. */
-void check_list_add_front (List *lp, const void *val);
+void check_list_add_front (List *lp, void *val);
 
 /* Add a value to the end of the list,
    positioning newly added value as current value */
-void check_list_add_end (List *lp, const void *val);
+void check_list_add_end (List *lp, void *val);
 
 /* Give the value of the current node */
 void *check_list_val (List * lp);
