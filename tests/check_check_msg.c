@@ -7,6 +7,8 @@
 #include "check.h"
 #include "check_msg.h"
 #include "check_check.h"
+#include "check_list.h"
+#include "check_impl.h"
 
 START_TEST(test_send)
 {
