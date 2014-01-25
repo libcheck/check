@@ -130,10 +130,10 @@ static void pack_int (char **buf, int val)
   unsigned char *ubuf = (unsigned char *) *buf;
   ck_uint32 uval = val;
 
-  ubuf[0] = (uval >> 24) & 0xFF;
-  ubuf[1] = (uval >> 16) & 0xFF;
-  ubuf[2] = (uval >> 8)  & 0xFF;
-  ubuf[3] = uval & 0xFF;
+  ubuf[0] = (unsigned char)((uval >> 24) & 0xFF);
+  ubuf[1] = (unsigned char)((uval >> 16) & 0xFF);
+  ubuf[2] = (unsigned char)((uval >> 8)  & 0xFF);
+  ubuf[3] = (unsigned char)(uval & 0xFF);
 
   *buf += 4;
 }
@@ -143,7 +143,7 @@ static int upack_int (char **buf)
   unsigned char *ubuf = (unsigned char *) *buf;
   ck_uint32 uval;
 
-  uval = ((ubuf[0] << 24) | (ubuf[1] << 16) | (ubuf[2] << 8) | ubuf[3]);
+  uval = (ck_uint32)((ubuf[0] << 24) | (ubuf[1] << 16) | (ubuf[2] << 8) | ubuf[3]);
 
   *buf += 4;
 
