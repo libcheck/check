@@ -31,8 +31,11 @@ END_TEST
 START_TEST(test_free)
 {
   List *lp = check_list_create();
-  check_list_add_end (lp, "abc");
-  check_list_add_end (lp, "123");
+  char data_abc[] = "abc";
+  char data_123[] = "123";
+
+  check_list_add_end (lp, data_abc);
+  check_list_add_end (lp, data_123);
   check_list_add_end (lp, NULL);
   check_list_free (lp);
 }
@@ -41,7 +44,7 @@ END_TEST
 START_TEST(test_add_end)
 {
   List * lp = check_list_create();
-  const char * tval = "abc";
+  char tval[] = "abc";
   
   check_list_add_end (lp, tval);
   
@@ -58,7 +61,7 @@ END_TEST
 START_TEST(test_add_front)
 {
   List * lp = check_list_create();
-  const char * tval = "abc";
+  char tval[] = "abc";
   
   check_list_add_front (lp, tval);
   
@@ -73,8 +76,8 @@ END_TEST
 START_TEST(test_add_end_and_next)
 {
   List *lp = check_list_create();
-  const char *tval1 = "abc";
-  const char *tval2 = "123";
+  char tval1[] = "abc";
+  char tval2[] = "123";
   
   check_list_add_end (lp, tval1);
   check_list_add_end (lp, tval2);
@@ -97,8 +100,8 @@ END_TEST
 START_TEST(test_add_front_and_next)
 {
   List * lp = check_list_create();
-  const char *tval1 = "abc";
-  const char *tval2 = "123";
+  char tval1[] = "abc";
+  char tval2[] = "123";
   
   check_list_add_front (lp, tval1);
   check_list_add_front (lp, tval2);
@@ -121,11 +124,13 @@ START_TEST(test_add_a_bunch)
 {
   List *lp;
   int i, j;
+  char tval1[] = "abc";
+  char tval2[] = "123";
   for (i = 0; i < 3; i++) {
     lp = check_list_create();
     for (j = 0; j < 1000; j++) {
-      check_list_add_end (lp, "abc");
-      check_list_add_front (lp, "123");
+      check_list_add_end (lp, tval1);
+      check_list_add_front (lp, tval2);
     }
     check_list_free(lp);
   }
