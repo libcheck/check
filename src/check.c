@@ -36,6 +36,14 @@
 #define DEFAULT_TIMEOUT 4
 #endif
 
+/*
+ * When a process exits either normally, with exit(), or
+ * by an uncaught signal, The lower 0x377 bits are passed
+ * to the parent. Of those, only the lower 8 bits are
+ * returned by the WEXITSTATUS() macro.
+ */
+#define WEXITSTATUS_MASK 0xFF
+
 int check_major_version = CHECK_MAJOR_VERSION;
 int check_minor_version = CHECK_MINOR_VERSION;
 int check_micro_version = CHECK_MICRO_VERSION;
@@ -166,7 +174,7 @@ void _tcase_add_test (TCase *tc, TFun fn, const char *name, int _signal, int all
   tf->loop_start = start;
   tf->loop_end = end;
   tf->signal = _signal; /* 0 means no signal expected */
-  tf->allowed_exit_value = allowed_exit_value; /* 0 is default successful exit */
+  tf->allowed_exit_value = (WEXITSTATUS_MASK & allowed_exit_value); /* 0 is default successful exit */
   tf->name = name;
   check_list_add_end (tc->tflst, tf);
 }

@@ -40,7 +40,7 @@ typedef struct TF {
   int loop_end;
   const char *name;
   int signal;
-  unsigned char allowed_exit_value;
+  signed char allowed_exit_value;
 } TF;
 
 struct Suite {
