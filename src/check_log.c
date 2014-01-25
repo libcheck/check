@@ -310,7 +310,7 @@ void xml_lfun (SRunner *sr CK_ATTRIBUTE_UNUSED, FILE *file, enum print_output pr
 
 }
 
-void tap_lfun (SRunner *sr, FILE *file, enum print_output printmode CK_ATTRIBUTE_UNUSED,
+void tap_lfun (SRunner *sr CK_ATTRIBUTE_UNUSED, FILE *file, enum print_output printmode CK_ATTRIBUTE_UNUSED,
 		 void *obj, enum cl_event evt)
 {
   TestResult *tr;
