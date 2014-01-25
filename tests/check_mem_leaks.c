@@ -10,6 +10,7 @@
 #include <string.h>
 #include <check.h>
 #include "config.h"
+#include "check_check.h"
 
 int main ()
 {
