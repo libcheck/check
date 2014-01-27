@@ -34,6 +34,11 @@
 #include "check_print.h"
 #include "check_str.h"
 
+/*
+ * If a log file is specified to be "-", then instead of
+ * opening a file the log output is printed to stdout.
+ */
+#define STDOUT_OVERRIDE_LOG_FILE_NAME "-"
 
 static void srunner_send_evt (SRunner *sr, void *obj, enum cl_event evt);
 
@@ -412,11 +417,18 @@ void subunit_lfun (SRunner *sr, FILE *file, enum print_output printmode,
 static FILE * srunner_open_file(const char * filename)
 {
     FILE * f = NULL;
-    f = fopen(filename, "w");
-    if (f == NULL)
+    if(strcmp(filename, STDOUT_OVERRIDE_LOG_FILE_NAME) == 0)
     {
-        eprintf ("Error in call to fopen while opening file %s:", __FILE__, __LINE__ - 2,
-                filename);
+        f = stdout;
+    }
+    else
+    {
+        f = fopen(filename, "w");
+        if (f == NULL)
+        {
+            eprintf ("Error in call to fopen while opening file %s:", __FILE__, __LINE__ - 2,
+                    filename);
+        }
     }
     return f;
 }
@@ -465,15 +477,15 @@ void srunner_init_logging (SRunner *sr, enum print_output print_mode)
 #endif
   f = srunner_open_lfile (sr);
   if (f) {
-    srunner_register_lfun (sr, f, 1, lfile_lfun, print_mode);
+    srunner_register_lfun (sr, f, f!=stdout, lfile_lfun, print_mode);
   }
   f = srunner_open_xmlfile (sr);
   if (f) {
-    srunner_register_lfun (sr, f, 1, xml_lfun, print_mode);
+    srunner_register_lfun (sr, f, f!=stdout, xml_lfun, print_mode);
   }
   f = srunner_open_tapfile (sr);
   if (f) {
-    srunner_register_lfun (sr, f, 1, tap_lfun, print_mode);
+    srunner_register_lfun (sr, f, f!=stdout, tap_lfun, print_mode);
   }
   srunner_send_evt (sr, NULL, CLINITLOG_SR);
 }
