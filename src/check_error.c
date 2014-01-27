@@ -36,38 +36,41 @@ jmp_buf error_jmp_buffer;
 
 
 /* FIXME: including a colon at the end is a bad way to indicate an error */
-void eprintf (const char *fmt, const char *file, int line, ...)
+void eprintf(const char *fmt, const char *file, int line, ...)
 {
-  va_list args;
-  fflush(stderr);
+    va_list args;
 
-  fprintf(stderr,"%s:%d: ",file,line);
-  va_start(args, line);
-  vfprintf(stderr, fmt, args);
-  va_end(args);
+    fflush(stderr);
 
-  /*include system error information if format ends in colon */
-  if (fmt[0] != '\0' && fmt[strlen(fmt)-1] == ':')
-    fprintf(stderr, " %s", strerror(errno));
-  fprintf(stderr, "\n");
+    fprintf(stderr, "%s:%d: ", file, line);
+    va_start(args, line);
+    vfprintf(stderr, fmt, args);
+    va_end(args);
 
-  exit(2);
+    /*include system error information if format ends in colon */
+    if(fmt[0] != '\0' && fmt[strlen(fmt) - 1] == ':')
+        fprintf(stderr, " %s", strerror(errno));
+    fprintf(stderr, "\n");
+
+    exit(2);
 }
 
-void *emalloc (size_t n)
+void *emalloc(size_t n)
 {
-  void *p;
-  p = malloc(n);
-  if (p == NULL)
-    eprintf("malloc of %u bytes failed:", __FILE__, __LINE__ - 2, n);
-  return p;
+    void *p;
+
+    p = malloc(n);
+    if(p == NULL)
+        eprintf("malloc of %u bytes failed:", __FILE__, __LINE__ - 2, n);
+    return p;
 }
 
-void *erealloc (void * ptr, size_t n)
+void *erealloc(void *ptr, size_t n)
 {
-  void *p;
-  p = realloc (ptr, n);
-  if (p == NULL)
-    eprintf("realloc of %u bytes failed:", __FILE__, __LINE__ - 2, n);
-  return p;
+    void *p;
+
+    p = realloc(ptr, n);
+    if(p == NULL)
+        eprintf("realloc of %u bytes failed:", __FILE__, __LINE__ - 2, n);
+    return p;
 }

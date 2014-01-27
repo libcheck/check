@@ -10,15 +10,14 @@
 #undef realloc
 
 /* this gives us the real realloc to use below */
-void *realloc (void *p, size_t n);
+void *realloc(void *p, size_t n);
 
 /* force realloc(p, 0) and realloc (NULL, n) to return a valid pointer */
-void *
-rpl_realloc (void *p, size_t n)
+void *rpl_realloc(void *p, size_t n)
 {
-    if (n == 0)
+    if(n == 0)
         n = 1;
-    if (p == 0)
-        return malloc (n);
-    return realloc (p, n);
+    if(p == 0)
+        return malloc(n);
+    return realloc(p, n);
 }

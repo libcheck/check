@@ -27,115 +27,116 @@
 #include "check_error.h"
 
 
-enum {
-  LINIT = 1,
-  LGROW = 2
+enum
+{
+    LINIT = 1,
+    LGROW = 2
 };
 
-struct List {
-  unsigned int n_elts;
-  unsigned int max_elts;
-  int current; /* pointer to the current node */
-  int last; /* pointer to the node before END */
-  void **data;
+struct List
+{
+    unsigned int n_elts;
+    unsigned int max_elts;
+    int current;                /* pointer to the current node */
+    int last;                   /* pointer to the node before END */
+    void **data;
 };
 
-static void maybe_grow (List *lp)
+static void maybe_grow(List * lp)
 {
-  if (lp->n_elts >= lp->max_elts) {
-    lp->max_elts *= LGROW;
-    lp->data = erealloc (lp->data, lp->max_elts * sizeof(lp->data[0]));
-  }
+    if(lp->n_elts >= lp->max_elts)
+    {
+        lp->max_elts *= LGROW;
+        lp->data = erealloc(lp->data, lp->max_elts * sizeof(lp->data[0]));
+    }
 }
 
-List *check_list_create (void)
+List *check_list_create(void)
 {
-  List *lp;
-  lp = emalloc (sizeof(List));
-  lp->n_elts = 0;
-  lp->max_elts = LINIT;
-  lp->data = emalloc(sizeof(lp->data[0]) * LINIT);
-  lp->current = lp->last = -1;
-  return lp;
+    List *lp;
+
+    lp = emalloc(sizeof(List));
+    lp->n_elts = 0;
+    lp->max_elts = LINIT;
+    lp->data = emalloc(sizeof(lp->data[0]) * LINIT);
+    lp->current = lp->last = -1;
+    return lp;
 }
 
-void check_list_add_front (List *lp, void *val)
+void check_list_add_front(List * lp, void *val)
 {
-  if (lp == NULL)
-    return;
-  maybe_grow(lp);
-  memmove(lp->data + 1, lp->data, lp->n_elts * sizeof lp->data[0]);
-  lp->last++;
-  lp->n_elts++;
-  lp->current = 0;
-  lp->data[lp->current] = val;
+    if(lp == NULL)
+        return;
+    maybe_grow(lp);
+    memmove(lp->data + 1, lp->data, lp->n_elts * sizeof lp->data[0]);
+    lp->last++;
+    lp->n_elts++;
+    lp->current = 0;
+    lp->data[lp->current] = val;
 }
 
-void check_list_add_end (List *lp, void *val)
+void check_list_add_end(List * lp, void *val)
 {
-  if (lp == NULL)
-    return;
-  maybe_grow(lp);
-  lp->last++;
-  lp->n_elts++;
-  lp->current = lp->last;
-  lp->data[lp->current] = val;
+    if(lp == NULL)
+        return;
+    maybe_grow(lp);
+    lp->last++;
+    lp->n_elts++;
+    lp->current = lp->last;
+    lp->data[lp->current] = val;
 }
 
-int check_list_at_end (List *lp)
+int check_list_at_end(List * lp)
 {
-  if (lp->current == -1)
-    return 1;
-  else
-    return (lp->current > lp->last);
+    if(lp->current == -1)
+        return 1;
+    else
+        return (lp->current > lp->last);
 }
 
-void check_list_front (List *lp)
+void check_list_front(List * lp)
 {
-  if (lp->current == -1)
-    return;
-  lp->current = 0;
-}
-
-
-void check_list_free (List *lp)
-{
-  if (lp == NULL)
-    return;
-  
-  free(lp->data);
-  free (lp);
-}
-
-void *check_list_val (List *lp)
-{
-  if (lp == NULL)
-    return NULL;
-  if (lp->current == -1 || lp->current > lp->last)
-    return NULL;
-  
-  return lp->data[lp->current];
-}
-
-void check_list_advance (List *lp)
-{
-  if (lp == NULL)
-    return;
-  if (check_list_at_end(lp))
-    return;
-  lp->current++;
+    if(lp->current == -1)
+        return;
+    lp->current = 0;
 }
 
 
-void check_list_apply (List *lp, void (*fp) (void *))
+void check_list_free(List * lp)
 {
-  if (lp == NULL || fp == NULL)
-    return;
+    if(lp == NULL)
+        return;
 
-  for (check_list_front(lp); !check_list_at_end(lp); check_list_advance(lp))
-    fp (check_list_val(lp));
-  
+    free(lp->data);
+    free(lp);
+}
+
+void *check_list_val(List * lp)
+{
+    if(lp == NULL)
+        return NULL;
+    if(lp->current == -1 || lp->current > lp->last)
+        return NULL;
+
+    return lp->data[lp->current];
+}
+
+void check_list_advance(List * lp)
+{
+    if(lp == NULL)
+        return;
+    if(check_list_at_end(lp))
+        return;
+    lp->current++;
 }
 
 
-  
+void check_list_apply(List * lp, void (*fp) (void *))
+{
+    if(lp == NULL || fp == NULL)
+        return;
+
+    for(check_list_front(lp); !check_list_at_end(lp); check_list_advance(lp))
+        fp(check_list_val(lp));
+
+}

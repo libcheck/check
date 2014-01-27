@@ -1,9 +1,9 @@
 #include "libcompat.h"
 
-int timer_settime(timer_t timerid               CK_ATTRIBUTE_UNUSED, 
-                  int flags                     CK_ATTRIBUTE_UNUSED, 
-                  const struct itimerspec *new_value, 
-                  struct itimerspec * old_value CK_ATTRIBUTE_UNUSED)
+int timer_settime(timer_t timerid CK_ATTRIBUTE_UNUSED,
+                  int flags CK_ATTRIBUTE_UNUSED,
+                  const struct itimerspec *new_value,
+                  struct itimerspec *old_value CK_ATTRIBUTE_UNUSED)
 {
 #ifdef HAVE_SETITIMER
     /*
@@ -12,15 +12,15 @@ int timer_settime(timer_t timerid               CK_ATTRIBUTE_UNUSED,
      */
     struct itimerval new;
 
-    new.it_value.tv_sec     = new_value->it_value.tv_sec;
-    new.it_value.tv_usec    = new_value->it_value.tv_nsec / 1000;
-    new.it_interval.tv_sec  = new_value->it_interval.tv_sec;
+    new.it_value.tv_sec = new_value->it_value.tv_sec;
+    new.it_value.tv_usec = new_value->it_value.tv_nsec / 1000;
+    new.it_interval.tv_sec = new_value->it_interval.tv_sec;
     new.it_interval.tv_usec = new_value->it_interval.tv_nsec / 1000;
 
     return setitimer(ITIMER_REAL, &new, NULL);
 #else
     int seconds = new_value->it_value.tv_sec;
-    
+
     /* 
      * As the alarm() call has only second precision, if the caller
      * specifies partial seconds, we round up to the nearest second.
@@ -29,9 +29,9 @@ int timer_settime(timer_t timerid               CK_ATTRIBUTE_UNUSED,
     {
         seconds += 1;
     }
-    
+
     alarm(seconds);
-    
+
     return 0;
 #endif
 }

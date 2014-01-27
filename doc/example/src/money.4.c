@@ -3,29 +3,25 @@
 
 struct Money
 {
-  int amount;
+    int amount;
 };
 
-Money *
-money_create (int amount, char *currency)
+Money *money_create(int amount, char *currency)
 {
-  return NULL;
+    return NULL;
 }
 
-int
-money_amount (Money * m)
+int money_amount(Money * m)
 {
-  return m->amount;
+    return m->amount;
 }
 
-char *
-money_currency (Money * m)
+char *money_currency(Money * m)
 {
-  return NULL;
+    return NULL;
 }
 
-void
-money_free (Money * m)
+void money_free(Money * m)
 {
-  return;
+    return;
 }

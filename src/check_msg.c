@@ -59,138 +59,152 @@ static char *send_file1_name;
 static FILE *send_file2;
 static char *send_file2_name;
 
-static FILE * get_pipe(void);
-static void setup_pipe (void);
-static void teardown_pipe (void);
-static TestResult *construct_test_result (RcvMsg *rmsg, int waserror);
-static void tr_set_loc_by_ctx (TestResult *tr, enum ck_result_ctx ctx,
-			       RcvMsg *rmsg);
-static FILE * get_pipe(void)
+static FILE *get_pipe(void);
+static void setup_pipe(void);
+static void teardown_pipe(void);
+static TestResult *construct_test_result(RcvMsg * rmsg, int waserror);
+static void tr_set_loc_by_ctx(TestResult * tr, enum ck_result_ctx ctx,
+                              RcvMsg * rmsg);
+static FILE *get_pipe(void)
 {
-  if (send_file2 != 0) {
-    return send_file2;
-  }
-  
-  if (send_file1 != 0) {
-    return send_file1;
-  }
-  
-  eprintf("No messaging setup", __FILE__, __LINE__);
+    if(send_file2 != 0)
+    {
+        return send_file2;
+    }
 
-  return NULL;
+    if(send_file1 != 0)
+    {
+        return send_file1;
+    }
+
+    eprintf("No messaging setup", __FILE__, __LINE__);
+
+    return NULL;
 }
 
 void send_failure_info(const char *msg)
 {
-  FailMsg fmsg;
-  fmsg.msg = strdup(msg);
-  ppack(get_pipe(), CK_MSG_FAIL, (CheckMsg *) &fmsg);
-  free(fmsg.msg);
+    FailMsg fmsg;
+
+    fmsg.msg = strdup(msg);
+    ppack(get_pipe(), CK_MSG_FAIL, (CheckMsg *) & fmsg);
+    free(fmsg.msg);
 }
 
 void send_duration_info(int duration)
 {
-  DurationMsg dmsg;
-  dmsg.duration = duration;
-  ppack(get_pipe(), CK_MSG_DURATION, (CheckMsg *) &dmsg);
+    DurationMsg dmsg;
+
+    dmsg.duration = duration;
+    ppack(get_pipe(), CK_MSG_DURATION, (CheckMsg *) & dmsg);
 }
 
-void send_loc_info(const char * file, int line)
+void send_loc_info(const char *file, int line)
 {
-  LocMsg lmsg;
-  lmsg.file = strdup(file);
-  lmsg.line = line;
-  ppack(get_pipe(), CK_MSG_LOC, (CheckMsg *) &lmsg);
-  free(lmsg.file);
+    LocMsg lmsg;
+
+    lmsg.file = strdup(file);
+    lmsg.line = line;
+    ppack(get_pipe(), CK_MSG_LOC, (CheckMsg *) & lmsg);
+    free(lmsg.file);
 }
 
 void send_ctx_info(enum ck_result_ctx ctx)
 {
-  CtxMsg cmsg;
-  cmsg.ctx = ctx;
-  ppack(get_pipe(), CK_MSG_CTX, (CheckMsg *) &cmsg);
+    CtxMsg cmsg;
+
+    cmsg.ctx = ctx;
+    ppack(get_pipe(), CK_MSG_CTX, (CheckMsg *) & cmsg);
 }
 
-TestResult *receive_test_result (int waserror)
+TestResult *receive_test_result(int waserror)
 {
-  FILE *fp;
-  RcvMsg *rmsg;
-  TestResult *result;
+    FILE *fp;
+    RcvMsg *rmsg;
+    TestResult *result;
 
-  fp = get_pipe();
-  if (fp == NULL)
-  {
-    eprintf ("Error in call to get_pipe",__FILE__, __LINE__ - 2);
-  }
+    fp = get_pipe();
+    if(fp == NULL)
+    {
+        eprintf("Error in call to get_pipe", __FILE__, __LINE__ - 2);
+    }
 
-  rewind(fp);
-  rmsg = punpack (fp);
+    rewind(fp);
+    rmsg = punpack(fp);
 
-  if(rmsg == NULL)
-  {
-	  eprintf ("Error in call to punpack",__FILE__, __LINE__ - 4);
-  }
+    if(rmsg == NULL)
+    {
+        eprintf("Error in call to punpack", __FILE__, __LINE__ - 4);
+    }
 
-  teardown_pipe();
-  setup_pipe();
+    teardown_pipe();
+    setup_pipe();
 
-  result = construct_test_result (rmsg, waserror);
-  rcvmsg_free(rmsg);
-  return result;
+    result = construct_test_result(rmsg, waserror);
+    rcvmsg_free(rmsg);
+    return result;
 }
 
-static void tr_set_loc_by_ctx (TestResult *tr, enum ck_result_ctx ctx,
-			       RcvMsg *rmsg)
+static void tr_set_loc_by_ctx(TestResult * tr, enum ck_result_ctx ctx,
+                              RcvMsg * rmsg)
 {
-  if (ctx == CK_CTX_TEST) {
-    tr->file = rmsg->test_file;
-    tr->line = rmsg->test_line;
-    rmsg->test_file = NULL;
-    rmsg->test_line = -1;
-  } else {
-    tr->file = rmsg->fixture_file;
-    tr->line = rmsg->fixture_line;
-    rmsg->fixture_file = NULL;
-    rmsg->fixture_line = -1;
-  }
+    if(ctx == CK_CTX_TEST)
+    {
+        tr->file = rmsg->test_file;
+        tr->line = rmsg->test_line;
+        rmsg->test_file = NULL;
+        rmsg->test_line = -1;
+    }
+    else
+    {
+        tr->file = rmsg->fixture_file;
+        tr->line = rmsg->fixture_line;
+        rmsg->fixture_file = NULL;
+        rmsg->fixture_line = -1;
+    }
 }
 
-static TestResult *construct_test_result (RcvMsg *rmsg, int waserror)
+static TestResult *construct_test_result(RcvMsg * rmsg, int waserror)
 {
-  TestResult *tr;
+    TestResult *tr;
 
-  if (rmsg == NULL)
-    return NULL;
+    if(rmsg == NULL)
+        return NULL;
 
-  tr = tr_create();
+    tr = tr_create();
 
-  if (rmsg->msg != NULL || waserror) {
-    tr->ctx = rmsg->lastctx;
-    tr->msg = rmsg->msg;
-    rmsg->msg = NULL;
-    tr_set_loc_by_ctx (tr, tr->ctx, rmsg);
-  } else if (rmsg->lastctx == CK_CTX_SETUP) {
-    tr->ctx = CK_CTX_SETUP;
-    tr->msg = NULL;
-    tr_set_loc_by_ctx (tr, CK_CTX_SETUP, rmsg);  
-  } else {
-    tr->ctx = CK_CTX_TEST;
-    tr->msg = NULL;
-    tr->duration = rmsg->duration;
-    tr_set_loc_by_ctx (tr, CK_CTX_TEST, rmsg);
-  }
+    if(rmsg->msg != NULL || waserror)
+    {
+        tr->ctx = rmsg->lastctx;
+        tr->msg = rmsg->msg;
+        rmsg->msg = NULL;
+        tr_set_loc_by_ctx(tr, tr->ctx, rmsg);
+    }
+    else if(rmsg->lastctx == CK_CTX_SETUP)
+    {
+        tr->ctx = CK_CTX_SETUP;
+        tr->msg = NULL;
+        tr_set_loc_by_ctx(tr, CK_CTX_SETUP, rmsg);
+    }
+    else
+    {
+        tr->ctx = CK_CTX_TEST;
+        tr->msg = NULL;
+        tr->duration = rmsg->duration;
+        tr_set_loc_by_ctx(tr, CK_CTX_TEST, rmsg);
+    }
 
-  return tr;
+    return tr;
 }
 
 void setup_messaging(void)
 {
-  setup_pipe();
+    setup_pipe();
 }
 
 void teardown_messaging(void)
 {
-  teardown_pipe();
+    teardown_pipe();
 }
 
 /**
@@ -202,79 +216,87 @@ void teardown_messaging(void)
  * expecting the caller to both delete the file and
  * free the 'name' field after the file is closed.
  */
-FILE * open_tmp_file (char ** name)
+FILE *open_tmp_file(char **name)
 {
-  FILE *file;
-  *name = NULL;
+    FILE *file;
 
-  /* Windows does not like tmpfile(). This is likely because tmpfile()
-   * call unlink() on the file before returning it, to make sure the
-   * file is deleted when it is closed. The unlink() call also fails
-   * on Windows if the file is still open. */
-  /* also note that mkstemp is apparently a C90 replacement for tmpfile */
-  /* perhaps all we need to do on Windows is set TMPDIR to whatever is
-     stored in TEMP for tmpfile to work */
-  /* and finally, the "b" from "w+b" is ignored on OS X, not sure about WIN32 */
+    *name = NULL;
 
-  file = tmpfile ();
-  if (file == NULL)
+    /* Windows does not like tmpfile(). This is likely because tmpfile()
+     * call unlink() on the file before returning it, to make sure the
+     * file is deleted when it is closed. The unlink() call also fails
+     * on Windows if the file is still open. */
+    /* also note that mkstemp is apparently a C90 replacement for tmpfile */
+    /* perhaps all we need to do on Windows is set TMPDIR to whatever is
+       stored in TEMP for tmpfile to work */
+    /* and finally, the "b" from "w+b" is ignored on OS X, not sure about WIN32 */
+
+    file = tmpfile();
+    if(file == NULL)
     {
-      char *tmp = getenv ("TEMP");
-      char *tmp_file = tempnam (tmp, "check_");
-      /*
-       * Note, tempnam is not enough to get a unique name. Between
-       * getting the name and opening the file, something else also
-       * calling tempnam() could get the same name. It has been observed
-       * on MinGW-w64 builds on Wine that this exact thing happens
-       * if multiple instances of a unit tests are running concurrently.
-       * To prevent two concurrent unit tests from getting the same file,
-       * we append the pid to the file. The pid should be unique on the
-       * system.
-       */
-      char *uniq_tmp_file = ck_strdup_printf("%s.%d",tmp_file, getpid());
-      file = fopen (uniq_tmp_file, "w+b");
-      *name = uniq_tmp_file;
-      free (tmp_file);
+        char *tmp = getenv("TEMP");
+        char *tmp_file = tempnam(tmp, "check_");
+
+        /*
+         * Note, tempnam is not enough to get a unique name. Between
+         * getting the name and opening the file, something else also
+         * calling tempnam() could get the same name. It has been observed
+         * on MinGW-w64 builds on Wine that this exact thing happens
+         * if multiple instances of a unit tests are running concurrently.
+         * To prevent two concurrent unit tests from getting the same file,
+         * we append the pid to the file. The pid should be unique on the
+         * system.
+         */
+        char *uniq_tmp_file = ck_strdup_printf("%s.%d", tmp_file, getpid());
+
+        file = fopen(uniq_tmp_file, "w+b");
+        *name = uniq_tmp_file;
+        free(tmp_file);
     }
-  return file;
+    return file;
 }
 
-static void
-setup_pipe (void)
+static void setup_pipe(void)
 {
-  if (send_file1 == NULL)
+    if(send_file1 == NULL)
     {
-      send_file1 = open_tmp_file (&send_file1_name);
-      return;
+        send_file1 = open_tmp_file(&send_file1_name);
+        return;
     }
-  if (send_file2 == NULL)
+    if(send_file2 == NULL)
     {
-      send_file2 = open_tmp_file (&send_file2_name);
-      return;
+        send_file2 = open_tmp_file(&send_file2_name);
+        return;
     }
-  eprintf ("Only one nesting of suite runs supported", __FILE__, __LINE__);
+    eprintf("Only one nesting of suite runs supported", __FILE__, __LINE__);
 }
 
 static void teardown_pipe(void)
 {
-  if (send_file2 != 0) {
-    fclose(send_file2);
-    send_file2 = 0;
-    if(send_file2_name != NULL) {
-		unlink(send_file2_name);
-		free(send_file2_name);
-		send_file2_name = NULL;
-	}
-  } else if (send_file1 != 0) {
-    fclose(send_file1);
-    send_file1 = 0;
-    if(send_file1_name != NULL) {
-		unlink(send_file1_name);
-		free(send_file1_name);
-		send_file1_name = NULL;
-	}
-  } else {
-    eprintf("No messaging setup", __FILE__, __LINE__);
-  }
+    if(send_file2 != 0)
+    {
+        fclose(send_file2);
+        send_file2 = 0;
+        if(send_file2_name != NULL)
+        {
+            unlink(send_file2_name);
+            free(send_file2_name);
+            send_file2_name = NULL;
+        }
+    }
+    else if(send_file1 != 0)
+    {
+        fclose(send_file1);
+        send_file1 = 0;
+        if(send_file1_name != NULL)
+        {
+            unlink(send_file1_name);
+            free(send_file1_name);
+            send_file1_name = NULL;
+        }
+    }
+    else
+    {
+        eprintf("No messaging setup", __FILE__, __LINE__);
+    }
 }
-

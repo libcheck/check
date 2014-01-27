@@ -12,9 +12,9 @@ int timer_delete(timer_t timerid CK_ATTRIBUTE_UNUSED)
     /*
      * Setting values to '0' results in disabling the running timer.
      */
-    new.it_value.tv_sec     = 0;
-    new.it_value.tv_usec    = 0;
-    new.it_interval.tv_sec  = 0;
+    new.it_value.tv_sec = 0;
+    new.it_value.tv_usec = 0;
+    new.it_interval.tv_sec = 0;
     new.it_interval.tv_usec = 0;
 
     return setitimer(ITIMER_REAL, &new, NULL);
@@ -24,9 +24,9 @@ int timer_delete(timer_t timerid CK_ATTRIBUTE_UNUSED)
      * Setting alarm(0) will not set a new alarm, and
      * will kill the previous timer.
      */
-    
+
     alarm(0);
-    
+
     return 0;
 #endif
 }

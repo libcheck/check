@@ -16,7 +16,7 @@
 #if GCC_VERSION_AT_LEAST(2,95)
 #define CK_ATTRIBUTE_UNUSED __attribute__ ((unused))
 #else
-#define CK_ATTRIBUTE_UNUSED              
+#define CK_ATTRIBUTE_UNUSED
 #endif /* GCC 2.95 */
 
 #if GCC_VERSION_AT_LEAST(2,5)
@@ -35,9 +35,9 @@
 #endif
 
 #if _MSC_VER
-#include <WinSock2.h> /* struct timeval, API used in gettimeofday implementation */
-#include <io.h> /* read, write */
-#include <process.h> /* getpid */
+#include <WinSock2.h>           /* struct timeval, API used in gettimeofday implementation */
+#include <io.h>                 /* read, write */
+#include <process.h>            /* getpid */
 #endif /* _MSC_VER */
 
 /* defines size_t */
@@ -81,15 +81,15 @@
 
 /* replacement functions for broken originals */
 #if !HAVE_DECL_ALARM
-CK_DLL_EXP unsigned int alarm (unsigned int seconds);
+CK_DLL_EXP unsigned int alarm(unsigned int seconds);
 #endif /* !HAVE_DECL_ALARM */
 
 #if !HAVE_MALLOC
-CK_DLL_EXP void *rpl_malloc (size_t n);
+CK_DLL_EXP void *rpl_malloc(size_t n);
 #endif /* !HAVE_MALLOC */
 
 #if !HAVE_REALLOC
-CK_DLL_EXP void *rpl_realloc (void *p, size_t n);
+CK_DLL_EXP void *rpl_realloc(void *p, size_t n);
 #endif /* !HAVE_REALLOC */
 
 #if !HAVE_GETPID && HAVE__GETPID
@@ -97,23 +97,23 @@ CK_DLL_EXP void *rpl_realloc (void *p, size_t n);
 #endif /* !HAVE_GETPID && HAVE__GETPID */
 
 #if !HAVE_GETTIMEOFDAY
-CK_DLL_EXP int gettimeofday (struct timeval *tv, void* tz);
+CK_DLL_EXP int gettimeofday(struct timeval *tv, void *tz);
 #endif /* !HAVE_GETTIMEOFDAY */
 
 #if !HAVE_DECL_LOCALTIME_R
 #if !defined(localtime_r)
-CK_DLL_EXP struct tm *localtime_r (const time_t *clock, struct tm *result);
+CK_DLL_EXP struct tm *localtime_r(const time_t * clock, struct tm *result);
 #endif
 #endif /* !HAVE_DECL_LOCALTIME_R */
 
 #if !HAVE_DECL_STRDUP && !HAVE__STRDUP
-CK_DLL_EXP char *strdup (const char *str);
+CK_DLL_EXP char *strdup(const char *str);
 #elif !HAVE_DECL_STRDUP && HAVE__STRDUP
 #define strdup _strdup
 #endif /* !HAVE_DECL_STRDUP && HAVE__STRDUP */
 
 #if !HAVE_DECL_STRSIGNAL
-CK_DLL_EXP const char *strsignal (int sig);
+CK_DLL_EXP const char *strsignal(int sig);
 #endif /* !HAVE_DECL_STRSIGNAL */
 
 /* 
@@ -144,9 +144,10 @@ CK_DLL_EXP const char *strsignal (int sig);
  * specified in seconds and nanoseconds. If it is not defined in
  * time.g, then we need to define it here
  */
-struct timespec {
-   time_t   tv_sec;
-   long     tv_nsec;
+struct timespec
+{
+    time_t tv_sec;
+    long tv_nsec;
 };
 #endif /* STRUCT_TIMESPEC_DEFINITION_MISSING */
 
@@ -170,8 +171,11 @@ struct itimerspec
 struct sigevent;
 
 CK_DLL_EXP int clock_gettime(clockid_t clk_id, struct timespec *ts);
-CK_DLL_EXP int timer_create(int clockid, struct sigevent *sevp, timer_t *timerid);
-CK_DLL_EXP int timer_settime(timer_t timerid, int flags, const struct itimerspec *new_value, struct itimerspec * old_value);
+CK_DLL_EXP int timer_create(int clockid, struct sigevent *sevp,
+                            timer_t * timerid);
+CK_DLL_EXP int timer_settime(timer_t timerid, int flags,
+                             const struct itimerspec *new_value,
+                             struct itimerspec *old_value);
 CK_DLL_EXP int timer_delete(timer_t timerid);
 #endif /* HAVE_LIBRT */
 
@@ -188,15 +192,17 @@ CK_DLL_EXP int timer_delete(timer_t timerid);
 
 #if !HAVE_VSNPRINTF
 CK_DLL_EXP int rpl_vsnprintf(char *, size_t, const char *, va_list);
+
 #define vsnprintf rpl_vsnprintf
 #endif
 #if !HAVE_SNPRINTF
 CK_DLL_EXP int rpl_snprintf(char *, size_t, const char *, ...);
+
 #define snprintf rpl_snprintf
 #endif
 #endif /* HAVE_STDARG_H */
 
 /* silence warnings about an empty library */
-CK_DLL_EXP void ck_do_nothing (void) CK_ATTRIBUTE_NORETURN;
+CK_DLL_EXP void ck_do_nothing(void) CK_ATTRIBUTE_NORETURN;
 
 #endif /* !LIBCOMPAT_H */

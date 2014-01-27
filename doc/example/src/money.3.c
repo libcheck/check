@@ -1,26 +1,22 @@
 #include <stdlib.h>
 #include "money.h"
 
-Money *
-money_create (int amount, char *currency)
+Money *money_create(int amount, char *currency)
 {
-  return NULL;
+    return NULL;
 }
 
-int
-money_amount (Money * m)
+int money_amount(Money * m)
 {
-  return 0;
+    return 0;
 }
 
-char *
-money_currency (Money * m)
+char *money_currency(Money * m)
 {
-  return NULL;
+    return NULL;
 }
 
-void
-money_free (Money * m)
+void money_free(Money * m)
 {
-  return;
+    return;
 }
