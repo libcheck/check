@@ -116,10 +116,14 @@ static void print_usage(void)
 #if ENABLE_SUBUNIT
     printf (" | CK_SUBUNIT");
 #endif
-    printf (") (STDOUT | STDOUT_DUMP | LOG | TAP | XML) (NORMAL | EXIT_TEST)\n");
+    printf (")\n");
+    printf("                 (STDOUT | STDOUT_DUMP | LOG | LOG_STDOUT | TAP | TAP_STDOUT | XML | XML_STDOUT)\n");
+    printf("                 (NORMAL | EXIT_TEST)\n");
     printf("   If CK_ENV is used, the environment variable CK_VERBOSITY can be set to\n");
     printf("   one of these: silent, minimal, or verbose. If it is not set to these, or\n");
     printf("   if CK_VERBOSITY is not set, then CK_NORMAL will be used\n");
+    printf("   If testing the CK_[LOG|TAP_LOG|XML_LOG]_FILE_NAME env var and setting it to '-',\n");
+    printf("   then use the following mode: CK_SILENT STDOUT [NORMAL|EXIT_TEST].\n");
 }
 
 static void run_tests (int printmode, char * log_type, int include_exit_test)
@@ -147,13 +151,25 @@ static void run_tests (int printmode, char * log_type, int include_exit_test)
     {
         srunner_set_log(sr, "test.log");
     }
+    else if(strcmp(log_type, "LOG_STDOUT") == 0)
+    {
+        srunner_set_log(sr, "-");
+    }
     else if(strcmp(log_type, "TAP") == 0)
     {
         srunner_set_tap(sr, "test.tap");
     }
+    else if(strcmp(log_type, "TAP_STDOUT") == 0)
+    {
+        srunner_set_tap(sr, "-");
+    }
     else if(strcmp(log_type, "XML") == 0)
     {
         srunner_set_xml(sr, "test.xml");
+    }
+    else if(strcmp(log_type, "XML_STDOUT") == 0)
+    {
+        srunner_set_xml(sr, "-");
     }
     else
     {

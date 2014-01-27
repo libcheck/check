@@ -53,6 +53,13 @@ act_subunit=`./ex_output${EXEEXT} CK_SUBUNIT STDOUT NORMAL | tr -d "\r"`
 act_subunit_dump_env=`CK_VERBOSITY=subunit ./ex_output${EXEEXT} CK_SUBUNIT STDOUT_DUMP NORMAL | tr -d "\r"`
 fi
 
+log_stdout=`                             ./ex_output${EXEEXT} CK_SILENT LOG_STDOUT NORMAL`
+log_env_stdout=`CK_LOG_FILE_NAME="-"     ./ex_output${EXEEXT} CK_SILENT STDOUT NORMAL`
+tap_stdout=`                             ./ex_output${EXEEXT} CK_SILENT TAP_STDOUT NORMAL`
+tap_env_stdout=`CK_TAP_LOG_FILE_NAME="-" ./ex_output${EXEEXT} CK_SILENT STDOUT NORMAL`
+xml_stdout=`                             ./ex_output${EXEEXT} CK_SILENT XML_STDOUT NORMAL  | tr -d "\r" | grep -v \<duration\> | grep -v \<datetime\> | grep -v \<path\>`
+xml_env_stdout=`CK_XML_LOG_FILE_NAME="-" ./ex_output${EXEEXT} CK_SILENT STDOUT NORMAL      | tr -d "\r" | grep -v \<duration\> | grep -v \<datetime\> | grep -v \<path\>`
+
 test_output ( ) {
     if [ "x${1}" != "x${2}" ]; then
 	echo "Problem with ex_output${EXEEXT} ${3}";
@@ -80,6 +87,13 @@ test_output "$exp_silent_dump"  "$act_silent_dump_env"  "CK_ENV STDOUT_DUMP NORM
 test_output "$exp_minimal_dump" "$act_minimal_dump_env" "CK_ENV STDOUT_DUMP NORMAL (for minimal)"
 test_output "$exp_normal_dump"  "$act_normal_dump_env"  "CK_ENV STDOUT_DUMP NORMAL (for normal)"
 test_output "$exp_verbose_dump" "$act_verbose_dump_env" "CK_ENV STDOUT_DUMP NORMAL (for verbose)"
+
+test_output "${expected_log_log}"    "${log_stdout}"     "CK_SILENT LOG_STDOUT NORMAL"
+test_output "${expected_log_log}"    "${log_env_stdout}" "CK_SILENT STDOUT     NORMAL (with log env = '-')"
+test_output "${expected_xml}"        "${xml_stdout}"     "CK_SILENT XML_STDOUT NORMAL"
+test_output "${expected_xml}"        "${xml_env_stdout}" "CK_SILENT STDOUT     NORMAL (with xml env = '-')"
+test_output "${expected_normal_tap}" "${tap_stdout}"     "CK_SILENT TAP_STDOUT NORMAL"
+test_output "${expected_normal_tap}" "${tap_env_stdout}" "CK_SILENT STDOUT     NORMAL (with tap env = '-')"
 
 if test 1 -eq $ENABLE_SUBUNIT; then
     test_output "$exp_subunit"      "$act_subunit"          "CK_SUBUNIT STDOUT NORMAL";
