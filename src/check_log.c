@@ -463,11 +463,11 @@ void srunner_init_logging (SRunner *sr, enum print_output print_mode)
   }
   f = srunner_open_xmlfile (sr);
   if (f) {
-    srunner_register_lfun (sr, f, 2, xml_lfun, print_mode);
+    srunner_register_lfun (sr, f, 1, xml_lfun, print_mode);
   }
   f = srunner_open_tapfile (sr);
   if (f) {
-    srunner_register_lfun (sr, f, 2, tap_lfun, print_mode);
+    srunner_register_lfun (sr, f, 1, tap_lfun, print_mode);
   }
   srunner_send_evt (sr, NULL, CLINITLOG_SR);
 }
