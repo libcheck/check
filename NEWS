@@ -1,6 +1,13 @@
 In development:
 # Mentioning Check 0.9.12 for now, to fix distcheck target until next release
 
+* If the LOG/XML/TAP file name is set to "-" either through the
+srunner_set_log() srunner_set_xml() or srunner_set_tap() calls
+or through the related environment variables, the logged data will be
+printed to stdout instead of a file. This is mainly to support using TAP
+for fixtures which expect the results to be reported via stdout. However,
+it is available via all of Check's logging modalities.
+
 
 Mon Jan 20, 2014: Released Check 0.9.12
   based on r1054 (2014-01-16 23:08:03 +0000)
