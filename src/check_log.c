@@ -409,40 +409,46 @@ void subunit_lfun (SRunner *sr, FILE *file, enum print_output printmode,
 }
 #endif
 
+static FILE * srunner_open_file(const char * filename)
+{
+    FILE * f = NULL;
+    f = fopen(filename, "w");
+    if (f == NULL)
+    {
+        eprintf ("Error in call to fopen while opening file %s:", __FILE__, __LINE__ - 2,
+                filename);
+    }
+    return f;
+}
+
 FILE *srunner_open_lfile (SRunner *sr)
 {
-  FILE *f = NULL;
-  if (srunner_has_log (sr)) {
-    f = fopen(srunner_log_fname(sr), "w");
-    if (f == NULL)
-      eprintf ("Error in call to fopen while opening log file %s:", __FILE__, __LINE__ - 2,
-	       sr->log_fname);
-  }
-  return f;
+    FILE *f = NULL;
+    if (srunner_has_log (sr))
+    {
+        f = srunner_open_file(srunner_log_fname(sr));
+    }
+    return f;
 }
 
 FILE *srunner_open_xmlfile (SRunner *sr)
 {
-  FILE *f = NULL;
-  if (srunner_has_xml (sr)) {
-    f = fopen(srunner_xml_fname(sr), "w");
-    if (f == NULL)
-      eprintf ("Error in call to fopen while opening xml file %s:", __FILE__, __LINE__ - 2,
-	       sr->xml_fname);
-  }
-  return f;
+    FILE *f = NULL;
+    if (srunner_has_xml (sr))
+    {
+        f = srunner_open_file(srunner_xml_fname(sr));
+    }
+    return f;
 }
 
 FILE *srunner_open_tapfile (SRunner *sr)
 {
-  FILE *f = NULL;
-  if (srunner_has_tap (sr)) {
-    f = fopen(srunner_tap_fname(sr), "w");
-    if (f == NULL)
-      eprintf ("Error in call to fopen while opening tap file %s:", __FILE__, __LINE__ - 2,
-	       sr->tap_fname);
-  }
-  return f;
+    FILE *f = NULL;
+    if (srunner_has_tap (sr))
+    {
+        f = srunner_open_file(srunner_tap_fname(sr));
+    }
+    return f;
 }
 
 void srunner_init_logging (SRunner *sr, enum print_output print_mode)
