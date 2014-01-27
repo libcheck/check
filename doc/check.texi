@@ -1396,6 +1396,10 @@ If log file is specified with both @code{CK_LOG_FILE_NAME} and
 @code{srunner_set_log()}, the name provided to @code{srunner_set_log()} will
 be used.
 
+If the log name is set to "-" either via @code{srunner_set_log()} or
+@code{CK_LOG_FILE_NAME}, the log data will be printed to stdout instead
+of to a file.
+
 
 @menu
 * XML Logging::                 
@@ -1518,6 +1522,10 @@ be written to specified file name. If XML log file is specified with both
 @code{CK_XML_LOG_FILE_NAME} and @code{srunner_set_xml()}, the name provided
 to @code{srunner_set_xml()} will be used.
 
+If the log name is set to "-" either via @code{srunner_set_xml()} or
+@code{CK_XML_LOG_FILE_NAME}, the log data will be printed to stdout instead
+of to a file.
+
 If both plain text and XML log files are specified, by any of above methods,
 then check will log to both files. In other words logging in plain text and XML
 format simultaneously is supported.
@@ -1557,6 +1565,10 @@ TAP logging can be enabled by an environment variable as well. If
 be written to specified file name. If TAP log file is specified with both
 @code{CK_TAP_LOG_FILE_NAME} and @code{srunner_set_tap()}, the name provided
 to @code{srunner_set_tap()} will be used.
+
+If the log name is set to "-" either via @code{srunner_set_tap()} or
+@code{CK_TAP_LOG_FILE_NAME}, the log data will be printed to stdout instead
+of to a file.
 
 If both plain text and TAP log files are specified, by any of above methods,
 then check will log to both files. In other words logging in plain text and TAP
