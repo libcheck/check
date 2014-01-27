@@ -3,45 +3,7 @@
 OUTPUT_FILE=test.tap
 
 . ./test_vars
-
-if [ $HAVE_FORK -eq 1 ]; then
-expected_normal_tap="ok 1 - ${SRCDIR}ex_output.c:Core:test_pass: Passed
-not ok 2 - ${SRCDIR}ex_output.c:Core:test_fail: Failure
-not ok 3 - ${SRCDIR}ex_output.c:Core:test_exit: Early exit with return value 1
-ok 4 - ${SRCDIR}ex_output.c:Core:test_pass2: Passed
-not ok 5 - ${SRCDIR}ex_output.c:Core:test_loop: Iteration 0 failed
-ok 6 - ${SRCDIR}ex_output.c:Core:test_loop: Passed
-not ok 7 - ${SRCDIR}ex_output.c:Core:test_loop: Iteration 2 failed
-not ok 8 - ${SRCDIR}ex_output.c:description \" ' < > &:test_xml_esc_fail_msg: fail \" ' < > & message
-1..8"
-expected_aborted_tap="ok 1 - ${SRCDIR}ex_output.c:Core:test_pass: Passed
-not ok 2 - ${SRCDIR}ex_output.c:Core:test_fail: Failure
-not ok 3 - ${SRCDIR}ex_output.c:Core:test_exit: Early exit with return value 1
-not ok 4 - ${SRCDIR}ex_output.c:Core:test_abort: Early exit with return value 1
-ok 5 - ${SRCDIR}ex_output.c:Core:test_pass2: Passed
-not ok 6 - ${SRCDIR}ex_output.c:Core:test_loop: Iteration 0 failed
-ok 7 - ${SRCDIR}ex_output.c:Core:test_loop: Passed
-not ok 8 - ${SRCDIR}ex_output.c:Core:test_loop: Iteration 2 failed
-not ok 9 - ${SRCDIR}ex_output.c:description \" ' < > &:test_xml_esc_fail_msg: fail \" ' < > & message
-1..9"
-else
-expected_normal_tap="ok 1 - ${SRCDIR}ex_output.c:Core:test_pass: Passed
-not ok 2 - ${SRCDIR}ex_output.c:Core:test_fail: Failure
-ok 3 - ${SRCDIR}ex_output.c:Core:test_pass2: Passed
-not ok 4 - ${SRCDIR}ex_output.c:Core:test_loop: Iteration 0 failed
-ok 5 - ${SRCDIR}ex_output.c:Core:test_loop: Passed
-not ok 6 - ${SRCDIR}ex_output.c:Core:test_loop: Iteration 2 failed
-not ok 7 - ${SRCDIR}ex_output.c:description \" ' < > &:test_xml_esc_fail_msg: fail \" ' < > & message
-1..7"
-# When fork() is unavailable, one of the tests
-# will invoke exit() which will terminate the
-# unit testing program. In that case, the tap
-# results will be incomplete, but the required
-# test plan will be missing, signaling that
-# something bad happened.
-expected_aborted_tap="ok 1 - ${SRCDIR}ex_output.c:Core:test_pass: Passed
-not ok 2 - ${SRCDIR}ex_output.c:Core:test_fail: Failure"
-fi
+. ./test_output_strings
 
 test_tap_output ( ) {
     rm -f ${OUTPUT_FILE}
