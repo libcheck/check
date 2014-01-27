@@ -60,7 +60,7 @@ Check source code:
 ============
 
 [     ] * Eliminate abbreviations like nf for number_failed
-[     ] * Run indent on everything, make sure it works well.
+[0.9.13] * Run indent on everything, make sure it works well.
 [     ] * Fix START_TEST/END_TEST to look like valid C code.
 [     ] * Document things way more.
 [     ] * Create check.h automatically using makeheaders.c (not sure)
@@ -146,8 +146,8 @@ Check Internals
           under cygwin.
 [     ] * Abstract the forking and message passing implementation to
           allow Win32 compatibility.
-[     ] * Incorporate existing Win32 support as mentioned here:
+[0.9.12] * Incorporate existing Win32 support as mentioned here:
           http://opendarwin.org/pipermail/cvs-libfoundation-all/2005-March/000177.html
 [0.9.11] * Get Cygwin to work, with forking
 [0.9.11] * Get MinGW to work, even without forking
-[     ] * Get MSVC to work, even without forking
+[0.9.12] * Get MSVC to work, even without forking
