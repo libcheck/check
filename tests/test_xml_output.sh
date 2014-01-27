@@ -4,7 +4,7 @@ OUTPUT_FILE=test.xml
 CK_DEFAULT_TIMEOUT=4
 
 . ./test_vars
-. ./test_output_strings
+. $(dirname $0)/test_output_strings
 
 rm -f ${OUTPUT_FILE}
 export CK_DEFAULT_TIMEOUT

@@ -3,7 +3,7 @@
 OUTPUT_FILE=test.log
 
 . ./test_vars
-. ./test_output_strings
+. $(dirname $0)/test_output_strings
 
 test_log_output ( ) {
     rm -f ${OUTPUT_FILE}

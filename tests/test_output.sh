@@ -1,7 +1,7 @@
 #!/bin/sh
 
 . ./test_vars
-. ./test_output_strings
+. $(dirname $0)/test_output_strings
 
 # When the ex_output program is run with the STDOUT_DUMP mode, it will
 # run with the normal output mode, then dump each output mode using
