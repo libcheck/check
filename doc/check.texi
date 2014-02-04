@@ -358,7 +358,7 @@ integrate these core files into our build system, and will need some
 additional structure. To manage everything we'll use Autoconf,
 Automake, and friends (collectively known as Autotools) for this
 example.  Note that one could do something similar with ordinary
-Makefiles, or any other builc system. It is in the authors' opinion that
+Makefiles, or any other build system. It is in the authors' opinion that
 it is generally easier to use Autotools than bare Makefiles, and they
 provide built-in support for running tests.
 
