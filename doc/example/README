@@ -1,5 +1,8 @@
 This is the "money example" from the Check tutorial.
 
+========================
+Autotools:
+
 You need the following programs installed on your system:
   -- Autoconf 2.59
   -- Automake 1.9.6
@@ -20,5 +23,16 @@ Don't do "make install" unless you want to install the money example.
 money.c and money.h are built as a library.  src/main.c:main() is a
 client of libmoney.la, just as tests/check_money.c:main() is a client
 of libmoney.la
+
+To use the autotools example in another project, start with the following
+files:
+
+   example
+   |--- configure.ac
+   |--- Makefile.am
+   |--- src
+   |    |--- Makefile.am
+   |--- tests
+        |--- Makefile.am
 
 Please send bug reports to check-devel AT lists.sourceforge.net.
