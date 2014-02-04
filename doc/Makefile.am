@@ -99,6 +99,13 @@ example_tests_docs = example/tests/Makefile.am \
                      example/tests/check_money.6.c \
                      example/tests/check_money.7.c
 
+example_cmake = example/CMakeLists.txt \
+                example/src/CMakeLists.txt \
+                example/tests/CMakeLists.txt \
+                example/cmake/config.h.in \
+                example/cmake/COPYING-CMAKE-SCRIPTS.txt \
+                example/cmake/FindCheck.cmake
+
 ## what to clean
 
 CLEANFILES = check.info *~ *.diff
@@ -109,7 +116,8 @@ clean-local:
 
 EXTRA_DIST = $(example_docs) \
              $(example_src_docs) \
-             $(example_tests_docs)
+             $(example_tests_docs) \
+             $(example_cmake)
 
 ## what to install
 
