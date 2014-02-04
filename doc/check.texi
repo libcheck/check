@@ -84,7 +84,8 @@ Unit Testing in C
 Tutorial: Basic Unit Testing
 
 * How to Write a Test::         
-* Setting Up the Money Build::  
+* Setting Up the Money Build Using Autotools::
+* Setting Up the Money Build Using CMake::
 * Test a Little::               
 * Creating a Suite::            
 * SRunner Output::              
@@ -313,13 +314,14 @@ sure we are constantly thinking about how to test our code.
 
 @menu
 * How to Write a Test::         
-* Setting Up the Money Build::  
+* Setting Up the Money Build Using Autotools::
+* Setting Up the Money Build Using CMake::
 * Test a Little::               
 * Creating a Suite::            
 * SRunner Output::              
 @end menu
 
-@node How to Write a Test, Setting Up the Money Build, Tutorial, Tutorial
+@node How to Write a Test, Setting Up the Money Build Using Autotools, Tutorial, Tutorial
 @section How to Write a Test
 
 Test writing using Check is very simple. The file in which the checks
@@ -346,8 +348,8 @@ structures to permit testing.  It is a mistake to leave off the
 @code{END_TEST} marker; doing so produces all sorts of strange errors
 when the check is compiled.
 
-@node Setting Up the Money Build, Test a Little, How to Write a Test, Tutorial
-@section Setting Up the Money Build
+@node Setting Up the Money Build Using Autotools, Setting Up the Money Build Using CMake, How to Write a Test, Tutorial
+@section Setting Up the Money Build Using Autotools
 
 Since we are creating a library to handle money, we will first create
 an interface in @file{money.h}, an implementation in @file{money.c},
@@ -485,7 +487,118 @@ GNU/Linux in November 2012, using Autoconf 2.65, Automake 1.11.1,
 and Libtool 2.2.6b.  Please report any problems to
 @email{check-devel AT lists.sourceforge.net}.
 
-@node Test a Little, Creating a Suite, Setting Up the Money Build, Tutorial
+@node Setting Up the Money Build Using CMake, Test a Little, Setting Up the Money Build Using Autotools, Tutorial
+@section Setting Up the Money Build Using CMake
+
+Since we are creating a library to handle money, we will first create
+an interface in @file{money.h}, an implementation in @file{money.c},
+and a place to store our unit tests, @file{check_money.c}.  We want to
+integrate these core files into our build system, and will need some
+additional structure. To manage everything we'll use CMake for this
+example.  Note that one could do something similar with ordinary
+Makefiles, or any other build system. It is in the authors' opinion that
+it is generally easier to use CMake than bare Makefiles, and they
+provide built-in support for running tests.
+
+Note that this is not the place to explain how CMake works.  If
+you need help understanding what's going on beyond the explanations
+here, the best place to start is probably the @uref{http://www.cmake.org,
+CMake project's homepage}.
+
+The examples in this section are part of the Check distribution; you
+don't need to spend time cutting and pasting or (worse) retyping them.
+Locate the Check documentation on your system and look in the
+@samp{example} directory, or look in the Check source. If on a GNU/Linux
+system the standard directory should be @samp{/usr/share/doc/check/example}.
+This directory contains the final version reached the end of the tutorial.  If
+you want to follow along, create backups of @file{money.h},
+@file{money.c}, and @file{check_money.c}, and then delete the originals.
+
+We set up a directory structure as follows:
+@example
+@verbatim
+.
+|-- Makefile.am
+|-- README
+|-- CMakeLists.txt
+|-- cmake
+|   |-- FindCheck.cmake
+|-- src
+|   |-- CMakeLists.txt
+|   |-- main.c
+|   |-- money.c
+|   `-- money.h
+`-- tests
+    |-- CMakeLists.txt
+    `-- check_money.c
+@end verbatim
+@end example
+
+The top-level @file{CMakeLists.txt} contains the configuration checks
+for avaialble libraries and types, and also defines sub-directories
+to process. The @file{cmake/FindCheck.cmake} file contains instructions
+for locating check on the system and setting up the build to use it.
+
+Note that @code{tests} comes last, because the code should be testing
+an already compiled library.
+
+@file{src/CMakeLists.txt} builds @samp{libmoney} as an archive,
+and links it to an application simply called @command{main}.  The
+application's behavior is not important to this tutorial; what's
+important is that none of the functions we want to unit test appear in
+@file{main.c}; this probably means that the only function in
+@file{main.c} should be @code{main()} itself.  In order to test the
+whole application, unit testing is not appropriate: you should use a
+system testing tool like Autotest.  If you really want to test
+@code{main()} using Check, rename it to something like
+@code{_myproject_main()} and write a wrapper around it.
+
+Now that all this infrastructure is out of the way, we can get on with
+development.  @file{src/money.h} should only contain standard C header
+boilerplate:
+
+@cartouche
+@example
+@verbatiminclude example/src/money.1.h
+@end example
+@end cartouche
+
+@file{src/money.c} should be empty, and @file{tests/check_money.c}
+should only contain an empty @code{main()} function:
+
+@cartouche
+@example
+@verbatiminclude example/tests/check_money.1.c
+@end example
+@end cartouche
+
+Create the CMake Build System for the project and then build @file{main}
+and @file{libmoney.la} as follows for Unix-compatible systems:
+@example
+@verbatim
+$ cmake .
+$ make
+@end verbatim
+@end example
+
+and for MSVC on Windows:
+@example
+@verbatim
+$ cmake -G "NMake Makefiles" .
+$ nmake
+@end verbatim
+@end example
+
+Now build and run the @command{check_money} test, with either @command{make
+test} on a Unix-compatiable system or @command{nmake test} if on Windows using MSVC.
+If all goes well, the command should report that our tests
+passed.  No surprise, because there aren't any tests to fail.
+
+This was tested on the isadora distribution of Linux Mint GNU/Linux,
+using CMake 2.8.7 in January 2014. Please report any problems to
+@email{check-devel AT lists.sourceforge.net}.
+
+@node Test a Little, Creating a Suite, Setting Up the Money Build Using CMake, Tutorial
 @section Test a Little, Code a Little
 
 The @uref{http://junit.sourceforge.net/doc/testinfected/testing.htm,
