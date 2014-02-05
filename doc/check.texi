@@ -522,6 +522,7 @@ We set up a directory structure as follows:
 |-- README
 |-- CMakeLists.txt
 |-- cmake
+|   |-- config.h.in
 |   |-- FindCheck.cmake
 |-- src
 |   |-- CMakeLists.txt
