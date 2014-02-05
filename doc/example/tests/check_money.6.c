@@ -32,7 +32,7 @@ START_TEST(test_money_create_zero)
         ck_abort_msg("Zero is a valid amount of money");
     }
 }
-END_TEST 
+END_TEST
 
 Suite * money_suite(void)
 {
