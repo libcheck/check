@@ -46,9 +46,15 @@ CMake:
 You need the following programs installed on your system:
   -- CMake 2.8
   -- Check 0.9.9
-  -- pkg-config 0.26
+  -- (pkg-config 0.26 is optional)
 
 Somewhat earlier versions of these programs might work.
+
+NOTE: If pkg-config is not installed on the system, and MSVC is being used,
+the install location of Check must be inserted manually into the
+tests/CMakeLists.txt file, by setting the variable CHECK_INSTALL_DIR
+to the install location. Look at the tests/CMakeLists.txt file for
+a commented out example.
 
 Then, do as follows for a Unix-compatible shell:
 

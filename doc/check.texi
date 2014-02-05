@@ -537,7 +537,16 @@ We set up a directory structure as follows:
 The top-level @file{CMakeLists.txt} contains the configuration checks
 for avaialble libraries and types, and also defines sub-directories
 to process. The @file{cmake/FindCheck.cmake} file contains instructions
-for locating check on the system and setting up the build to use it.
+for locating Check on the system and setting up the build to use it.
+If the system does not have pkg-config installed, @file{cmake/FindCheck.cmake}
+may not be able to locate Check successfully. In this case, the install
+directory of Check must be located manually, and the following line
+added to @file{tests/CMakeLists.txt} (assuming Check was installed under
+C:\\Program Files\\check:
+
+@verbatim
+set(CHECK_INSTALL_DIR "C:/Program Files/check")
+@end verbatim
 
 Note that @code{tests} comes last, because the code should be testing
 an already compiled library.
