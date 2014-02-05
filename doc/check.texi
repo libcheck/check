@@ -604,8 +604,8 @@ test} on a Unix-compatiable system or @command{nmake test} if on Windows using M
 If all goes well, the command should report that our tests
 passed.  No surprise, because there aren't any tests to fail.
 
-This was tested on the isadora distribution of Linux Mint GNU/Linux,
-using CMake 2.8.7 in January 2014. Please report any problems to
+This was tested on Windows 7 using CMake 2.8.12.1 and MSVC 16.00.30319.01/
+Visual Studios 10 in February 2014. Please report any problems to
 @email{check-devel AT lists.sourceforge.net}.
 
 @node Test a Little, Creating a Suite, Setting Up the Money Build Using CMake, Tutorial
