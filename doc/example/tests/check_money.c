@@ -46,17 +46,21 @@ END_TEST
 
 Suite * money_suite(void)
 {
-    Suite *s = suite_create("Money");
+    Suite *s;
+    TCase *tc_core;
+    TCase *tc_limits;
+
+    s = suite_create("Money");
 
     /* Core test case */
-    TCase *tc_core = tcase_create("Core");
+    tc_core = tcase_create("Core");
 
     tcase_add_checked_fixture(tc_core, setup, teardown);
     tcase_add_test(tc_core, test_money_create);
     suite_add_tcase(s, tc_core);
 
     /* Limits test case */
-    TCase *tc_limits = tcase_create("Limits");
+    tc_limits = tcase_create("Limits");
 
     tcase_add_test(tc_limits, test_money_create_neg);
     tcase_add_test(tc_limits, test_money_create_zero);
@@ -68,8 +72,11 @@ Suite * money_suite(void)
 int main(void)
 {
     int number_failed;
-    Suite *s = money_suite();
-    SRunner *sr = srunner_create(s);
+    Suite *s;
+    SRunner *sr;
+
+    s = money_suite();
+    sr = srunner_create(s);
 
     srunner_run_all(sr, CK_NORMAL);
     number_failed = srunner_ntests_failed(sr);
