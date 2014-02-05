@@ -8,6 +8,9 @@ In development:
   for fixtures which expect the results to be reported via stdout. However,
   it is available via all of Check's logging modalities.
 
+* For CMake builds, check_stdint.h was not being installed. This is now
+  fixed.
+
 
 Mon Jan 20, 2014: Released Check 0.9.12
   based on r1054 (2014-01-16 23:08:03 +0000)
