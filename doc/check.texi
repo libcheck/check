@@ -102,6 +102,7 @@ Advanced Features
 * Looping Tests::               
 * Test Timeouts::               
 * Determining Test Coverage::   
+* Finding Memory Leaks::
 * Test Logging::                
 * Subunit Support::             
 
@@ -971,6 +972,7 @@ easier for the developer to write, run, and analyze tests.
 * Looping Tests::               
 * Test Timeouts::               
 * Determining Test Coverage::   
+* Finding Memory Leaks::
 * Test Logging::                
 * Subunit Support::             
 @end menu
@@ -1409,7 +1411,7 @@ using a nanosecond precision. Otherwise, second precision is used.
 
 Test timeouts are only available in CK_FORK mode.
 
-@node Determining Test Coverage, Test Logging, Test Timeouts, Advanced Features
+@node Determining Test Coverage, Finding Memory Leaks, Test Timeouts, Advanced Features
 @section Determining Test Coverage
 
 The term @dfn{code coverage} refers to the extent that the statements
@@ -1477,7 +1479,102 @@ how determining test coverage generally works, and how it can help
 you.  For more information or help with other compilers, please refer
 to the relevant manuals.
 
-@node Test Logging, Subunit Support, Determining Test Coverage, Advanced Features
+@node Finding Memory Leaks, Test Logging, Determining Test Coverage, Advanced Features
+@section Finding Memory Leaks
+
+It is possible to determine if any code under test leaks memory during
+a test. Check itself does not have an API for memory leak detection,
+however Valgrind can be used against a unit testing program to search
+for potential leaks.
+
+Before discussing memory leak detection, first a "memory leak" should be
+better defined. There are two primary definitions of a memory leak:
+
+@enumerate
+@item
+Memory that is allocated but not freed before a program terminates.
+However, it was possible for the program to free the memory if it had
+wanted to. Valgrind refers to these as "still reachable" leaks.
+@item
+Memory that is allocated, and any reference to the memory is lost.
+The program could not have freed the memory. Valgrind refers to these
+as "definitely lost" leaks.
+@end enumerate
+
+Valgrind uses the second definition by default when defining a memory leak.
+These leaks are the ones which are likely to cause a program issues due
+to heap depletion.
+
+If one wanted to run Valgrind against a unit testing program to determine
+if leaks are present, the following invocation of Valgrind will work:
+
+@example
+@verbatim
+valgrind --leak-check=full ${UNIT_TEST_PROGRAM}
+...
+==3979== LEAK SUMMARY:
+==3979==    definitely lost: 0 bytes in 0 blocks
+==3979==    indirectly lost: 0 bytes in 0 blocks
+==3979==      possibly lost: 0 bytes in 0 blocks
+==3979==    still reachable: 548 bytes in 24 blocks
+==3979==         suppressed: 0 bytes in 0 blocks
+@end verbatim
+@end example
+
+In that example, there were no "definitely lost" memory leaks found.
+However, why would there be such a large number of "still reachable"
+memory leaks? It turns out this is a consequence of using @code{fork()}
+to run a unit test in its own process memory space, which Check does by
+default on platforms with @code{fork()} available.
+
+Consider the example where a unit test program creates one suite with
+one test. The flow of the program will look like the following:
+
+@example
+@b{Main process:}       @b{Unit test process:}
+create suite
+srunner_run_all()
+   fork unit test     unit test process created
+   wait for test      start test
+   ...                end test
+   ...                exit(0)
+   test complete
+report result
+free suite
+exit(0)
+@end example
+
+The unit testing process has a copy of all memory that the main process
+allocated. In this example, that would include the suite allocated in
+main. When the unit testing process calls @code{exit(0)}, the suite
+allocated in @code{main()} is reachable but not freed. As the unit test
+has no reason to do anything besides die when its test is finished, and
+it has no reasonable way to free everything before it dies, Valgrind
+reports that some memory is still reachable but not freed.
+
+If the "still reachable" memory leaks are a concern, and one required that
+the unit test program report that there were no memory leaks regardless
+of the type, then the unit test program needs to run without fork. To
+accomplish this, either define the @code{CK_FORK=no} environment variable,
+or use the @code{srunner_set_fork_status()} function to set the fork mode
+as @code{CK_NOFORK} for all suite runners.
+
+Running the same unit test program by disabling @code{fork()} results
+in the following:
+
+@example
+@verbatim
+CK_FORK=no valgrind --leak-check=full ${UNIT_TEST_PROGRAM}
+...
+==4924== HEAP SUMMARY:
+==4924==     in use at exit: 0 bytes in 0 blocks
+==4924==   total heap usage: 482 allocs, 482 frees, 122,351 bytes allocated
+==4924== 
+==4924== All heap blocks were freed -- no leaks are possible
+@end verbatim
+@end example
+
+@node Test Logging, Subunit Support, Finding Memory Leaks, Advanced Features
 @section Test Logging
 
 @findex srunner_set_log
