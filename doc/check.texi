@@ -199,7 +199,7 @@ development environments for C programming.  The author designed Check
 around Autoconf/Automake (thus the name Check: @command{make check} is
 the idiom used for testing with Autoconf/Automake). Note however that
 Autoconf/Automake are NOT necessary to use Check; any build system
-is sufficent. The test failure messages thrown up by Check use the
+is sufficient. The test failure messages thrown up by Check use the
 common idiom of @samp{filename:linenumber:message} used by @command{gcc}
 and family to report problems in source code.  With (X)Emacs, the output
 of Check allows one to quickly navigate to the location of the unit test
@@ -536,7 +536,7 @@ We set up a directory structure as follows:
 @end example
 
 The top-level @file{CMakeLists.txt} contains the configuration checks
-for avaialble libraries and types, and also defines sub-directories
+for available libraries and types, and also defines sub-directories
 to process. The @file{cmake/FindCheck.cmake} file contains instructions
 for locating Check on the system and setting up the build to use it.
 If the system does not have pkg-config installed, @file{cmake/FindCheck.cmake}
@@ -600,7 +600,7 @@ $ nmake
 @end example
 
 Now build and run the @command{check_money} test, with either @command{make
-test} on a Unix-compatiable system or @command{nmake test} if on Windows using MSVC.
+test} on a Unix-compatible system or @command{nmake test} if on Windows using MSVC.
 If all goes well, the command should report that our tests
 passed.  No surprise, because there aren't any tests to fail.
 
