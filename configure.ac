@@ -139,6 +139,9 @@ AC_PROG_LIBTOOL
 
 # add these options to CFLAGS if the compiler supports them
 AC_DEFUN([AX_CFLAGS_ADD],[AX_C_CHECK_FLAG($1, , , CFLAGS="$CFLAGS $1")])
+# Do not use the -ansi flag, currently there is a bug in MinGW/MinGW-w64
+# which prevents Check from compiling. Add after this is resolved:
+#    sourceforge.net/p/mingw/bugs/2024
 #AX_CFLAGS_WARN_ALL_ANSI
 AX_CFLAGS_ADD([-Wextra])
 AX_CFLAGS_ADD([-Wstrict-prototypes])
