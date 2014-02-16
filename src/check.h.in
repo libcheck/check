@@ -387,7 +387,7 @@ static void __testname (int _i CK_ATTRIBUTE_UNUSED)\
  */
 #define fail_if(expr, ...)\
   (expr) ? \
-     _ck_assert_failed(__FILE__, __LINE__, "Failure '"#expr"' occured" , ## __VA_ARGS__, NULL) \
+     _ck_assert_failed(__FILE__, __LINE__, "Failure '"#expr"' occurred" , ## __VA_ARGS__, NULL) \
      : _mark_point(__FILE__, __LINE__)
 
 /*
@@ -462,8 +462,8 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
  */
 #define ck_abort_msg(...) _ck_assert_failed(__FILE__, __LINE__, "Failed" , ## __VA_ARGS__, NULL)
 
-/* Signed and unsigned integer comparsion macros with improved output compared to ck_assert(). */
-/* OP may be any comparion operator. */
+/* Signed and unsigned integer comparison macros with improved output compared to ck_assert(). */
+/* OP may be any comparison operator. */
 #define _ck_assert_int(X, OP, Y) do { \
   intmax_t _ck_x = (X); \
   intmax_t _ck_y = (Y); \
@@ -633,7 +633,7 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
  */
 #define ck_assert_uint_ge(X, Y) _ck_assert_uint(X, >=, Y)
 
-/* String comparsion macros with improved output compared to ck_assert() */
+/* String comparison macros with improved output compared to ck_assert() */
 /* OP might be any operator that can be used in '0 OP strcmp(X,Y)' comparison */
 /* The x and y parameter swap in strcmp() is needed to handle >, >=, <, <= operators */
 #define _ck_assert_str(X, OP, Y) do { \
@@ -721,7 +721,7 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
  */
 #define ck_assert_str_ge(X, Y) _ck_assert_str(X, >=, Y)
 
-/* Pointer comparsion macros with improved output compared to ck_assert(). */
+/* Pointer comparison macros with improved output compared to ck_assert(). */
 /* OP may only be == or !=  */
 #define _ck_assert_ptr(X, OP, Y) do { \
   const void* _ck_x = (X); \
@@ -861,17 +861,17 @@ CK_DLL_EXP enum ck_result_ctx CK_EXPORT tr_ctx(TestResult * tr);
 CK_DLL_EXP const char *CK_EXPORT tr_msg(TestResult * tr);
 
 /**
- * Retrieve line number at which a failure occured, if applicable.
+ * Retrieve line number at which a failure occurred, if applicable.
  *
  * @return If the test resulted in a failure, returns the line number
- *          that the failure occured on; otherwise returns -1.
+ *          that the failure occurred on; otherwise returns -1.
  *
  * @since 0.6.0
  */
 CK_DLL_EXP int CK_EXPORT tr_lno(TestResult * tr);
 
 /**
- * Retrieve file name at which a failure occured, if applicable.
+ * Retrieve file name at which a failure occurred, if applicable.
  *
  * @return If the test resulted in a failure, returns a string
  *          containing the name of the file where the failure
@@ -1052,7 +1052,7 @@ CK_DLL_EXP void CK_EXPORT srunner_print(SRunner * sr,
  * given file.
  *
  * Note: log file setting is an initialize only operation -- it should
- * be done immediatly after SRunner creation, and the log file can't be
+ * be done immediately after SRunner creation, and the log file can't be
  * changed after being set.
  *
  * This setting does not conflict with the other log output types;
@@ -1092,7 +1092,7 @@ CK_DLL_EXP const char *CK_EXPORT srunner_log_fname(SRunner * sr);
  * given file.
  *
  * Note: XML file setting is an initialize only operation -- it should
- * be done immediatly after SRunner creation, and the XML file can't be
+ * be done immediately after SRunner creation, and the XML file can't be
  * changed after being set.
  *
  * This setting does not conflict with the other log output types;
@@ -1132,7 +1132,7 @@ CK_DLL_EXP const char *CK_EXPORT srunner_xml_fname(SRunner * sr);
  * given file.
  *
  * Note: TAP file setting is an initialize only operation -- it should
- * be done immediatly after SRunner creation, and the TAP file can't be
+ * be done immediately after SRunner creation, and the TAP file can't be
  * changed after being set.
  *
  * This setting does not conflict with the other log output types;
