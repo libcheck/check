@@ -1169,8 +1169,6 @@ CK_DLL_EXP const char *CK_EXPORT srunner_tap_fname(SRunner * sr);
 
 /**
  * Enum describing the current fork usage.
- *
- * @since 0.8.0
  */
 enum fork_status
 {
