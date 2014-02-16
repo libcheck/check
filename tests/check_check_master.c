@@ -38,9 +38,9 @@ static master_test_t master_tests[] = {
 #if defined(__GNUC__)
   { "Simple Tests", CK_FAILURE, "Assertion '4 == 5' failed" },
 #endif /* __GNUC__ */
-  { "Simple Tests", CK_FAILURE, "Failure '2 != 3' occured" },
+  { "Simple Tests", CK_FAILURE, "Failure '2 != 3' occurred" },
 #if defined(__GNUC__)
-  { "Simple Tests", CK_FAILURE, "Failure '4 != 5' occured" },
+  { "Simple Tests", CK_FAILURE, "Failure '4 != 5' occurred" },
 #endif /* __GNUC__ */
   { "Simple Tests", CK_FAILURE, "3 != 4" },
   { "Simple Tests", CK_FAILURE, "5 != 6" },
