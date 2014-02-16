@@ -772,7 +772,8 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
 CK_DLL_EXP void CK_EXPORT _mark_point(const char *file, int line);
 
 /**
- * Enum describing the possible results of a test */
+ * Enum describing the possible results of a test
+ */
 enum test_result
 {
     CK_TEST_RESULT_INVALID,     /**< Default value; should not encounter this */
