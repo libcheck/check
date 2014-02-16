@@ -27,61 +27,9 @@
 
 #include <check_stdint.h>
 
-/* Check: a unit test framework for C
-
-   Check is a unit test framework for C. It features a simple
-   interface for defining unit tests, putting little in the way of the
-   developer. Tests are run in a separate address space, so Check can
-   catch both assertion failures and code errors that cause
-   segmentation faults or other signals. The output from unit tests
-   can be used within source code editors and IDEs.
-
-   Unit tests are created with the START_TEST/END_TEST macro
-   pair. The mark_point macro is useful for trapping the location 
-   of signals and/or early exits. The following calls are used for
-   creating checks within unit tests, where ... represents arguments
-   given to a printf:
-      Asserting an expression:
-         ck_assert(expr)
-         ck_assert_msg(expr, ...)
-      Aborting a test:
-         ck_abort()
-         ck_abort_msg(...)
-      Check the relationship between two integers:
-         ck_assert_int_eq
-         ck_assert_int_ne
-         ck_assert_int_lt
-         ck_assert_int_le
-         ck_assert_int_gt
-         ck_assert_int_ge
-      Check the relationship between two strings:
-         ck_assert_str_eq
-         ck_assert_str_ne
-         ck_assert_str_lt
-         ck_assert_str_le
-         ck_assert_str_gt
-         ck_assert_str_ge
-      Check the relationship between two pointers:
-         ck_assert_ptr_eq
-         ck_assert_ptr_ne
-
-   Test cases are created with tcase_create, unit tests are added
-   with tcase_add_test
-
-
-   Suites are created with suite_create; test cases are added
-   with suite_add_tcase
-
-   Suites are run through an SRunner, which is created with
-   srunner_create. Additional suites can be added to an SRunner with
-   srunner_add_suite. An SRunner is freed with srunner_free, which also
-   frees all suites added to the runner. 
-
-   Use srunner_run_all to run a suite and print results.
-
+/*
    Macros and functions starting with _ (underscore) are internal and
    may change without notice. You have been warned!.
-
 */
 
 
