@@ -35,6 +35,13 @@ START_TEST(loop_early_exit_allowed_exit)
 }
 END_TEST
 
+START_TEST(loop_early_exit_signal_segv)
+{
+	raise (SIGSEGV);
+	ck_abort_msg("Should've exitted...");
+}
+END_TEST
+
 Suite *make_exit_suite(void)
 {
   Suite *s;
@@ -48,5 +55,6 @@ Suite *make_exit_suite(void)
   tcase_add_exit_test(tc,test_early_exit_with_allowed_error,-1);
   tcase_add_loop_test(tc,loop_early_exit_normal,0,5);
   tcase_add_loop_exit_test(tc,loop_early_exit_allowed_exit,-2,0,5);
+  tcase_add_loop_test_raise_signal(tc, loop_early_exit_signal_segv, SIGSEGV, 0, 5);
   return s;
 }

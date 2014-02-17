@@ -235,8 +235,6 @@ CK_DLL_EXP TCase *CK_EXPORT tcase_create(const char *name);
  *
  * The added test is expected to terminate by throwing the given signal
  *
- * @todo add a test case; this is untested as part of Check's tests.
- *
  * @param tc test case to add test to
  * @param tf function to add to test case
  * @param signal expected signal for test function to throw in order for
