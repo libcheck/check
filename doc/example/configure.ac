@@ -3,6 +3,7 @@
 # Prelude.
 AC_PREREQ([2.59])
 AC_INIT([Money], [0.3], [check-devel AT lists.sourceforge.net])
+AM_PROG_AR
 
 # unique source file --- primitive safety check 
 AC_CONFIG_SRCDIR([src/money.c])
@@ -20,12 +21,8 @@ AC_PROG_LIBTOOL
 
 # Checks for libraries.
 
-# This macro is defined in check.m4 and tests if check.h and
-# libcheck.a are installed in your system. It sets CHECK_CFLAGS and
-# CHECK_LIBS accordingly.  
-#  AM_PATH_CHECK([MINIMUM-VERSION,
-#                [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
-AM_PATH_CHECK()
+PKG_CHECK_MODULES([CHECK], [check >= 0.9.6])
+AM_PROG_CC_C_O
 
 # Checks for header files.
 AC_HEADER_STDC
