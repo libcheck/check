@@ -137,6 +137,9 @@ AC_PROG_LN_S
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 AC_PROG_LIBTOOL
 
+# initialize libtool to build .la files
+LT_INIT
+
 # add these options to CFLAGS if the compiler supports them
 AC_DEFUN([AX_CFLAGS_ADD],[AX_C_CHECK_FLAG($1, , , CFLAGS="$CFLAGS $1")])
 # Do not use the -ansi flag, currently there is a bug in MinGW/MinGW-w64
