@@ -804,6 +804,23 @@ Suite *make_sub2_suite(void)
   return s;
 }
 
+void exit_handler (int ev, void *arg)
+{
+  // This exit handler should never be executed
+  while(1)
+  {
+    sleep(1);
+  }
+}
+
+START_TEST(test_ignore_exit_handlers)
+{
+  on_exit(exit_handler, NULL);
+  ck_abort();
+#define LINENO_ck_ignore_exit_handlers _STR(__LINE__)
+}
+END_TEST
+
 void init_master_tests_lineno(int num_master_tests) {
   const char * lineno[] = {
 /* Simple Tests */
@@ -1017,6 +1034,7 @@ void init_master_tests_lineno(int num_master_tests) {
 #if MEMORY_LEAKING_TESTS_ENABLED
     LINENO_invalid_set_fork_status,
 #endif
+    LINENO_ck_ignore_exit_handlers,
 #endif /* HAVE_FORK */
 
 /* Core */
@@ -1067,6 +1085,7 @@ Suite *make_sub_suite(void)
 #if defined(HAVE_FORK) && HAVE_FORK==1
   TCase *tc_messaging_and_fork;
   TCase *tc_errors;
+  TCase *tc_exit_handlers;
 #endif
 
   s = suite_create("Check Servant");
@@ -1109,6 +1128,7 @@ Suite *make_sub_suite(void)
 #if defined(HAVE_FORK) && HAVE_FORK==1
   tc_messaging_and_fork = tcase_create("Msg and fork Tests");
   tc_errors = tcase_create("Check Errors Tests");
+  tc_exit_handlers = tcase_create("Check Ignore Exit Handlers");
 #endif /* HAVE_FORK */
 
   suite_add_tcase (s, tc_simple);
@@ -1139,6 +1159,7 @@ Suite *make_sub_suite(void)
 #if defined(HAVE_FORK) && HAVE_FORK == 1
   suite_add_tcase (s, tc_messaging_and_fork);
   suite_add_tcase (s, tc_errors);
+  suite_add_tcase (s, tc_exit_handlers);
 #endif
 
   tcase_add_test (tc_simple, test_lno);
@@ -1342,6 +1363,8 @@ Suite *make_sub_suite(void)
 #if MEMORY_LEAKING_TESTS_ENABLED
   tcase_add_test_raise_signal (tc_errors, test_invalid_set_fork_status, 2);
 #endif
+
+  tcase_add_test (tc_exit_handlers, test_ignore_exit_handlers);
 #endif /* HAVE_FORK */
 
   return s;
