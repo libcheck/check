@@ -146,6 +146,8 @@ AC_DEFUN([AX_CFLAGS_ADD],[AX_C_CHECK_FLAG($1, , , CFLAGS="$CFLAGS $1")])
 # which prevents Check from compiling. Add after this is resolved:
 #    sourceforge.net/p/mingw/bugs/2024
 #AX_CFLAGS_WARN_ALL_ANSI
+# Do not use the -pedantic flag, as on solaris it has a different
+# meaning than on gcc. Using the flag causes the build to fail.
 AX_CFLAGS_ADD([-Wextra])
 AX_CFLAGS_ADD([-Wstrict-prototypes])
 AX_CFLAGS_ADD([-Wmissing-prototypes])
