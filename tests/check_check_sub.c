@@ -167,6 +167,15 @@ START_TEST(test_ck_assert_int_eq)
 }
 END_TEST
 
+START_TEST(test_ck_assert_int_eq_with_mod)
+{
+  int d = 2;
+  int f = 1;
+  ck_assert_int_eq(3%d, 2%f);
+  #define LINENO_ck_assert_int_eq_with_mod _STR(__LINE__)
+}
+END_TEST
+
 START_TEST(test_ck_assert_int_ne)
 {
   int x = 3;
@@ -178,6 +187,15 @@ START_TEST(test_ck_assert_int_ne)
 }
 END_TEST
 
+START_TEST(test_ck_assert_int_ne_with_mod)
+{
+  int d = 2;
+  int f = 2;
+  ck_assert_int_ne(3%d, 3%f);
+  #define LINENO_ck_assert_int_ne_with_mod _STR(__LINE__)
+}
+END_TEST
+
 START_TEST(test_ck_assert_int_lt)
 {
   int x = 2;
@@ -185,6 +203,15 @@ START_TEST(test_ck_assert_int_lt)
   ck_assert_int_lt(x, y);
   ck_assert_int_lt(x, x);
   #define LINENO_ck_assert_int_lt _STR(__LINE__)
+}
+END_TEST
+
+START_TEST(test_ck_assert_int_lt_with_mod)
+{
+  int d = 2;
+  int f = 1;
+  ck_assert_int_lt(3%d, 3%f);
+  #define LINENO_ck_assert_int_lt_with_mod _STR(__LINE__)
 }
 END_TEST
 
@@ -199,6 +226,15 @@ START_TEST(test_ck_assert_int_le)
 }
 END_TEST
 
+START_TEST(test_ck_assert_int_le_with_mod)
+{
+  int d = 2;
+  int f = 1;
+  ck_assert_int_le(3%d, 2%f);
+  #define LINENO_ck_assert_int_le_with_mod _STR(__LINE__)
+}
+END_TEST
+
 START_TEST(test_ck_assert_int_gt)
 {
   int x = 2;
@@ -206,6 +242,15 @@ START_TEST(test_ck_assert_int_gt)
   ck_assert_int_gt(y, x);
   ck_assert_int_gt(y, y);
   #define LINENO_ck_assert_int_gt _STR(__LINE__)
+}
+END_TEST
+
+START_TEST(test_ck_assert_int_gt_with_mod)
+{
+  int d = 1;
+  int f = 2;
+  ck_assert_int_gt(3%d, 3%f);
+  #define LINENO_ck_assert_int_gt_with_mod _STR(__LINE__)
 }
 END_TEST
 
@@ -217,6 +262,15 @@ START_TEST(test_ck_assert_int_ge)
   ck_assert_int_ge(y, x);
   ck_assert_int_ge(x, y);
   #define LINENO_ck_assert_int_ge _STR(__LINE__)
+}
+END_TEST
+
+START_TEST(test_ck_assert_int_ge_with_mod)
+{
+  int d = 1;
+  int f = 3;
+  ck_assert_int_ge(3%d, 4%f);
+  #define LINENO_ck_assert_int_ge_with_mod _STR(__LINE__)
 }
 END_TEST
 
@@ -240,6 +294,15 @@ START_TEST(test_ck_assert_uint_eq)
 }
 END_TEST
 
+START_TEST(test_ck_assert_uint_eq_with_mod)
+{
+  int d = 2;
+  int f = 1;
+  ck_assert_uint_eq(3%d, 1%f);
+  #define LINENO_ck_assert_uint_eq_with_mod _STR(__LINE__)
+}
+END_TEST
+
 START_TEST(test_ck_assert_uint_ne)
 {
   unsigned int x = 3;
@@ -251,6 +314,15 @@ START_TEST(test_ck_assert_uint_ne)
 }
 END_TEST
 
+START_TEST(test_ck_assert_uint_ne_with_mod)
+{
+  int d = 1;
+  int f = 1;
+  ck_assert_uint_ne(1%d, 1%f);
+  #define LINENO_ck_assert_uint_ne_with_mod _STR(__LINE__)
+}
+END_TEST
+
 START_TEST(test_ck_assert_uint_lt)
 {
   unsigned int x = 2;
@@ -258,6 +330,15 @@ START_TEST(test_ck_assert_uint_lt)
   ck_assert_uint_lt(x, y);
   ck_assert_uint_lt(x, x);
   #define LINENO_ck_assert_uint_lt _STR(__LINE__)
+}
+END_TEST
+
+START_TEST(test_ck_assert_uint_lt_with_mod)
+{
+  int d = 2;
+  int f = 1;
+  ck_assert_uint_lt(3%d, 1%f);
+  #define LINENO_ck_assert_uint_lt_with_mod _STR(__LINE__)
 }
 END_TEST
 
@@ -272,6 +353,15 @@ START_TEST(test_ck_assert_uint_le)
 }
 END_TEST
 
+START_TEST(test_ck_assert_uint_le_with_mod)
+{
+  int d = 2;
+  int f = 1;
+  ck_assert_uint_le(3%d, 1%f);
+  #define LINENO_ck_assert_uint_le_with_mod _STR(__LINE__)
+}
+END_TEST
+
 START_TEST(test_ck_assert_uint_gt)
 {
   unsigned int x = 2;
@@ -279,6 +369,15 @@ START_TEST(test_ck_assert_uint_gt)
   ck_assert_uint_gt(y, x);
   ck_assert_uint_gt(y, y);
   #define LINENO_ck_assert_uint_gt _STR(__LINE__)
+}
+END_TEST
+
+START_TEST(test_ck_assert_uint_gt_with_mod)
+{
+  int d = 1;
+  int f = 2;
+  ck_assert_uint_gt(1%d, 3%f);
+  #define LINENO_ck_assert_uint_gt_with_mod _STR(__LINE__)
 }
 END_TEST
 
@@ -290,6 +389,15 @@ START_TEST(test_ck_assert_uint_ge)
   ck_assert_uint_ge(y, x);
   ck_assert_uint_ge(x, y);
   #define LINENO_ck_assert_uint_ge _STR(__LINE__)
+}
+END_TEST
+
+START_TEST(test_ck_assert_uint_ge_with_mod)
+{
+  int d = 1;
+  int f = 2;
+  ck_assert_uint_ge(1%d, 3%f);
+  #define LINENO_ck_assert_uint_ge_with_mod _STR(__LINE__)
 }
 END_TEST
 
@@ -727,18 +835,30 @@ void init_master_tests_lineno(int num_master_tests) {
     LINENO_ck_assert,
     LINENO_ck_assert_null,
     LINENO_ck_assert_int_eq,
-    LINENO_ck_assert_int_eq,
+    LINENO_ck_assert_int_eq_with_mod,
     LINENO_ck_assert_int_ne,
+    LINENO_ck_assert_int_ne_with_mod,
     LINENO_ck_assert_int_lt,
+    LINENO_ck_assert_int_lt_with_mod,
     LINENO_ck_assert_int_le,
+    LINENO_ck_assert_int_le_with_mod,
     LINENO_ck_assert_int_gt,
+    LINENO_ck_assert_int_gt_with_mod,
     LINENO_ck_assert_int_ge,
+    LINENO_ck_assert_int_ge_with_mod,
     LINENO_ck_assert_int_expr,
+    LINENO_ck_assert_int_eq,
+    LINENO_ck_assert_int_eq_with_mod,
     LINENO_ck_assert_uint_ne,
+    LINENO_ck_assert_uint_ne_with_mod,
     LINENO_ck_assert_uint_lt,
+    LINENO_ck_assert_uint_lt_with_mod,
     LINENO_ck_assert_uint_le,
+    LINENO_ck_assert_uint_le_with_mod,
     LINENO_ck_assert_uint_gt,
+    LINENO_ck_assert_uint_gt_with_mod,
     LINENO_ck_assert_uint_ge,
+    LINENO_ck_assert_uint_ge_with_mod,
     LINENO_ck_assert_uint_expr,
     LINENO_ck_assert_str_eq,
     LINENO_ck_assert_str_ne,
@@ -1050,18 +1170,30 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_simple, test_ck_assert);
   tcase_add_test (tc_simple, test_ck_assert_null);
   tcase_add_test (tc_simple, test_ck_assert_int_eq);
+  tcase_add_test (tc_simple, test_ck_assert_int_eq_with_mod);
   tcase_add_test (tc_simple, test_ck_assert_int_ne);
+  tcase_add_test (tc_simple, test_ck_assert_int_ne_with_mod);
   tcase_add_test (tc_simple, test_ck_assert_int_lt);
+  tcase_add_test (tc_simple, test_ck_assert_int_lt_with_mod);
   tcase_add_test (tc_simple, test_ck_assert_int_le);
+  tcase_add_test (tc_simple, test_ck_assert_int_le_with_mod);
   tcase_add_test (tc_simple, test_ck_assert_int_gt);
+  tcase_add_test (tc_simple, test_ck_assert_int_gt_with_mod);
   tcase_add_test (tc_simple, test_ck_assert_int_ge);
+  tcase_add_test (tc_simple, test_ck_assert_int_ge_with_mod);
   tcase_add_test (tc_simple, test_ck_assert_int_expr);
   tcase_add_test (tc_simple, test_ck_assert_uint_eq);
+  tcase_add_test (tc_simple, test_ck_assert_uint_eq_with_mod);
   tcase_add_test (tc_simple, test_ck_assert_uint_ne);
+  tcase_add_test (tc_simple, test_ck_assert_uint_ne_with_mod);
   tcase_add_test (tc_simple, test_ck_assert_uint_lt);
+  tcase_add_test (tc_simple, test_ck_assert_uint_lt_with_mod);
   tcase_add_test (tc_simple, test_ck_assert_uint_le);
+  tcase_add_test (tc_simple, test_ck_assert_uint_le_with_mod);
   tcase_add_test (tc_simple, test_ck_assert_uint_gt);
+  tcase_add_test (tc_simple, test_ck_assert_uint_gt_with_mod);
   tcase_add_test (tc_simple, test_ck_assert_uint_ge);
+  tcase_add_test (tc_simple, test_ck_assert_uint_ge_with_mod);
   tcase_add_test (tc_simple, test_ck_assert_uint_expr);
   tcase_add_test (tc_simple, test_ck_assert_str_eq);
   tcase_add_test (tc_simple, test_ck_assert_str_ne);

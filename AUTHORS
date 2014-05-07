@@ -45,6 +45,7 @@ Contributors:
     lod                   (compiler warning)
     Bill Kolokithas       (more checkmk directives)
     Julien Godin          (configure.ac patch for Check example)
+    Kosma Moczek          (fix for string formatting in ck_assert_*() methods with %)
 
 Anybody who has contributed code to Check or Check's build system is
 considered an author.  Send patches to this file to 
