@@ -47,6 +47,7 @@ Contributors:
     Julien Godin          (configure.ac patch for Check example)
     Kosma Moczek          (fix for string formatting in ck_assert_*() methods with %)
     Tim Müller            (Use _exit() instead of exit() on _ck_assert_failed())
+    Georg Sauthoff        (Solaris support)
 
 Anybody who has contributed code to Check or Check's build system is
 considered an author.  Send patches to this file to 
