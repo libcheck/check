@@ -12,7 +12,7 @@
 #include "config.h"
 #include "check_check.h"
 
-int main ()
+int main (int argc, char ** argv)
 {
     int n;
     SRunner *sr;

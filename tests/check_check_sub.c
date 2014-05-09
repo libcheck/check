@@ -804,6 +804,7 @@ Suite *make_sub2_suite(void)
   return s;
 }
 
+void exit_handler(int, void*);
 void exit_handler (int ev, void *arg)
 {
   // This exit handler should never be executed
