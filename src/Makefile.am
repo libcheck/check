@@ -34,7 +34,7 @@ HFILES =\
 
 EXPORT_SYM	= exported.sym
 $(EXPORT_SYM): check.h.in
-	sed -n -e 's/^..*CK_EXPORT[[:space:]][[:space:]]*\([[:alnum:]_][[:alnum:]_]*\)..*$$/\1/p' @top_srcdir@/src/check.h.in > $@
+	${SED} -n -e 's/^..*CK_EXPORT[[:space:]][[:space:]]*\([[:alnum:]_][[:alnum:]_]*\)..*$$/\1/p' @top_srcdir@/src/check.h.in > $@
 
 libcheck_la_DEPENDENCIES= $(EXPORT_SYM)
 libcheck_la_LDFLAGS	= -no-undefined -export-symbols $(EXPORT_SYM)

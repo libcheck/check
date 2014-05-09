@@ -126,6 +126,7 @@ esac], [enable_timer_replacement=autodetect ])
 
 
 # Checks for programs.
+AC_PROG_SED
 AC_PROG_AWK
 AC_PROG_CC
 # Automake wants this for per-target CFLAGS
