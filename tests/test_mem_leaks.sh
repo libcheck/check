@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 UNIT_TEST=./check_mem_leaks
 VALGRIND_LOG_FILE=${UNIT_TEST}.valgrind

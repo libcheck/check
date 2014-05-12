@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 . ./test_vars
 . $(dirname $0)/test_output_strings

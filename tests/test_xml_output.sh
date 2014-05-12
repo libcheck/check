@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 OUTPUT_FILE=test.xml
 CK_DEFAULT_TIMEOUT=4
