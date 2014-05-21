@@ -804,6 +804,7 @@ Suite *make_sub2_suite(void)
   return s;
 }
 
+#if defined(HAVE_FORK) && HAVE_FORK == 1
 void exit_handler();
 void exit_handler ()
 {
@@ -825,6 +826,7 @@ START_TEST(test_ignore_exit_handlers)
 #define LINENO_ck_ignore_exit_handlers _STR(__LINE__)
 }
 END_TEST
+#endif /* HAVE_FORK */
 
 void init_master_tests_lineno(int num_master_tests) {
   const char * lineno[] = {
