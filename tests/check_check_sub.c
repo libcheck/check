@@ -804,8 +804,8 @@ Suite *make_sub2_suite(void)
   return s;
 }
 
-void exit_handler(int, void*);
-void exit_handler (int ev, void *arg)
+void exit_handler();
+void exit_handler ()
 {
   // This exit handler should never be executed
   while(1)
@@ -816,7 +816,11 @@ void exit_handler (int ev, void *arg)
 
 START_TEST(test_ignore_exit_handlers)
 {
-  on_exit(exit_handler, NULL);
+  int result = atexit(exit_handler);
+  if(result != 0)
+  {
+    ck_abort_msg("Failed to set an exit handler, test cannot proceed");
+  }
   ck_abort();
 #define LINENO_ck_ignore_exit_handlers _STR(__LINE__)
 }
