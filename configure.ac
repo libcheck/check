@@ -161,6 +161,9 @@ AX_CFLAGS_ADD([-Winit-self])
 AX_CFLAGS_ADD([-Wmissing-include-dirs])
 AX_CFLAGS_ADD([-Wswitch-default])
 AX_CFLAGS_ADD([-Wunknown-pragmas])
+# The following flag is to enable C99 support on Solaris, which is
+# necessary for variable macros in check.h
+AX_CFLAGS_ADD([-qlanglvl=stdc99])
 
 AC_CHECK_PROGS(GCOV, gcov, false)
 AC_CHECK_PROGS(LCOV, lcov, false)
