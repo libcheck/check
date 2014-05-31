@@ -1,5 +1,5 @@
-In development:
-# Mentioning Check 0.9.12 for now, to fix distcheck target until next release
+Fri May 30, 2014: Released Check 0.9.13
+  based on r1137 (2014-05-26 21:03:09 +0000)
 
 * When a test assertion fails, exit() was invoked. This results in any
   registered exit handlers being invoked. A test should not be relied
