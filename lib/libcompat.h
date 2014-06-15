@@ -117,6 +117,18 @@ CK_DLL_EXP const char *strsignal(int sig);
 #endif /* !HAVE_DECL_STRSIGNAL */
 
 /* 
+ * On the AIX platform, floor() is not in libm, but
+ * __floor() is an internal function in the compiler,
+ * and a header defines floor() to __floor().
+ * For whatever reason, the headers included in Check
+ * do not pull that in. If floor() is missing but __floor()
+ * is available, make the definition.
+ */
+#if !HAVE_FLOOR && HAVE___FLOOR
+#define floor __floor
+#endif /* !HAVE_FLOOR && HAVE___FLOOR */
+
+/*
  * On systems where clock_gettime() is not available, or
  * on systems where some clocks may not be supported, the
  * definition for CLOCK_MONOTONIC and CLOCK_REALTIME may not
