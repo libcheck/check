@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/usr/bin/env sh
 
 TESTS_RUN=0
 TESTS_PASSED=0
