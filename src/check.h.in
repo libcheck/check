@@ -279,15 +279,20 @@ CK_DLL_EXP void CK_EXPORT _tcase_add_test(TCase * tc, TFun tf,
 /**
  * Add unchecked fixture setup/teardown functions to a test case
  *
- * If unchecked fixture functions are run at the start and end of the
- * test case, and not before and after unit tests. Note that unchecked
- * setup/teardown functions are not run in a separate address space,
+ * Unchecked fixture functions are run at the start and end of the
+ * test case, and not before and after unit tests. Further,
+ * unchecked fixture functions are not run in a separate address space,
  * like test functions, and so must not exit or signal (e.g.,
- * segfault)
+ * segfault).
  *
  * Also, when run in CK_NOFORK mode, unchecked fixture functions may
- * lead to different unit test behavior IF unit tests change data
+ * lead to different unit test behavior if unit tests change data
  * setup by the fixture functions.
+ *
+ * Note that if a setup function fails, the remaining setup functions
+ * will be omitted, as will the test case and the teardown functions.
+ * If a teardown function fails the remaining teardown functins will be
+ * omitted.
  *
  * @param tc test case to add unchecked fixture setup/teardown to
  * @param setup function to add to be executed before the test case;
@@ -300,18 +305,22 @@ CK_DLL_EXP void CK_EXPORT tcase_add_unchecked_fixture(TCase * tc, SFun setup,
                                                       SFun teardown);
 
 /**
- *  Add fixture setup/teardown functions to a test case
+ * Add checked fixture setup/teardown functions to a test case
  *
- * Checked fixture functions are run before and after unit
- * tests. Unlike unchecked fixture functions, checked fixture
- * functions are run in the same separate address space as the test
- * program, and thus the test function will survive signals or
- * unexpected exits in the fixture function. Also, IF the setup
+ * Checked fixture functions are run before and after each unit test inside
+ * of the address space of the test. Thus, if using CK_FORK
+ * mode the separate process running the unit test will survive signals
+ * or unexpected exits in the fixture function. Also, if the setup
  * function is idempotent, unit test behavior will be the same in
  * CK_FORK and CK_NOFORK modes.
  *
  * However, since fixture functions are run before and after each unit
  * test, they should not be expensive code.
+ *
+ * Note that if a setup function fails, the remaining setup functions
+ * will be omitted, as will the test and the teardown functions. If a
+ * teardown function fails the remaining teardown functins will be
+ * omitted.
  *
  * @param tc test case to add checked fixture setup/teardown to
  * @param setup function to add to be executed before each unit test in

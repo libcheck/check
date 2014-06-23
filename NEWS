@@ -3,6 +3,12 @@ In Development:
 
 * Changes to (unofficially for now) support Solaris and AIX platforms.
 
+* Fix issue with checked teardown functions in CK_NOFORK mode. If
+  the teardown function called an assertion that failed, an
+  infinate loop would result. Bug#98. As a result of the change, for now
+  checked teardown functions that fail in CK_NOFORK mode will
+  not cause the test to fail.
+
 
 Fri May 30, 2014: Released Check 0.9.13
   based on r1137 (2014-05-26 21:03:09 +0000)

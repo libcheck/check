@@ -376,14 +376,6 @@ START_TEST(test_ch_setup_two_setups_fork)
 }
 END_TEST
 
-/*
- * This test will fail without fork. It expects a checked teardown 
- * fixture to call ck_abort_msg. In fork mode this results in exit() 
- * being called, which signals to the parent process that the test 
- * failed. However, without fork, ck_abort_msg call longjmp, which 
- * jumps to right before the checked teardown fixtures are called.
- * This results in an infinate loop.
- */
 START_TEST(test_ch_teardown_fail)
 {
   TCase *tc;
@@ -428,6 +420,53 @@ START_TEST(test_ch_teardown_fail)
   free(tr);
 }
 END_TEST
+
+START_TEST(test_ch_teardown_fail_nofork)
+{
+  TCase *tc;
+  Suite *s;
+  SRunner *sr;
+  TestResult **tr;
+  char *strstat;
+  char *trm;
+
+  s = suite_create("Teardown Fail No Fork");
+  tc = tcase_create("Teardown Fail No Fork");
+  suite_add_tcase(s, tc);
+  tcase_add_test(tc,test_sub_pass);
+  tcase_add_checked_fixture(tc,NULL, teardown_sub_fail);
+  sr = srunner_create(s);
+  srunner_set_fork_status(sr, CK_NOFORK);
+  srunner_run_all(sr,CK_VERBOSE);
+
+  ck_assert_msg (srunner_ntests_failed(sr) == 1,
+	       "Failure counts not correct for checked teardown failure");
+  ck_assert_msg (srunner_ntests_run(sr) == 1,
+	       "Test run counts not correct for checked teardown failure");
+
+  strstat= sr_stat_str(sr);
+
+  ck_assert_msg(strcmp(strstat,
+		     "0%: Checks: 1, Failures: 1, Errors: 0") == 0,
+	      "SRunner stat string incorrect with checked setup failure");
+  free(strstat);
+
+  tr = srunner_failures(sr);
+  trm = tr_str(tr[0]);
+
+  if (strstr(trm,
+	     "check_check_fixture.c:135:S:Teardown Fail No Fork:test_sub_pass:0: Failed teardown")
+      == 0) {
+    snprintf(errm, sizeof(errm),
+	     "Bad failed checked teardown tr msg (%s)", trm);
+    
+    ck_abort_msg (errm);
+  }
+  free(trm);
+  free(tr);
+}
+END_TEST
+
 
 /*
  * This test will fail without fork, as it results in a checked
@@ -569,6 +608,7 @@ Suite *make_fixture_suite (void)
   tcase_add_test(tc,test_ch_setup_sig);
   tcase_add_test(tc,test_ch_setup_two_setups_fork);
   tcase_add_test(tc,test_ch_teardown_fail);
+  tcase_add_test(tc,test_ch_teardown_fail_nofork);
   tcase_add_test(tc,test_ch_teardown_sig);
   tcase_add_test(tc,test_ch_teardown_two_teardowns_fork);
 #endif
