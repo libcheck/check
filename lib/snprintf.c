@@ -850,7 +850,7 @@ rpl_vsnprintf(char *str, size_t size, const char *format, va_list args)
 				 * characters, in an implementation-defined
 				 * manner." (C99: 7.19.6.1, 8)
 				 */
-				if ((strvalue = va_arg(args, void *)) == NULL)
+				if ((strvalue = (const char *)va_arg(args, void *)) == NULL)
 					/*
 					 * We use the glibc format.  BSD prints
 					 * "0x0", SysV "0".
@@ -1513,7 +1513,7 @@ rpl_vasprintf(char **ret, const char *format, va_list ap)
 	VA_COPY(aq, ap);
 	len = vsnprintf(NULL, 0, format, aq);
 	VA_END_COPY(aq);
-	if (len < 0 || (*ret = malloc(size = len + 1)) == NULL)
+	if (len < 0 || (*ret = (char *)malloc(size = len + 1)) == NULL)
 		return -1;
 	return vsnprintf(*ret, size, format, ap);
 }
