@@ -86,7 +86,7 @@ static void srunner_fprint_results(FILE * file, SRunner * sr,
     for(check_list_front(resultlst); !check_list_at_end(resultlst);
         check_list_advance(resultlst))
     {
-        TestResult *tr = check_list_val(resultlst);
+        TestResult *tr = (TestResult *)check_list_val(resultlst);
 
         tr_fprint(file, tr, print_mode);
     }

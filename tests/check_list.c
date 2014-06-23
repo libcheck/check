@@ -82,12 +82,12 @@ START_TEST(test_add_end_and_next)
   check_list_add_end (lp, tval1);
   check_list_add_end (lp, tval2);
   check_list_front(lp);
-  ck_assert_msg (strcmp (tval1, check_list_val (lp)) == 0,
+  ck_assert_msg (strcmp (tval1, (char *)check_list_val (lp)) == 0,
 	       "List head val should equal first inserted val");
   check_list_advance (lp);
   ck_assert_msg (!check_list_at_end (lp),
 	       "List should not be at end after two adds and one next");
-  ck_assert_msg (strcmp (tval2, check_list_val (lp)) == 0,
+  ck_assert_msg (strcmp (tval2, (char *)check_list_val (lp)) == 0,
 	       "List val should equal second inserted val");
   check_list_advance(lp);
   ck_assert_msg (check_list_at_end (lp),
@@ -106,12 +106,12 @@ START_TEST(test_add_front_and_next)
   check_list_add_front (lp, tval1);
   check_list_add_front (lp, tval2);
   check_list_front(lp);
-  ck_assert_msg (strcmp (tval2, check_list_val (lp)) == 0,
+  ck_assert_msg (strcmp (tval2, (char *)check_list_val (lp)) == 0,
 	       "List head val should equal last inserted val");
   check_list_advance (lp);
   ck_assert_msg (!check_list_at_end (lp),
 	       "List should not be at end after two adds and one next");
-  ck_assert_msg (strcmp (tval1, check_list_val (lp)) == 0,
+  ck_assert_msg (strcmp (tval1, (char *)check_list_val (lp)) == 0,
 	       "List val should equal first inserted val");
   check_list_advance(lp);
   ck_assert_msg (check_list_at_end (lp),

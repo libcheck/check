@@ -80,7 +80,7 @@ int suite_tcase(Suite * s, const char *tcname)
     l = s->tclst;
     for(check_list_front(l); !check_list_at_end(l); check_list_advance(l))
     {
-        tc = check_list_val(l);
+        tc = (TCase *)check_list_val(l);
         if(strcmp(tcname, tc->name) == 0)
             return 1;
     }
@@ -97,7 +97,7 @@ static void suite_free(Suite * s)
     l = s->tclst;
     for(check_list_front(l); !check_list_at_end(l); check_list_advance(l))
     {
-        tcase_free(check_list_val(l));
+        tcase_free((TCase *)check_list_val(l));
     }
     check_list_free(s->tclst);
     free(s);
@@ -359,14 +359,14 @@ void srunner_free(SRunner * sr)
     l = sr->slst;
     for(check_list_front(l); !check_list_at_end(l); check_list_advance(l))
     {
-        suite_free(check_list_val(l));
+        suite_free((Suite *)check_list_val(l));
     }
     check_list_free(sr->slst);
 
     l = sr->resultlst;
     for(check_list_front(l); !check_list_at_end(l); check_list_advance(l))
     {
-        tr = check_list_val(l);
+        tr = (TestResult *)check_list_val(l);
         tr_free(tr);
     }
     check_list_free(sr->resultlst);
@@ -396,7 +396,7 @@ TestResult **srunner_failures(SRunner * sr)
     for(check_list_front(rlst); !check_list_at_end(rlst);
         check_list_advance(rlst))
     {
-        TestResult *tr = check_list_val(rlst);
+        TestResult *tr = (TestResult *)check_list_val(rlst);
 
         if(non_pass(tr->rtype))
             trarray[i++] = tr;
@@ -417,7 +417,7 @@ TestResult **srunner_results(SRunner * sr)
     for(check_list_front(rlst); !check_list_at_end(rlst);
         check_list_advance(rlst))
     {
-        trarray[i++] = check_list_val(rlst);
+        trarray[i++] = (TestResult *)check_list_val(rlst);
     }
     return trarray;
 }

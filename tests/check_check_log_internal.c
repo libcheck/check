@@ -24,7 +24,7 @@ START_TEST(test_init_logging_subunit)
   srunner_init_logging(sr, CK_SUBUNIT);
   check_list_front (sr->loglst);
   ck_assert_msg (!check_list_at_end(sr->loglst), "No entries in log list");
-  first_log = check_list_val(sr->loglst);
+  first_log = (Log *)check_list_val(sr->loglst);
   ck_assert_msg (first_log != NULL, "log is NULL");
   check_list_advance(sr->loglst);
   ck_assert_msg(check_list_at_end(sr->loglst), "More than one entry in log list");

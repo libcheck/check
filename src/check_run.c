@@ -145,7 +145,7 @@ static void srunner_iterate_suites(SRunner * sr,
     for(check_list_front(slst); !check_list_at_end(slst);
         check_list_advance(slst))
     {
-        Suite *s = check_list_val(slst);
+        Suite *s = (Suite *)check_list_val(slst);
 
         if(((sname != NULL) && (strcmp(sname, s->name) != 0))
            || ((tcname != NULL) && (!suite_tcase(s, tcname))))
@@ -158,7 +158,7 @@ static void srunner_iterate_suites(SRunner * sr,
         for(check_list_front(tcl); !check_list_at_end(tcl);
             check_list_advance(tcl))
         {
-            tc = check_list_val(tcl);
+            tc = (TCase *)check_list_val(tcl);
 
             if((tcname != NULL) && (strcmp(tcname, tc->name) != 0))
             {
@@ -185,7 +185,7 @@ static void srunner_iterate_tcase_tfuns(SRunner * sr, TCase * tc)
     {
         int i;
 
-        tfun = check_list_val(tfl);
+        tfun = (TF *)check_list_val(tfl);
 
         for(i = tfun->loop_start; i < tfun->loop_end; i++)
         {
@@ -242,7 +242,7 @@ static TestResult * srunner_run_setup(List * fixture_list, enum fork_status fork
     for(check_list_front(fixture_list); !check_list_at_end(fixture_list);
         check_list_advance(fixture_list))
     {
-        setup_fixture = check_list_val(fixture_list);
+        setup_fixture = (Fixture *)check_list_val(fixture_list);
 
         if(fork_usage == CK_NOFORK)
         {
@@ -307,7 +307,7 @@ static void srunner_run_teardown(List * fixture_list, enum fork_status fork_usag
     for(check_list_front(fixture_list); !check_list_at_end(fixture_list);
         check_list_advance(fixture_list))
     {
-        fixture = check_list_val(fixture_list);
+        fixture = (Fixture *)check_list_val(fixture_list);
         send_ctx_info(CK_CTX_TEARDOWN);
 
         if(fork_usage == CK_NOFORK)

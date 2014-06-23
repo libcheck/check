@@ -169,7 +169,7 @@ static void srunner_send_evt(SRunner * sr, void *obj, enum cl_event evt)
     l = sr->loglst;
     for(check_list_front(l); !check_list_at_end(l); check_list_advance(l))
     {
-        lg = check_list_val(l);
+        lg = (Log *)check_list_val(l);
         fflush(lg->lfile);
         lg->lfun(sr, lg->lfile, lg->mode, obj, evt);
         fflush(lg->lfile);
@@ -539,7 +539,7 @@ void srunner_end_logging(SRunner * sr)
     l = sr->loglst;
     for(check_list_front(l); !check_list_at_end(l); check_list_advance(l))
     {
-        Log *lg = check_list_val(l);
+        Log *lg = (Log *)check_list_val(l);
 
         if(lg->close)
         {
