@@ -13,6 +13,9 @@ int sub_ntests;
 TestResult **tr_fail_array;
 TestResult **tr_all_array;
 
+FILE * line_num_failures = NULL;
+char * line_num_failures_file_name = NULL;
+
 #define MAXSTR 300
 
 typedef struct {
@@ -26,7 +29,6 @@ static char signal_11_str[SIG_STR_LEN];
 static char signal_11_8_str[SIG_STR_LEN];
 static char signal_8_str[SIG_STR_LEN];
 
-/* FIXME: all these line numbers are kind of hard to maintain */
 static master_test_t master_tests[] = {
   { "Simple Tests", CK_FAILURE, "Failure expected" },
 #if defined(HAVE_FORK) && HAVE_FORK==1
@@ -242,8 +244,6 @@ static master_test_t master_tests[] = {
 
 static int nr_of_master_tests = sizeof master_tests /sizeof master_tests[0];
 
-int master_tests_lineno[sizeof master_tests /sizeof master_tests[0]];
-
 START_TEST(test_check_nfailures)
 {
   int i;
@@ -302,26 +302,41 @@ START_TEST(test_check_failure_lnos)
   int i;
   int line_no;
   int passed = 0;
+  int failed;
   TestResult *tr;
   
+  /* Create list of line numbers where failures occurred */
+  rewind(line_num_failures);
+
   for (i = 0; i < sub_ntests; i++) {
     if (master_tests[i].failure_type == CK_PASS) {
       passed++;
       continue;
     }
 
+    failed = i - passed;
+
     ck_assert_msg(i - passed <= sub_nfailed, NULL);
-    tr = tr_fail_array[i - passed];
+    tr = tr_fail_array[failed];
     ck_assert_msg(tr != NULL, NULL);
-    line_no = master_tests_lineno[i];
+    line_no = get_next_failure_line_num(line_num_failures);
+
+    if(line_no == -1)
+    {
+      ck_abort_msg("Did not find the %dth failure line number for suite %s, msg %s",
+        (failed+1), tr_tcname(tr), tr_msg(tr));
+    }
+
     if (line_no > 0 && tr_lno(tr) != line_no) {
-      char *emsg = (char *)malloc(MAXSTR);
-      snprintf(emsg, MAXSTR, "For test %d: Expected lno %d, got %d",
-               i, line_no, tr_lno(tr));
-      ck_abort_msg(emsg);
-      free(emsg);
+      ck_abort_msg("For test %d (failure %d): Expected lno %d, got %d for suite %s, msg %s",
+               i, failed, line_no, tr_lno(tr), tr_tcname(tr), tr_msg(tr));
     }    
   }
+
+  /* At this point, there should be no remaining failures */
+  line_no = get_next_failure_line_num(line_num_failures);
+  ck_assert_msg(line_no == -1,
+    "No more failure line numbers expected, but found %d", line_no);
 }
 END_TEST
 
@@ -481,8 +496,14 @@ void setup (void)
   Suite *s = make_sub_suite();
   SRunner *sr = srunner_create(s);
 
-  init_master_tests_lineno(nr_of_master_tests);
   init_signal_strings();
+
+  /*
+   * Create file that will contain the line numbers of the failures
+   * in check_check_sub.c, as they occur.
+   */
+  line_num_failures_file_name = tempnam(NULL, "check_error_linenums_");
+  line_num_failures = fopen(line_num_failures_file_name, "w+b");
 
   srunner_add_suite(sr, make_sub2_suite());
 
@@ -495,4 +516,82 @@ void setup (void)
 
 void cleanup (void)
 {
+  fclose(line_num_failures);
+  line_num_failures = NULL;
+  unlink(line_num_failures_file_name);
+  free(line_num_failures_file_name);
+  line_num_failures_file_name = NULL;
+}
+
+void record_failure_line_num(int linenum)
+{
+  int to_write;
+  ssize_t written;
+  int result;
+  char string[16];
+
+  /*
+   * Because this call will occur right before a failure,
+   * add +1 so the linenum will be that of the failure
+   */
+   linenum += 1;
+
+  to_write = snprintf(string, sizeof(string), "%d\n", linenum);
+  if(to_write <= 0)
+  {
+    fprintf(stderr, "%s:%d: Error in call to snprintf:", __FILE__, __LINE__);
+    exit(1);
+  }
+
+  written = fwrite(string, 1, to_write, line_num_failures);
+  if(written != to_write)
+  {
+    fprintf(stderr, "%s:%d: Error in call to fwrite, wrote %ld instead of %d:", __FILE__, __LINE__, written, to_write);
+    exit(1);
+  }
+
+  result = fflush(line_num_failures);
+  if(result != 0)
+  {
+    fprintf(stderr, "%s:%d: Error in call to fflush", __FILE__, __LINE__);
+    exit(1);
+  }
+}
+
+int get_next_failure_line_num(FILE * file)
+{
+  char * line = NULL;
+  char * end = NULL;
+  size_t length;
+  ssize_t written;
+  int value = -1;
+
+  written = getline(&line, &length, file);
+
+  if(written > 0)
+  {
+    /*
+     * getline() will leave the \n at the end of the parsed line, if
+     * it is found. Remove this before passing to strtol, so we
+     * may detect invalid characters by checking for \0 instead
+     */
+
+    if(line[written-1] == '\n')
+    {
+      line[written-1] = '\0';
+    }
+
+    value = strtol(line, &end, 10);
+
+    if(value <= 0 || *end != '\0')
+    {
+      fprintf(stderr, "%s:%d: Failed to convert next failure line number, found '%s'\n",
+        __FILE__, __LINE__, line);
+      exit(1);
+    }
+  }
+
+  free(line);
+
+  return value;
 }

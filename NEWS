@@ -19,6 +19,10 @@ In Development:
   c++ compilers Clang and g++ (which are less forgiving than their
   c counterparts).
 
+* Re-enable internal unit tests, which verify which line numbers are
+  reported for unit test failures. (The tests were unintentionally
+  disabled in a previous release).
+
 
 Fri May 30, 2014: Released Check 0.9.13
   based on r1137 (2014-05-26 21:03:09 +0000)

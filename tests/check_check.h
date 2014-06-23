@@ -39,4 +39,25 @@ Suite *make_selective_suite(void);
 extern int master_tests_lineno[];
 void init_master_tests_lineno(int num_master_tests);
 
+/**
+ * Record a line number for a test which is to fail.
+ *
+ * This is used to record the failure line numbers for
+ * all tests in check_check_sub.c. Simply make this
+ * call right before an assert to record the proper
+ * line number. The line number is adjusted +1 internally,
+ * to account for making this call before the failure.
+ */
+void record_failure_line_num(const int line);
+
+/**
+ * Once the failure file numbers have been recorded
+ * to file and the file has been rewind(), this
+ * call will extract the next line number from the
+ * file.
+ *
+ * If there are no more lines to read, -1 is returned.
+ */
+int get_next_failure_line_num(FILE * file);
+
 #endif /* CHECK_CHECK_H */
