@@ -298,7 +298,7 @@ static void ppack_cleanup(void *mutex)
 
 void ppack(FILE * fdes, enum ck_msg_type type, CheckMsg * msg)
 {
-    char *buf;
+    char *buf = NULL;
     int n;
     ssize_t r;
 
