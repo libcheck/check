@@ -9,6 +9,12 @@ In Development:
   checked teardown functions that fail in CK_NOFORK mode will
   not cause the test to fail.
 
+* Allow checked fixtures when compiled without fork(). Previously
+  such setup/teardown functions were disabled, as the full contract
+  for checked fixtures could not be honored. Checked fixtures
+  in CK_NOFORK mode are now closer to the contract, and are now
+  enabled.
+
 
 Fri May 30, 2014: Released Check 0.9.13
   based on r1137 (2014-05-26 21:03:09 +0000)
