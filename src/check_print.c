@@ -198,8 +198,8 @@ void tr_xmlprint(FILE * file, TestResult * tr,
     fprintf(file, "      <id>%s</id>\n", tr->tname);
     fprintf(file, "      <iteration>%d</iteration>\n", tr->iter);
     fprintf(file, "      <duration>%d.%06d</duration>\n",
-            tr->duration < 0 ? -1 : tr->duration / 1000000,
-            tr->duration < 0 ? 0 : tr->duration % 1000000);
+            tr->duration < 0 ? -1 : tr->duration / US_PER_SEC,
+            tr->duration < 0 ? 0 : tr->duration % US_PER_SEC);
     fprintf(file, "      <description>");
     fprint_xml_esc(file, tr->tcname);
     fprintf(file, "</description>\n");
