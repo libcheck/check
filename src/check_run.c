@@ -63,6 +63,9 @@ static void srunner_iterate_suites(SRunner * sr,
                                    enum print_output print_mode);
 static void srunner_iterate_tcase_tfuns(SRunner * sr, TCase * tc);
 static void srunner_add_failure(SRunner * sr, TestResult * tf);
+static TestResult * srunner_run_setup(List * func_list,
+    enum fork_status fork_usage, const char * test_name,
+    const char * setup_name);
 static int srunner_run_unchecked_setup(SRunner * sr, TCase * tc);
 static TestResult *tcase_run_checked_setup(SRunner * sr, TCase * tc);
 static void srunner_run_teardown(List * l);
@@ -225,79 +228,33 @@ static void srunner_add_failure(SRunner * sr, TestResult * tr)
 
 }
 
-static int srunner_run_unchecked_setup(SRunner * sr, TCase * tc)
-{
-    TestResult *tr;
-    List *l;
-    Fixture *f;
-    int rval = 1;
-
-    set_fork_status(CK_NOFORK);
-
-    l = tc->unch_sflst;
-
-    for(check_list_front(l); !check_list_at_end(l); check_list_advance(l))
-    {
-        send_ctx_info(CK_CTX_SETUP);
-        f = check_list_val(l);
-
-        if(0 == setjmp(error_jmp_buffer))
-        {
-            f->fun();
-        }
-
-        tr = receive_result_info_nofork(tc->name, "unchecked_setup", 0, -1);
-
-        if(tr->rtype != CK_PASS)
-        {
-            srunner_add_failure(sr, tr);
-            rval = 0;
-            break;
-        }
-        free(tr->file);
-        free(tr->msg);
-        free(tr);
-    }
-
-    set_fork_status(srunner_fork_status(sr));
-    return rval;
-}
-
-static TestResult *tcase_run_checked_setup(SRunner * sr, TCase * tc)
+static TestResult * srunner_run_setup(List * fixture_list, enum fork_status fork_usage,
+    const char * test_name, const char * setup_name)
 {
     TestResult *tr = NULL;
-    List *l;
-    Fixture *f;
-    enum fork_status fstat = srunner_fork_status(sr);
+    Fixture *setup_fixture;
 
-    l = tc->ch_sflst;
-    if(fstat == CK_FORK)
+    if(fork_usage == CK_FORK)
     {
         send_ctx_info(CK_CTX_SETUP);
     }
 
-    for(check_list_front(l); !check_list_at_end(l); check_list_advance(l))
+    for(check_list_front(fixture_list); !check_list_at_end(fixture_list);
+        check_list_advance(fixture_list))
     {
-        f = check_list_val(l);
+        setup_fixture = check_list_val(fixture_list);
 
-        if(fstat == CK_NOFORK)
+        if(fork_usage == CK_NOFORK)
         {
             send_ctx_info(CK_CTX_SETUP);
 
             if(0 == setjmp(error_jmp_buffer))
             {
-                f->fun();
+                setup_fixture->fun();
             }
-        }
-        else
-        {
-            f->fun();
-        }
 
-        /* Stop the setup and return the failure if nofork mode. */
-        if(fstat == CK_NOFORK)
-        {
-            tr = receive_result_info_nofork(tc->name, "checked_setup", 0, -1);
+            /* Stop the setup and return the failure in nofork mode. */
+            tr = receive_result_info_nofork(test_name, setup_name, 0, -1);
             if(tr->rtype != CK_PASS)
             {
                 break;
@@ -308,7 +265,37 @@ static TestResult *tcase_run_checked_setup(SRunner * sr, TCase * tc)
             free(tr);
             tr = NULL;
         }
+        else
+        {
+            setup_fixture->fun();
+        }
     }
+
+    return tr;
+}
+
+static int srunner_run_unchecked_setup(SRunner * sr, TCase * tc)
+{
+    TestResult *tr = NULL;
+    int rval = 1;
+
+    set_fork_status(CK_NOFORK);
+    tr = srunner_run_setup(tc->unch_sflst, CK_NOFORK, tc->name, "unchecked_setup");
+    set_fork_status(srunner_fork_status(sr));
+
+    if(tr != NULL && tr->rtype != CK_PASS)
+    {
+        srunner_add_failure(sr, tr);
+        rval = 0;
+    }
+
+    return rval;
+}
+
+static TestResult *tcase_run_checked_setup(SRunner * sr, TCase * tc)
+{
+    TestResult *tr = srunner_run_setup(tc->ch_sflst, srunner_fork_status(sr),
+        tc->name, "checked_setup");
 
     return tr;
 }
