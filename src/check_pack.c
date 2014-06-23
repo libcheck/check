@@ -220,7 +220,7 @@ static int pack_ctx(char **buf, CtxMsg * cmsg)
 
 static void upack_ctx(char **buf, CtxMsg * cmsg)
 {
-    cmsg->ctx = upack_int(buf);
+    cmsg->ctx = (enum ck_result_ctx)upack_int(buf);
 }
 
 static int pack_duration(char **buf, DurationMsg * cmsg)
