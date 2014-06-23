@@ -600,7 +600,13 @@ Suite *make_fixture_suite (void)
   tcase_add_test(tc,test_setup_failure_msg);
 
 #if defined(HAVE_FORK) && HAVE_FORK==1
+  /*
+   * This test assumes that CK_FORK is being used,
+   * as it tests that side effects from checked
+   * fixtures do not persist between tests.
+   */
   tcase_add_test(tc,test_ch_setup);
+  
   tcase_add_test(tc,test_ch_setup_fail);
   tcase_add_test(tc,test_ch_setup_fail_nofork);
   tcase_add_test(tc,test_ch_setup_fail_nofork_2);
