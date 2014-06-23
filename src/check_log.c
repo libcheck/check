@@ -113,7 +113,7 @@ const char *srunner_tap_fname(SRunner * sr)
 void srunner_register_lfun(SRunner * sr, FILE * lfile, int close,
                            LFun lfun, enum print_output printmode)
 {
-    Log *l = emalloc(sizeof(Log));
+    Log *l = (Log *)emalloc(sizeof(Log));
 
     if(printmode == CK_ENV)
     {

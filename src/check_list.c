@@ -47,7 +47,7 @@ static void maybe_grow(List * lp)
     if(lp->n_elts >= lp->max_elts)
     {
         lp->max_elts *= LGROW;
-        lp->data = erealloc(lp->data, lp->max_elts * sizeof(lp->data[0]));
+        lp->data = (void **)erealloc(lp->data, lp->max_elts * sizeof(lp->data[0]));
     }
 }
 
@@ -55,10 +55,10 @@ List *check_list_create(void)
 {
     List *lp;
 
-    lp = emalloc(sizeof(List));
+    lp = (List *)emalloc(sizeof(List));
     lp->n_elts = 0;
     lp->max_elts = LINIT;
-    lp->data = emalloc(sizeof(lp->data[0]) * LINIT);
+    lp->data = (void **)emalloc(sizeof(lp->data[0]) * LINIT);
     lp->current = lp->last = -1;
     return lp;
 }

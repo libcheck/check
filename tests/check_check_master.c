@@ -285,7 +285,7 @@ START_TEST(test_check_failure_msgs)
     got_msg = tr_msg(tr);
     expected_msg = master_tests[i].msg;
     if (strcmp(got_msg, expected_msg) != 0) {      
-      char *emsg = malloc(MAXSTR);
+      char *emsg = (char *)malloc(MAXSTR);
       snprintf(emsg, MAXSTR,"For test %d: Expected %s, got %s",
                i, expected_msg, got_msg);
       ck_abort_msg(emsg);
@@ -313,7 +313,7 @@ START_TEST(test_check_failure_lnos)
     ck_assert_msg(tr != NULL, NULL);
     line_no = master_tests_lineno[i];
     if (line_no > 0 && tr_lno(tr) != line_no) {
-      char *emsg = malloc(MAXSTR);
+      char *emsg = (char *)malloc(MAXSTR);
       snprintf(emsg, MAXSTR, "For test %d: Expected lno %d, got %d",
                i, line_no, tr_lno(tr));
       ck_abort_msg(emsg);
@@ -362,7 +362,7 @@ START_TEST(test_check_tcnames)
   const char *tcname;   
   tcname = tr_tcname(tr_all_array[_i]);
   if (strcmp(tcname, master_tests[_i].tcname) != 0) {
-    char *emsg = malloc (MAXSTR);
+    char *emsg = (char *)malloc (MAXSTR);
     snprintf(emsg, MAXSTR,"Expected %s, got %s",
              master_tests[_i].tcname, tcname);
     ck_abort_msg(emsg);
@@ -377,7 +377,7 @@ START_TEST(test_check_all_msgs)
   const char *msg;
   msg = tr_msg(tr_all_array[_i]);
   if (strcmp(msg, master_tests[_i].msg) != 0) {
-    char *emsg = malloc (MAXSTR);
+    char *emsg = (char *)malloc (MAXSTR);
     snprintf(emsg, MAXSTR,"Expected %s, got %s",
              master_tests[_i].msg, msg);
     ck_abort_msg(emsg);

@@ -608,7 +608,7 @@ static void set_fork_info(TestResult * tr, int status, int signal_expected,
 
 static char *signal_msg(int signal)
 {
-    char *msg = emalloc(MSG_LEN);       /* free'd by caller */
+    char *msg = (char *)emalloc(MSG_LEN);       /* free'd by caller */
 
     if(alarm_received)
     {
@@ -626,7 +626,7 @@ static char *signal_error_msg(int signal_received, int signal_expected)
 {
     char *sig_r_str;
     char *sig_e_str;
-    char *msg = emalloc(MSG_LEN);       /* free'd by caller */
+    char *msg = (char *)emalloc(MSG_LEN);       /* free'd by caller */
 
     sig_r_str = strdup(strsignal(signal_received));
     sig_e_str = strdup(strsignal(signal_expected));
@@ -648,7 +648,7 @@ static char *signal_error_msg(int signal_received, int signal_expected)
 
 static char *exit_msg(int exitval)
 {
-    char *msg = emalloc(MSG_LEN);       /* free'd by caller */
+    char *msg = (char *)emalloc(MSG_LEN);       /* free'd by caller */
 
     snprintf(msg, MSG_LEN, "Early exit with return value %d", exitval);
     return msg;

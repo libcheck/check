@@ -82,7 +82,7 @@ char *ck_strdup_printf(const char *fmt, ...)
     char *p;
     va_list ap;
 
-    p = emalloc(size);
+    p = (char *)emalloc(size);
 
     while(1)
     {
@@ -100,7 +100,7 @@ char *ck_strdup_printf(const char *fmt, ...)
         else                    /* glibc 2.0 */
             size *= 2;          /* twice the old size */
 
-        p = erealloc(p, size);
+        p = (char *)erealloc(p, size);
     }
 }
 

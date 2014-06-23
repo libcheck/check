@@ -179,14 +179,14 @@ static char *upack_str(char **buf)
 
     if(strsz > 0)
     {
-        val = emalloc(strsz + 1);
+        val = (char *)emalloc(strsz + 1);
         memcpy(val, *buf, strsz);
         val[strsz] = 0;
         *buf += strsz;
     }
     else
     {
-        val = emalloc(1);
+        val = (char *)emalloc(1);
         *val = 0;
     }
 
@@ -210,7 +210,7 @@ static int pack_ctx(char **buf, CtxMsg * cmsg)
     int len;
 
     len = 4 + 4;
-    *buf = ptr = emalloc(len);
+    *buf = ptr = (char *)emalloc(len);
 
     pack_type(&ptr, CK_MSG_CTX);
     pack_int(&ptr, (int)cmsg->ctx);
@@ -229,7 +229,7 @@ static int pack_duration(char **buf, DurationMsg * cmsg)
     int len;
 
     len = 4 + 4;
-    *buf = ptr = emalloc(len);
+    *buf = ptr = (char *)emalloc(len);
 
     pack_type(&ptr, CK_MSG_DURATION);
     pack_int(&ptr, cmsg->duration);
@@ -248,7 +248,7 @@ static int pack_loc(char **buf, LocMsg * lmsg)
     int len;
 
     len = 4 + 4 + (lmsg->file ? strlen(lmsg->file) : 0) + 4;
-    *buf = ptr = emalloc(len);
+    *buf = ptr = (char *)emalloc(len);
 
     pack_type(&ptr, CK_MSG_LOC);
     pack_str(&ptr, lmsg->file);
@@ -269,7 +269,7 @@ static int pack_fail(char **buf, FailMsg * fmsg)
     int len;
 
     len = 4 + 4 + (fmsg->msg ? strlen(fmsg->msg) : 0);
-    *buf = ptr = emalloc(len);
+    *buf = ptr = (char *)emalloc(len);
 
     pack_type(&ptr, CK_MSG_FAIL);
     pack_str(&ptr, fmsg->msg);
@@ -402,7 +402,7 @@ static RcvMsg *rcvmsg_create(void)
 {
     RcvMsg *rmsg;
 
-    rmsg = emalloc(sizeof(RcvMsg));
+    rmsg = (RcvMsg *)emalloc(sizeof(RcvMsg));
     rmsg->lastctx = CK_CTX_INVALID;
     rmsg->failctx = CK_CTX_INVALID;
     rmsg->msg = NULL;
@@ -455,7 +455,7 @@ RcvMsg *punpack(FILE * fdes)
     rmsg = rcvmsg_create();
 
     /* Allcate a buffer */
-    buf = emalloc(CK_MAX_MSG_SIZE);
+    buf = (char *)emalloc(CK_MAX_MSG_SIZE);
     /* Fill the buffer from the file */
     nread = read_buf(fdes, CK_MAX_MSG_SIZE, buf);
     nparse = nread;

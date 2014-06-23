@@ -60,7 +60,7 @@ Suite *suite_create(const char *name)
 {
     Suite *s;
 
-    s = emalloc(sizeof(Suite)); /* freed in suite_free */
+    s = (Suite *)emalloc(sizeof(Suite)); /* freed in suite_free */
     if(name == NULL)
         s->name = "";
     else
@@ -108,7 +108,7 @@ TCase *tcase_create(const char *name)
     char *env;
     double timeout_sec = DEFAULT_TIMEOUT;
 
-    TCase *tc = emalloc(sizeof(TCase)); /*freed in tcase_free */
+    TCase *tc = (TCase *)emalloc(sizeof(TCase)); /*freed in tcase_free */
 
     if(name == NULL)
         tc->name = "";
@@ -184,7 +184,7 @@ void _tcase_add_test(TCase * tc, TFun fn, const char *name, int _signal,
 
     if(tc == NULL || fn == NULL || name == NULL)
         return;
-    tf = emalloc(sizeof(TF));   /* freed in tcase_free */
+    tf = (TF *)emalloc(sizeof(TF));   /* freed in tcase_free */
     tf->fn = fn;
     tf->loop_start = start;
     tf->loop_end = end;
@@ -198,7 +198,7 @@ static Fixture *fixture_create(SFun fun, int ischecked)
 {
     Fixture *f;
 
-    f = emalloc(sizeof(Fixture));
+    f = (Fixture *)emalloc(sizeof(Fixture));
     f->fun = fun;
     f->ischecked = ischecked;
 
@@ -313,12 +313,12 @@ void _ck_assert_failed(const char *file, int line, const char *expr, ...)
 
 SRunner *srunner_create(Suite * s)
 {
-    SRunner *sr = emalloc(sizeof(SRunner));     /* freed in srunner_free */
+    SRunner *sr = (SRunner *)emalloc(sizeof(SRunner));     /* freed in srunner_free */
 
     sr->slst = check_list_create();
     if(s != NULL)
         check_list_add_end(sr->slst, s);
-    sr->stats = emalloc(sizeof(TestStats));     /* freed in srunner_free */
+    sr->stats = (TestStats *)emalloc(sizeof(TestStats));     /* freed in srunner_free */
     sr->stats->n_checked = sr->stats->n_failed = sr->stats->n_errors = 0;
     sr->resultlst = check_list_create();
     sr->log_fname = NULL;
@@ -390,7 +390,7 @@ TestResult **srunner_failures(SRunner * sr)
     TestResult **trarray;
     List *rlst;
 
-    trarray = malloc(sizeof(trarray[0]) * srunner_ntests_failed(sr));
+    trarray = (TestResult **)emalloc(sizeof(trarray[0]) * srunner_ntests_failed(sr));
 
     rlst = sr->resultlst;
     for(check_list_front(rlst); !check_list_at_end(rlst);
@@ -411,7 +411,7 @@ TestResult **srunner_results(SRunner * sr)
     TestResult **trarray;
     List *rlst;
 
-    trarray = malloc(sizeof(trarray[0]) * srunner_ntests_run(sr));
+    trarray =(TestResult **) emalloc(sizeof(trarray[0]) * srunner_ntests_run(sr));
 
     rlst = sr->resultlst;
     for(check_list_front(rlst); !check_list_at_end(rlst);
@@ -431,7 +431,7 @@ TestResult *tr_create(void)
 {
     TestResult *tr;
 
-    tr = emalloc(sizeof(TestResult));
+    tr = (TestResult *)emalloc(sizeof(TestResult));
     tr_init(tr);
     return tr;
 }

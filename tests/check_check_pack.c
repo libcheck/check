@@ -19,7 +19,7 @@ START_TEST(test_pack_fmsg)
   char *buf;
   enum ck_msg_type type;
 
-  fmsg = emalloc (sizeof (FailMsg));
+  fmsg = (FailMsg *)emalloc (sizeof (FailMsg));
 
   fmsg->msg = (char *) "Hello, world!";
   pack (CK_MSG_FAIL, &buf, (CheckMsg *) fmsg);
@@ -52,7 +52,7 @@ START_TEST(test_pack_loc)
   char *buf;
   enum ck_msg_type type;
 
-  lmsg = emalloc (sizeof (LocMsg));
+  lmsg =(LocMsg *) emalloc (sizeof (LocMsg));
   lmsg->file = (char *) "abc123.c";
   lmsg->line = 125;
 
@@ -382,11 +382,11 @@ START_TEST(test_ppack_big)
   RcvMsg *rmsg;
 
   cmsg.ctx = CK_CTX_TEST;
-  lmsg.file = emalloc (BIG_MSG_LEN);
+  lmsg.file = (char *)emalloc (BIG_MSG_LEN);
   memset (lmsg.file,'a',BIG_MSG_LEN - 1);
   lmsg.file[BIG_MSG_LEN - 1] = '\0';
   lmsg.line = 10;
-  fmsg.msg = emalloc (BIG_MSG_LEN);
+  fmsg.msg = (char *)emalloc (BIG_MSG_LEN);
   memset (fmsg.msg, 'a', BIG_MSG_LEN - 1);
   fmsg.msg[BIG_MSG_LEN - 1] = '\0';
   result_file = open_tmp_file(&result_file_name);
