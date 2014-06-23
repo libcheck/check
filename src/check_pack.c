@@ -292,7 +292,7 @@ static void check_type(int type, const char *file, int line)
 static pthread_mutex_t ck_mutex_lock = PTHREAD_MUTEX_INITIALIZER;
 static void ppack_cleanup(void *mutex)
 {
-    pthread_mutex_unlock(mutex);
+    pthread_mutex_unlock((pthread_mutex_t *)mutex);
 }
 #endif
 
