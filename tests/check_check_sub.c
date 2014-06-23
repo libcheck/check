@@ -755,7 +755,7 @@ START_TEST(test_invalid_set_fork_status)
    tc1 = tcase_create ("tcase1");
    tcase_add_test (tc1, test_pass);
    sr = srunner_create(s1);
-   srunner_set_fork_status (sr, -1);
+   srunner_set_fork_status (sr, (enum fork_status)-1);
    srunner_run_all(sr, CK_SILENT);
 }
 END_TEST
