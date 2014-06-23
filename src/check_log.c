@@ -194,7 +194,7 @@ void stdout_lfun(SRunner * sr, FILE * file, enum print_output printmode,
             }
             break;
         case CLSTART_S:
-            s = obj;
+            s = (Suite *)obj;
             if(printmode > CK_SILENT)
             {
                 fprintf(file, " %s\n", s->name);
@@ -240,7 +240,7 @@ void lfile_lfun(SRunner * sr, FILE * file,
         case CLSTART_SR:
             break;
         case CLSTART_S:
-            s = obj;
+            s = (Suite *)obj;
             fprintf(file, "Running suite %s\n", s->name);
             break;
         case CLEND_SR:
@@ -252,7 +252,7 @@ void lfile_lfun(SRunner * sr, FILE * file,
         case CLSTART_T:
             break;
         case CLEND_T:
-            tr = obj;
+            tr = (TestResult *)obj;
             tr_fprint(file, tr, CK_VERBOSE);
             break;
         default:
@@ -312,7 +312,7 @@ void xml_lfun(SRunner * sr CK_ATTRIBUTE_UNUSED, FILE * file,
         case CLSTART_SR:
             break;
         case CLSTART_S:
-            s = obj;
+            s = (Suite *)obj;
             fprintf(file, "  <suite>\n");
             fprintf(file, "    <title>");
             fprint_xml_esc(file, s->name);
@@ -326,7 +326,7 @@ void xml_lfun(SRunner * sr CK_ATTRIBUTE_UNUSED, FILE * file,
         case CLSTART_T:
             break;
         case CLEND_T:
-            tr = obj;
+            tr = (TestResult *)obj;
             tr_xmlprint(file, tr, CK_VERBOSE);
             break;
         default:
@@ -368,7 +368,7 @@ void tap_lfun(SRunner * sr CK_ATTRIBUTE_UNUSED, FILE * file,
         case CLEND_T:
             /* Print the test result to the tap file */
             num_tests_run += 1;
-            tr = obj;
+            tr = (TestResult *)obj;
             fprintf(file, "%s %d - %s:%s:%s: %s\n",
                     tr->rtype == CK_PASS ? "ok" : "not ok", num_tests_run,
                     tr->file, tr->tcname, tr->tname, tr->msg);
@@ -409,11 +409,11 @@ void subunit_lfun(SRunner * sr, FILE * file, enum print_output printmode,
         case CLEND_S:
             break;
         case CLSTART_T:
-            name = obj;
+            name = (const char *)obj;
             subunit_test_start(name);
             break;
         case CLEND_T:
-            tr = obj;
+            tr = (TestResult *)obj;
             {
                 char *name = ck_strdup_printf("%s:%s", tr->tcname, tr->tname);
                 char *msg = tr_short_str(tr);
