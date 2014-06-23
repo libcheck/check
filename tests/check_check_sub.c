@@ -620,7 +620,7 @@ START_TEST(test_null)
   suite_add_tcase (s, NULL);
   tcase_add_test (tc, NULL);
   srunner_free(srunner_create(NULL));
-  srunner_run_all (NULL, -1);
+  srunner_run_all (NULL, (enum print_output)-1);
   srunner_free (NULL);
   ck_abort_msg("Completed properly");
 }
