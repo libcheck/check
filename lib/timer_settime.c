@@ -10,14 +10,14 @@ int timer_settime(timer_t timerid CK_ATTRIBUTE_UNUSED,
      * If the system does not have timer_settime() but does have
      * setitimer() use that instead of alarm().
      */
-    struct itimerval new;
+    struct itimerval interval;
 
-    new.it_value.tv_sec = new_value->it_value.tv_sec;
-    new.it_value.tv_usec = new_value->it_value.tv_nsec / 1000;
-    new.it_interval.tv_sec = new_value->it_interval.tv_sec;
-    new.it_interval.tv_usec = new_value->it_interval.tv_nsec / 1000;
+    interval.it_value.tv_sec = new_value->it_value.tv_sec;
+    interval.it_value.tv_usec = new_value->it_value.tv_nsec / 1000;
+    interval.it_interval.tv_sec = new_value->it_interval.tv_sec;
+    interval.it_interval.tv_usec = new_value->it_interval.tv_nsec / 1000;
 
-    return setitimer(ITIMER_REAL, &new, NULL);
+    return setitimer(ITIMER_REAL, &interval, NULL);
 #else
     int seconds = new_value->it_value.tv_sec;
 
