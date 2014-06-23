@@ -157,7 +157,7 @@ START_TEST(test_pack_ctx_limit)
   CtxMsg *cmsgp = NULL;
   char *buf;
 
-  cmsg.ctx = -1;
+  cmsg.ctx = (enum ck_result_ctx)-1;
   pack (CK_MSG_CTX, &buf, (CheckMsg *) &cmsg);
   pack (CK_MSG_CTX, &buf, (CheckMsg *) cmsgp);
 }
