@@ -7,6 +7,8 @@
 #include <assert.h>
 #include "check_check.h"
 
+int sub_nfailed;
+int sub_ntests;
 
 TestResult **tr_fail_array;
 TestResult **tr_all_array;

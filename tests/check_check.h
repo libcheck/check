@@ -14,8 +14,7 @@
 #define MEMORY_LEAKING_TESTS_ENABLED 1
 #endif
 
-int sub_nfailed;
-int sub_ntests;
+extern int sub_ntests;
 
 void fork_setup (void);
 void fork_teardown (void);
