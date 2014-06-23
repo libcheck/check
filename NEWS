@@ -1,6 +1,8 @@
 In Development:
 # Mentioning Check 0.9.13 for now, to fix distcheck target until next release
 
+* Changes to (unofficially for now) support Solaris and AIX platforms.
+
 
 Fri May 30, 2014: Released Check 0.9.13
   based on r1137 (2014-05-26 21:03:09 +0000)

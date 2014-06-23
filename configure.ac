@@ -189,8 +189,17 @@ ACX_PTHREAD
 CC="$PTHREAD_CC"
 
 # Check if floor is in the math library, and if so add -lm to LIBS
-AC_SEARCH_LIBS([floor], [m], [AC_DEFINE([HAVE_FLOOR], [1], [Does the system have floor()?])],
-[AC_CHECK_FUNCS(__floor, [AC_DEFINE([HAVE___FLOOR], [1], [Does the system have __floor()?])], [])])
+AC_CHECK_LIB([m], [floor])
+
+# On some versions of AIX, although floor() is found in libm,
+# it cannot be used directly. Instead __floor() must be used.
+# This checks if this is the case.
+AC_CHECK_FUNC([floor],
+  [AC_DEFINE([HAVE_FLOOR], [1], [Can the system use floor() directly?])],
+  [AC_CHECK_DECL([__floor],
+    [AC_DEFINE([HAVE___FLOOR], [1], [Does the system define __floor() instead?])],
+    [])
+  ])
 
 # Check if clock_gettime, timer_create, timer_settime, and timer_delete are available in lib rt, and if so,
 # add -lrt to LIBS
