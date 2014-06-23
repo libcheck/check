@@ -125,7 +125,7 @@ static void print_usage(void)
     printf("   then use the following mode: CK_SILENT STDOUT [NORMAL|EXIT_TEST].\n");
 }
 
-static void run_tests(int printmode, char *log_type, int include_exit_test)
+static void run_tests(enum print_output printmode, char *log_type, int include_exit_test)
 {
     SRunner *sr;
     int dump_everything_to_stdout = 0;
@@ -202,7 +202,7 @@ static void run_tests(int printmode, char *log_type, int include_exit_test)
 #define INCLUDE_EXIT_TEST_ARG 3
 int main(int argc, char **argv)
 {
-    int printmode;
+    enum print_output printmode;
     int include_exit_test;
 
     if(argc != 4)

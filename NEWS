@@ -15,6 +15,10 @@ In Development:
   in CK_NOFORK mode are now closer to the contract, and are now
   enabled.
 
+* Various code cleanup, including changes for compiling Check on
+  c++ compilers Clang and g++ (which are less forgiving than their
+  c counterparts).
+
 
 Fri May 30, 2014: Released Check 0.9.13
   based on r1137 (2014-05-26 21:03:09 +0000)
