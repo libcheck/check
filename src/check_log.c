@@ -341,7 +341,6 @@ void tap_lfun(SRunner * sr CK_ATTRIBUTE_UNUSED, FILE * file,
               enum cl_event evt)
 {
     TestResult *tr;
-    Suite *s;
 
     static int num_tests_run = 0;
 
