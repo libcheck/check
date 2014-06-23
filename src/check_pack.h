@@ -57,6 +57,7 @@ typedef union
     CtxMsg ctx_msg;
     FailMsg fail_msg;
     LocMsg loc_msg;
+    DurationMsg duration_msg;
 } CheckMsg;
 
 typedef struct RcvMsg
