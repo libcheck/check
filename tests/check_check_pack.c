@@ -138,6 +138,7 @@ START_TEST(test_pack_abuse)
 {
   char *buf;
   CtxMsg cmsg;
+  enum ck_msg_type type;
 
   /* Should report -1 (e.g. invalid) if no buffer is passed */
   ck_assert_int_eq(pack(CK_MSG_CTX, NULL, (CheckMsg *) &cmsg), -1);
@@ -146,7 +147,7 @@ START_TEST(test_pack_abuse)
   ck_assert_int_eq(pack(CK_MSG_CTX, &buf, NULL), 0);
 
   /* Should report -1 (e.g. invalid) if no buffer is passed */
-  ck_assert_int_eq(upack(NULL, (CheckMsg *) &cmsg, CK_MSG_CTX), -1);
+  ck_assert_int_eq(upack(NULL, (CheckMsg *) &cmsg, &type), -1);
 }
 END_TEST
 
