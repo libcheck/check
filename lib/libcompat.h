@@ -214,6 +214,10 @@ CK_DLL_EXP int rpl_snprintf(char *, size_t, const char *, ...);
 #endif
 #endif /* HAVE_STDARG_H */
 
+#if !HAVE_GETLINE
+CK_DLL_EXP ssize_t getline(char **lineptr, size_t *n, FILE *stream);
+#endif
+
 /* silence warnings about an empty library */
 CK_DLL_EXP void ck_do_nothing(void) CK_ATTRIBUTE_NORETURN;
 
