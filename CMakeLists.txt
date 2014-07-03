@@ -101,6 +101,7 @@ ck_check_include_file("time.h" HAVE_TIME_H)
 ###############################################################################
 # Check functions
 check_function_exists(fork HAVE_FORK)
+check_function_exists(getline HAVE_GETLINE)
 check_function_exists(getpid HAVE_GETPID)
 check_function_exists(gettimeofday HAVE_GETTIMEOFDAY)
 check_function_exists(localtime_r HAVE_DECL_LOCALTIME_R)

@@ -28,6 +28,10 @@ if (NOT HAVE_LIBRT)
   set(SOURCES ${SOURCES} timer_settime.c)
 endif(NOT HAVE_LIBRT)
 
+if(NOT HAVE_GETLINE)
+  set(SOURCES ${SOURCES} getline.c)
+endif(NOT HAVE_GETLINE)
+
 if(NOT HAVE_GETTIMEOFDAY)
   set(SOURCES ${SOURCES} gettimeofday.c)
 endif(NOT HAVE_GETTIMEOFDAY)
