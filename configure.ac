@@ -4,7 +4,7 @@
 # Prelude.
 AC_PREREQ([2.59])
 
-AC_INIT([Check], [0.9.13], [check-devel at lists dot sourceforge dot net])
+AC_INIT([Check], [0.9.14], [check-devel at lists dot sourceforge dot net])
 CHECK_MAJOR_VERSION=0
 CHECK_MINOR_VERSION=9
 CHECK_MICRO_VERSION=13
