@@ -90,6 +90,10 @@ a package manager or compile from source on one's platform.
         <li><a href="#visualstudios">Visual Studios From Source</a></li>
         <li><a href="#msvc">MSVC From Source</a></li>
     </ul>
+    <li>Solaris</li>
+    <ul>
+        <li><a href="#solaris">From Source</a></li>
+    </ul>
 </ul>
 
 <hr></hr>
@@ -412,6 +416,56 @@ If the "make test" step fails, please send an email to Check's
 and give details as to the failure so it may be investigated and fixed.
 </p>
 <br></br>
+
+
+
+<a name="solaris"></a>
+<h3>Solaris From Source</h3>
+<p>
+Check uses autotools as a build system. The PATH must be setup such that
+POSIX versions of tools are found before legacy once.
+(see also standards(5) for more details). If the compiler is GCC, setup
+the PATH as follows:
+</p>
+<div id="code"><pre class="command">
+PATH=/usr/xpg6/bin:/usr/xpg4/bin:/usr/ccs/bin:/usr/bin:/sbin:/usr/sbin:/opt/csw/bin
+</pre></div>
+<p>
+Otherwise, for Solaris Studio use the following PATH:
+</p>
+<div id="code"><pre class="command">
+PATH=/opt/solarisstudio12.3/bin:/usr/xpg6/bin:/usr/xpg4/bin:/usr/ccs/bin:/usr/bin:/sbin:/usr/sbin:/opt/csw/bin
+</pre></div>
+<p>
+Further, ensure that the environment variables LD_LIBRARY_PATH and
+LD_LIBRARY_PATH_64 are unset. It is recommended to use OpenCSW packages
+(/opt/csw/bin) to get recent versions of required programs.
+The configure script will likely find gcc by default; to use Solaris
+Studio also set the following environment variable:
+</p>
+<div id="code"><pre class="command">
+CC=cc
+</pre></div>
+<p>
+After the
+<a href="http://sourceforge.net/projects/check/files/latest/download">latest Check source</a>
+has been downloaded and unpacked, open a terminal in the unpacked
+directory, then:
+</p>
+<div id="code"><pre class="command">
+$ ./configure CFLAGS=-m64 LDFLAGS=-m64
+$ gmake
+$ gmake check
+$ gmake install
+</pre></div>
+<p>
+If the "gmake check" step fails, please send an email to Check's
+<a href="https://lists.sourceforge.net/lists/listinfo/check-devel">mailing list</a>
+and give details as to the failure so it may be investigated and fixed.
+</p>
+<br></br>
+
+
 
 
 
