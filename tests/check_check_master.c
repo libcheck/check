@@ -267,6 +267,36 @@ START_TEST(test_check_ntests_run)
 }
 END_TEST
 
+/**
+ * Given a string, return a new string that is a copy
+ * of the original exception that every occurance of
+ * % is replaced with %%. This escapes the %
+ * symbol for passing to printf.
+ *
+ * The passed in string is not modified. Note though
+ * that the returned string is allocated memory that
+ * must be freed by the caller.
+ */
+char * escape_percent(const char *original, size_t original_size)
+{
+  /* In the worst case every character is a %*/
+  char *result = malloc(original_size*2);
+
+  size_t read_index;
+  size_t write_index;
+  for(read_index = write_index = 0; read_index < original_size; read_index++, write_index++)
+  {
+    result[write_index] = original[read_index];
+    if(result[write_index] == '%')
+    {
+      // Place a duplicate % next to the one just read, to escape it
+      result[++write_index] = '%';
+    }
+  }
+
+  return result;
+}
+
 START_TEST(test_check_failure_msgs)
 {
   int i;
@@ -286,10 +316,19 @@ START_TEST(test_check_failure_msgs)
     ck_assert_msg(tr != NULL, NULL);
     got_msg = tr_msg(tr);
     expected_msg = master_tests[i].msg;
+
     if (strcmp(got_msg, expected_msg) != 0) {      
-      char *emsg = (char *)malloc(MAXSTR);
-      snprintf(emsg, MAXSTR,"For test %d: Expected %s, got %s",
+      char *tmp = (char *)malloc(MAXSTR);
+      snprintf(tmp, MAXSTR,"For test %d: Expected %s, got %s",
                i, expected_msg, got_msg);
+
+      // NOTE: ck_abort_msg() will take the passed string
+      // and feed it to printf. We need to escape any
+      // '%' found, else they will result in odd formatting
+      // in ck_abort_msg().
+      char *emsg = escape_percent(tmp, MAXSTR);
+      free(tmp);
+
       ck_abort_msg(emsg);
       free(emsg);
     }
@@ -394,9 +433,17 @@ START_TEST(test_check_all_msgs)
   const char *msg;
   msg = tr_msg(tr_all_array[_i]);
   if (strcmp(msg, master_tests[_i].msg) != 0) {
-    char *emsg = (char *)malloc (MAXSTR);
-    snprintf(emsg, MAXSTR,"Expected %s, got %s",
+    char *tmp = (char *)malloc (MAXSTR);
+    snprintf(tmp, MAXSTR,"Expected %s, got %s",
              master_tests[_i].msg, msg);
+
+    // NOTE: ck_abort_msg() will take the passed string
+    // and feed it to printf. We need to escape any
+    // '%' found, else they will result in odd formatting
+    // in ck_abort_msg().
+    char *emsg = escape_percent(tmp, MAXSTR);
+    free(tmp);
+
     ck_abort_msg(emsg);
     free(emsg);
   }
