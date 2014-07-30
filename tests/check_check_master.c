@@ -278,6 +278,7 @@ END_TEST
  * that the returned string is allocated memory that
  * must be freed by the caller.
  */
+char * escape_percent(const char *original, size_t original_size);
 char * escape_percent(const char *original, size_t original_size)
 {
   /* In the worst case every character is a %*/
