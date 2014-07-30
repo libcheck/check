@@ -163,6 +163,14 @@ START_TEST(test_ck_assert_null)
 }
 END_TEST
 
+START_TEST(test_ck_assert_with_mod)
+{
+  int f = 1;
+  record_failure_line_num(__LINE__);
+  ck_assert(1%f == 1);
+}
+END_TEST
+
 START_TEST(test_ck_assert_int_eq)
 {
   int x = 3;
@@ -1018,6 +1026,7 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_simple, test_ck_abort_msg_null);
   tcase_add_test (tc_simple, test_ck_assert);
   tcase_add_test (tc_simple, test_ck_assert_null);
+  tcase_add_test (tc_simple, test_ck_assert_with_mod);
   tcase_add_test (tc_simple, test_ck_assert_int_eq);
   tcase_add_test (tc_simple, test_ck_assert_int_eq_with_mod);
   tcase_add_test (tc_simple, test_ck_assert_int_ne);

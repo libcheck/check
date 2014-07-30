@@ -57,6 +57,7 @@ static master_test_t master_tests[] = {
   { "Simple Tests", CK_FAILURE, "Failed" },
   { "Simple Tests", CK_FAILURE, "Assertion 'x == y' failed" },
   { "Simple Tests", CK_FAILURE, "Assertion '0' failed" },
+  { "Simple Tests", CK_FAILURE, "Assertion '1%f == 1' failed" },
   { "Simple Tests", CK_FAILURE, "Assertion 'x==y' failed: x==3, y==4" },
   { "Simple Tests", CK_FAILURE, "Assertion '3%d==2%f' failed: 3%d==1, 2%f==0" },
   { "Simple Tests", CK_FAILURE, "Assertion 'x!=y' failed: x==3, y==3" },

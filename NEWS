@@ -1,6 +1,8 @@
 In Development:
 # Mentioning Check 0.9.14 for now, to fix distcheck target until next release
 
+ * Fix issue with string formatting in ck_assert(), where using
+  the % operator would be interpreted as a string formatter. Bug #96.
 
 
 Sat July 26, 2014: Released Check 0.9.14

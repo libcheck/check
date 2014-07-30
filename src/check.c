@@ -288,17 +288,29 @@ void _ck_assert_failed(const char *file, int line, const char *expr, ...)
     const char *msg;
     va_list ap;
     char buf[BUFSIZ];
+    const char *to_send;
 
     send_loc_info(file, line);
 
     va_start(ap, expr);
     msg = (const char *)va_arg(ap, char *);
 
-    if(msg == NULL)
-        msg = expr;
-    vsnprintf(buf, BUFSIZ, msg, ap);
+    /*
+     * If a message was passed, format it with vsnprintf.
+     * Otherwise, print the expression as is.
+     */
+    if(msg != NULL)
+    {
+        vsnprintf(buf, BUFSIZ, msg, ap);
+        to_send = buf;
+    }
+    else
+    {
+        to_send = expr;
+    }
+
     va_end(ap);
-    send_failure_info(buf);
+    send_failure_info(to_send);
     if(cur_fork_status() == CK_FORK)
     {
 #if defined(HAVE_FORK) && HAVE_FORK==1
