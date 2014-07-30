@@ -282,7 +282,7 @@ char * escape_percent(const char *original, size_t original_size);
 char * escape_percent(const char *original, size_t original_size)
 {
   /* In the worst case every character is a %*/
-  char *result = malloc(original_size*2);
+  char *result = (char*)malloc(original_size*2);
 
   size_t read_index;
   size_t write_index;
