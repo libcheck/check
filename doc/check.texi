@@ -873,8 +873,7 @@ subunit} test runner protocol. See 'subunit support' under the Advanced Features
 @end table
 
 With the @code{CK_NORMAL} flag specified in our @code{main()}, let's
-rerun make check now. As before, we get the following satisfying
-output:
+rerun @code{make check} now. The output from the unit test is as follows:
 @example
 @verbatim
 Running suite(s): Money
@@ -888,6 +887,11 @@ Please report to check-devel AT lists.sourceforge.net
 =====================================================
 @end verbatim
 @end example
+
+Note that the output from @code{make check} prior to Automake 1.13 will
+be the output of the unit test program. Starting with 1.13 Automake will
+run all unit test programs concurrently and store the output in
+log files. The output listed above should be present in a log file.
 
 The first number in the summary line tells us that 0% of our tests
 passed, and the rest of the line tells us that there was one check in
