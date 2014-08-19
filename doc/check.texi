@@ -222,7 +222,7 @@ for C:
 
 @item AceUnit
 AceUnit (Advanced C and Embedded Unit) bills itself as a comfortable C
-code unit test framework.  It tries to mimick JUnit 4.x and includes
+code unit test framework.  It tries to mimic JUnit 4.x and includes
 reflection-like capabilities.  AceUnit can be used in resource
 constraint environments, e.g. embedded software development, and
 importantly it runs fine in environments where you cannot include a
