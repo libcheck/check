@@ -60,8 +60,8 @@ entitled ``@acronym{GNU} Free Documentation License.''
 Please send corrections to this manual to
 @email{check-devel AT lists.sourceforge.net}.  We'd prefer it if you can
 send a unified diff (@command{diff -u}) against the
-@file{doc/check.texi} file that ships with Check, but something is
-still better than nothing if you can't manage that.
+@file{doc/check.texi} file that ships with Check, but if that is not
+possible something is better than nothing.
 @end ifnottex
 
 @menu
