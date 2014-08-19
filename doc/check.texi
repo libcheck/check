@@ -13,7 +13,7 @@ This manual is for Check
 (version @value{VERSION}, @value{UPDATED}),
 a unit testing framework for C.
 
-Copyright @copyright{} 2001--2011 Arien Malec, Branden Archer, Chris Pickett, 
+Copyright @copyright{} 2001--2014 Arien Malec, Branden Archer, Chris Pickett,
 Fredrik Hugosson, and Robert Lemmen.
 
 @quotation
