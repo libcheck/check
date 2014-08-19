@@ -135,6 +135,6 @@ dorelease: releasevars doc/check_html doc/doxygen prereleasecheck
 
 updateweb: fsusernamecheck
 	@echo uploading...
-	rsync -e ssh -rlvC index.html web ${SF_USERNAME},check@web.sourceforge.net:htdocs
+	rsync -e ssh -rlvC index.html web doc ${SF_USERNAME},check@web.sourceforge.net:htdocs
 
 .PHONY: releasevars prereleasecheck preparerelease dorelease .svnrelease
