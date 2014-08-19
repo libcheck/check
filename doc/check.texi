@@ -68,9 +68,9 @@ still better than nothing if you can't manage that.
 * Introduction::                
 * Unit Testing in C::           
 * Tutorial::                    
-* Advanced Features::           
+* Advanced Features::
+* Supported Build Systems::
 * Conclusion and References::   
-* AM_PATH_CHECK::               
 * Copying This Manual::         
 * Index::                       
 
@@ -409,8 +409,7 @@ SUBDIRS = src . tests
 Note that @code{tests} comes last, because the code should be testing
 an already compiled library.  @file{configure.ac} is standard Autoconf
 boilerplate, as specified by the Autotools tutorial and as suggested
-by @command{autoscan}.  The @code{AM_PATH_CHECK()} is the only line
-particular to Check @pxref{AM_PATH_CHECK}.
+by @command{autoscan}.
 
 @file{src/Makefile.am} builds @samp{libmoney} as a Libtool archive,
 and links it to an application simply called @command{main}.  The
@@ -481,7 +480,7 @@ Previously one would use a script called @command{autogen.sh} or
 Now build and run the @command{check_money} test with @command{make
 check}.  If all goes well, @command{make} should report that our tests
 passed.  No surprise, because there aren't any tests to fail.  If you
-have problems, make sure to see @ref{AM_PATH_CHECK}.
+have problems, make sure to see @ref{Supported Build Systems}.
 
 This was tested on the isadora distribution of Linux Mint
 GNU/Linux in November 2012, using Autoconf 2.65, Automake 1.11.1,
@@ -954,7 +953,7 @@ here is a diff:
 @end example
 @end cartouche
 
-@node Advanced Features, Conclusion and References, Tutorial, Top
+@node Advanced Features, Supported Build Systems, Tutorial, Top
 @chapter Advanced Features
 
 What you've seen so far is all you need for basic unit testing.  The
@@ -1839,24 +1838,47 @@ Subunit is hosted on launchpad - the @uref{https://launchpad.net/subunit/,
 subunit} project there contains bug tracker, future plans, and source code
 control details.
 
-@node Conclusion and References, AM_PATH_CHECK, Advanced Features, Top
-@chapter Conclusion and References
-The tutorial and description of advanced features has provided an
-introduction to all of the functionality available in Check.
-Hopefully, this is enough to get you started writing unit tests with
-Check.  All the rest is simply application of what has been learned so
-far with repeated application of the ``test a little, code a little''
-strategy.
+@node Supported Build Systems, Conclusion and References, Advanced Features, Top
+@chapter Supported Build Systems
+@findex Supported Build Systems
 
-For further reference, see Kent Beck, ``Test-Driven Development: By
-Example'', 1st ed., Addison-Wesley, 2003.  ISBN 0-321-14653-0.
+Check officially supports two build systems: Autotools and CMake.
+Primarily it is recommended to use Autotools where possible, as CMake is
+only officially supported for Windows. Information on using Check in
+either build system follows.
 
-If you know of other authoritative references to unit testing and
-test-driven development, please send us a patch to this manual.
+@menu
+* Autotools::
+* CMake::
+@end menu
 
-@node AM_PATH_CHECK, Copying This Manual, Conclusion and References, Top
-@chapter AM_PATH_CHECK
-@findex AM_PATH_CHECK
+@node Autotools, CMake, Supported Build Systems, Supported Build Systems
+@section Autotools
+
+It is recommended to use pkg-config where possible to locate and use
+Check in an Autotools project. This can be accomplished by including
+the following in the project's @file{configure.ac} file:
+
+@verbatim
+   PKG_CHECK_MODULES([CHECK], [check >= MINIMUM-VERSION])
+@end verbatim
+
+where MINIMUM-VERSION is the lowest version which is sufficient for
+the project. For example, to guarantee that at least version 0.9.6 is
+available, use the following:
+
+@verbatim
+   PKG_CHECK_MODULES([CHECK], [check >= 0.9.6])
+@end verbatim
+
+An example of a @file{configure.ac} script for a project is
+included in the @file{doc/example} directory in Check's source.
+This macro should provide everything necessary to integrate Check
+into an Autotools project.
+
+If one does not wish to use pkg-config Check also provides its own
+macro, @code{AM_PATH_CHECK()}, which may be used. This macro is
+deprecated, but is still included with Check for backwards compatibility.
 
 The @code{AM_PATH_CHECK()} macro is defined in the file
 @file{check.m4} which is installed by Check.  It has some optional
@@ -1910,7 +1932,34 @@ include @option{-I DIR} with @code{DIR} being the location of
 @end enumerate
 @end enumerate
 
-@node Copying This Manual, Index, AM_PATH_CHECK, Top
+
+@node CMake, , Autotools, Supported Build Systems
+@section CMake
+
+Those unable to use Autotools in their project may use CMake instead.
+Officially CMake is supported only for Windows.
+
+Documentation for using CMake is forthcoming. In the meantime, look
+at the example CMake project in Check's @file{doc/examples} directory.
+
+
+
+@node Conclusion and References, Copying This Manual, Supported Build Systems, Top
+@chapter Conclusion and References
+The tutorial and description of advanced features has provided an
+introduction to all of the functionality available in Check.
+Hopefully, this is enough to get you started writing unit tests with
+Check.  All the rest is simply application of what has been learned so
+far with repeated application of the ``test a little, code a little''
+strategy.
+
+For further reference, see Kent Beck, ``Test-Driven Development: By
+Example'', 1st ed., Addison-Wesley, 2003.  ISBN 0-321-14653-0.
+
+If you know of other authoritative references to unit testing and
+test-driven development, please send us a patch to this manual.
+
+@node Copying This Manual, Index, Conclusion and References, Top
 @appendix Copying This Manual
 
 @menu
