@@ -50,6 +50,7 @@ Contributors:
     Georg Sauthoff        (Solaris support, misc autotools fixes)
     forest                (AIX and Solaris support)
     Michael Piszczek      (misc cleanup)
+    Stewart Brodie        (bug fix: no fork mode failure reporting with teardowns)
 
 Anybody who has contributed code to Check or Check's build system is
 considered an author.  Send patches to this file to 

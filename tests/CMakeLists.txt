@@ -65,3 +65,7 @@ target_link_libraries(ex_output check compat)
 set(CHECK_NOFORK_SOURCES check_nofork.c)
 add_executable(check_nofork ${CHECK_NOFORK_SOURCES})
 target_link_libraries(check_nofork check compat)
+
+set(CHECK_NOFORK_TEARDOWN_SOURCES check_nofork_teardown.c)
+add_executable(check_nofork_teardown ${CHECK_NOFORK_TEARDOWN_SOURCES})
+target_link_libraries(check_nofork_teardown check compat)

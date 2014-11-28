@@ -5,6 +5,7 @@ TESTS = \
 	check_check		\
 	test_output.sh		\
 	test_check_nofork.sh    \
+	test_check_nofork_teardown.sh    \
 	test_xml_output.sh	\
 	test_log_output.sh      \
 	test_tap_output.sh
@@ -23,6 +24,7 @@ noinst_PROGRAMS =		\
 	check_stress		\
 	check_thread_stress	\
 	check_nofork		\
+	check_nofork_teardown \
 	check_mem_leaks		\
 	ex_output
 
@@ -79,6 +81,9 @@ check_thread_stress_CFLAGS = @PTHREAD_CFLAGS@
 
 check_nofork_SOURCES = check_nofork.c
 check_nofork_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
+
+check_nofork_teardown_SOURCES = check_nofork_teardown.c
+check_nofork_teardown_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
 
 ex_output_SOURCES = ex_output.c
 ex_output_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la

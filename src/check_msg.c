@@ -175,7 +175,15 @@ static TestResult *construct_test_result(RcvMsg * rmsg, int waserror)
 
     if(rmsg->msg != NULL || waserror)
     {
-        tr->ctx = rmsg->lastctx;
+        if(rmsg->failctx != CK_CTX_INVALID)
+        {
+            tr->ctx = rmsg->failctx;
+        }
+        else
+        {
+            tr->ctx = rmsg->lastctx;
+        }
+
         tr->msg = rmsg->msg;
         rmsg->msg = NULL;
         tr_set_loc_by_ctx(tr, tr->ctx, rmsg);

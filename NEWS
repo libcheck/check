@@ -4,6 +4,11 @@ In Development:
  * Fix issue with string formatting in ck_assert(), where using
   the % operator would be interpreted as a string formatter. Bug #96.
 
+* In nofork mode, the location of a failed assertion within a test
+  case was lost if that test case has a checked teardown fixture
+  (even if that fixture function is empty). This is now fixed.
+  Bug #99
+
 
 Sat July 26, 2014: Released Check 0.9.14
   based on r1174 (2014-07-03 18:43:49 +0000)
