@@ -474,7 +474,7 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
 #define _ck_assert_int(X, OP, Y) do { \
   intmax_t _ck_x = (X); \
   intmax_t _ck_y = (Y); \
-  ck_assert_msg(_ck_x OP _ck_y, "Assertion '%s' failed: %s==%jd, %s==%jd", #X#OP#Y, #X, _ck_x, #Y, _ck_y); \
+  ck_assert_msg(_ck_x OP _ck_y, "Assertion '%s' failed: %s == %jd, %s == %jd", #X" "#OP" "#Y, #X, _ck_x, #Y, _ck_y); \
 } while (0)
 
 /**
@@ -559,7 +559,7 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
 #define _ck_assert_uint(X, OP, Y) do { \
   uintmax_t _ck_x = (X); \
   uintmax_t _ck_y = (Y); \
-  ck_assert_msg(_ck_x OP _ck_y, "Assertion '%s' failed: %s==%ju, %s==%ju", #X#OP#Y, #X, _ck_x, #Y, _ck_y); \
+  ck_assert_msg(_ck_x OP _ck_y, "Assertion '%s' failed: %s == %ju, %s == %ju", #X" "#OP" "#Y, #X, _ck_x, #Y, _ck_y); \
 } while (0)
 /**
  * Check two unsigned integers to determine if X==Y
@@ -647,7 +647,7 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
   const char* _ck_x = (X); \
   const char* _ck_y = (Y); \
   ck_assert_msg(0 OP strcmp(_ck_y, _ck_x), \
-    "Assertion '%s' failed: %s==\"%s\", %s==\"%s\"", #X#OP#Y, #X, _ck_x, #Y, _ck_y); \
+    "Assertion '%s' failed: %s == \"%s\", %s == \"%s\"", #X" "#OP" "#Y, #X, _ck_x, #Y, _ck_y); \
 } while (0)
 /**
  * Check two strings to determine if 0==strcmp(X,Y)
@@ -733,7 +733,7 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
 #define _ck_assert_ptr(X, OP, Y) do { \
   const void* _ck_x = (X); \
   const void* _ck_y = (Y); \
-  ck_assert_msg(_ck_x OP _ck_y, "Assertion '%s' failed: %s==%#x, %s==%#x", #X#OP#Y, #X, _ck_x, #Y, _ck_y); \
+  ck_assert_msg(_ck_x OP _ck_y, "Assertion '%s' failed: %s == %#x, %s == %#x", #X" "#OP" "#Y, #X, _ck_x, #Y, _ck_y); \
 } while (0)
 
 /**
