@@ -111,7 +111,7 @@ example_cmake = example/CMakeLists.txt \
 
 ## what to clean
 
-CLEANFILES = check.info *~ *.diff
+CLEANFILES = *~ *.diff
 
 clean-local:
 	rm -rf check_html
