@@ -302,6 +302,7 @@ else
 fi
 AC_SUBST(HAVE_FORK)
 AC_CHECK_FUNCS([sigaction])
+AC_CHECK_FUNCS([mkstemp])
 
 # Check if the system's snprintf (and its variations) are C99 compliant.
 # If they are not, use the version in libcompat.

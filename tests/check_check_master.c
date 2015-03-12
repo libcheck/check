@@ -551,8 +551,13 @@ void setup (void)
    * Create file that will contain the line numbers of the failures
    * in check_check_sub.c, as they occur.
    */
+#if !HAVE_MKSTEMP
   line_num_failures_file_name = tempnam(NULL, "check_error_linenums_");
   line_num_failures = fopen(line_num_failures_file_name, "w+b");
+#else
+  line_num_failures_file_name = strdup("check_error_linenums_XXXXXX");
+  line_num_failures = fdopen(mkstemp(line_num_failures_file_name), "w+b");
+#endif
 
   srunner_add_suite(sr, make_sub2_suite());
 
