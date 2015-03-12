@@ -1,6 +1,9 @@
 In Development:
 # Mentioning Check 0.9.14 for now, to fix distcheck target until next release
 
+* Add space around operators in assert messages for readability.
+  Bug #102.
+
 * Use mkstemp() if available instead of tmpfile() or tempnam().
   Patch #51.
 
