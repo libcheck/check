@@ -51,7 +51,7 @@ Contributors:
     forest                (AIX and Solaris support)
     Michael Piszczek      (misc cleanup)
     Stewart Brodie        (bug fix: no fork mode failure reporting with teardowns)
-    Neos3452              (Use mkstemp() if available instead of tmpfile() or tempnam())
+    Michał Dębski         (Use mkstemp() if available instead of tmpfile() or tempnam())
 
 Anybody who has contributed code to Check or Check's build system is
 considered an author.  Send patches to this file to 
