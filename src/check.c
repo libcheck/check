@@ -265,9 +265,7 @@ void tcase_set_timeout(TCase * tc, double timeout)
 #else
     (void)tc;
     (void)timeout;
-    eprintf
-        ("This version does not support timeouts, as fork is not supported",
-         __FILE__, __LINE__);
+    /* Ignoring, as Check is not compiled with fork support. */
 #endif /* HAVE_FORK */
 }
 

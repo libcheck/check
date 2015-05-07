@@ -7,7 +7,9 @@ expected="Running suite(s): NoFork
 0%: Checks: 1, Failures: 1, Errors: 0"
 else
 expected="Running suite(s): NoFork
-0%: Checks: 1, Failures: 1, Errors: 0"
+0%: Checks: 1, Failures: 1, Errors: 0
+Running suite(s): NoForkSupport
+100%: Checks: 1, Failures: 0, Errors: 0"
 fi
 
 actual=`./check_nofork${EXEEXT} | tr -d "\r"`

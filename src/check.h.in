@@ -343,6 +343,9 @@ CK_DLL_EXP void CK_EXPORT tcase_add_checked_fixture(TCase * tc, SFun setup,
  * the environment variable CK_DEFAULT_TIMEOUT is defined and no timeout
  * is set, the value in the environment variable is used.
  *
+ * If Check is compile without fork() support this call is ignored,
+ * as timeouts are not possible.
+ *
  * @param tc test case to assign timeout to
  * @param timeout to use, in seconds. If the value contains a decimal
  *                 portion, but no high resolution timer is available,
@@ -1206,6 +1209,9 @@ CK_DLL_EXP enum fork_status CK_EXPORT srunner_fork_status(SRunner * sr);
  * If set to CK_FORK or CK_NOFORK, the environment variable
  * if defined is ignored.
  *
+ * If Check is compiled without support for fork(), attempting
+ * to set the status to CK_FORK is ignored.
+ *
  * @param sr suite runner to assign the fork status to
  * @param fstat fork status to assign
  *
@@ -1224,9 +1230,13 @@ CK_DLL_EXP void CK_EXPORT srunner_set_fork_status(SRunner * sr,
  * the process group will be killed; using this wrapper will prevent
  * orphan processes.
  *
+ * If Check is compiled without fork() support this call simply
+ * return -1 and does nothing.
+ *
  * @return On success, the PID of the child process is returned in
  *          the parent, and 0 is returned in the child.  On failure,
- *          an error will be printed and exit() invoked.
+ *          a value of -1 is returned to the parent process and no
+ *          child process is created.
  *
  * @since 0.9.3
  */
@@ -1239,6 +1249,9 @@ CK_DLL_EXP pid_t CK_EXPORT check_fork(void);
  * will wait for the given process to terminate. If the process
  * exited without error, exit(EXIT_SUCCESS) is invoked; otherwise
  * exit(EXIT_FAILURE) is invoked.
+ *
+ * If Check is compiled without support for fork(), this invokes
+ * exit(EXIT_FAILURE).
  *
  * @param pid process to wait for, created by check_fork()
  *

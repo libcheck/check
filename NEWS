@@ -1,6 +1,12 @@
 In Development:
 # Mentioning Check 0.9.14 for now, to fix distcheck target until next release
 
+* If Check is compiled without support for fork(), the behavior of
+  functions which require fork() to be useful have been changed.
+  Functions that attempt to set CK_FORK mode are no-ops,
+  check_fork() returns in failure, and check_waitpid_and_exit()
+  exits in failure.
+
 * Add space around operators in assert messages for readability.
   Bug #102.
 

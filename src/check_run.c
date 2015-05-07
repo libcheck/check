@@ -685,7 +685,7 @@ enum fork_status srunner_fork_status(SRunner * sr)
 #if defined(HAVE_FORK) && HAVE_FORK==1
             return CK_FORK;
 #else /* HAVE_FORK */
-            eprintf("This version does not support fork", __FILE__, __LINE__);
+            /* Ignoring, as Check is not compiled with fork support. */
             return CK_NOFORK;
 #endif /* HAVE_FORK */
         }
@@ -700,7 +700,8 @@ void srunner_set_fork_status(SRunner * sr, enum fork_status fstat)
     /* If fork() is unavailable, do not allow a fork mode to be set */
     if(fstat != CK_NOFORK)
     {
-        eprintf("This version does not support fork", __FILE__, __LINE__);
+        /* Overriding, as Check is not compiled with fork support. */
+        fstat = CK_NOFORK;
     }
 #endif /* ! HAVE_FORK */
     sr->fstat = fstat;
@@ -760,8 +761,8 @@ pid_t check_fork(void)
     }
     return pid;
 #else /* HAVE_FORK */
-    eprintf("This version does not support fork", __FILE__, __LINE__);
-    return 0;
+    /* Ignoring, as Check is not compiled with fork support. */
+    return -1;
 #endif /* HAVE_FORK */
 }
 
@@ -785,6 +786,7 @@ void check_waitpid_and_exit(pid_t pid CK_ATTRIBUTE_UNUSED)
     }
     exit(EXIT_SUCCESS);
 #else /* HAVE_FORK */
-    eprintf("This version does not support fork", __FILE__, __LINE__);
+    /* Ignoring, as Check is not compiled with fork support. */
+    exit(EXIT_FAILURE);
 #endif /* HAVE_FORK */
 }
