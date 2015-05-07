@@ -96,6 +96,8 @@ static int waserror(int status, int expected_signal);
 
 static int alarm_received;
 static pid_t group_pid;
+static struct sigaction sigint_old_action;
+static struct sigaction sigterm_old_action;
 
 static void CK_ATTRIBUTE_UNUSED sig_handler(int sig_nr)
 {
@@ -105,6 +107,31 @@ static void CK_ATTRIBUTE_UNUSED sig_handler(int sig_nr)
             alarm_received = 1;
             killpg(group_pid, SIGKILL);
             break;
+        case SIGTERM:
+        case SIGINT:
+        {
+            pid_t own_group_pid;
+            int child_sig = SIGTERM;
+
+            if (sig_nr == SIGINT)
+            {
+                child_sig = SIGKILL;
+                sigaction(SIGINT, &sigint_old_action, NULL);
+            }
+            else
+            {
+                sigaction(SIGTERM, &sigterm_old_action, NULL);
+            }
+
+            killpg(group_pid, child_sig);
+
+            /* POSIX says that calling killpg(0)
+             * does not necessarily mean to call it on the callers
+             * group pid! */
+            own_group_pid = getpgrp();
+            killpg(own_group_pid, sig_nr);
+            break;
+        }
         default:
             eprintf("Unhandled signal: %d", __FILE__, __LINE__, sig_nr);
             break;
@@ -718,8 +745,10 @@ void srunner_run(SRunner * sr, const char *sname, const char *tcname,
                  enum print_output print_mode)
 {
 #if defined(HAVE_SIGACTION) && defined(HAVE_FORK)
-    struct sigaction old_action;
-    struct sigaction new_action;
+    static struct sigaction sigalarm_old_action;
+    static struct sigaction sigalarm_new_action;
+    static struct sigaction sigint_new_action;
+    static struct sigaction sigterm_new_action;
 #endif /* HAVE_SIGACTION && HAVE_FORK */
 
     /*  Get the selected test suite and test case from the
@@ -737,15 +766,25 @@ void srunner_run(SRunner * sr, const char *sname, const char *tcname,
                 __FILE__, __LINE__, print_mode);
     }
 #if defined(HAVE_SIGACTION) && defined(HAVE_FORK)
-    memset(&new_action, 0, sizeof new_action);
-    new_action.sa_handler = sig_handler;
-    sigaction(SIGALRM, &new_action, &old_action);
+    memset(&sigalarm_new_action, 0, sizeof(sigalarm_new_action));
+    sigalarm_new_action.sa_handler = sig_handler;
+    sigaction(SIGALRM, &sigalarm_new_action, &sigalarm_old_action);
+
+    memset(&sigint_new_action, 0, sizeof(sigint_new_action));
+    sigint_new_action.sa_handler = sig_handler;
+    sigaction(SIGINT, &sigint_new_action, &sigint_old_action);
+
+    memset(&sigterm_new_action, 0, sizeof(sigterm_new_action));
+    sigterm_new_action.sa_handler = sig_handler;
+    sigaction(SIGTERM, &sigterm_new_action, &sigterm_old_action);
 #endif /* HAVE_SIGACTION && HAVE_FORK */
     srunner_run_init(sr, print_mode);
     srunner_iterate_suites(sr, sname, tcname, print_mode);
     srunner_run_end(sr, print_mode);
 #if defined(HAVE_SIGACTION) && defined(HAVE_FORK)
-    sigaction(SIGALRM, &old_action, NULL);
+    sigaction(SIGALRM, &sigalarm_old_action, NULL);
+    sigaction(SIGINT, &sigint_old_action, NULL);
+    sigaction(SIGTERM, &sigterm_old_action, NULL);
 #endif /* HAVE_SIGACTION && HAVE_FORK */
 }
 

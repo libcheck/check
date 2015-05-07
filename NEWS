@@ -1,6 +1,10 @@
 In Development:
 # Mentioning Check 0.9.14 for now, to fix distcheck target until next release
 
+* If the test runner process catches a SIGTERM or SIGINT signal the running
+  tests are now also killed.
+  Patch #52.
+
 * If Check is compiled without support for fork(), the behavior of
   functions which require fork() to be useful have been changed.
   Functions that attempt to set CK_FORK mode are no-ops,
