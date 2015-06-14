@@ -350,7 +350,7 @@ AC_OUTPUT
 
 echo
 echo "=========================================="
-echo "Summary of Check options:"
+echo "Summary of Check $CHECK_MAJOR_VERSION.$CHECK_MINOR_VERSION.$CHECK_MICRO_VERSION options:"
 echo
 
 if test "x0" = x"$HAVE_FORK"; then
