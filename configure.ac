@@ -353,51 +353,51 @@ echo "=========================================="
 echo "Summary of Check options:"
 echo
 
-echo -n "fork mode ............................ "
 if test "x0" = x"$HAVE_FORK"; then
-    echo "no"
+    result="no"
 else
-    echo "yes"
+    result="yes"
 fi
+echo "fork mode ............................ $result"
 
-echo -n "high resolution timer replacement .... "
 case "$hw_cv_librt_timers_posix" in
     "yes")
-        echo "no"
+        result="no"
         ;;
     "no")
-        echo "yes"
+        result="yes"
         ;;
     *)
         # The AC_REPLACE_FUNCS macro was invoked,
         # meaning we are cross compiling.
         if test "xno" = x"$ac_cv_func_timer_create"; then
-            echo "yes"
+            result="yes"
         else
-            echo "no"
+            result="no"
         fi
         ;;
 esac
+echo "high resolution timer replacement .... $result"
 
-echo -n "snprintf replacement ................. "
 if test "xno" = x"$hw_cv_func_snprintf_c99"; then
-    echo "yes"
+    result="yes"
 else
-    echo "no"
+    result="no"
 fi
+echo "snprintf replacement ................. $result"
 
-echo -n "subunit support....................... "
 if test "xfalse" = x"$enable_subunit"; then
-    echo "no"
+    result="no"
 else
-    echo "yes"
+    result="yes"
 fi
+echo "subunit support....................... $result"
 
-echo -n "timeout unit tests ................... "
 if test "xtrue" = x"$enable_timeout_tests"; then
-    echo "yes"
+    result="yes"
 else
-    echo "no"
+    result="no"
 fi
+echo "timeout unit tests ................... $result"
 
 echo "=========================================="
