@@ -869,7 +869,7 @@ Suite *make_sub2_suite(void)
 }
 
 #if defined(HAVE_FORK) && HAVE_FORK == 1
-void exit_handler();
+void exit_handler(void);
 void exit_handler ()
 {
   // This exit handler should never be executed
