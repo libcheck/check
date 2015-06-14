@@ -217,15 +217,19 @@ check_type_size(uint64_t UINT64_T)
 check_type_size(uintmax_t UINTMAX_T)
 
 #
+set(CMAKE_EXTRA_INCLUDE_FILES time.h)
 check_type_size(clock_t CLOCK_T)
 if(NOT HAVE_CLOCK_T)
   set(clock_t int)
 endif(NOT HAVE_CLOCK_T)
+unset(CMAKE_EXTRA_INCLUDE_FILES)
 #
+set(CMAKE_EXTRA_INCLUDE_FILES time.h)
 check_type_size(clockid_t CLOCKID_T)
 if(NOT HAVE_CLOCKID_T)
   set(clockid_t int)
 endif(NOT HAVE_CLOCKID_T)
+unset(CMAKE_EXTRA_INCLUDE_FILES)
 #
 check_type_size(size_t SIZE_T)
 if(NOT HAVE_SIZE_T)
@@ -254,10 +258,12 @@ if(NOT HAVE_PID_T)
   endif(WIN32)
 endif(NOT HAVE_PID_T)
 #
+set(CMAKE_EXTRA_INCLUDE_FILES time.h)
 check_type_size(timer_t TIMER_T)
 if(NOT HAVE_TIMER_T)
   set(timer_t int)
 endif(NOT HAVE_TIMER_T)
+unset(CMAKE_EXTRA_INCLUDE_FILES)
 
 ###############################################################################
 # Check libraries
