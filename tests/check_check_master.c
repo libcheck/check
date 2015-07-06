@@ -320,6 +320,7 @@ START_TEST(test_check_failure_msgs)
     expected_msg = master_tests[i].msg;
 
     if (strcmp(got_msg, expected_msg) != 0) {      
+      char *emsg;
       char *tmp = (char *)malloc(MAXSTR);
       snprintf(tmp, MAXSTR,"For test %d: Expected %s, got %s",
                i, expected_msg, got_msg);
@@ -330,7 +331,7 @@ START_TEST(test_check_failure_msgs)
        * '%' found, else they will result in odd formatting
        * in ck_abort_msg().
        */
-      char *emsg = escape_percent(tmp, MAXSTR);
+      emsg = escape_percent(tmp, MAXSTR);
       free(tmp);
 
       ck_abort_msg(emsg);
@@ -437,6 +438,7 @@ START_TEST(test_check_all_msgs)
   const char *msg;
   msg = tr_msg(tr_all_array[_i]);
   if (strcmp(msg, master_tests[_i].msg) != 0) {
+    char *emsg;
     char *tmp = (char *)malloc (MAXSTR);
     snprintf(tmp, MAXSTR,"Expected %s, got %s",
              master_tests[_i].msg, msg);
@@ -447,7 +449,7 @@ START_TEST(test_check_all_msgs)
     * '%' found, else they will result in odd formatting
     * in ck_abort_msg().
     */
-    char *emsg = escape_percent(tmp, MAXSTR);
+    emsg = escape_percent(tmp, MAXSTR);
     free(tmp);
 
     ck_abort_msg(emsg);
