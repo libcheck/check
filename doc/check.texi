@@ -71,6 +71,7 @@ possible something is better than nothing.
 * Advanced Features::
 * Supported Build Systems::
 * Conclusion and References::   
+* Environment Variables Reference::
 * Copying This Manual::         
 * Index::                       
 
@@ -115,6 +116,8 @@ Test Logging
 
 * XML Logging::                 
 * TAP Logging::
+
+Environment Variables Reference
 
 Copying This Manual
 
@@ -1948,7 +1951,7 @@ at the example CMake project in Check's @file{doc/examples} directory.
 
 
 
-@node Conclusion and References, Copying This Manual, Supported Build Systems, Top
+@node Conclusion and References, Environment Variables Reference, Supported Build Systems, Top
 @chapter Conclusion and References
 The tutorial and description of advanced features has provided an
 introduction to all of the functionality available in Check.
@@ -1962,6 +1965,30 @@ Example'', 1st ed., Addison-Wesley, 2003.  ISBN 0-321-14653-0.
 
 If you know of other authoritative references to unit testing and
 test-driven development, please send us a patch to this manual.
+
+@node Environment Variables Reference, Copying This Manual, Conclusion and References, Top
+@appendix Environment Variable Reference
+
+This is a reference to environment variables that Check recognized and their use.
+
+CK_RUN_CASE: Name of a test case, runs only that test. See section @ref{Selective Running of Tests}.
+
+CK_RUN_SUITE: Name of a test suite, runs only that suite. See section @ref{Selective Running of Tests}.
+
+CK_VERBOSITY: How much output to emit, accepts: ``silent'', ``minimal'', ``normal'', ``subunit'', or ``verbose''.  See section @ref{SRunner Output}.
+
+CK_FORK: Set to ``no'' to disable using fork() to run unit tests in their own process. This is useful for debugging segmentation faults.  See section @ref{No Fork Mode}.
+
+CK_DEFAULT_TIMEOUT: Override Check's default unit test timeout, a floating value in seconds. ``0'' means no timeout.  See section @ref{Test Timeouts}.
+
+CK_TIMEOUT_MULTIPLIER: A multiplier used against the default unit test timeout. An integer, defaults to ``1''.  See section @ref{Test Timeouts}.
+
+CK_LOG_FILE_NAME: Filename to write logs to.  See section @ref{Test Logging}.
+
+CK_XML_LOG_FILE_NAME: Filename to write XML log to. See section @ref{XML Logging}.
+
+CK_TAP_LOG_FILE_NAME: Filename to write TAP (Test Anything Protocol) output to.  See section @ref{TAP Logging}.
+
 
 @node Copying This Manual, Index, Conclusion and References, Top
 @appendix Copying This Manual
