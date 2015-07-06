@@ -291,7 +291,7 @@ char * escape_percent(const char *original, size_t original_size)
     result[write_index] = original[read_index];
     if(result[write_index] == '%')
     {
-      // Place a duplicate % next to the one just read, to escape it
+      /* Place a duplicate % next to the one just read, to escape it */
       result[++write_index] = '%';
     }
   }
@@ -324,10 +324,12 @@ START_TEST(test_check_failure_msgs)
       snprintf(tmp, MAXSTR,"For test %d: Expected %s, got %s",
                i, expected_msg, got_msg);
 
-      // NOTE: ck_abort_msg() will take the passed string
-      // and feed it to printf. We need to escape any
-      // '%' found, else they will result in odd formatting
-      // in ck_abort_msg().
+      /*
+       * NOTE: ck_abort_msg() will take the passed string
+       * and feed it to printf. We need to escape any
+       * '%' found, else they will result in odd formatting
+       * in ck_abort_msg().
+       */
       char *emsg = escape_percent(tmp, MAXSTR);
       free(tmp);
 
@@ -439,10 +441,12 @@ START_TEST(test_check_all_msgs)
     snprintf(tmp, MAXSTR,"Expected %s, got %s",
              master_tests[_i].msg, msg);
 
-    // NOTE: ck_abort_msg() will take the passed string
-    // and feed it to printf. We need to escape any
-    // '%' found, else they will result in odd formatting
-    // in ck_abort_msg().
+   /*
+    * NOTE: ck_abort_msg() will take the passed string
+    * and feed it to printf. We need to escape any
+    * '%' found, else they will result in odd formatting
+    * in ck_abort_msg().
+    */
     char *emsg = escape_percent(tmp, MAXSTR);
     free(tmp);
 

@@ -872,7 +872,7 @@ Suite *make_sub2_suite(void)
 void exit_handler(void);
 void exit_handler ()
 {
-  // This exit handler should never be executed
+  /* This exit handler should never be executed */
   while(1)
   {
     sleep(1);
