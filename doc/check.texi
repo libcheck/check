@@ -71,7 +71,7 @@ possible something is better than nothing.
 * Advanced Features::
 * Supported Build Systems::
 * Conclusion and References::   
-* Environment Variables Reference::
+* Environment Variable Reference::
 * Copying This Manual::         
 * Index::                       
 
@@ -117,7 +117,7 @@ Test Logging
 * XML Logging::                 
 * TAP Logging::
 
-Environment Variables Reference
+Environment Variable Reference
 
 Copying This Manual
 
@@ -1951,7 +1951,7 @@ at the example CMake project in Check's @file{doc/examples} directory.
 
 
 
-@node Conclusion and References, Environment Variables Reference, Supported Build Systems, Top
+@node Conclusion and References, Environment Variable Reference, Supported Build Systems, Top
 @chapter Conclusion and References
 The tutorial and description of advanced features has provided an
 introduction to all of the functionality available in Check.
@@ -1966,7 +1966,7 @@ Example'', 1st ed., Addison-Wesley, 2003.  ISBN 0-321-14653-0.
 If you know of other authoritative references to unit testing and
 test-driven development, please send us a patch to this manual.
 
-@node Environment Variables Reference, Copying This Manual, Conclusion and References, Top
+@node Environment Variable Reference, Copying This Manual, Conclusion and References, Top
 @appendix Environment Variable Reference
 
 This is a reference to environment variables that Check recognized and their use.
@@ -1990,7 +1990,7 @@ CK_XML_LOG_FILE_NAME: Filename to write XML log to. See section @ref{XML Logging
 CK_TAP_LOG_FILE_NAME: Filename to write TAP (Test Anything Protocol) output to.  See section @ref{TAP Logging}.
 
 
-@node Copying This Manual, Index, Conclusion and References, Top
+@node Copying This Manual, Index, Environment Variable Reference, Top
 @appendix Copying This Manual
 
 @menu
