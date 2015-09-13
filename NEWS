@@ -4,6 +4,10 @@ In Development:
 * Add LGPL header to files where it was missing; update FSF address in LGPL headers
   Bug #110
 
+* Strip timestamps from examples using filterdiff if available. This
+  allow build output to be reproducible.
+  Bug #112
+
 Sun Aug 2, 2015: Released Check 0.10.0
   based on r1217 (2015-08-02 19:21:14 +0000)
 

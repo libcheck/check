@@ -55,6 +55,7 @@ Contributors:
     Sebastian Dröge       (Kill running tests if SIGTERM or SIGINT are caught in test runner)
     Matt Clarkson         (Fix CMake checks using time.h for MinGW and MSVC)
     Mario Sanchez Prada   (configure.ac cleanup)
+    Tobias Frost          (strip timestamps from examples to enable reproducible builds)
 
 Anybody who has contributed code to Check or Check's build system is
 considered an author.  Send patches to this file to 

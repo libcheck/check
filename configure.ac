@@ -181,6 +181,15 @@ if test "$TEX" = "false"; then
     # anyway.
     AC_MSG_WARN(tex not installed: cannot rebuild HTML documentation.)
 fi
+AC_CHECK_PROGS(FILTERDIFF, filterdiff, false)
+if test "$FILTERDIFF" = "false"; then
+    # Make it [somewhat] clear to maintainers that filterdiff is missing.
+    # This is not an error, but will prevent builds from being
+    # reproducible.
+    AC_MSG_WARN(filterdiff not installed; build will not be reproducible.)
+fi
+
+AM_CONDITIONAL(USE_FILTERDIFF, [test x"$FILTERDIFF" = x"filterdiff"])
 
 # Checks for pthread implementation.
 ACX_PTHREAD
