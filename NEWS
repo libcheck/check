@@ -1,6 +1,9 @@
 In Development:
 # Mentioning Check 0.10.0 for now, to fix distcheck target until next release
 
+* Add LGPL header to files where it was missing
+  Bug #110
+
 Sun Aug 2, 2015: Released Check 0.10.0
   based on r1217 (2015-08-02 19:21:14 +0000)
 

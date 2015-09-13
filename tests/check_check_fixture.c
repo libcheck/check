@@ -1,3 +1,23 @@
+/*
+ * Check: a unit test framework for C
+ * Copyright (C) 2001, 2002 Arien Malec
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
 #include "../lib/libcompat.h"
 
 #include <stdlib.h>
@@ -63,7 +83,7 @@ START_TEST(test_setup_failure_msg)
 {
   TestResult **tra;
   char *trm;
-  const char *trmexp = "check_check_fixture.c:16:S:Fix Sub:unchecked_setup:0: Test failure in fixture";
+  const char *trmexp = "check_check_fixture.c:36:S:Fix Sub:unchecked_setup:0: Test failure in fixture";
 
   tra = srunner_failures(fixture_sr);
   trm = tr_str(tra[0]);
@@ -190,9 +210,9 @@ START_TEST(test_ch_setup_fail)
 
   tr = srunner_failures(sr);
   trm = tr_str(tr[0]);
-   /* Search for check_check_fixture.c:130 if this fails. */
+   /* Search for check_check_fixture.c:150 if this fails. */
   if (strstr(trm,
-	     "check_check_fixture.c:130:S:Setup Fail:test_sub_fail:0: Failed setup")
+	     "check_check_fixture.c:150:S:Setup Fail:test_sub_fail:0: Failed setup")
       == 0) {
     snprintf(errm, sizeof(errm),
 	     "Bad failed checked setup tr msg (%s)", trm);
@@ -317,7 +337,7 @@ START_TEST(test_ch_setup_sig)
   trm = tr_str(tr[0]);
 
   if (strstr(trm,
-	     "check_check_fixture.c:140:S:Setup Sig:test_sub_fail:0: "
+	     "check_check_fixture.c:160:S:Setup Sig:test_sub_fail:0: "
 	     "(after this point) Received signal 8")
       == 0) {
     snprintf(errm, sizeof(errm),
@@ -409,7 +429,7 @@ START_TEST(test_ch_teardown_fail)
   trm = tr_str(tr[0]);
 
   if (strstr(trm,
-	     "check_check_fixture.c:135:S:Teardown Fail:test_sub_pass:0: Failed teardown")
+	     "check_check_fixture.c:155:S:Teardown Fail:test_sub_pass:0: Failed teardown")
       == 0) {
     snprintf(errm, sizeof(errm),
 	     "Bad failed checked teardown tr msg (%s)", trm);
@@ -455,7 +475,7 @@ START_TEST(test_ch_teardown_fail_nofork)
   trm = tr_str(tr[0]);
 
   if (strstr(trm,
-	     "check_check_fixture.c:135:S:Teardown Fail No Fork:test_sub_pass:0: Failed teardown")
+	     "check_check_fixture.c:155:S:Teardown Fail No Fork:test_sub_pass:0: Failed teardown")
       == 0) {
     snprintf(errm, sizeof(errm),
 	     "Bad failed checked teardown tr msg (%s)", trm);
@@ -506,7 +526,7 @@ START_TEST(test_ch_teardown_sig)
   trm = tr_str(tr[0]);
 
   if (strstr(trm,
-	     "check_check_fixture.c:146:S:Teardown Sig:test_sub_pass:0: "
+	     "check_check_fixture.c:166:S:Teardown Sig:test_sub_pass:0: "
 	     "(after this point) Received signal 8")
       == 0) {
     snprintf(errm, sizeof(errm),
