@@ -9,7 +9,8 @@ test_log_output ( ) {
     rm -f ${OUTPUT_FILE}
     ./ex_output${EXEEXT} "${1}" "LOG" "NORMAL" > /dev/null
     actual=`cat ${OUTPUT_FILE} | tr -d "\r"`
-    if [ x"${2}" != x"${actual}" ]; then
+    expected=${2}
+    if [ x"${expected}" != x"${actual}" ]; then
 	echo "Problem with ex_log_output${EXEEXT} ${1} LOG NORMAL";
 	echo "Expected:";
 	echo "${expected}";
