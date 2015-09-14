@@ -36,7 +36,7 @@ exp_normal_result=`printf "42%%: Checks: 7, Failures: 4, Errors: 0
 ${SRCDIR}ex_output.c:37:F:Core:test_fail:0: Failure
 ${SRCDIR}ex_output.c:72:F:Core:test_loop:0: Iteration 0 failed
 ${SRCDIR}ex_output.c:72:F:Core:test_loop:2: Iteration 2 failed
-${SRCDIR}ex_output.c:78:F:description \" ' < > &\x9 \xA end:test_xml_esc_fail_msg:0: fail \" ' < > & \x9 \x0AX\x08 message"`
+${SRCDIR}ex_output.c:78:F:description \" ' < > & \x9 \x0AX\x08 end:test_xml_esc_fail_msg:0: fail \" ' < > & \x9 \x0AX\x08 message"`
 fi
 exp_normal="$suite_output
 $exp_normal_result"
@@ -224,7 +224,7 @@ expected_xml="<?xml version=\"1.0\"?>
 </testsuites>"
 expected_duration_count=9
 else
-expected_xml="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+expected_xml="<?xml version=\"1.0\"?>
 <?xml-stylesheet type=\"text/xsl\" href=\"http://check.sourceforge.net/xml/check_unittest.xslt\"?>
 <testsuites xmlns=\"http://check.sourceforge.net/ns\">
   <suite>
