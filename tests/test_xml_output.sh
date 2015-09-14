@@ -39,5 +39,13 @@ while [ ${i} -le ${num_durations} ]; do
    i=$((i+1))
 done
 
+if [ ! -z `which xmllint` ]; then
+    xmllint_output=`xmllint ${OUTPUT_FILE}`
+    if [ $? -ne 0 ]; then
+        echo "xmllint found an issue"
+        echo ${xmllint_output}
+        exit 1
+    fi
+fi
 
 exit 0
