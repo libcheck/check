@@ -25,12 +25,18 @@ if [ x"${expected_duration_count}" != x"${actual_duration_count}" ]; then
     exit 1;
 fi
 
-for duration in `grep "\<duration\>" ${OUTPUT_FILE} | cut -d ">" -f 2 | cut -d "<" -f 1`; do
-int_duration=`echo $duration | cut -d "." -f 1`
-if [ "${int_duration}" -ne "-1" ] && [ "${int_duration}" -gt "${CK_DEFAULT_TIMEOUT}" ]; then
-    echo "Problem with duration ${duration}; is not valid. Should be -1 or in [0, ${CK_DEFAULT_TIMEOUT}]"
-    exit 1
-fi
+num_durations=`grep "\<duration\>" ${OUTPUT_FILE} | wc -l`
+
+i=1
+while [ ${i} -le ${num_durations} ]; do
+   duration=`grep "\<duration\>" ${OUTPUT_FILE} | head -n ${i} | tail -n 1 | cut -d ">" -f 2 | cut -d "<" -f 1`
+   int_duration=`echo $duration | cut -d "." -f 1`
+   if [ "${int_duration}" -ne "-1" ] && [ "${int_duration}" -gt "${CK_DEFAULT_TIMEOUT}" ]; then
+       echo "Problem with duration ${duration}; is not valid. Should be -1 or in [0, ${CK_DEFAULT_TIMEOUT}]"
+       exit 1
+   fi
+
+   i=$((i+1))
 done
 
 

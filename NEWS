@@ -1,6 +1,9 @@
 In Development:
 # Mentioning Check 0.10.0 for now, to fix distcheck target until next release
 
+* Emit only valid XML characters in XML logging (assumes ASCII encoding).
+  Bug #103
+
 * Add LGPL header to files where it was missing; update FSF address in LGPL headers
   Bug #110
 

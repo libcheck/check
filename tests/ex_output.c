@@ -75,7 +75,7 @@ END_TEST
 
 START_TEST(test_xml_esc_fail_msg)
 {
-    ck_abort_msg("fail \" ' < > & message");
+    ck_abort_msg("fail \" ' < > & \x9 \xA" "X""\x08"" message"); /* backspace char \x08 deletes the X */
 }
 END_TEST
 
@@ -120,8 +120,8 @@ static Suite *make_xml_esc_suite(void)
     Suite *s;
     TCase *tc;
 
-    s = suite_create("XML escape \" ' < > & tests");
-    tc = tcase_create("description \" ' < > &");
+    s = suite_create("XML escape \" ' < > & \x9 \xA" "X""\x08"" tests"); /* backspace char \x08 deletes the X */
+    tc = tcase_create("description \" ' < > & \x9 \xA" "X""\x08"" end"); /* backspace char \x08 deletes the X */
     suite_add_tcase(s, tc);
 
     tcase_add_test(tc, test_xml_esc_fail_msg);
