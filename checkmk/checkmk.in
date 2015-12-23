@@ -24,11 +24,11 @@ BEGIN {
     outfname="/dev/stdout";
 
     # Tokens
-    pp_ws            = "[ \t\f\v\r\n]+";
-    pp_ws_op         = "[ \t\f\v\r\n]*";
+    pp_ws            = "[ \\t\\f\\v\\r\\n]+";
+    pp_ws_op         = "[ \\t\\f\\v\\r\\n]*";
     pp_digit         = "[0-9]+"
     pp_prefix        = pp_ws_op "#" pp_ws_op;
-    pp_sep           = "[ \t\f\v\r\n]+";
+    pp_sep           = "[ \\t\\f\\v\\r\\n]+";
     pp_name          = ".+";
     pp_hex_quad      = "[A-F0-9a-f][A-F0-9a-f][A-F0-9a-f][A-F0-9a-f]"
     pp_ucn           = "\\\\(u" pp_hex_quad "|U" pp_hex_quad pp_hex_quad ")";

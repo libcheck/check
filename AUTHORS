@@ -56,6 +56,7 @@ Contributors:
     Matt Clarkson         (Fix CMake checks using time.h for MinGW and MSVC)
     Mario Sanchez Prada   (configure.ac cleanup)
     Tobias Frost          (strip timestamps from examples to enable reproducible builds)
+    James Morris          (checkmk regex update for Solaris support)
 
 Anybody who has contributed code to Check or Check's build system is
 considered an author.  Send patches to this file to 
