@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for Check
+(version 0.10.0, 13 September 2015),
+a unit testing framework for C.
+
+Copyright (C) 2001-2014 Arien Malec, Branden Archer, Chris Pickett,
+Fredrik Hugosson, and Robert Lemmen.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License,
+Version 1.2 or any later version published by the Free Software
+Foundation; with no Invariant Sections, no Front-Cover texts, and no
+Back-Cover Texts.  A copy of the license is included in the section
+entitled "GNU Free Documentation License."
+
+ -->
+<!-- Created on December 24, 2015 by texi2html 5.0
+texi2html was written by: 
+            Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Many creative people.
+Send bugs and suggestions to <texi2html-bug@nongnu.org>
+-->
+<head>
+<title>Check 0.10.0: 2 Unit Testing in C</title>
+
+<meta name="description" content="Check 0.10.0: 2 Unit Testing in C">
+<meta name="keywords" content="Check 0.10.0: 2 Unit Testing in C">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2html 5.0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.smallquotation {font-size: smaller}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+div.smalldisplay {margin-left: 3.2em}
+div.smallexample {margin-left: 3.2em}
+div.smalllisp {margin-left: 3.2em}
+pre.display {font-family: serif}
+pre.format {font-family: serif}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+pre.smalldisplay {font-family: serif; font-size: smaller}
+pre.smallexample {font-size: smaller}
+pre.smallformat {font-family: serif; font-size: smaller}
+pre.smalllisp {font-size: smaller}
+span.nocodebreak {white-space:pre}
+span.nolinebreak {white-space:pre}
+span.roman {font-family:serif; font-weight:normal}
+span.sansserif {font-family:sans-serif; font-weight:normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#800080" alink="#FF0000">
+
+<a name="Unit-Testing-in-C"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="check_1.html#Introduction" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_1.html#Introduction" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#Other-Frameworks-for-C" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_3.html#Tutorial" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Unit-Testing-in-C-1"></a>
+<h1 class="chapter">2 Unit Testing in C</h1>
+<p>&nbsp;C unit testing
+</p>
+<p>The approach to unit testing frameworks used for Check originated with
+Smalltalk, which is a late binding object-oriented language supporting
+reflection.  Writing a framework for C requires solving some special
+problems that frameworks for Smalltalk, Java or Python don&rsquo;t have to
+face.  In all of those language, the worst that a unit test can do is
+fail miserably, throwing an exception of some sort.  In C, a unit test
+is just as likely to trash its address space as it is to fail to meet
+its test requirements, and if the test framework sits in the same
+address space, goodbye test framework.  
+</p>
+<p>To solve this problem, Check uses the <code>fork()</code> system call to
+create a new address space in which to run each unit test, and then
+uses message queues to send information on the testing process back to
+the test framework.  That way, your unit test can do all sorts of
+nasty things with pointers, and throw a segmentation fault, and the
+test framework will happily note a unit test error, and chug along.
+</p>
+<p>The Check framework is also designed to play happily with common
+development environments for C programming.  The author designed Check
+around Autoconf/Automake (thus the name Check: <code>make check</code> is
+the idiom used for testing with Autoconf/Automake). Note however that
+Autoconf/Automake are NOT necessary to use Check; any build system
+is sufficient. The test failure messages thrown up by Check use the
+common idiom of &lsquo;<samp>filename:linenumber:message</samp>&rsquo; used by <code>gcc</code>
+and family to report problems in source code.  With (X)Emacs, the output
+of Check allows one to quickly navigate to the location of the unit test
+that failed; presumably that also works in VI and IDEs.
+</p>
+<table class="menu" border="0" cellspacing="0">
+<tr><td align="left" valign="top"><a href="#Other-Frameworks-for-C">2.1 Other Frameworks for C</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">      
+</td></tr>
+</table>
+
+<hr>
+<a name="Other-Frameworks-for-C"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Unit-Testing-in-C" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Unit-Testing-in-C" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Unit-Testing-in-C" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="check_3.html#Tutorial" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_3.html#Tutorial" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Other-Frameworks-for-C-1"></a>
+<h2 class="section">2.1 Other Frameworks for C</h2>
+<a name="index-other-frameworks"></a>
+<a name="index-frameworks"></a>
+
+<p>The authors know of the following additional unit testing frameworks
+for C:
+</p>
+<dl compact="compact">
+<dt>AceUnit</dt>
+<dd><p>AceUnit (Advanced C and Embedded Unit) bills itself as a comfortable C
+code unit test framework.  It tries to mimic JUnit 4.x and includes
+reflection-like capabilities.  AceUnit can be used in resource
+constraint environments, e.g. embedded software development, and
+importantly it runs fine in environments where you cannot include a
+single standard header file and cannot invoke a single standard C
+function from the ANSI / ISO C libraries.  It also has a Windows port.
+It does not use forks to trap signals, although the authors have
+expressed interest in adding such a feature.  See the
+<a href="http://aceunit.sourceforge.net/">AceUnit homepage</a>.
+</p>
+</dd>
+<dt>GNU Autounit</dt>
+<dd><p>Much along the same lines as Check, including forking to run unit tests
+in a separate address space (in fact, the original author of Check
+borrowed the idea from <acronym>GNU</acronym> Autounit).  <acronym>GNU</acronym> Autounit
+uses GLib extensively, which means that linking and such need special
+options, but this may not be a big problem to you, especially if you are
+already using GTK or GLib.  See the <a href="http://autounit.tigris.org/">GNU Autounit homepage</a>.
+</p>
+</dd>
+<dt>cUnit</dt>
+<dd><p>Also uses GLib, but does not fork to protect the address space of unit
+tests.  See the
+<a href="http://web.archive.org/web/*/http://people.codefactory.se/~spotty/cunit/">archived cUnit homepage</a>.
+</p>
+</dd>
+<dt>CUnit</dt>
+<dd><p>Standard C, with plans for a Win32 GUI implementation.  Does not
+currently fork or otherwise protect the address space of unit tests.
+In early development.  See the <a href="http://cunit.sourceforge.net">CUnit homepage</a>.
+</p>
+</dd>
+<dt>CuTest</dt>
+<dd><p>A simple framework with just one .c and one .h file that you drop into
+your source tree.  See the <a href="http://cutest.sourceforge.net">CuTest homepage</a>.
+</p>
+</dd>
+<dt>CppUnit</dt>
+<dd><p>The premier unit testing framework for C++; you can also use it to test C
+code.  It is stable, actively developed, and has a GUI interface.  The
+primary reasons not to use CppUnit for C are first that it is quite
+big, and second you have to write your tests in C++, which means you
+need a C++ compiler.  If these don&rsquo;t sound like concerns, it is
+definitely worth considering, along with other C++ unit testing
+frameworks.  See the
+<a href="http://cppunit.sourceforge.net/cppunit-wiki">CppUnit homepage</a>.
+</p>
+</dd>
+<dt>embUnit</dt>
+<dd><p>embUnit (Embedded Unit) is another unit test framework for embedded
+systems.  This one appears to be superseded by AceUnit.
+<a href="https://sourceforge.net/projects/embunit/">Embedded Unit homepage</a>.
+</p>
+</dd>
+<dt>MinUnit</dt>
+<dd><p>A minimal set of macros and that&rsquo;s it!  The point is to
+show how easy it is to unit test your code.  See the
+<a href="http://www.jera.com/techinfo/jtns/jtn002.html">MinUnit homepage</a>.
+</p>
+</dd>
+<dt>CUnit for Mr. Ando</dt>
+<dd><p>A CUnit implementation that is fairly new, and apparently still in
+early development.  See the 
+<a href="http://park.ruru.ne.jp/ando/work/CUnitForAndo/html/">CUnit for Mr. Ando homepage</a>.
+</p></dd>
+</dl>
+
+<p>This list was last updated in March 2008.  If you know of other C unit
+test frameworks, please send an email plus description to
+<a href="mailto:check-devel AT lists.sourceforge.net">check-devel AT lists.sourceforge.net</a> and we will add the entry
+to this list.
+</p>
+<p>It is the authors&rsquo; considered opinion that forking or otherwise
+trapping and reporting signals is indispensable for unit testing (but
+it probably wouldn&rsquo;t be hard to add that to frameworks without that
+feature).  Try &rsquo;em all out: adapt this tutorial to use all of the
+frameworks above, and use whichever you like.  Contribute, spread the
+word, and make one a standard.  Languages such as Java and Python are
+fortunate to have standard unit testing frameworks; it would be desirable
+that C have one as well.
+</p>
+<hr>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Unit-Testing-in-C" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_3.html#Tutorial" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<p>
+ <font size="-1">
+  This document was generated on <i>December 24, 2015</i> using <a href="http://www.nongnu.org/texi2html/"><i>texi2html 5.0</i></a>.
+ </font>
+ <br>
+
+</p>
+</body>
+</html>

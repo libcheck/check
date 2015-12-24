@@ -1,0 +1,1228 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for Check
+(version 0.10.0, 13 September 2015),
+a unit testing framework for C.
+
+Copyright (C) 2001-2014 Arien Malec, Branden Archer, Chris Pickett,
+Fredrik Hugosson, and Robert Lemmen.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License,
+Version 1.2 or any later version published by the Free Software
+Foundation; with no Invariant Sections, no Front-Cover texts, and no
+Back-Cover Texts.  A copy of the license is included in the section
+entitled "GNU Free Documentation License."
+
+ -->
+<!-- Created on December 24, 2015 by texi2html 5.0
+texi2html was written by: 
+            Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Many creative people.
+Send bugs and suggestions to <texi2html-bug@nongnu.org>
+-->
+<head>
+<title>Check 0.10.0: 3 Tutorial: Basic Unit Testing</title>
+
+<meta name="description" content="Check 0.10.0: 3 Tutorial: Basic Unit Testing">
+<meta name="keywords" content="Check 0.10.0: 3 Tutorial: Basic Unit Testing">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2html 5.0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.smallquotation {font-size: smaller}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+div.smalldisplay {margin-left: 3.2em}
+div.smallexample {margin-left: 3.2em}
+div.smalllisp {margin-left: 3.2em}
+pre.display {font-family: serif}
+pre.format {font-family: serif}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+pre.smalldisplay {font-family: serif; font-size: smaller}
+pre.smallexample {font-size: smaller}
+pre.smallformat {font-family: serif; font-size: smaller}
+pre.smalllisp {font-size: smaller}
+span.nocodebreak {white-space:pre}
+span.nolinebreak {white-space:pre}
+span.roman {font-family:serif; font-weight:normal}
+span.sansserif {font-family:sans-serif; font-weight:normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#800080" alink="#FF0000">
+
+<a name="Tutorial"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="check_2.html#Unit-Testing-in-C" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_2.html#Other-Frameworks-for-C" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#How-to-Write-a-Test" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_4.html#Advanced-Features" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Tutorial_003a-Basic-Unit-Testing"></a>
+<h1 class="chapter">3 Tutorial: Basic Unit Testing</h1>
+
+<p>This tutorial will use the JUnit
+<a href="http://junit.sourceforge.net/doc/testinfected/testing.htm">Test Infected</a> article as a starting point.  We will be creating a library
+to represent money, <code>libmoney</code>, that allows conversions between
+different currency types.  The development style will be &ldquo;test a
+little, code a little&rdquo;, with unit test writing preceding coding.
+This constantly gives us insights into module usage, and also makes
+sure we are constantly thinking about how to test our code.
+</p>
+<table class="menu" border="0" cellspacing="0">
+<tr><td align="left" valign="top"><a href="#How-to-Write-a-Test">3.1 How to Write a Test</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">         
+</td></tr>
+<tr><td align="left" valign="top"><a href="#Setting-Up-the-Money-Build-Using-Autotools">3.2 Setting Up the Money Build Using Autotools</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top"><a href="#Setting-Up-the-Money-Build-Using-CMake">3.3 Setting Up the Money Build Using CMake</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top"><a href="#Test-a-Little">3.4 Test a Little, Code a Little</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">               
+</td></tr>
+<tr><td align="left" valign="top"><a href="#Creating-a-Suite">3.5 Creating a Suite</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">            
+</td></tr>
+<tr><td align="left" valign="top"><a href="#SRunner-Output">3.6 SRunner Output</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">              
+</td></tr>
+</table>
+
+<hr>
+<a name="How-to-Write-a-Test"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Tutorial" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Tutorial" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Tutorial" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#Setting-Up-the-Money-Build-Using-Autotools" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_4.html#Advanced-Features" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="How-to-Write-a-Test-1"></a>
+<h2 class="section">3.1 How to Write a Test</h2>
+
+<p>Test writing using Check is very simple. The file in which the checks
+are defined must include &lsquo;<tt>check.h</tt>&rsquo; as so:
+</p><div class="example">
+<pre class="verbatim">#include &lt;check.h&gt;
+</pre></div>
+
+<p>The basic unit test looks as follows:
+</p><div class="example">
+<pre class="verbatim">START_TEST (test_name)
+{
+  /* unit test code */
+}
+END_TEST
+</pre></div>
+
+<p>The <code>START_TEST</code>/<code>END_TEST</code> pair are macros that setup basic
+structures to permit testing.  It is a mistake to leave off the
+<code>END_TEST</code> marker; doing so produces all sorts of strange errors
+when the check is compiled.
+</p>
+<hr>
+<a name="Setting-Up-the-Money-Build-Using-Autotools"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Tutorial" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#How-to-Write-a-Test" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Tutorial" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#Setting-Up-the-Money-Build-Using-CMake" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_4.html#Advanced-Features" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Setting-Up-the-Money-Build-Using-Autotools-1"></a>
+<h2 class="section">3.2 Setting Up the Money Build Using Autotools</h2>
+
+<p>Since we are creating a library to handle money, we will first create
+an interface in &lsquo;<tt>money.h</tt>&rsquo;, an implementation in &lsquo;<tt>money.c</tt>&rsquo;,
+and a place to store our unit tests, &lsquo;<tt>check_money.c</tt>&rsquo;.  We want to
+integrate these core files into our build system, and will need some
+additional structure. To manage everything we&rsquo;ll use Autoconf,
+Automake, and friends (collectively known as Autotools) for this
+example.  Note that one could do something similar with ordinary
+Makefiles, or any other build system. It is in the authors&rsquo; opinion that
+it is generally easier to use Autotools than bare Makefiles, and they
+provide built-in support for running tests.
+</p>
+<p>Note that this is not the place to explain how Autotools works.  If
+you need help understanding what&rsquo;s going on beyond the explanations
+here, the best place to start is probably Alexandre Duret-Lutz&rsquo;s
+excellent
+<a href="http://www.lrde.epita.fr/~adl/autotools.html">Autotools tutorial</a>.
+</p>
+<p>The examples in this section are part of the Check distribution; you
+don&rsquo;t need to spend time cutting and pasting or (worse) retyping them.
+Locate the Check documentation on your system and look in the
+&lsquo;<samp>example</samp>&rsquo; directory.  The standard directory for GNU/Linux
+distributions should be &lsquo;<samp>/usr/share/doc/check/example</samp>&rsquo;.  This
+directory contains the final version reached the end of the tutorial.  If
+you want to follow along, create backups of &lsquo;<tt>money.h</tt>&rsquo;,
+&lsquo;<tt>money.c</tt>&rsquo;, and &lsquo;<tt>check_money.c</tt>&rsquo;, and then delete the originals.
+</p>
+<p>We set up a directory structure as follows:
+</p><div class="example">
+<pre class="verbatim">.
+|-- Makefile.am
+|-- README
+|-- configure.ac
+|-- src
+|   |-- Makefile.am
+|   |-- main.c
+|   |-- money.c
+|   `-- money.h
+`-- tests
+    |-- Makefile.am
+    `-- check_money.c
+</pre></div>
+
+<p>Note that this is the output of <code>tree</code>, a great directory
+visualization tool.  The top-level &lsquo;<tt>Makefile.am</tt>&rsquo; is simple; it
+merely tells Automake how to process sub-directories:
+</p><div class="example">
+<pre class="verbatim">SUBDIRS = src . tests
+</pre></div>
+
+<p>Note that <code>tests</code> comes last, because the code should be testing
+an already compiled library.  &lsquo;<tt>configure.ac</tt>&rsquo; is standard Autoconf
+boilerplate, as specified by the Autotools tutorial and as suggested
+by <code>autoscan</code>.
+</p>
+<p>&lsquo;<tt>src/Makefile.am</tt>&rsquo; builds &lsquo;<samp>libmoney</samp>&rsquo; as a Libtool archive,
+and links it to an application simply called <code>main</code>.  The
+application&rsquo;s behavior is not important to this tutorial; what&rsquo;s
+important is that none of the functions we want to unit test appear in
+&lsquo;<tt>main.c</tt>&rsquo;; this probably means that the only function in
+&lsquo;<tt>main.c</tt>&rsquo; should be <code>main()</code> itself.  In order to test the
+whole application, unit testing is not appropriate: you should use a
+system testing tool like Autotest.  If you really want to test
+<code>main()</code> using Check, rename it to something like
+<code>_myproject_main()</code> and write a wrapper around it.
+</p>
+<p>The primary build instructions for our unit tests are in
+&lsquo;<tt>tests/Makefile.am</tt>&rsquo;:
+</p>
+<table class="cartouche" border="1"><tr><td>
+<div class="example">
+<pre class="example"><pre class="verbatim">## Process this file with automake to produce Makefile.in
+
+TESTS = check_money
+check_PROGRAMS = check_money
+check_money_SOURCES = check_money.c $(top_builddir)/src/money.h
+check_money_CFLAGS = @CHECK_CFLAGS@
+check_money_LDADD = $(top_builddir)/src/libmoney.la @CHECK_LIBS@
+</pre></pre></div>
+</td></tr></table>
+
+<p><code>TESTS</code> tells Automake which test programs to run for
+<code>make check</code>.  Similarly, the <code>check_</code> prefix in
+<code>check_PROGRAMS</code> actually comes from Automake; it says to build
+these programs only when <code>make check</code> is run.  (Recall that
+Automake&rsquo;s <code>check</code> target is the origin of Check&rsquo;s name.)  The
+<code>check_money</code> test is a program that we will build from
+&lsquo;<tt>tests/check_money.c</tt>&rsquo;, linking it against both
+&lsquo;<tt>src/libmoney.la</tt>&rsquo; and the installed &lsquo;<tt>libcheck.la</tt>&rsquo; on our
+system.  The appropriate compiler and linker flags for using Check are
+found in <code>@CHECK_CFLAGS@</code> and <code>@CHECK_LIBS@</code>, values
+defined by the <code>AM_PATH_CHECK</code> macro.
+</p>
+<p>Now that all this infrastructure is out of the way, we can get on with
+development.  &lsquo;<tt>src/money.h</tt>&rsquo; should only contain standard C header
+boilerplate:
+</p>
+<table class="cartouche" border="1"><tr><td>
+<div class="example">
+<pre class="example"><pre class="verbatim">/*
+ * Check: a unit test framework for C
+ * Copyright (C) 2001, 2002 Arien Malec
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
+#ifndef MONEY_H
+#define MONEY_H
+
+#endif /* MONEY_H */
+</pre></pre></div>
+</td></tr></table>
+
+<p>&lsquo;<tt>src/money.c</tt>&rsquo; should be empty, and &lsquo;<tt>tests/check_money.c</tt>&rsquo;
+should only contain an empty <code>main()</code> function:
+</p>
+<table class="cartouche" border="1"><tr><td>
+<div class="example">
+<pre class="example"><pre class="verbatim">/*
+ * Check: a unit test framework for C
+ * Copyright (C) 2001, 2002 Arien Malec
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
+int main(void)
+{
+    return 0;
+}
+</pre></pre></div>
+</td></tr></table>
+
+<p>Create the GNU Build System for the project and then build &lsquo;<tt>main</tt>&rsquo;
+and &lsquo;<tt>libmoney.la</tt>&rsquo; as follows:
+</p><div class="example">
+<pre class="verbatim">$ autoreconf --install
+$ ./configure
+$ make
+</pre></div>
+
+<p>(<code>autoreconf</code> determines which commands are needed in order
+for <code>configure</code> to be created or brought up to date.
+Previously one would use a script called <code>autogen.sh</code> or
+<code>bootstrap</code>, but that practice is unnecessary now.)
+</p>
+<p>Now build and run the <code>check_money</code> test with <code>make
+check</code>.  If all goes well, <code>make</code> should report that our tests
+passed.  No surprise, because there aren&rsquo;t any tests to fail.  If you
+have problems, make sure to see <a href="check_5.html#Supported-Build-Systems">Supported Build Systems</a>.
+</p>
+<p>This was tested on the isadora distribution of Linux Mint
+GNU/Linux in November 2012, using Autoconf 2.65, Automake 1.11.1,
+and Libtool 2.2.6b.  Please report any problems to
+<a href="mailto:check-devel AT lists.sourceforge.net">check-devel AT lists.sourceforge.net</a>.
+</p>
+<hr>
+<a name="Setting-Up-the-Money-Build-Using-CMake"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Tutorial" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Setting-Up-the-Money-Build-Using-Autotools" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Tutorial" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#Test-a-Little" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_4.html#Advanced-Features" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Setting-Up-the-Money-Build-Using-CMake-1"></a>
+<h2 class="section">3.3 Setting Up the Money Build Using CMake</h2>
+
+<p>Since we are creating a library to handle money, we will first create
+an interface in &lsquo;<tt>money.h</tt>&rsquo;, an implementation in &lsquo;<tt>money.c</tt>&rsquo;,
+and a place to store our unit tests, &lsquo;<tt>check_money.c</tt>&rsquo;.  We want to
+integrate these core files into our build system, and will need some
+additional structure. To manage everything we&rsquo;ll use CMake for this
+example.  Note that one could do something similar with ordinary
+Makefiles, or any other build system. It is in the authors&rsquo; opinion that
+it is generally easier to use CMake than bare Makefiles, and they
+provide built-in support for running tests.
+</p>
+<p>Note that this is not the place to explain how CMake works.  If
+you need help understanding what&rsquo;s going on beyond the explanations
+here, the best place to start is probably the <a href="http://www.cmake.org">CMake project&rsquo;s homepage</a>.
+</p>
+<p>The examples in this section are part of the Check distribution; you
+don&rsquo;t need to spend time cutting and pasting or (worse) retyping them.
+Locate the Check documentation on your system and look in the
+&lsquo;<samp>example</samp>&rsquo; directory, or look in the Check source. If on a GNU/Linux
+system the standard directory should be &lsquo;<samp>/usr/share/doc/check/example</samp>&rsquo;.
+This directory contains the final version reached the end of the tutorial.  If
+you want to follow along, create backups of &lsquo;<tt>money.h</tt>&rsquo;,
+&lsquo;<tt>money.c</tt>&rsquo;, and &lsquo;<tt>check_money.c</tt>&rsquo;, and then delete the originals.
+</p>
+<p>We set up a directory structure as follows:
+</p><div class="example">
+<pre class="verbatim">.
+|-- Makefile.am
+|-- README
+|-- CMakeLists.txt
+|-- cmake
+|   |-- config.h.in
+|   |-- FindCheck.cmake
+|-- src
+|   |-- CMakeLists.txt
+|   |-- main.c
+|   |-- money.c
+|   `-- money.h
+`-- tests
+    |-- CMakeLists.txt
+    `-- check_money.c
+</pre></div>
+
+<p>The top-level &lsquo;<tt>CMakeLists.txt</tt>&rsquo; contains the configuration checks
+for available libraries and types, and also defines sub-directories
+to process. The &lsquo;<tt>cmake/FindCheck.cmake</tt>&rsquo; file contains instructions
+for locating Check on the system and setting up the build to use it.
+If the system does not have pkg-config installed, &lsquo;<tt>cmake/FindCheck.cmake</tt>&rsquo;
+may not be able to locate Check successfully. In this case, the install
+directory of Check must be located manually, and the following line
+added to &lsquo;<tt>tests/CMakeLists.txt</tt>&rsquo; (assuming Check was installed under
+C:\\Program Files\\check:
+</p>
+<pre class="verbatim">set(CHECK_INSTALL_DIR &quot;C:/Program Files/check&quot;)
+</pre>
+<p>Note that <code>tests</code> comes last, because the code should be testing
+an already compiled library.
+</p>
+<p>&lsquo;<tt>src/CMakeLists.txt</tt>&rsquo; builds &lsquo;<samp>libmoney</samp>&rsquo; as an archive,
+and links it to an application simply called <code>main</code>.  The
+application&rsquo;s behavior is not important to this tutorial; what&rsquo;s
+important is that none of the functions we want to unit test appear in
+&lsquo;<tt>main.c</tt>&rsquo;; this probably means that the only function in
+&lsquo;<tt>main.c</tt>&rsquo; should be <code>main()</code> itself.  In order to test the
+whole application, unit testing is not appropriate: you should use a
+system testing tool like Autotest.  If you really want to test
+<code>main()</code> using Check, rename it to something like
+<code>_myproject_main()</code> and write a wrapper around it.
+</p>
+<p>Now that all this infrastructure is out of the way, we can get on with
+development.  &lsquo;<tt>src/money.h</tt>&rsquo; should only contain standard C header
+boilerplate:
+</p>
+<table class="cartouche" border="1"><tr><td>
+<div class="example">
+<pre class="example"><pre class="verbatim">/*
+ * Check: a unit test framework for C
+ * Copyright (C) 2001, 2002 Arien Malec
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
+#ifndef MONEY_H
+#define MONEY_H
+
+#endif /* MONEY_H */
+</pre></pre></div>
+</td></tr></table>
+
+<p>&lsquo;<tt>src/money.c</tt>&rsquo; should be empty, and &lsquo;<tt>tests/check_money.c</tt>&rsquo;
+should only contain an empty <code>main()</code> function:
+</p>
+<table class="cartouche" border="1"><tr><td>
+<div class="example">
+<pre class="example"><pre class="verbatim">/*
+ * Check: a unit test framework for C
+ * Copyright (C) 2001, 2002 Arien Malec
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
+int main(void)
+{
+    return 0;
+}
+</pre></pre></div>
+</td></tr></table>
+
+<p>Create the CMake Build System for the project and then build &lsquo;<tt>main</tt>&rsquo;
+and &lsquo;<tt>libmoney.la</tt>&rsquo; as follows for Unix-compatible systems:
+</p><div class="example">
+<pre class="verbatim">$ cmake .
+$ make
+</pre></div>
+
+<p>and for MSVC on Windows:
+</p><div class="example">
+<pre class="verbatim">$ cmake -G &quot;NMake Makefiles&quot; .
+$ nmake
+</pre></div>
+
+<p>Now build and run the <code>check_money</code> test, with either <code>make
+test</code> on a Unix-compatible system or <code>nmake test</code> if on Windows using MSVC.
+If all goes well, the command should report that our tests
+passed.  No surprise, because there aren&rsquo;t any tests to fail.
+</p>
+<p>This was tested on Windows 7 using CMake 2.8.12.1 and MSVC 16.00.30319.01/
+Visual Studios 10 in February 2014. Please report any problems to
+<a href="mailto:check-devel AT lists.sourceforge.net">check-devel AT lists.sourceforge.net</a>.
+</p>
+<hr>
+<a name="Test-a-Little"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Tutorial" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Setting-Up-the-Money-Build-Using-CMake" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Tutorial" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#Creating-a-Suite" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_4.html#Advanced-Features" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Test-a-Little_002c-Code-a-Little"></a>
+<h2 class="section">3.4 Test a Little, Code a Little</h2>
+
+<p>The <a href="http://junit.sourceforge.net/doc/testinfected/testing.htm">Test Infected</a> article starts out with a <code>Money</code> class, and so
+will we.  Of course, we can&rsquo;t do classes with C, but we don&rsquo;t really
+need to.  The Test Infected approach to writing code says that we
+should write the unit test <em>before</em> we write the code, and in
+this case, we will be even more dogmatic and doctrinaire than the
+authors of Test Infected (who clearly don&rsquo;t really get this stuff,
+only being some of the originators of the Patterns approach to
+software development and OO design).
+</p>
+<p>Here are the changes to &lsquo;<tt>check_money.c</tt>&rsquo; for our first unit test:
+</p>
+<table class="cartouche" border="1"><tr><td>
+<div class="example">
+<pre class="example"><pre class="verbatim">--- tests/check_money.1.c	2015-09-13 12:11:15.000000000 -0400
++++ tests/check_money.2.c	2015-09-13 12:11:13.000000000 -0400
+@@ -1,24 +1,38 @@
+ /*
+  * Check: a unit test framework for C
+  * Copyright (C) 2001, 2002 Arien Malec
+  *
+  * This library is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU Lesser General Public
+  * License as published by the Free Software Foundation; either
+  * version 2.1 of the License, or (at your option) any later version.
+  *
+  * This library is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  * Lesser General Public License for more details.
+  *
+  * You should have received a copy of the GNU Lesser General Public
+  * License along with this library; if not, write to the
+  * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+  * MA 02110-1301, USA.
+  */
+ 
++#include &lt;check.h&gt;
++#include &quot;../src/money.h&quot;
++
++START_TEST(test_money_create)
++{
++    Money *m;
++
++    m = money_create(5, &quot;USD&quot;);
++    ck_assert_int_eq(money_amount(m), 5);
++    ck_assert_str_eq(money_currency(m), &quot;USD&quot;);
++    money_free(m);
++}
++END_TEST
++
+ int main(void)
+ {
+     return 0;
+ }
+</pre></pre></div>
+</td></tr></table>
+
+<a name="index-ck_005fassert_005fint_005feq"></a>
+<a name="index-ck_005fassert_005fstr_005feq"></a>
+<p>A unit test should just chug along and complete.  If it exits early,
+or is signaled, it will fail with a generic error message.  (Note: it
+is conceivable that you expect an early exit, or a signal and there is
+functionality in Check to specifically assert that we should expect a
+signal or an early exit.)  If we want to get some information
+about what failed, we need to use some calls that will point out a failure.
+Two such calls are <code>ck_assert_int_eq</code> (used to determine if two integers
+are equal) and <code>ck_assert_str_eq</code> (used to determine if two null terminated
+strings are equal). Both of these functions (actually macros) will signal an error 
+if their arguments are not equal.
+</p>
+<a name="index-ck_005fassert"></a>
+<p>An alternative to using <code>ck_assert_int_eq</code> and <code>ck_assert_str_eq</code>
+is to write the expression under test directly using <code>ck_assert</code>.
+This takes one Boolean argument which must be True for the check to pass.
+The second test could be rewritten as follows:
+</p><div class="example">
+<pre class="verbatim">ck_assert(strcmp (money_currency (m), &quot;USD&quot;) == 0);
+</pre></div>
+
+<a name="index-ck_005fassert_005fmsg"></a>
+<p><code>ck_assert</code> will find and report failures, but will not print any
+user supplied message in the unit test result. To print a user defined
+message along with any failures found, use <code>ck_assert_msg</code>. The first
+argument is a Boolean argument. The remaining arguments support <code>varargs</code> 
+and accept <code>printf</code>-style format strings and arguments.  This is especially
+useful while debugging. For example, the second test could be rewritten as:
+</p><div class="example">
+<pre class="verbatim">ck_assert_msg(strcmp (money_currency (m), &quot;USD&quot;) == 0,
+         &quot;Was expecting a currency of USD, but found %s&quot;, money_currency (m));
+</pre></div>
+
+<a name="index-ck_005fabort"></a>
+<a name="index-ck_005fabort_005fmsg"></a>
+<p>If the Boolean argument is too complicated to elegantly express within
+<code>ck_assert()</code>, there are the alternate functions <code>ck_abort()</code>
+and <code>ck_abort_msg()</code> that unconditionally fail.  The second test inside
+<code>test_money_create</code> above could be rewritten as follows:
+</p><div class="example">
+<pre class="verbatim">if (strcmp (money_currency (m), &quot;USD&quot;) != 0) 
+  {
+    ck_abort_msg (&quot;Currency not set correctly on creation&quot;);
+  }
+</pre></div>
+
+<p>For your convenience ck_assert, which does not accept a user supplied message,
+substitutes a suitable message for you. (This is also equivalent to
+passing a NULL message to ck_assert_msg). So you could also
+write a test as follows:
+</p><div class="example">
+<pre class="verbatim">ck_assert (money_amount (m) == 5);
+</pre></div>
+
+<p>This is equivalent to:
+</p><div class="example">
+<pre class="verbatim">ck_assert_msg (money_amount (m) == 5, NULL);
+</pre></div>
+
+<p>which will print the file, line number, and the message
+<code>&quot;Assertion 'money_amount (m) == 5' failed&quot;</code> if
+<code>money_amount (m) != 5</code>.
+</p>
+<p>When we try to compile and run the test suite now using <code>make
+check</code>, we get a whole host of compilation errors.  It may seem a bit
+strange to deliberately write code that won&rsquo;t compile, but notice what
+we are doing: in creating the unit test, we are also defining
+requirements for the money interface.  Compilation errors are, in a
+way, unit test failures of their own, telling us that the
+implementation does not match the specification.  If all we do is edit
+the sources so that the unit test compiles, we are actually making
+progress, guided by the unit tests, so that&rsquo;s what we will now do.
+</p>
+<p>We will patch our header &lsquo;<tt>money.h</tt>&rsquo; as follows:
+</p>
+<table class="cartouche" border="1"><tr><td>
+<div class="example">
+<pre class="example"><pre class="verbatim">--- src/money.1.h	2015-09-13 12:11:32.000000000 -0400
++++ src/money.2.h	2015-09-13 12:11:30.000000000 -0400
+@@ -1,24 +1,31 @@
+ /*
+  * Check: a unit test framework for C
+  * Copyright (C) 2001, 2002 Arien Malec
+  *
+  * This library is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU Lesser General Public
+  * License as published by the Free Software Foundation; either
+  * version 2.1 of the License, or (at your option) any later version.
+  *
+  * This library is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  * Lesser General Public License for more details.
+  *
+  * You should have received a copy of the GNU Lesser General Public
+  * License along with this library; if not, write to the
+  * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+  * MA 02110-1301, USA.
+  */
+ 
+ #ifndef MONEY_H
+ #define MONEY_H
+ 
++typedef struct Money Money;
++
++Money *money_create(int amount, char *currency);
++int money_amount(Money * m);
++char *money_currency(Money * m);
++void money_free(Money * m);
++
+ #endif /* MONEY_H */
+</pre></pre></div>
+</td></tr></table>
+
+<p>Our code compiles now, and again passes all of the tests.  However,
+once we try to <em>use</em> the functions in <code>libmoney</code> in the
+<code>main()</code> of <code>check_money</code>, we&rsquo;ll run into more problems, as
+they haven&rsquo;t actually been implemented yet.
+</p>
+<hr>
+<a name="Creating-a-Suite"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Tutorial" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Test-a-Little" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Tutorial" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#SRunner-Output" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_4.html#Advanced-Features" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Creating-a-Suite-1"></a>
+<h2 class="section">3.5 Creating a Suite</h2>
+
+<p>To run unit tests with Check, we must create some test cases,
+aggregate them into a suite, and run them with a suite runner. That&rsquo;s
+a bit of overhead, but it is mostly one-off.  Here&rsquo;s a diff for the
+new version of &lsquo;<tt>check_money.c</tt>&rsquo;.  Note that we include stdlib.h to
+get the definitions of <code>EXIT_SUCCESS</code> and <code>EXIT_FAILURE</code>.
+</p>
+<table class="cartouche" border="1"><tr><td>
+<div class="example">
+<pre class="example"><pre class="verbatim">--- tests/check_money.2.c	2015-09-13 12:11:13.000000000 -0400
++++ tests/check_money.3.c	2015-09-13 12:11:11.000000000 -0400
+@@ -1,38 +1,65 @@
+ /*
+  * Check: a unit test framework for C
+  * Copyright (C) 2001, 2002 Arien Malec
+  *
+  * This library is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU Lesser General Public
+  * License as published by the Free Software Foundation; either
+  * version 2.1 of the License, or (at your option) any later version.
+  *
+  * This library is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  * Lesser General Public License for more details.
+  *
+  * You should have received a copy of the GNU Lesser General Public
+  * License along with this library; if not, write to the
+  * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+  * MA 02110-1301, USA.
+  */
+ 
++#include &lt;stdlib.h&gt;
+ #include &lt;check.h&gt;
+ #include &quot;../src/money.h&quot;
+ 
+ START_TEST(test_money_create)
+ {
+     Money *m;
+ 
+     m = money_create(5, &quot;USD&quot;);
+     ck_assert_int_eq(money_amount(m), 5);
+     ck_assert_str_eq(money_currency(m), &quot;USD&quot;);
+     money_free(m);
+ }
+ END_TEST
+ 
++Suite * money_suite(void)
++{
++    Suite *s;
++    TCase *tc_core;
++
++    s = suite_create(&quot;Money&quot;);
++
++    /* Core test case */
++    tc_core = tcase_create(&quot;Core&quot;);
++
++    tcase_add_test(tc_core, test_money_create);
++    suite_add_tcase(s, tc_core);
++
++    return s;
++}
++
+ int main(void)
+ {
+-    return 0;
++    int number_failed;
++    Suite *s;
++    SRunner *sr;
++
++    s = money_suite();
++    sr = srunner_create(s);
++
++    srunner_run_all(sr, CK_NORMAL);
++    number_failed = srunner_ntests_failed(sr);
++    srunner_free(sr);
++    return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
+ }
+</pre></pre></div>
+</td></tr></table>
+
+<p>Most of the <code>money_suite()</code> code should be self-explanatory.  We are
+creating a suite, creating a test case, adding the test case to the
+suite, and adding the unit test we created above to the test case.
+Why separate this off into a separate function, rather than inline it
+in <code>main()</code>?  Because any new tests will get added in
+<code>money_suite()</code>, but nothing will need to change in <code>main()</code>
+for the rest of this example, so main will stay relatively clean and
+simple.
+</p>
+<p>Unit tests are internally defined as static functions.  This means
+that the code to add unit tests to test cases must be in the same
+compilation unit as the unit tests themselves.  This provides another
+reason to put the creation of the test suite in a separate function:
+you may later want to keep one source file per suite; defining a
+uniquely named suite creation function allows you later to define a
+header file giving prototypes for all the suite creation functions,
+and encapsulate the details of where and how unit tests are defined
+behind those functions.  See the test program defined for Check itself
+for an example of this strategy.
+</p>
+<p>The code in <code>main()</code> bears some explanation.  We are creating a
+suite runner object of type <code>SRunner</code> from the <code>Suite</code> we
+created in <code>money_suite()</code>.  We then run the suite, using the
+<code>CK_NORMAL</code> flag to specify that we should print a summary of the
+run, and list any failures that may have occurred.  We capture the
+number of failures that occurred during the run, and use that to
+decide how to return.  The <code>check</code> target created by Automake
+uses the return value to decide whether the tests passed or failed.
+</p>
+<p>Now that the tests are actually being run by <code>check_money</code>, we
+encounter linker errors again we try out <code>make check</code>.  Try it
+for yourself and see.  The reason is that the &lsquo;<tt>money.c</tt>&rsquo;
+implementation of the &lsquo;<tt>money.h</tt>&rsquo; interface hasn&rsquo;t been created
+yet.  Let&rsquo;s go with the fastest solution possible and implement stubs
+for each of the functions in <code>money.c</code>. Here is the diff:
+</p>
+<table class="cartouche" border="1"><tr><td>
+<div class="example">
+<pre class="example"><pre class="verbatim">--- src/money.1.c	2015-09-13 12:11:48.000000000 -0400
++++ src/money.3.c	2015-09-13 12:11:28.000000000 -0400
+@@ -1,20 +1,42 @@
+ /*
+  * Check: a unit test framework for C
+  * Copyright (C) 2001, 2002 Arien Malec
+  *
+  * This library is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU Lesser General Public
+  * License as published by the Free Software Foundation; either
+  * version 2.1 of the License, or (at your option) any later version.
+  *
+  * This library is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  * Lesser General Public License for more details.
+  *
+  * You should have received a copy of the GNU Lesser General Public
+  * License along with this library; if not, write to the
+  * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+  * MA 02110-1301, USA.
+  */
+ 
++#include &lt;stdlib.h&gt;
++#include &quot;money.h&quot;
++
++Money *money_create(int amount, char *currency)
++{
++    return NULL;
++}
++
++int money_amount(Money * m)
++{
++    return 0;
++}
++
++char *money_currency(Money * m)
++{
++    return NULL;
++}
++
++void money_free(Money * m)
++{
++    return;
++}
+</pre></pre></div>
+</td></tr></table>
+
+<p>Note that we <code>#include &lt;stdlib.h&gt;</code> to get the definition of
+<code>NULL</code>.  Now, the code compiles and links when we run <code>make
+check</code>, but our unit test fails.  Still, this is progress, and we can
+focus on making the test pass.
+</p>
+<hr>
+<a name="SRunner-Output"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Tutorial" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Creating-a-Suite" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Tutorial" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="check_4.html#Advanced-Features" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_4.html#Advanced-Features" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="SRunner-Output-1"></a>
+<h2 class="section">3.6 SRunner Output</h2>
+
+<a name="index-srunner_005frun_005fall"></a>
+<a name="index-srunner_005frun"></a>
+<p>The functions to run tests in an <code>SRunner</code> are defined as follows:
+</p><div class="example">
+<pre class="verbatim">void srunner_run_all (SRunner * sr, enum print_output print_mode);
+
+void srunner_run (SRunner *sr, const char *sname, const char *tcname,
+                  enum print_output print_mode);
+</pre></div>
+
+<p>Those functions do two things:
+</p>
+<ol>
+<li>
+They run all of the unit tests for the selected test cases defined for
+the selected suites in the SRunner, and collect the results in the
+SRunner.  The determination of the selected test cases and suites
+depends on the specific function used.
+
+<p><code>srunner_run_all</code> will run all the defined test cases of all
+defined suites except if the environment variables <code>CK_RUN_CASE</code>
+or <code>CK_RUN_SUITE</code> are defined.  If defined, those variables shall
+contain the name of a test suite or a test case, defining in that way
+the selected suite/test case.
+</p>
+<p><code>srunner_run</code> will run the suite/case selected by the
+<code>sname</code> and <code>tcname</code> parameters.  A value of <code>NULL</code>
+in some of those parameters means &ldquo;any suite/case&rdquo;.
+</p>
+</li><li>
+They print the results according to the <code>print_mode</code> specified.
+</li></ol>
+
+<p>For SRunners that have already been run, there is also a separate
+printing function defined as follows:
+</p><div class="example">
+<pre class="verbatim">void srunner_print (SRunner *sr, enum print_output print_mode);
+</pre></div>
+
+<p>The enumeration values of <code>print_output</code> defined in Check that
+parameter <code>print_mode</code> can assume are as follows:
+</p>
+<dl compact="compact">
+<dd><a name="index-CK_005fSILENT"></a>
+</dd>
+<dt><code>CK_SILENT</code></dt>
+<dd><p>Specifies that no output is to be generated. If you use this flag, you
+either need to programmatically examine the SRunner object, print
+separately, or use test logging (see section <a href="check_4.html#Test-Logging">Test Logging</a>.)
+</p>
+<a name="index-CK_005fMINIMAL"></a>
+</dd>
+<dt><code>CK_MINIMAL</code></dt>
+<dd><p>Only a summary of the test run will be printed (number run, passed,
+failed, errors).
+</p>
+<a name="index-CK_005fNORMAL"></a>
+</dd>
+<dt><code>CK_NORMAL</code></dt>
+<dd><p>Prints the summary of the run, and prints one message per failed
+test.
+</p>
+<a name="index-CK_005fVERBOSE"></a>
+</dd>
+<dt><code>CK_VERBOSE</code></dt>
+<dd><p>Prints the summary, and one message per test (passed or failed)
+</p>
+<a name="index-CK_005fENV"></a>
+<a name="index-CK_005fVERBOSITY"></a>
+</dd>
+<dt><code>CK_ENV</code></dt>
+<dd><p>Gets the print mode from the environment variable <code>CK_VERBOSITY</code>,
+which can have the values &quot;silent&quot;, &quot;minimal&quot;, &quot;normal&quot;, &quot;verbose&quot;. If
+the variable is not found or the value is not recognized, the print
+mode is set to <code>CK_NORMAL</code>.
+</p>
+<a name="index-CK_005fSUBUNIT"></a>
+</dd>
+<dt><code>CK_SUBUNIT</code></dt>
+<dd><p>Prints running progress through the <a href="https://launchpad.net/subunit/">subunit</a> test runner protocol. See &rsquo;subunit support&rsquo; under the Advanced Features section for more information.
+</p></dd>
+</dl>
+
+<p>With the <code>CK_NORMAL</code> flag specified in our <code>main()</code>, let&rsquo;s
+rerun <code>make check</code> now. The output from the unit test is as follows:
+</p><div class="example">
+<pre class="verbatim">Running suite(s): Money
+0%: Checks: 1, Failures: 1, Errors: 0
+check_money.c:9:F:Core:test_money_create:0: Assertion 'money_amount (m)==5' failed: 
+money_amount (m)==0, 5==5
+FAIL: check_money
+=====================================================
+1 of 1 test failed
+Please report to check-devel AT lists.sourceforge.net
+=====================================================
+</pre></div>
+
+<p>Note that the output from <code>make check</code> prior to Automake 1.13 will
+be the output of the unit test program. Starting with 1.13 Automake will
+run all unit test programs concurrently and store the output in
+log files. The output listed above should be present in a log file.
+</p>
+<p>The first number in the summary line tells us that 0% of our tests
+passed, and the rest of the line tells us that there was one check in
+total, and of those checks, one failure and zero errors.  The next
+line tells us exactly where that failure occurred, and what kind of
+failure it was (P for pass, F for failure, E for error).
+</p>
+<p>After that we have some higher level output generated by Automake: the
+<code>check_money</code> program failed, and the bug-report address given in
+&lsquo;<tt>configure.ac</tt>&rsquo; is printed.
+</p>
+<p>Let&rsquo;s implement the <code>money_amount</code> function, so that it will pass
+its tests.  We first have to create a Money structure to hold the
+amount, and then implement the function to return the correct amount:
+</p>
+<table class="cartouche" border="1"><tr><td>
+<div class="example">
+<pre class="example"><pre class="verbatim">--- src/money.3.c	2015-09-13 12:11:28.000000000 -0400
++++ src/money.4.c	2015-09-13 12:11:25.000000000 -0400
+@@ -1,42 +1,47 @@
+ /*
+  * Check: a unit test framework for C
+  * Copyright (C) 2001, 2002 Arien Malec
+  *
+  * This library is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU Lesser General Public
+  * License as published by the Free Software Foundation; either
+  * version 2.1 of the License, or (at your option) any later version.
+  *
+  * This library is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  * Lesser General Public License for more details.
+  *
+  * You should have received a copy of the GNU Lesser General Public
+  * License along with this library; if not, write to the
+  * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+  * MA 02110-1301, USA.
+  */
+ 
+ #include &lt;stdlib.h&gt;
+ #include &quot;money.h&quot;
+ 
++struct Money
++{
++    int amount;
++};
++
+ Money *money_create(int amount, char *currency)
+ {
+     return NULL;
+ }
+ 
+ int money_amount(Money * m)
+ {
+-    return 0;
++    return m-&gt;amount;
+ }
+ 
+ char *money_currency(Money * m)
+ {
+     return NULL;
+ }
+ 
+ void money_free(Money * m)
+ {
+     return;
+ }
+</pre></pre></div>
+</td></tr></table>
+
+<p>We will now rerun make check and&hellip; what&rsquo;s this?  The output is
+now as follows:
+</p><div class="example">
+<pre class="verbatim">Running suite(s): Money
+0%: Checks: 1, Failures: 0, Errors: 1
+check_money.c:5:E:Core:test_money_create:0: (after this point) 
+Received signal 11 (Segmentation fault)
+</pre></div>
+
+<a name="index-mark_005fpoint"></a>
+<p>What does this mean?  Note that we now have an error, rather than a
+failure.  This means that our unit test either exited early, or was
+signaled.  Next note that the failure message says &ldquo;after this
+point&rdquo;; This means that somewhere after the point noted
+(&lsquo;<tt>check_money.c</tt>&rsquo;, line 5) there was a problem: signal 11 (a.k.a.
+segmentation fault).  The last point reached is set on entry to the
+unit test, and after every call to the <code>ck_assert()</code>,
+<code>ck_abort()</code>, <code>ck_assert_int_*()</code>, <code>ck_assert_str_*()</code>, 
+or the special function <code>mark_point()</code>.  For example, if we wrote some test 
+code as follows:
+</p><div class="example">
+<pre class="verbatim">stuff_that_works ();
+mark_point ();
+stuff_that_dies ();
+</pre></div>
+
+<p>then the point returned will be that marked by <code>mark_point()</code>.
+</p>
+<p>The reason our test failed so horribly is that we haven&rsquo;t implemented
+<code>money_create()</code> to create any <code>Money</code>.  We&rsquo;ll go ahead and
+implement that, the symmetric <code>money_free()</code>, and
+<code>money_currency()</code> too, in order to make our unit test pass again,
+here is a diff:
+</p>
+<table class="cartouche" border="1"><tr><td>
+<div class="example">
+<pre class="example"><pre class="verbatim">--- src/money.4.c	2015-09-13 12:11:25.000000000 -0400
++++ src/money.5.c	2015-09-13 12:11:23.000000000 -0400
+@@ -1,47 +1,58 @@
+ /*
+  * Check: a unit test framework for C
+  * Copyright (C) 2001, 2002 Arien Malec
+  *
+  * This library is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU Lesser General Public
+  * License as published by the Free Software Foundation; either
+  * version 2.1 of the License, or (at your option) any later version.
+  *
+  * This library is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  * Lesser General Public License for more details.
+  *
+  * You should have received a copy of the GNU Lesser General Public
+  * License along with this library; if not, write to the
+  * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+  * MA 02110-1301, USA.
+  */
+ 
+ #include &lt;stdlib.h&gt;
+ #include &quot;money.h&quot;
+ 
+ struct Money
+ {
+     int amount;
++    char *currency;
+ };
+ 
+ Money *money_create(int amount, char *currency)
+ {
+-    return NULL;
++    Money *m = malloc(sizeof(Money));
++
++    if (m == NULL)
++    {
++        return NULL;
++    }
++
++    m-&gt;amount = amount;
++    m-&gt;currency = currency;
++    return m;
+ }
+ 
+ int money_amount(Money * m)
+ {
+     return m-&gt;amount;
+ }
+ 
+ char *money_currency(Money * m)
+ {
+-    return NULL;
++    return m-&gt;currency;
+ }
+ 
+ void money_free(Money * m)
+ {
++    free(m);
+     return;
+ }
+</pre></pre></div>
+</td></tr></table>
+
+<hr>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Tutorial" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_4.html#Advanced-Features" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<p>
+ <font size="-1">
+  This document was generated on <i>December 24, 2015</i> using <a href="http://www.nongnu.org/texi2html/"><i>texi2html 5.0</i></a>.
+ </font>
+ <br>
+
+</p>
+</body>
+</html>

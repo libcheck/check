@@ -1,0 +1,1599 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for Check
+(version 0.10.0, 13 September 2015),
+a unit testing framework for C.
+
+Copyright (C) 2001-2014 Arien Malec, Branden Archer, Chris Pickett,
+Fredrik Hugosson, and Robert Lemmen.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License,
+Version 1.2 or any later version published by the Free Software
+Foundation; with no Invariant Sections, no Front-Cover texts, and no
+Back-Cover Texts.  A copy of the license is included in the section
+entitled "GNU Free Documentation License."
+
+ -->
+<!-- Created on December 24, 2015 by texi2html 5.0
+texi2html was written by: 
+            Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Many creative people.
+Send bugs and suggestions to <texi2html-bug@nongnu.org>
+-->
+<head>
+<title>Check 0.10.0: 4 Advanced Features</title>
+
+<meta name="description" content="Check 0.10.0: 4 Advanced Features">
+<meta name="keywords" content="Check 0.10.0: 4 Advanced Features">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2html 5.0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.smallquotation {font-size: smaller}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+div.smalldisplay {margin-left: 3.2em}
+div.smallexample {margin-left: 3.2em}
+div.smalllisp {margin-left: 3.2em}
+pre.display {font-family: serif}
+pre.format {font-family: serif}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+pre.smalldisplay {font-family: serif; font-size: smaller}
+pre.smallexample {font-size: smaller}
+pre.smallformat {font-family: serif; font-size: smaller}
+pre.smalllisp {font-size: smaller}
+span.nocodebreak {white-space:pre}
+span.nolinebreak {white-space:pre}
+span.roman {font-family:serif; font-weight:normal}
+span.sansserif {font-family:sans-serif; font-weight:normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#800080" alink="#FF0000">
+
+<a name="Advanced-Features"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="check_3.html#Tutorial" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_3.html#SRunner-Output" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#Convenience-Test-Functions" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Advanced-Features-1"></a>
+<h1 class="chapter">4 Advanced Features</h1>
+
+<p>What you&rsquo;ve seen so far is all you need for basic unit testing.  The
+features described in this section are additions to Check that make it
+easier for the developer to write, run, and analyze tests.
+</p>
+<table class="menu" border="0" cellspacing="0">
+<tr><td align="left" valign="top"><a href="#Convenience-Test-Functions">4.1 Convenience Test Functions</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">  
+</td></tr>
+<tr><td align="left" valign="top"><a href="#Running-Multiple-Cases">4.2 Running Multiple Cases</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">      
+</td></tr>
+<tr><td align="left" valign="top"><a href="#No-Fork-Mode">4.3 No Fork Mode</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">                
+</td></tr>
+<tr><td align="left" valign="top"><a href="#Test-Fixtures">4.4 Test Fixtures</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">               
+</td></tr>
+<tr><td align="left" valign="top"><a href="#Multiple-Suites-in-one-SRunner">4.5 Multiple Suites in one SRunner</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">  
+</td></tr>
+<tr><td align="left" valign="top"><a href="#Selective-Running-of-Tests">4.6 Selective Running of Tests</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top"><a href="#Testing-Signal-Handling-and-Exit-Values">4.7 Testing Signal Handling and Exit Values</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">  
+</td></tr>
+<tr><td align="left" valign="top"><a href="#Looping-Tests">4.8 Looping Tests</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">               
+</td></tr>
+<tr><td align="left" valign="top"><a href="#Test-Timeouts">4.9 Test Timeouts</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">               
+</td></tr>
+<tr><td align="left" valign="top"><a href="#Determining-Test-Coverage">4.10 Determining Test Coverage</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">   
+</td></tr>
+<tr><td align="left" valign="top"><a href="#Finding-Memory-Leaks">4.11 Finding Memory Leaks</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top"><a href="#Test-Logging">4.12 Test Logging</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">                
+</td></tr>
+<tr><td align="left" valign="top"><a href="#Subunit-Support">4.13 Subunit Support</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">             
+</td></tr>
+</table>
+
+<hr>
+<a name="Convenience-Test-Functions"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Advanced-Features" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Advanced-Features" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Advanced-Features" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#Running-Multiple-Cases" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Convenience-Test-Functions-1"></a>
+<h2 class="section">4.1 Convenience Test Functions</h2>
+
+<p>Using the <code>ck_assert</code> function for all tests can lead to lot of
+repetitive code that is hard to read.  For your convenience Check
+provides a set of functions (actually macros) for testing often used
+conditions.
+</p>
+<dl compact="compact">
+<dt><code>ck_abort</code>
+<a name="index-ck_005fabort-1"></a>
+</dt>
+<dd><p>Unconditionally fails test with default message.
+</p>
+</dd>
+<dt><code>ck_abort_msg</code>
+<a name="index-ck_005fabort_005fmsg-1"></a>
+</dt>
+<dd><p>Unconditionally fails test with user supplied message.
+</p>
+</dd>
+<dt><code>ck_assert</code>
+<a name="index-ck_005fassert-1"></a>
+</dt>
+<dd><p>Fails test if supplied condition evaluates to false.
+</p>
+</dd>
+<dt><code>ck_assert_msg</code>
+<a name="index-ck_005fassert_005fmsg-1"></a>
+</dt>
+<dd><p>Fails test if supplied condition evaluates to false and displays user
+provided message.
+</p>
+</dd>
+<dt><code>ck_assert_int_eq</code>
+<a name="index-ck_005fassert_005fint_005feq-1"></a>
+</dt>
+<dt><code>ck_assert_int_ne</code>
+<a name="index-ck_005fassert_005fint_005fne"></a>
+</dt>
+<dt><code>ck_assert_int_lt</code>
+<a name="index-ck_005fassert_005fint_005flt"></a>
+</dt>
+<dt><code>ck_assert_int_le</code>
+<a name="index-ck_005fassert_005fint_005fle"></a>
+</dt>
+<dt><code>ck_assert_int_gt</code>
+<a name="index-ck_005fassert_005fint_005fgt"></a>
+</dt>
+<dt><code>ck_assert_int_ge</code>
+<a name="index-ck_005fassert_005fint_005fge"></a>
+</dt>
+<dd>
+<p>Compares two signed integer values (<code>intmax_t</code>) and displays predefined
+message with condition and values of both input parameters on failure.  The
+operator used for comparison is different for each function and is indicated
+by the last two letters of the function name.  The abbreviations <code>eq</code>,
+<code>ne</code>, <code>lt</code>, <code>le</code>, <code>gt</code>, and <code>ge</code> correspond to
+<code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, and <code>&gt;=</code>
+respectively.
+</p>
+</dd>
+<dt><code>ck_assert_uint_eq</code>
+<a name="index-ck_005fassert_005fuint_005feq"></a>
+</dt>
+<dt><code>ck_assert_uint_ne</code>
+<a name="index-ck_005fassert_005fuint_005fne"></a>
+</dt>
+<dt><code>ck_assert_uint_lt</code>
+<a name="index-ck_005fassert_005fuint_005flt"></a>
+</dt>
+<dt><code>ck_assert_uint_le</code>
+<a name="index-ck_005fassert_005fuint_005fle"></a>
+</dt>
+<dt><code>ck_assert_uint_gt</code>
+<a name="index-ck_005fassert_005fuint_005fgt"></a>
+</dt>
+<dt><code>ck_assert_uint_ge</code>
+<a name="index-ck_005fassert_005fuint_005fge"></a>
+</dt>
+<dd>
+<p>Similar to <code>ck_assert_int_*</code>, but compares two unsigned integer values
+(<code>uintmax_t</code>) instead.
+</p>
+</dd>
+<dt><code>ck_assert_str_eq</code>
+<a name="index-ck_005fassert_005fstr_005feq-1"></a>
+</dt>
+<dt><code>ck_assert_str_ne</code>
+<a name="index-ck_005fassert_005fstr_005fne"></a>
+</dt>
+<dt><code>ck_assert_str_lt</code>
+<a name="index-ck_005fassert_005fstr_005flt"></a>
+</dt>
+<dt><code>ck_assert_str_le</code>
+<a name="index-ck_005fassert_005fstr_005fle"></a>
+</dt>
+<dt><code>ck_assert_str_gt</code>
+<a name="index-ck_005fassert_005fstr_005fgt"></a>
+</dt>
+<dt><code>ck_assert_str_ge</code>
+<a name="index-ck_005fassert_005fstr_005fge"></a>
+</dt>
+<dd>
+<p>Compares two null-terminated <code>char *</code> string values, using the
+<code>strcmp()</code> function internally, and displays predefined message
+with condition and input parameter values on failure.  The comparison
+operator is again indicated by last two letters of the function name.
+<code>ck_assert_str_lt(a, b)</code> will pass if the unsigned numerical value
+of the character string <code>a</code> is less than that of <code>b</code>.
+</p>
+</dd>
+<dt><code>ck_assert_ptr_eq</code>
+<a name="index-ck_005fassert_005fptr_005feq"></a>
+</dt>
+<dt><code>ck_assert_ptr_ne</code>
+<a name="index-ck_005fassert_005fptr_005fne"></a>
+</dt>
+<dd>
+<p>Compares two pointers and displays predefined message with
+condition and values of both input parameters on failure.  The operator
+used for comparison is different for each function and is indicated by
+the last two letters of the function name.  The abbreviations <code>eq</code> and
+<code>ne</code> correspond to <code>==</code> and <code>!=</code> respectively.
+</p>
+</dd>
+<dt><code>fail</code>
+<a name="index-fail"></a>
+</dt>
+<dd><p>(Deprecated) Unconditionally fails test with user supplied message.
+</p>
+</dd>
+<dt><code>fail_if</code>
+<a name="index-fail_005fif"></a>
+</dt>
+<dd><p>(Deprecated) Fails test if supplied condition evaluates to true and
+displays user provided message.
+</p>
+</dd>
+<dt><code>fail_unless</code>
+<a name="index-fail_005funless"></a>
+</dt>
+<dd><p>(Deprecated) Fails test if supplied condition evaluates to false and
+displays user provided message.
+</p>
+
+</dd>
+</dl>
+
+<hr>
+<a name="Running-Multiple-Cases"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Advanced-Features" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Convenience-Test-Functions" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Advanced-Features" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#No-Fork-Mode" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Running-Multiple-Cases-1"></a>
+<h2 class="section">4.2 Running Multiple Cases</h2>
+
+<p>What happens if we pass <code>-1</code> as the <code>amount</code> in
+<code>money_create()</code>?  What should happen?  Let&rsquo;s write a unit test.
+Since we are now testing limits, we should also test what happens when
+we create <code>Money</code> where <code>amount == 0</code>.  Let&rsquo;s put these in a
+separate test case called &ldquo;Limits&rdquo; so that <code>money_suite</code> is
+changed like so:
+</p>
+<table class="cartouche" border="1"><tr><td>
+<div class="example">
+<pre class="example"><pre class="verbatim">--- tests/check_money.3.c	2015-09-13 12:11:11.000000000 -0400
++++ tests/check_money.6.c	2015-09-13 12:11:09.000000000 -0400
+@@ -1,65 +1,94 @@
+ /*
+  * Check: a unit test framework for C
+  * Copyright (C) 2001, 2002 Arien Malec
+  *
+  * This library is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU Lesser General Public
+  * License as published by the Free Software Foundation; either
+  * version 2.1 of the License, or (at your option) any later version.
+  *
+  * This library is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  * Lesser General Public License for more details.
+  *
+  * You should have received a copy of the GNU Lesser General Public
+  * License along with this library; if not, write to the
+  * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+  * MA 02110-1301, USA.
+  */
+ 
+ #include &lt;stdlib.h&gt;
+ #include &lt;check.h&gt;
+ #include &quot;../src/money.h&quot;
+ 
+ START_TEST(test_money_create)
+ {
+     Money *m;
+ 
+     m = money_create(5, &quot;USD&quot;);
+     ck_assert_int_eq(money_amount(m), 5);
+     ck_assert_str_eq(money_currency(m), &quot;USD&quot;);
+     money_free(m);
+ }
+ END_TEST
+ 
++START_TEST(test_money_create_neg)
++{
++    Money *m = money_create(-1, &quot;USD&quot;);
++
++    ck_assert_msg(m == NULL,
++                  &quot;NULL should be returned on attempt to create with &quot;
++                  &quot;a negative amount&quot;);
++}
++END_TEST
++
++START_TEST(test_money_create_zero)
++{
++    Money *m = money_create(0, &quot;USD&quot;);
++
++    if (money_amount(m) != 0)
++    {
++        ck_abort_msg(&quot;Zero is a valid amount of money&quot;);
++    }
++}
++END_TEST
++
+ Suite * money_suite(void)
+ {
+     Suite *s;
+     TCase *tc_core;
++    TCase *tc_limits;
+ 
+     s = suite_create(&quot;Money&quot;);
+ 
+     /* Core test case */
+     tc_core = tcase_create(&quot;Core&quot;);
+ 
+     tcase_add_test(tc_core, test_money_create);
+     suite_add_tcase(s, tc_core);
+ 
++    /* Limits test case */
++    tc_limits = tcase_create(&quot;Limits&quot;);
++
++    tcase_add_test(tc_limits, test_money_create_neg);
++    tcase_add_test(tc_limits, test_money_create_zero);
++    suite_add_tcase(s, tc_limits);
++
+     return s;
+ }
+ 
+ int main(void)
+ {
+     int number_failed;
+     Suite *s;
+     SRunner *sr;
+ 
+     s = money_suite();
+     sr = srunner_create(s);
+ 
+     srunner_run_all(sr, CK_NORMAL);
+     number_failed = srunner_ntests_failed(sr);
+     srunner_free(sr);
+     return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
+ }
+</pre></pre></div>
+</td></tr></table>
+
+<p>Now we can rerun our suite, and fix the problem(s). Note that errors
+in the &ldquo;Core&rdquo; test case will be reported as &ldquo;Core&rdquo;, and errors in
+the &ldquo;Limits&rdquo; test case will be reported as &ldquo;Limits&rdquo;, giving you
+additional information about where things broke.
+</p>
+<table class="cartouche" border="1"><tr><td>
+<div class="example">
+<pre class="example"><pre class="verbatim">--- src/money.5.c	2015-09-13 12:11:23.000000000 -0400
++++ src/money.6.c	2015-09-13 12:11:21.000000000 -0400
+@@ -1,58 +1,65 @@
+ /*
+  * Check: a unit test framework for C
+  * Copyright (C) 2001, 2002 Arien Malec
+  *
+  * This library is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU Lesser General Public
+  * License as published by the Free Software Foundation; either
+  * version 2.1 of the License, or (at your option) any later version.
+  *
+  * This library is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  * Lesser General Public License for more details.
+  *
+  * You should have received a copy of the GNU Lesser General Public
+  * License along with this library; if not, write to the
+  * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+  * MA 02110-1301, USA.
+  */
+ 
+ #include &lt;stdlib.h&gt;
+ #include &quot;money.h&quot;
+ 
+ struct Money
+ {
+     int amount;
+     char *currency;
+ };
+ 
+ Money *money_create(int amount, char *currency)
+ {
+-    Money *m = malloc(sizeof(Money));
++    Money *m;
++
++    if (amount &lt; 0)
++    {
++        return NULL;
++    }
++
++    m = malloc(sizeof(Money));
+ 
+     if (m == NULL)
+     {
+         return NULL;
+     }
+ 
+     m-&gt;amount = amount;
+     m-&gt;currency = currency;
+     return m;
+ }
+ 
+ int money_amount(Money * m)
+ {
+     return m-&gt;amount;
+ }
+ 
+ char *money_currency(Money * m)
+ {
+     return m-&gt;currency;
+ }
+ 
+ void money_free(Money * m)
+ {
+     free(m);
+     return;
+ }
+</pre></pre></div>
+</td></tr></table>
+
+<hr>
+<a name="No-Fork-Mode"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Advanced-Features" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Running-Multiple-Cases" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Advanced-Features" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#Test-Fixtures" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="No-Fork-Mode-1"></a>
+<h2 class="section">4.3 No Fork Mode</h2>
+
+<p>Check normally forks to create a separate address space.  This allows
+a signal or early exit to be caught and reported, rather than taking
+down the entire test program, and is normally very useful.  However,
+when you are trying to debug why the segmentation fault or other
+program error occurred, forking makes it difficult to use debugging
+tools.  To define fork mode for an <code>SRunner</code> object, you can do
+one of the following:
+</p>
+<a name="index-CK_005fFORK"></a>
+<a name="index-srunner_005fset_005ffork_005fstatus"></a>
+<ol>
+<li>
+Define the CK_FORK environment variable to equal &ldquo;no&rdquo;.
+
+</li><li>
+Explicitly define the fork status through the use of the following
+function:
+
+<pre class="verbatim">void srunner_set_fork_status (SRunner * sr, enum fork_status fstat);
+</pre></li></ol>
+
+<p>The enum <code>fork_status</code> allows the <code>fstat</code> parameter to
+assume the following values: <code>CK_FORK</code> and <code>CK_NOFORK</code>.  An
+explicit call to <code>srunner_set_fork_status()</code> overrides the
+<code>CK_FORK</code> environment variable.
+</p>
+<hr>
+<a name="Test-Fixtures"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Advanced-Features" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#No-Fork-Mode" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Advanced-Features" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#Test-Fixture-Examples" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Test-Fixtures-1"></a>
+<h2 class="section">4.4 Test Fixtures</h2>
+
+<p>We may want multiple tests that all use the same Money.  In such
+cases, rather than setting up and tearing down objects for each unit
+test, it may be convenient to add some setup that is constant across
+all the tests in a test case.  Each such setup/teardown pair is called
+a <em>test fixture</em> in test-driven development jargon.
+</p>
+<p>A fixture is created by defining a setup and/or a teardown function,
+and associating it with a test case.  There are two kinds of test
+fixtures in Check: checked and unchecked fixtures. These are defined
+as follows:
+</p>
+<dl compact="compact">
+<dt>Checked fixtures</dt>
+<dd><p>are run inside the address space created by the fork to create the
+unit test.  Before each unit test in a test case, the <code>setup()</code>
+function is run, if defined. After each unit test, the
+<code>teardown()</code> function is run, if defined.  Since they run inside
+the forked address space, if checked fixtures signal or otherwise
+fail, they will be caught and reported by the <code>SRunner</code>.  A
+checked <code>teardown()</code> fixture will not run if the unit test
+fails.
+</p>
+</dd>
+<dt>Unchecked fixtures</dt>
+<dd><p>are run in the same address space as the test program. Therefore they
+may not signal or exit, but may use the fail functions. The unchecked
+<code>setup()</code>, if defined, is run before the test case is
+started. The unchecked <code>teardown()</code>, if defined, is run after the
+test case is done. An unchecked <code>teardown()</code> fixture will run even
+if a unit test fails.
+</p></dd>
+</dl>
+
+<p>An important  difference is that the checked fixtures are run once per
+unit test and the unchecked fixtures are run once per test case.
+So for a test case that contains <code>check_one()</code> and
+<code>check_two()</code> unit tests,
+<code>checked_setup()</code>/<code>checked_teardown()</code> checked fixtures, and
+<code>unchecked_setup()</code>/<code>unchecked_teardown()</code> unchecked
+fixtures, the control flow would be:
+</p><div class="example">
+<pre class="verbatim">unchecked_setup();
+fork();
+checked_setup();
+check_one();
+checked_teardown();
+wait();
+fork();
+checked_setup();
+check_two();
+checked_teardown();
+wait();
+unchecked_teardown();
+</pre></div>
+
+<table class="menu" border="0" cellspacing="0">
+<tr><td align="left" valign="top"><a href="#Test-Fixture-Examples">4.4.1 Test Fixture Examples</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">       
+</td></tr>
+<tr><td align="left" valign="top"><a href="#Checked-vs-Unchecked-Fixtures">4.4.2 Checked vs Unchecked Fixtures</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">  
+</td></tr>
+</table>
+
+<hr>
+<a name="Test-Fixture-Examples"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Advanced-Features" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Test-Fixtures" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Test-Fixtures" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#Checked-vs-Unchecked-Fixtures" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Test-Fixture-Examples-1"></a>
+<h3 class="subsection">4.4.1 Test Fixture Examples</h3>
+
+<p>We create a test fixture in Check as follows:
+</p>
+<ol>
+<li>
+Define global variables, and functions to setup and teardown the
+globals.  The functions both take <code>void</code> and return <code>void</code>.
+In our example, we&rsquo;ll make <code>five_dollars</code> be a global created and
+freed by <code>setup()</code> and <code>teardown()</code> respectively.
+
+</li><li>
+<a name="index-tcase_005fadd_005fchecked_005ffixture"></a>
+Add the <code>setup()</code> and <code>teardown()</code> functions to the test
+case with <code>tcase_add_checked_fixture()</code>.  In our example, this
+belongs in the suite setup function <code>money_suite</code>.
+
+</li><li>
+Rewrite tests to use the globals.  We&rsquo;ll rewrite our first to use
+<code>five_dollars</code>.
+</li></ol>
+
+<p>Note that the functions used for setup and teardown do not need to be
+named <code>setup()</code> and <code>teardown()</code>, but they must take
+<code>void</code> and return <code>void</code>.  We&rsquo;ll update &lsquo;<tt>check_money.c</tt>&rsquo;
+with the following patch:
+</p>
+<table class="cartouche" border="1"><tr><td>
+<div class="example">
+<pre class="example"><pre class="verbatim">--- tests/check_money.6.c	2015-09-13 12:11:09.000000000 -0400
++++ tests/check_money.7.c	2015-09-13 12:11:07.000000000 -0400
+@@ -1,94 +1,103 @@
+ /*
+  * Check: a unit test framework for C
+  * Copyright (C) 2001, 2002 Arien Malec
+  *
+  * This library is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU Lesser General Public
+  * License as published by the Free Software Foundation; either
+  * version 2.1 of the License, or (at your option) any later version.
+  *
+  * This library is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  * Lesser General Public License for more details.
+  *
+  * You should have received a copy of the GNU Lesser General Public
+  * License along with this library; if not, write to the
+  * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+  * MA 02110-1301, USA.
+  */
+ 
+ #include &lt;stdlib.h&gt;
+ #include &lt;check.h&gt;
+ #include &quot;../src/money.h&quot;
+ 
+-START_TEST(test_money_create)
++Money *five_dollars;
++
++void setup(void)
++{
++    five_dollars = money_create(5, &quot;USD&quot;);
++}
++
++void teardown(void)
+ {
+-    Money *m;
++    money_free(five_dollars);
++}
+ 
+-    m = money_create(5, &quot;USD&quot;);
+-    ck_assert_int_eq(money_amount(m), 5);
+-    ck_assert_str_eq(money_currency(m), &quot;USD&quot;);
+-    money_free(m);
++START_TEST(test_money_create)
++{
++    ck_assert_int_eq(money_amount(five_dollars), 5);
++    ck_assert_str_eq(money_currency(five_dollars), &quot;USD&quot;);
+ }
+ END_TEST
+ 
+ START_TEST(test_money_create_neg)
+ {
+     Money *m = money_create(-1, &quot;USD&quot;);
+ 
+     ck_assert_msg(m == NULL,
+                   &quot;NULL should be returned on attempt to create with &quot;
+                   &quot;a negative amount&quot;);
+ }
+ END_TEST
+ 
+ START_TEST(test_money_create_zero)
+ {
+     Money *m = money_create(0, &quot;USD&quot;);
+ 
+     if (money_amount(m) != 0)
+     {
+         ck_abort_msg(&quot;Zero is a valid amount of money&quot;);
+     }
+ }
+ END_TEST
+ 
+ Suite * money_suite(void)
+ {
+     Suite *s;
+     TCase *tc_core;
+     TCase *tc_limits;
+ 
+     s = suite_create(&quot;Money&quot;);
+ 
+     /* Core test case */
+     tc_core = tcase_create(&quot;Core&quot;);
+ 
++    tcase_add_checked_fixture(tc_core, setup, teardown);
+     tcase_add_test(tc_core, test_money_create);
+     suite_add_tcase(s, tc_core);
+ 
+     /* Limits test case */
+     tc_limits = tcase_create(&quot;Limits&quot;);
+ 
+     tcase_add_test(tc_limits, test_money_create_neg);
+     tcase_add_test(tc_limits, test_money_create_zero);
+     suite_add_tcase(s, tc_limits);
+ 
+     return s;
+ }
+ 
+ int main(void)
+ {
+     int number_failed;
+     Suite *s;
+     SRunner *sr;
+ 
+     s = money_suite();
+     sr = srunner_create(s);
+ 
+     srunner_run_all(sr, CK_NORMAL);
+     number_failed = srunner_ntests_failed(sr);
+     srunner_free(sr);
+     return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
+ }
+</pre></pre></div>
+</td></tr></table>
+
+<hr>
+<a name="Checked-vs-Unchecked-Fixtures"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Advanced-Features" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Test-Fixture-Examples" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Test-Fixtures" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#Multiple-Suites-in-one-SRunner" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Checked-vs-Unchecked-Fixtures-1"></a>
+<h3 class="subsection">4.4.2 Checked vs Unchecked Fixtures</h3>
+
+<p>Checked fixtures run once for each unit test in a test case, and so
+they should not be used for expensive setup.  However, if a checked
+fixture fails and <code>CK_FORK</code> mode is being used, it will not bring
+down the entire framework.
+</p>
+<p>On the other hand, unchecked fixtures run once for an entire test
+case, as opposed to once per unit test, and so can be used for
+expensive setup.  However, since they may take down the entire test
+program, they should only be used if they are known to be safe.
+</p>
+<p>Additionally, the isolation of objects created by unchecked fixtures
+is not guaranteed by <code>CK_NOFORK</code> mode.  Normally, in
+<code>CK_FORK</code> mode, unit tests may abuse the objects created in an
+unchecked fixture with impunity, without affecting other unit tests in
+the same test case, because the fork creates a separate address space.
+However, in <code>CK_NOFORK</code> mode, all tests live in the same address
+space, and side effects in one test will affect the unchecked fixture
+for the other tests.
+</p>
+<p>A checked fixture will generally not be affected by unit test side
+effects, since the <code>setup()</code> is run before each unit test.  There
+is an exception for side effects to the total environment in which the
+test program lives: for example, if the <code>setup()</code> function
+initializes a file that a unit test then changes, the combination of
+the <code>teardown()</code> function and <code>setup()</code> function must be able
+to restore the environment for the next unit test.
+</p>
+<p>If the <code>setup()</code> function in a fixture fails, in either checked
+or unchecked fixtures, the unit tests for the test case, and the
+<code>teardown()</code> function for the fixture will not be run.  A fixture
+error will be created and reported to the <code>SRunner</code>.
+</p>
+<hr>
+<a name="Multiple-Suites-in-one-SRunner"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Advanced-Features" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Checked-vs-Unchecked-Fixtures" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Advanced-Features" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#Selective-Running-of-Tests" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Multiple-Suites-in-one-SRunner-1"></a>
+<h2 class="section">4.5 Multiple Suites in one SRunner</h2>
+
+<p>In a large program, it will be convenient to create multiple suites,
+each testing a module of the program.  While one can create several
+test programs, each running one <code>Suite</code>, it may be convenient to
+create one main test program, and use it to run multiple suites.  The
+Check test suite provides an example of how to do this. The main
+testing program is called <code>check_check</code>, and has a header file
+that declares suite creation functions for all the module tests:
+</p><div class="example">
+<pre class="verbatim">Suite *make_sub_suite (void);
+Suite *make_sub2_suite (void);
+Suite *make_master_suite (void);
+Suite *make_list_suite (void);
+Suite *make_msg_suite (void);
+Suite *make_log_suite (void);
+Suite *make_limit_suite (void);
+Suite *make_fork_suite (void);
+Suite *make_fixture_suite (void);
+Suite *make_pack_suite (void);
+</pre></div>
+
+<a name="index-srunner_005fadd_005fsuite"></a>
+<p>The function <code>srunner_add_suite()</code> is used to add additional
+suites to an <code>SRunner</code>.  Here is the code that sets up and runs
+the <code>SRunner</code> in the <code>main()</code> function in
+&lsquo;<tt>check_check_main.c</tt>&rsquo;:
+</p><div class="example">
+<pre class="verbatim">SRunner *sr;
+sr = srunner_create (make_master_suite ());
+srunner_add_suite (sr, make_list_suite ());
+srunner_add_suite (sr, make_msg_suite ());
+srunner_add_suite (sr, make_log_suite ());
+srunner_add_suite (sr, make_limit_suite ());
+srunner_add_suite (sr, make_fork_suite ());
+srunner_add_suite (sr, make_fixture_suite ());
+srunner_add_suite (sr, make_pack_suite ());
+</pre></div>
+
+<hr>
+<a name="Selective-Running-of-Tests"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Advanced-Features" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Multiple-Suites-in-one-SRunner" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Advanced-Features" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#Testing-Signal-Handling-and-Exit-Values" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Selective-Running-of-Tests-1"></a>
+<h2 class="section">4.6 Selective Running of Tests</h2>
+
+<a name="index-CK_005fRUN_005fSUITE"></a>
+<a name="index-CK_005fRUN_005fCASE"></a>
+<p>After adding a couple of suites and some test cases in each, it is
+sometimes practical to be able to run only one suite, or one
+specific test case, without recompiling the test code. There are
+two environment variables available that offers this ability,
+<code>CK_RUN_SUITE</code> and <code>CK_RUN_CASE</code>. Just set the value to
+the name of the suite and/or test case you want to run. These
+environment variables can also be a good integration tool for
+running specific tests from within another tool, e.g. an IDE.
+</p>  
+<hr>
+<a name="Testing-Signal-Handling-and-Exit-Values"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Advanced-Features" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Selective-Running-of-Tests" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Advanced-Features" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#Looping-Tests" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Testing-Signal-Handling-and-Exit-Values-1"></a>
+<h2 class="section">4.7 Testing Signal Handling and Exit Values</h2>
+
+<a name="index-tcase_005fadd_005ftest_005fraise_005fsignal"></a>
+
+<p>To enable testing of signal handling, there is a function
+<code>tcase_add_test_raise_signal()</code> which is used instead of
+<code>tcase_add_test()</code>.  This function takes an additional signal
+argument, specifying a signal that the test expects to receive.  If no
+signal is received this is logged as a failure.  If a different signal
+is received this is logged as an error.
+</p>
+<p>The signal handling functionality only works in CK_FORK mode.
+</p>
+<a name="index-tcase_005fadd_005fexit_005ftest"></a>
+
+<p>To enable testing of expected exits, there is a function
+<code>tcase_add_exit_test()</code> which is used instead of <code>tcase_add_test()</code>.
+This function takes an additional expected exit value argument,
+specifying a value that the test is expected to exit with.  If the test
+exits with any other value this is logged as a failure.  If the test exits
+early this is logged as an error.
+</p>
+<p>The exit handling functionality only works in CK_FORK mode.
+</p>
+<hr>
+<a name="Looping-Tests"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Advanced-Features" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Testing-Signal-Handling-and-Exit-Values" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Advanced-Features" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#Test-Timeouts" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Looping-Tests-1"></a>
+<h2 class="section">4.8 Looping Tests</h2>
+
+<p>Looping tests are tests that are called with a new context for each
+loop iteration.  This makes them ideal for table based tests.  If
+loops are used inside ordinary tests to test multiple values, only the
+first error will be shown before the test exits.  However, looping
+tests allow for all errors to be shown at once, which can help out
+with debugging.
+</p>
+<a name="index-tcase_005fadd_005floop_005ftest"></a>
+<p>Adding a normal test with <code>tcase_add_loop_test()</code> instead of
+<code>tcase_add_test()</code> will make the test function the body of a
+<code>for</code> loop, with the addition of a fork before each call.  The
+loop variable <code>_i</code> is available for use inside the test function;
+for example, it could serve as an index into a table.  For failures,
+the iteration which caused the failure is available in error messages
+and logs.  
+</p>
+<p>Start and end values for the loop are supplied when adding the test.
+The values are used as in a normal <code>for</code> loop.  Below is some
+pseudo-code to show the concept:
+</p><div class="example">
+<pre class="verbatim">for (_i = tfun-&gt;loop_start; _i &lt; tfun-&gt;loop_end; _i++)
+{
+  fork();      /* New context */
+  tfun-&gt;f(_i);  /* Call test function */
+  wait();      /* Wait for child to terminate */
+}
+</pre></div>
+
+<p>An example of looping test usage follows:
+</p><div class="example">
+<pre class="verbatim">static const int primes[5] = {2,3,5,7,11};
+
+START_TEST (check_is_prime)
+{
+  ck_assert (is_prime (primes[_i]));
+}
+END_TEST
+
+...
+
+tcase_add_loop_test (tcase, check_is_prime, 0, 5);
+</pre></div>
+
+<p>Looping tests work in <code>CK_NOFORK</code> mode as well, but without the
+forking.  This means that only the first error will be shown.
+</p>
+<hr>
+<a name="Test-Timeouts"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Advanced-Features" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Looping-Tests" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Advanced-Features" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#Determining-Test-Coverage" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Test-Timeouts-1"></a>
+<h2 class="section">4.9 Test Timeouts</h2>
+
+<a name="index-tcase_005fset_005ftimeout"></a>
+<a name="index-CK_005fDEFAULT_005fTIMEOUT"></a>
+<a name="index-CK_005fTIMEOUT_005fMULTIPLIER"></a>
+<p>To be certain that a test won&rsquo;t hang indefinitely, all tests are run
+with a timeout, the default being 4 seconds.  If the test is not
+finished within that time, it is killed and logged as an error.
+</p>
+<p>The timeout for a specific test case, which may contain multiple unit
+tests, can be changed with the <code>tcase_set_timeout()</code> function.
+The default timeout used for all test cases can be changed with the
+environment variable <code>CK_DEFAULT_TIMEOUT</code>, but this will not
+override an explicitly set timeout.  Another way to change the timeout
+length is to use the <code>CK_TIMEOUT_MULTIPLIER</code> environment variable,
+which multiplies all timeouts, including those set with
+<code>tcase_set_timeout()</code>, with the supplied integer value. All timeout
+arguments are in seconds and a timeout of 0 seconds turns off the timeout
+functionality. On systems that support it, the timeout can be specified
+using a nanosecond precision. Otherwise, second precision is used.
+</p>
+<p>Test timeouts are only available in CK_FORK mode.
+</p>
+<hr>
+<a name="Determining-Test-Coverage"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Advanced-Features" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Test-Timeouts" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Advanced-Features" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#Finding-Memory-Leaks" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Determining-Test-Coverage-1"></a>
+<h2 class="section">4.10 Determining Test Coverage</h2>
+
+<p>The term <em>code coverage</em> refers to the extent that the statements
+of a program are executed during a run.  Thus, <em>test coverage</em>
+refers to code coverage when executing unit tests.  This information
+can help you to do two things:
+</p>
+<ul>
+<li> 
+Write better tests that more fully exercise your code, thereby
+improving confidence in it.
+
+</li><li>
+Detect dead code that could be factored away.
+</li></ul>
+  
+<p>Check itself does not provide any means to determine this test
+coverage; rather, this is the job of the compiler and its related
+tools.  In the case of <code>gcc</code> this information is easy to
+obtain, and other compilers should provide similar facilities.
+</p>
+<p>Using <code>gcc</code>, first enable test coverage profiling when
+building your source by specifying the &lsquo;<samp>-fprofile-arcs</samp>&rsquo; and
+&lsquo;<samp>-ftest-coverage</samp>&rsquo; switches:
+</p><div class="example">
+<pre class="verbatim">$ gcc -g -Wall -fprofile-arcs -ftest-coverage -o foo foo.c foo_check.c
+</pre></div>
+
+<p>You will see that an additional &lsquo;<tt>.gcno</tt>&rsquo; file is created for each
+&lsquo;<tt>.c</tt>&rsquo; input file.  After running your tests the normal way, a
+&lsquo;<tt>.gcda</tt>&rsquo; file is created for each &lsquo;<tt>.gcno</tt>&rsquo; file.  These
+contain the coverage data in a raw format.  To combine this
+information and a source file into a more readable format you can use
+the <code>gcov</code> utility:
+</p><div class="example">
+<pre class="verbatim">$ gcov foo.c
+</pre></div>
+
+<p>This will produce the file &lsquo;<tt>foo.c.gcov</tt>&rsquo; which looks like this:
+</p><div class="example">
+<pre class="verbatim">     -:   41:     * object */
+    18:   42:    if (ht-&gt;table[p] != NULL) {
+     -:   43:        /* replaces the current entry */
+ #####:   44:        ht-&gt;count--;
+ #####:   45:        ht-&gt;size -= ht-&gt;table[p]-&gt;size +
+ #####:   46:          sizeof(struct hashtable_entry);   
+</pre></div>
+
+<p>As you can see this is an annotated source file with three columns:
+usage information, line numbers, and the original source.  The usage
+information in the first column can either be &rsquo;-&rsquo;, which means that
+this line does not contain code that could be executed; &rsquo;#####&rsquo;, which
+means this line was never executed although it does contain
+code&mdash;these are the lines that are probably most interesting for you;
+or a number, which indicates how often that line was executed.
+</p>
+<p>This is of course only a very brief overview, but it should illustrate
+how determining test coverage generally works, and how it can help
+you.  For more information or help with other compilers, please refer
+to the relevant manuals.
+</p>
+<hr>
+<a name="Finding-Memory-Leaks"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Advanced-Features" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Determining-Test-Coverage" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Advanced-Features" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#Test-Logging" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Finding-Memory-Leaks-1"></a>
+<h2 class="section">4.11 Finding Memory Leaks</h2>
+
+<p>It is possible to determine if any code under test leaks memory during
+a test. Check itself does not have an API for memory leak detection,
+however Valgrind can be used against a unit testing program to search
+for potential leaks.
+</p>
+<p>Before discussing memory leak detection, first a &quot;memory leak&quot; should be
+better defined. There are two primary definitions of a memory leak:
+</p>
+<ol>
+<li>
+Memory that is allocated but not freed before a program terminates.
+However, it was possible for the program to free the memory if it had
+wanted to. Valgrind refers to these as &quot;still reachable&quot; leaks.
+</li><li>
+Memory that is allocated, and any reference to the memory is lost.
+The program could not have freed the memory. Valgrind refers to these
+as &quot;definitely lost&quot; leaks.
+</li></ol>
+
+<p>Valgrind uses the second definition by default when defining a memory leak.
+These leaks are the ones which are likely to cause a program issues due
+to heap depletion.
+</p>
+<p>If one wanted to run Valgrind against a unit testing program to determine
+if leaks are present, the following invocation of Valgrind will work:
+</p>
+<div class="example">
+<pre class="verbatim">valgrind --leak-check=full ${UNIT_TEST_PROGRAM}
+...
+==3979== LEAK SUMMARY:
+==3979==    definitely lost: 0 bytes in 0 blocks
+==3979==    indirectly lost: 0 bytes in 0 blocks
+==3979==      possibly lost: 0 bytes in 0 blocks
+==3979==    still reachable: 548 bytes in 24 blocks
+==3979==         suppressed: 0 bytes in 0 blocks
+</pre></div>
+
+<p>In that example, there were no &quot;definitely lost&quot; memory leaks found.
+However, why would there be such a large number of &quot;still reachable&quot;
+memory leaks? It turns out this is a consequence of using <code>fork()</code>
+to run a unit test in its own process memory space, which Check does by
+default on platforms with <code>fork()</code> available.
+</p>
+<p>Consider the example where a unit test program creates one suite with
+one test. The flow of the program will look like the following:
+</p>
+<div class="example">
+<pre class="example"><b>Main process:</b>       <b>Unit test process:</b>
+create suite
+srunner_run_all()
+   fork unit test     unit test process created
+   wait for test      start test
+   ...                end test
+   ...                exit(0)
+   test complete
+report result
+free suite
+exit(0)
+</pre></div>
+
+<p>The unit testing process has a copy of all memory that the main process
+allocated. In this example, that would include the suite allocated in
+main. When the unit testing process calls <code>exit(0)</code>, the suite
+allocated in <code>main()</code> is reachable but not freed. As the unit test
+has no reason to do anything besides die when its test is finished, and
+it has no reasonable way to free everything before it dies, Valgrind
+reports that some memory is still reachable but not freed.
+</p>
+<p>If the &quot;still reachable&quot; memory leaks are a concern, and one required that
+the unit test program report that there were no memory leaks regardless
+of the type, then the unit test program needs to run without fork. To
+accomplish this, either define the <code>CK_FORK=no</code> environment variable,
+or use the <code>srunner_set_fork_status()</code> function to set the fork mode
+as <code>CK_NOFORK</code> for all suite runners.
+</p>
+<p>Running the same unit test program by disabling <code>fork()</code> results
+in the following:
+</p>
+<div class="example">
+<pre class="verbatim">CK_FORK=no valgrind --leak-check=full ${UNIT_TEST_PROGRAM}
+...
+==4924== HEAP SUMMARY:
+==4924==     in use at exit: 0 bytes in 0 blocks
+==4924==   total heap usage: 482 allocs, 482 frees, 122,351 bytes allocated
+==4924== 
+==4924== All heap blocks were freed -- no leaks are possible
+</pre></div>
+
+<hr>
+<a name="Test-Logging"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Advanced-Features" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Finding-Memory-Leaks" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Advanced-Features" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#XML-Logging" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Test-Logging-1"></a>
+<h2 class="section">4.12 Test Logging</h2>
+
+<a name="index-srunner_005fset_005flog"></a>
+<p>Check supports an operation to log the results of a test run.  To use
+test logging, call the <code>srunner_set_log()</code> function with the name
+of the log file you wish to create:
+</p><div class="example">
+<pre class="verbatim">SRunner *sr;
+sr = srunner_create (make_s1_suite ());
+srunner_add_suite (sr, make_s2_suite ());
+srunner_set_log (sr, &quot;test.log&quot;);
+srunner_run_all (sr, CK_NORMAL);
+</pre></div>
+
+<p>In this example, Check will write the results of the run to
+&lsquo;<tt>test.log</tt>&rsquo;.  The <code>print_mode</code> argument to
+<code>srunner_run_all()</code> is ignored during test logging; the log will
+contain a result entry, organized by suite, for every test run.  Here
+is an example of test log output:
+</p><div class="example">
+<pre class="verbatim">Running suite S1 
+ex_log_output.c:8:P:Core:test_pass: Test passed
+ex_log_output.c:14:F:Core:test_fail: Failure
+ex_log_output.c:18:E:Core:test_exit: (after this point) Early exit
+with return value 1
+Running suite S2 
+ex_log_output.c:26:P:Core:test_pass2: Test passed
+Results for all suites run:
+50%: Checks: 4, Failures: 1, Errors: 1
+</pre></div>
+
+<p>Another way to enable test logging is to use the <code>CK_LOG_FILE_NAME</code>
+environment variable. When set tests will be logged to the specified file name.
+If log file is specified with both <code>CK_LOG_FILE_NAME</code> and
+<code>srunner_set_log()</code>, the name provided to <code>srunner_set_log()</code> will
+be used.
+</p>
+<p>If the log name is set to &quot;-&quot; either via <code>srunner_set_log()</code> or
+<code>CK_LOG_FILE_NAME</code>, the log data will be printed to stdout instead
+of to a file.
+</p>
+
+<table class="menu" border="0" cellspacing="0">
+<tr><td align="left" valign="top"><a href="#XML-Logging">4.12.1 XML Logging</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">                 
+</td></tr>
+<tr><td align="left" valign="top"><a href="#TAP-Logging">4.12.2 TAP Logging</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+</table>
+
+<hr>
+<a name="XML-Logging"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Advanced-Features" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Test-Logging" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Test-Logging" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#TAP-Logging" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="XML-Logging-1"></a>
+<h3 class="subsection">4.12.1 XML Logging</h3>
+
+<a name="index-srunner_005fset_005fxml"></a>
+<a name="index-srunner_005fhas_005fxml"></a>
+<a name="index-srunner_005fxml_005ffname"></a>
+<p>The log can also be written in XML.  The following functions define
+the interface for XML logs:
+</p><div class="example">
+<pre class="verbatim">void srunner_set_xml (SRunner *sr, const char *fname);
+int srunner_has_xml (SRunner *sr);
+const char *srunner_xml_fname (SRunner *sr);
+</pre></div>
+
+<p>XML output is enabled by a call to <code>srunner_set_xml()</code> before the tests
+are run. Here is an example of an XML log:
+</p><div class="example">
+<pre class="verbatim">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;http://check.sourceforge.net/xml/check_unittest.xslt&quot;?&gt;
+&lt;testsuites xmlns=&quot;http://check.sourceforge.net/ns&quot;&gt;
+  &lt;datetime&gt;2012-10-19 09:56:06&lt;/datetime&gt;
+  &lt;suite&gt;
+    &lt;title&gt;S1&lt;/title&gt;
+    &lt;test result=&quot;success&quot;&gt;
+      &lt;path&gt;.&lt;/path&gt;
+      &lt;fn&gt;ex_xml_output.c:10&lt;/fn&gt;
+      &lt;id&gt;test_pass&lt;/id&gt;
+      &lt;iteration&gt;0&lt;/iteration&gt;
+      &lt;duration&gt;0.000013&lt;/duration&gt;
+      &lt;description&gt;Core&lt;/description&gt;
+      &lt;message&gt;Passed&lt;/message&gt;
+    &lt;/test&gt;
+    &lt;test result=&quot;failure&quot;&gt;
+      &lt;path&gt;.&lt;/path&gt;
+      &lt;fn&gt;ex_xml_output.c:16&lt;/fn&gt;
+      &lt;id&gt;test_fail&lt;/id&gt;
+      &lt;iteration&gt;0&lt;/iteration&gt;
+      &lt;duration&gt;-1.000000&lt;/duration&gt;
+      &lt;description&gt;Core&lt;/description&gt;
+      &lt;message&gt;Failure&lt;/message&gt;
+    &lt;/test&gt;
+    &lt;test result=&quot;error&quot;&gt;
+      &lt;path&gt;.&lt;/path&gt;
+      &lt;fn&gt;ex_xml_output.c:20&lt;/fn&gt;
+      &lt;id&gt;test_exit&lt;/id&gt;
+      &lt;iteration&gt;0&lt;/iteration&gt;
+      &lt;duration&gt;-1.000000&lt;/duration&gt;
+      &lt;description&gt;Core&lt;/description&gt;
+      &lt;message&gt;Early exit with return value 1&lt;/message&gt;
+    &lt;/test&gt;
+  &lt;/suite&gt;
+  &lt;suite&gt;
+    &lt;title&gt;S2&lt;/title&gt;
+    &lt;test result=&quot;success&quot;&gt;
+      &lt;path&gt;.&lt;/path&gt;
+      &lt;fn&gt;ex_xml_output.c:28&lt;/fn&gt;
+      &lt;id&gt;test_pass2&lt;/id&gt;
+      &lt;iteration&gt;0&lt;/iteration&gt;
+      &lt;duration&gt;0.000011&lt;/duration&gt;
+      &lt;description&gt;Core&lt;/description&gt;
+      &lt;message&gt;Passed&lt;/message&gt;
+    &lt;/test&gt;
+    &lt;test result=&quot;failure&quot;&gt;
+      &lt;path&gt;.&lt;/path&gt;
+      &lt;fn&gt;ex_xml_output.c:34&lt;/fn&gt;
+      &lt;id&gt;test_loop&lt;/id&gt;
+      &lt;iteration&gt;0&lt;/iteration&gt;
+      &lt;duration&gt;-1.000000&lt;/duration&gt;
+      &lt;description&gt;Core&lt;/description&gt;
+      &lt;message&gt;Iteration 0 failed&lt;/message&gt;
+    &lt;/test&gt;
+    &lt;test result=&quot;success&quot;&gt;
+      &lt;path&gt;.&lt;/path&gt;
+      &lt;fn&gt;ex_xml_output.c:34&lt;/fn&gt;
+      &lt;id&gt;test_loop&lt;/id&gt;
+      &lt;iteration&gt;1&lt;/iteration&gt;
+      &lt;duration&gt;0.000010&lt;/duration&gt;
+      &lt;description&gt;Core&lt;/description&gt;
+      &lt;message&gt;Passed&lt;/message&gt;
+    &lt;/test&gt;
+    &lt;test result=&quot;failure&quot;&gt;
+      &lt;path&gt;.&lt;/path&gt;
+      &lt;fn&gt;ex_xml_output.c:34&lt;/fn&gt;
+      &lt;id&gt;test_loop&lt;/id&gt;
+      &lt;iteration&gt;2&lt;/iteration&gt;
+      &lt;duration&gt;-1.000000&lt;/duration&gt;
+      &lt;description&gt;Core&lt;/description&gt;
+      &lt;message&gt;Iteration 2 failed&lt;/message&gt;
+    &lt;/test&gt;
+  &lt;/suite&gt;
+  &lt;suite&gt;
+    &lt;title&gt;XML escape &amp;quot; &amp;apos; &amp;lt; &amp;gt; &amp;amp; tests&lt;/title&gt;
+    &lt;test result=&quot;failure&quot;&gt;
+      &lt;path&gt;.&lt;/path&gt;
+      &lt;fn&gt;ex_xml_output.c:40&lt;/fn&gt;
+      &lt;id&gt;test_xml_esc_fail_msg&lt;/id&gt;
+      &lt;iteration&gt;0&lt;/iteration&gt;
+      &lt;duration&gt;-1.000000&lt;/duration&gt;
+      &lt;description&gt;description &amp;quot; &amp;apos; &amp;lt; &amp;gt; &amp;amp;&lt;/description&gt;
+      &lt;message&gt;fail &amp;quot; &amp;apos; &amp;lt; &amp;gt; &amp;amp; message&lt;/message&gt;
+    &lt;/test&gt;
+  &lt;/suite&gt;
+  &lt;duration&gt;0.001610&lt;/duration&gt;
+&lt;/testsuites&gt;
+</pre></div>
+
+<p>XML logging can be enabled by an environment variable as well. If
+<code>CK_XML_LOG_FILE_NAME</code> environment variable is set, the XML test log will
+be written to specified file name. If XML log file is specified with both
+<code>CK_XML_LOG_FILE_NAME</code> and <code>srunner_set_xml()</code>, the name provided
+to <code>srunner_set_xml()</code> will be used.
+</p>
+<p>If the log name is set to &quot;-&quot; either via <code>srunner_set_xml()</code> or
+<code>CK_XML_LOG_FILE_NAME</code>, the log data will be printed to stdout instead
+of to a file.
+</p>
+<p>If both plain text and XML log files are specified, by any of above methods,
+then check will log to both files. In other words logging in plain text and XML
+format simultaneously is supported.
+</p>
+<hr>
+<a name="TAP-Logging"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Advanced-Features" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#XML-Logging" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Test-Logging" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#Subunit-Support" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="TAP-Logging-1"></a>
+<h3 class="subsection">4.12.2 TAP Logging</h3>
+
+<a name="index-srunner_005fset_005ftap"></a>
+<a name="index-srunner_005fhas_005ftap"></a>
+<a name="index-srunner_005ftap_005ffname"></a>
+<p>The log can also be written in Test Anything Protocol (TAP) format.
+Refer to the <a href="http://podwiki.hexten.net/TAP/TAP.html">TAP Specification</a>
+for information on valid TAP output and parsers of TAP. The following
+functions define the interface for TAP logs:
+</p><div class="example">
+<pre class="verbatim">void srunner_set_tap (SRunner *sr, const char *fname);
+int srunner_has_tap (SRunner *sr);
+const char *srunner_tap_fname (SRunner *sr);
+</pre></div>
+
+<p>TAP output is enabled by a call to <code>srunner_set_tap()</code> before the tests
+are run. Here is an example of an TAP log:
+</p><div class="example">
+<pre class="verbatim">ok 1 - mytests.c:test_suite_name:my_test_1: Passed
+ok 2 - mytests.c:test_suite_name:my_test_2: Passed
+not ok 3 - mytests.c:test_suite_name:my_test_3: Foo happened
+ok 4 - mytests.c:test_suite_name:my_test_1: Passed
+1..4
+</pre></div>
+
+<p>TAP logging can be enabled by an environment variable as well. If
+<code>CK_TAP_LOG_FILE_NAME</code> environment variable is set, the TAP test log will
+be written to specified file name. If TAP log file is specified with both
+<code>CK_TAP_LOG_FILE_NAME</code> and <code>srunner_set_tap()</code>, the name provided
+to <code>srunner_set_tap()</code> will be used.
+</p>
+<p>If the log name is set to &quot;-&quot; either via <code>srunner_set_tap()</code> or
+<code>CK_TAP_LOG_FILE_NAME</code>, the log data will be printed to stdout instead
+of to a file.
+</p>
+<p>If both plain text and TAP log files are specified, by any of above methods,
+then check will log to both files. In other words logging in plain text and TAP
+format simultaneously is supported.
+</p>
+
+<hr>
+<a name="Subunit-Support"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Advanced-Features" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#TAP-Logging" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Advanced-Features" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Subunit-Support-1"></a>
+<h2 class="section">4.13 Subunit Support</h2>
+
+<p>Check supports running test suites with subunit output. This can be useful to
+combine test results from multiple languages, or to perform programmatic
+analysis on the results of multiple check test suites or otherwise handle test
+results in a programmatic manner. Using subunit with check is very straight
+forward. There are two steps:
+1) In your check test suite driver pass &rsquo;CK_SUBUNIT&rsquo; as the output mode
+for your srunner.
+</p><div class="example">
+<pre class="verbatim">SRunner *sr;
+sr = srunner_create (make_s1_suite ());
+srunner_add_suite (sr, make_s2_suite ());
+srunner_run_all (sr, CK_SUBUNIT);
+</pre></div>
+<p>2) Setup your main language test runner to run your check based test
+executable. For instance using python:
+</p><div class="example">
+<pre class="verbatim">
+import subunit
+
+class ShellTests(subunit.ExecTestCase):
+    &quot;&quot;&quot;Run some tests from the C codebase.&quot;&quot;&quot;
+
+    def test_group_one(self):
+        &quot;&quot;&quot;./foo/check_driver&quot;&quot;&quot;
+
+    def test_group_two(self):
+        &quot;&quot;&quot;./foo/other_driver&quot;&quot;&quot;
+</pre></div>
+
+<p>In this example, running the test suite ShellTests in python (using any test
+runner - unittest.py, tribunal, trial, nose or others) will run
+./foo/check_driver and ./foo/other_driver and report on their result.
+</p>
+<p>Subunit is hosted on launchpad - the <a href="https://launchpad.net/subunit/">subunit</a> project there contains bug tracker, future plans, and source code
+control details.
+</p>
+<hr>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Advanced-Features" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<p>
+ <font size="-1">
+  This document was generated on <i>December 24, 2015</i> using <a href="http://www.nongnu.org/texi2html/"><i>texi2html 5.0</i></a>.
+ </font>
+ <br>
+
+</p>
+</body>
+</html>

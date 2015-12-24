@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for Check
+(version 0.10.0, 13 September 2015),
+a unit testing framework for C.
+
+Copyright (C) 2001-2014 Arien Malec, Branden Archer, Chris Pickett,
+Fredrik Hugosson, and Robert Lemmen.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License,
+Version 1.2 or any later version published by the Free Software
+Foundation; with no Invariant Sections, no Front-Cover texts, and no
+Back-Cover Texts.  A copy of the license is included in the section
+entitled "GNU Free Documentation License."
+
+ -->
+<!-- Created on December 24, 2015 by texi2html 5.0
+texi2html was written by: 
+            Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Many creative people.
+Send bugs and suggestions to <texi2html-bug@nongnu.org>
+-->
+<head>
+<title>Check 0.10.0: 1 Introduction</title>
+
+<meta name="description" content="Check 0.10.0: 1 Introduction">
+<meta name="keywords" content="Check 0.10.0: 1 Introduction">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2html 5.0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.smallquotation {font-size: smaller}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+div.smalldisplay {margin-left: 3.2em}
+div.smallexample {margin-left: 3.2em}
+div.smalllisp {margin-left: 3.2em}
+pre.display {font-family: serif}
+pre.format {font-family: serif}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+pre.smalldisplay {font-family: serif; font-size: smaller}
+pre.smallexample {font-size: smaller}
+pre.smallformat {font-family: serif; font-size: smaller}
+pre.smalllisp {font-size: smaller}
+span.nocodebreak {white-space:pre}
+span.nolinebreak {white-space:pre}
+span.roman {font-family:serif; font-weight:normal}
+span.sansserif {font-family:sans-serif; font-weight:normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#800080" alink="#FF0000">
+
+<a name="Introduction"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="index.html#Top" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="check_2.html#Unit-Testing-in-C" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_2.html#Unit-Testing-in-C" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Introduction-1"></a>
+<h1 class="chapter">1 Introduction</h1>
+<a name="index-introduction"></a>
+
+<p>Check is a unit testing framework for C.  It was inspired by similar
+frameworks that currently exist for most programming languages; the
+most famous example being <a href="http://www.junit.org">JUnit</a> for Java.
+There is a list of unit test frameworks for multiple languages at
+<a href="http://www.xprogramming.com/software.htm">http://www.xprogramming.com/software.htm</a>.  Unit testing has a
+long history as part of formal quality assurance methodologies, but
+has recently been associated with the lightweight methodology called
+Extreme Programming.  In that methodology, the characteristic practice
+involves interspersing unit test writing with coding (&ldquo;test a
+little, code a little&rdquo;).  While the incremental unit test/code
+approach is indispensable to Extreme Programming, it is also
+applicable, and perhaps indispensable, outside of that methodology.
+</p>
+<p>The incremental test/code approach provides three main benefits to the
+developer:
+</p>
+<ol>
+<li>
+Because the unit tests use the interface to the unit being tested,
+they allow the developer to think about how the interface should be
+designed for usage early in the coding process.
+
+</li><li>
+They help the developer think early about aberrant cases, and code
+accordingly.
+
+</li><li>
+By providing a documented level of correctness, they allow the
+developer to refactor (see <a href="http://www.refactoring.com">http://www.refactoring.com</a>)
+aggressively.
+</li></ol>
+
+<p>That third reason is the one that turns people into unit testing
+addicts.  There is nothing so satisfying as doing a wholesale
+replacement of an implementation, and having the unit tests reassure
+you at each step of that change that all is well.  It is like the
+difference between exploring the wilderness with and without a good
+map and compass: without the proper gear, you are more likely to
+proceed cautiously and stick to the marked trails; with it, you can
+take the most direct path to where you want to go.
+</p>
+<p>Look at the Check homepage for the latest information on Check:
+<a href="http://check.sourceforge.net">http://check.sourceforge.net</a>.
+</p>
+<p>The Check project page is at:
+<a href="http://sourceforge.net/projects/check/">http://sourceforge.net/projects/check/</a>.
+</p>
+<hr>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="index.html#Top" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_2.html#Unit-Testing-in-C" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<p>
+ <font size="-1">
+  This document was generated on <i>December 24, 2015</i> using <a href="http://www.nongnu.org/texi2html/"><i>texi2html 5.0</i></a>.
+ </font>
+ <br>
+
+</p>
+</body>
+</html>

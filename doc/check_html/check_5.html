@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for Check
+(version 0.10.0, 13 September 2015),
+a unit testing framework for C.
+
+Copyright (C) 2001-2014 Arien Malec, Branden Archer, Chris Pickett,
+Fredrik Hugosson, and Robert Lemmen.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License,
+Version 1.2 or any later version published by the Free Software
+Foundation; with no Invariant Sections, no Front-Cover texts, and no
+Back-Cover Texts.  A copy of the license is included in the section
+entitled "GNU Free Documentation License."
+
+ -->
+<!-- Created on December 24, 2015 by texi2html 5.0
+texi2html was written by: 
+            Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Many creative people.
+Send bugs and suggestions to <texi2html-bug@nongnu.org>
+-->
+<head>
+<title>Check 0.10.0: 5 Supported Build Systems</title>
+
+<meta name="description" content="Check 0.10.0: 5 Supported Build Systems">
+<meta name="keywords" content="Check 0.10.0: 5 Supported Build Systems">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2html 5.0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.smallquotation {font-size: smaller}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+div.smalldisplay {margin-left: 3.2em}
+div.smallexample {margin-left: 3.2em}
+div.smalllisp {margin-left: 3.2em}
+pre.display {font-family: serif}
+pre.format {font-family: serif}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+pre.smalldisplay {font-family: serif; font-size: smaller}
+pre.smallexample {font-size: smaller}
+pre.smallformat {font-family: serif; font-size: smaller}
+pre.smalllisp {font-size: smaller}
+span.nocodebreak {white-space:pre}
+span.nolinebreak {white-space:pre}
+span.roman {font-family:serif; font-weight:normal}
+span.sansserif {font-family:sans-serif; font-weight:normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#800080" alink="#FF0000">
+
+<a name="Supported-Build-Systems"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="check_4.html#Advanced-Features" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_4.html#Subunit-Support" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#Autotools" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_6.html#Conclusion-and-References" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Supported-Build-Systems-1"></a>
+<h1 class="chapter">5 Supported Build Systems</h1>
+<a name="index-Supported-Build-Systems"></a>
+
+<p>Check officially supports two build systems: Autotools and CMake.
+Primarily it is recommended to use Autotools where possible, as CMake is
+only officially supported for Windows. Information on using Check in
+either build system follows.
+</p>
+<table class="menu" border="0" cellspacing="0">
+<tr><td align="left" valign="top"><a href="#Autotools">5.1 Autotools</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top"><a href="#CMake">5.2 CMake</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+</table>
+
+<hr>
+<a name="Autotools"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Supported-Build-Systems" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Supported-Build-Systems" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Supported-Build-Systems" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#CMake" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_6.html#Conclusion-and-References" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Autotools-1"></a>
+<h2 class="section">5.1 Autotools</h2>
+
+<p>It is recommended to use pkg-config where possible to locate and use
+Check in an Autotools project. This can be accomplished by including
+the following in the project&rsquo;s &lsquo;<tt>configure.ac</tt>&rsquo; file:
+</p>
+<pre class="verbatim">   PKG_CHECK_MODULES([CHECK], [check &gt;= MINIMUM-VERSION])
+</pre>
+<p>where MINIMUM-VERSION is the lowest version which is sufficient for
+the project. For example, to guarantee that at least version 0.9.6 is
+available, use the following:
+</p>
+<pre class="verbatim">   PKG_CHECK_MODULES([CHECK], [check &gt;= 0.9.6])
+</pre>
+<p>An example of a &lsquo;<tt>configure.ac</tt>&rsquo; script for a project is
+included in the &lsquo;<tt>doc/example</tt>&rsquo; directory in Check&rsquo;s source.
+This macro should provide everything necessary to integrate Check
+into an Autotools project.
+</p>
+<p>If one does not wish to use pkg-config Check also provides its own
+macro, <code>AM_PATH_CHECK()</code>, which may be used. This macro is
+deprecated, but is still included with Check for backwards compatibility.
+</p>
+<p>The <code>AM_PATH_CHECK()</code> macro is defined in the file
+&lsquo;<tt>check.m4</tt>&rsquo; which is installed by Check.  It has some optional
+parameters that you might find useful in your &lsquo;<tt>configure.ac</tt>&rsquo;:
+</p><pre class="verbatim">AM_PATH_CHECK([MINIMUM-VERSION,
+               [ACTION-IF-FOUND[,ACTION-IF-NOT-FOUND]]])
+</pre>
+<p><code>AM_PATH_CHECK</code> does several things:
+</p>
+<ol>
+<li> 
+It ensures check.h is available
+
+</li><li> 
+It ensures a compatible version of Check is installed
+
+</li><li> 
+It sets <code>CHECK_CFLAGS</code> and <code>CHECK_LIBS</code> for use by Automake.
+</li></ol>
+
+<p>If you include <code>AM_PATH_CHECK()</code> in &lsquo;<tt>configure.ac</tt>&rsquo; and
+subsequently see warnings when attempting to create
+<code>configure</code>, it probably means one of the following things:
+</p>
+<ol>
+<li> 
+You forgot to call <code>aclocal</code>.  <code>autoreconf</code> will do
+this for you.
+
+</li><li>
+<code>aclocal</code> can&rsquo;t find  &lsquo;<tt>check.m4</tt>&rsquo;.  Here are some possible
+solutions:
+
+<ol>
+<li>
+Call <code>aclocal</code> with &lsquo;<samp>-I</samp>&rsquo; set to the location of
+&lsquo;<tt>check.m4</tt>&rsquo;.  This means you have to call both <code>aclocal</code> and
+<code>autoreconf</code>.
+
+</li><li>
+Add the location of &lsquo;<tt>check.m4</tt>&rsquo; to the &lsquo;<samp>dirlist</samp>&rsquo; used by
+<code>aclocal</code> and then call <code>autoreconf</code>.  This means you
+need permission to modify the &lsquo;<samp>dirlist</samp>&rsquo;.
+
+</li><li>
+Set <code>ACLOCAL_AMFLAGS</code> in your top-level &lsquo;<tt>Makefile.am</tt>&rsquo; to
+include &lsquo;<samp>-I DIR</samp>&rsquo; with <code>DIR</code> being the location of
+&lsquo;<tt>check.m4</tt>&rsquo;.  Then call <code>autoreconf</code>.
+</li></ol>
+</li></ol>
+
+
+<hr>
+<a name="CMake"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Supported-Build-Systems" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Autotools" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Supported-Build-Systems" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="check_6.html#Conclusion-and-References" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_6.html#Conclusion-and-References" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="CMake-1"></a>
+<h2 class="section">5.2 CMake</h2>
+
+<p>Those unable to use Autotools in their project may use CMake instead.
+Officially CMake is supported only for Windows.
+</p>
+<p>Documentation for using CMake is forthcoming. In the meantime, look
+at the example CMake project in Check&rsquo;s &lsquo;<tt>doc/examples</tt>&rsquo; directory.
+</p>
+
+
+<hr>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Supported-Build-Systems" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_6.html#Conclusion-and-References" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<p>
+ <font size="-1">
+  This document was generated on <i>December 24, 2015</i> using <a href="http://www.nongnu.org/texi2html/"><i>texi2html 5.0</i></a>.
+ </font>
+ <br>
+
+</p>
+</body>
+</html>
