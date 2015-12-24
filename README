@@ -8,7 +8,7 @@ catch both assertion failures and code errors that cause segmentation
 faults or other signals. The output from unit tests can be used within
 source code editors and IDEs.
 
-See http://check.sourceforge.net/ for more information, including a
+See https://libcheck.github.io/check for more information, including a
 tutorial.  The tutorial is also available as `info check'.
 
 Installation
