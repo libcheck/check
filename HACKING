@@ -115,3 +115,22 @@ the gh-pages branch in the Check git repository. To update
 the website, merge the contents of the master branch into
 the gh-pages branch.
 
+
+Automatic building of pull requests
+===============
+
+The GitHub project is configured to build pull requests when asked.
+To trigger a build, add the following comment to the pull request:
+
+   "test this please"
+
+This will result in a job on the Jenkins instance to start:
+
+https://check.ci.cloudbees.com/job/github-merge-builder/
+
+When complete, a comment will be added to the pull request, informing
+of the result.
+
+This works because there is a user in the libcheck organization,
+"check-builder", which the Jenkins instance uses to install a
+git hook and push comments to pull requests.
