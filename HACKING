@@ -115,6 +115,27 @@ the gh-pages branch in the Check git repository. To update
 the website, merge the contents of the master branch into
 the gh-pages branch.
 
+To update the generated documentation for the website:
+
+$ git remote -v
+github  https://github.com/libcheck/check.git (fetch)
+github  https://github.com/libcheck/check.git (push)
+$ git fetch github
+$ git checkout github/gh-pages -b gh-pages
+Branch gh-pages set up to track remote branch gh-pages from github.
+Switched to a new branch 'gh-pages'
+$ git rebase github/master
+First, rewinding head to replay your work on top of it...
+Fast-forwarded gh-pages to github/master.
+$ autoreconf -i
+$ ./configure
+$ make clean
+$ make doc/check_html
+$ make doc/doxygen
+$ git add doc
+$ git commit -m “Update documentation”
+$ git push github gh-pages:gh-pages
+
 
 Automatic building of pull requests
 ===============
