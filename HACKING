@@ -18,26 +18,73 @@ are three-fold:
 Release Process
 ===============
 
-You need 'release tech' access within the project to do this.
+To create a release one will need to be a member of the libcheck organization
+on GitHub. If you are not a member, a current member can add you
+by going to:
+   https://github.com/orgs/libcheck/people
+and submitting an invite.
 
-Start in a configured in-place build of trunk.
-If you are behind a proxy remember to "socksify" (or similar) your
-'make' and 'sftp' commands. Make sure svn works.
+1) To create a release, start in a configured in-place
+checkout of the Check project:
 
-1.  Fix your ssh connectivity and accept ssh-keys:
-     'sftp <SF_USERNAME>@web.sourceforge.net'
-     'sftp <SF_USERNAME>@frs.sourceforge.net'
-2.  Decide on a X.Y.Z revision suitable for release.
-3.  Update configure.ac with new versions and run
-    'svn commit -m "Update for release" configure.ac'
-4.  Update NEWS with new version number. Use this format:
-    "Mon, Oct 22, 2012: Released Check 0.9.9
-       based on r637 (2012-10-22 13:54:14 +0200)"
-    Now 'svn commit -m "* Update for release" NEWS'
-5.  make SF_USERNAME=username RELEASE_VERSION=X.Y.Z preparerelease
-    This will tag trunk as https://svn.code.sf.net/p/check/code/tags/check-X.Y.Z
-6.  Follow the prompts. If anything goes wrong see Makefile.am and complete it by hand.
-7.  Use the following template to announce the release:
+$ git clone https://github.com/libcheck/check.git
+$ cd check
+
+2) Determine the version of Check to release, and update
+the configure.ac script:
+
+AC_INIT([Check], [0.10.1], [check-devel at lists dot sourceforge dot net])
+CHECK_MAJOR_VERSION=0
+CHECK_MINOR_VERSION=10
+CHECK_MICRO_VERSION=1
+
+(Remember to update both the AC_INIT line and each of the CHECK_*_VERSION fields).
+
+3) Update the header in the NEWS file to mention the release:
+
+Sun Aug 2, 2015: Released Check 0.10.1
+  2015-08-02 19:21:14 +0000
+  based on hash f399542eeceb97703bca496b68bb39044e8baa01
+
+4) Update index.html mentioning the release. Look for the following:
+<!-- Update this section during a release -->
+
+5) Attempt to build the release locally
+
+$ autoreconf -i
+$ ./configure
+$ make distcheck
+
+If this passes, a tarball with the current release number will be in the current
+directory. Make not of this, as it will be uploaded to GitHub later.
+
+6) Commit the changes to configure.ac, NEWS, and index.html to the Check project's
+master branch, with the commit message:
+"Update for release"
+
+7) Log On to GitHub and navigate to:
+
+https://github.com/libcheck/check/releases
+
+Click "Draft a New Release".
+
+Enter the release version to the Tag Version box, and enter the
+git hash into the Target selector.
+
+Fill in the Release Title field.
+
+Describe the release with something similar to the following:
+=====
+<some sentence about the release, e.g. "This is a bug fix release.">
+Please test it out and report any problems you might have.
+
+Changes:
+<paste contents of NEWS here for the release>
+=====
+
+Attach the tarball for the release, then publish the release.
+
+8) Use the following template to announce the release via email:
 =====
 Subject: check-X.Y.Z released
 Hi,
@@ -45,27 +92,26 @@ Hi,
 <some sentence about the release, e.g. "This is a bug fix release."> 
 Please test it out and report any problems you might have.
 
-http://prdownloads.sourceforge.net/check/check-X.Y.Z.tar.gz?download
+https://github.com/libcheck/check/releases
 
 Thanks,
 `whoami`
 
-<paste contents of NEWS-release here>
+<paste contents of NEWS for the release here>
 =====
-8.  Follow the remaining prompts.
 
+9) Update the development header in the NEWS file and commit the result.
+
+10) Push updated website (see section below)
+
+Congratulations, you are done!
 
 
 Update website
 ==============
-If the website needs to be updated outside of a release,
-the following can be done.
 
-1. Fix your ssh connectivity and accept ssh-keys, as
-   mentioned in the release process above.
-2. Upload the index.html file and web folder to Sourceforge
-   from your workspace with the following:
-   make SF_USERNAME=username updateweb
+The Check website is automatically hosted from the contents of
+the gh-pages branch in the Check git repository. To update
+the website, merge the contents of the master branch into
+the gh-pages branch.
 
-The changes to the webpage on Sourceforge should take affect
-a few minutes after the upload.
