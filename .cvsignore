@@ -1,9 +1,0 @@
-Makefile.in
-Makefile
-aclocal.m4
-configure
-config.log
-config.h
-config.cache
-config.status
-stamp-h
