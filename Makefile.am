@@ -36,6 +36,12 @@ pcdata_DATA = check.pc
 
 DISTCLEANFILES = check_stdint.h
 
+# the gcovr binary to use
+GCOVR ?= gcovr
+# the minimal coverage for source files tested with `make check` in the
+# `coverage` target to be accepted (`make coverage` fails otherwise)
+GCOVR_COVERAGE_MIN ?= 100
+
 ACLOCAL_AMFLAGS = -I m4
 
 doc/check_html:
@@ -51,5 +57,10 @@ prereleasecheck: doc/check_html doc/doxygen
 	autoreconf -i && ./configure \
 	    && ulimit -c 0 && \
 	    $(MAKE) distcheck
+coverage:
+	$(MAKE) clean # clean first because change of CFLAGS isn't recognized
+	$(MAKE) CFLAGS='-g -O0 --coverage'
+	$(MAKE) check
+	$(GCOVR) -coverage-min=$(GCOVR_COVERAGE_MIN) . || echo "Make sure you have at least 3.2-11-g7390fa3 of https://github.com/krichter722/gcovr.git installed"
 
 .PHONY: prereleasecheck
