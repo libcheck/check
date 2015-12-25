@@ -18,13 +18,13 @@ CLEANFILES = *~\
 
 include_HEADERS = check_stdint.h
 
-EXTRA_DIST = SVNChangeLog ChangeLogOld check.pc.in $(m4data_DATA) xml/check_unittest.xslt \
+EXTRA_DIST = check.pc.in $(m4data_DATA) xml/check_unittest.xslt \
 	CMakeLists.txt src/CMakeLists.txt tests/CMakeLists.txt lib/CMakeLists.txt \
 	cmake
 
 ## install docs
 docdir = $(datadir)/doc/$(PACKAGE)
-doc_DATA = SVNChangeLog ChangeLog ChangeLogOld NEWS README COPYING.LESSER
+doc_DATA = ChangeLog NEWS README COPYING.LESSER
 
 ## install check.m4 with AM_PATH_CHECK in it
 m4datadir = $(datadir)/aclocal
@@ -35,13 +35,6 @@ pcdatadir = $(libdir)/pkgconfig
 pcdata_DATA = check.pc
 
 DISTCLEANFILES = check_stdint.h
-
-SVNChangeLog:
-	if [ -e .svn ] ; then \
-	svn log -v @abs_top_srcdir@ > $@ ;\
-	else \
-	echo "SVN Changelog not available" > $@ ;\
-	fi
 
 ACLOCAL_AMFLAGS = -I m4
 
