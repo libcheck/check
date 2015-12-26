@@ -156,3 +156,39 @@ of the result.
 This works because there is a user in the libcheck organization,
 "check-builder", which the Jenkins instance uses to install a
 git hook and push comments to pull requests.
+
+
+Using gcov
+===============
+
+The gcov tool can be used to determine the unit test coverage in Check
+itself. This is currently supported on GNU/Linux only. To enable the
+necessary build time flags, add the following argument to the
+configure script:
+
+   --enable-gcov
+
+Once the unit tests have been run with
+
+$ make check
+
+assuming the terminal is in the top src directory, the following will
+generate summary information using gcov:
+
+$ cp src/*.c src/.libs/
+$ cd src/.libs
+$ for file in `ls *.c`; do
+   gcov -f $file > $file.gcov.summary.txt
+   mv $file.gcov $file.gcov.txt
+  done
+
+The *.gcov.txt files will contain the source code annotated with
+the number of times each line was executed. The .*gcov.summary.txt
+files will contain a line execution summary per function.
+
+To determine the line execution summary for all of Check, either
+the gcovr tool can be used, or the following quick-and-dirty script:
+
+$ for file in ls *.summary.txt; do cat $file; done \
+  | grep "Lines executed" | cut -d ":" -f 2 | tr -d "%" \
+  | awk '{checked+=$1*$3/100; total+=$3} END {print checked/total*100}'
