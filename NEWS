@@ -1,6 +1,9 @@
 In Development:
 # Mentioning Check 0.10.0 for now, to fix distcheck target until next release
 
+* Avoid issue in unit test output checking where a shell's built-in printf
+  command does not work properly, but the printf program itself is correct.
+
 * Emit only valid XML characters in XML logging (assumes ASCII encoding).
   Bug #103
 
