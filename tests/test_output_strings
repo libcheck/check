@@ -7,17 +7,16 @@
 # comparisons will work
 IFS="~"
 
-# Note that printf is invoked with 'env' so that the printf
-# program itself is used instead of a shell built-in. It
-# was observed on Lubuntu that the shell built-in printf
-# does not interpret hex escapes.
+# octal quotes are specified by POSIX, should be thus portable
+# (e.g. to Lubuntu builtin printf, Solaris 10 /usr/bin/printf)
+tab_nl_X_bs="\11 \12X\10"
 
 ##################
 # stdout output
 ##################
-suite_output=`env printf "Running suite(s): S1
+suite_output=`printf "Running suite(s): S1
  S2
- XML escape \" ' < > & \x9 \x0AX\x08 tests"`
+ XML escape \" ' < > & $tab_nl_X_bs tests"`
 
 exp_silent=""
 
@@ -30,25 +29,25 @@ exp_minimal="$suite_output
 $exp_minimal_result"
 
 if [ $HAVE_FORK -eq 1 ]; then
-exp_normal_result=`env printf "37%%: Checks: 8, Failures: 4, Errors: 1
+exp_normal_result=`printf "37%%: Checks: 8, Failures: 4, Errors: 1
 ${SRCDIR}ex_output.c:37:F:Core:test_fail:0: Failure
 ${SRCDIR}ex_output.c:46:E:Core:test_exit:0: (after this point) Early exit with return value 1
 ${SRCDIR}ex_output.c:72:F:Core:test_loop:0: Iteration 0 failed
 ${SRCDIR}ex_output.c:72:F:Core:test_loop:2: Iteration 2 failed
-${SRCDIR}ex_output.c:78:F:description \" ' < > & \x9 \x0AX\x08 end:test_xml_esc_fail_msg:0: fail \" ' < > & \x9 \x0AX\x08 message"`
+${SRCDIR}ex_output.c:78:F:description \" ' < > & $tab_nl_X_bs end:test_xml_esc_fail_msg:0: fail \" ' < > & $tab_nl_X_bs message"`
 else
-exp_normal_result=`env printf "42%%: Checks: 7, Failures: 4, Errors: 0
+exp_normal_result=`printf "42%%: Checks: 7, Failures: 4, Errors: 0
 ${SRCDIR}ex_output.c:37:F:Core:test_fail:0: Failure
 ${SRCDIR}ex_output.c:72:F:Core:test_loop:0: Iteration 0 failed
 ${SRCDIR}ex_output.c:72:F:Core:test_loop:2: Iteration 2 failed
-${SRCDIR}ex_output.c:78:F:description \" ' < > & \x9 \x0AX\x08 end:test_xml_esc_fail_msg:0: fail \" ' < > & \x9 \x0AX\x08 message"`
+${SRCDIR}ex_output.c:78:F:description \" ' < > & $tab_nl_X_bs end:test_xml_esc_fail_msg:0: fail \" ' < > & $tab_nl_X_bs message"`
 fi
 exp_normal="$suite_output
 $exp_normal_result"
 
 
 if [ $HAVE_FORK -eq 1 ]; then
-exp_verbose_result=`env printf "37%%: Checks: 8, Failures: 4, Errors: 1
+exp_verbose_result=`printf "37%%: Checks: 8, Failures: 4, Errors: 1
 ${SRCDIR}ex_output.c:31:P:Core:test_pass:0: Passed
 ${SRCDIR}ex_output.c:37:F:Core:test_fail:0: Failure
 ${SRCDIR}ex_output.c:46:E:Core:test_exit:0: (after this point) Early exit with return value 1
@@ -56,22 +55,22 @@ ${SRCDIR}ex_output.c:66:P:Core:test_pass2:0: Passed
 ${SRCDIR}ex_output.c:72:F:Core:test_loop:0: Iteration 0 failed
 ${SRCDIR}ex_output.c:72:P:Core:test_loop:1: Passed
 ${SRCDIR}ex_output.c:72:F:Core:test_loop:2: Iteration 2 failed
-${SRCDIR}ex_output.c:78:F:description \" ' < > & \x9 \x0AX\x08 end:test_xml_esc_fail_msg:0: fail \" ' < > & \x9 \x0AX\x08 message"`
+${SRCDIR}ex_output.c:78:F:description \" ' < > & $tab_nl_X_bs end:test_xml_esc_fail_msg:0: fail \" ' < > & $tab_nl_X_bs message"`
 else
-exp_verbose_result=`env printf "42%%: Checks: 7, Failures: 4, Errors: 0
+exp_verbose_result=`printf "42%%: Checks: 7, Failures: 4, Errors: 0
 ${SRCDIR}ex_output.c:31:P:Core:test_pass:0: Passed
 ${SRCDIR}ex_output.c:37:F:Core:test_fail:0: Failure
 ${SRCDIR}ex_output.c:66:P:Core:test_pass2:0: Passed
 ${SRCDIR}ex_output.c:72:F:Core:test_loop:0: Iteration 0 failed
 ${SRCDIR}ex_output.c:72:P:Core:test_loop:1: Passed
 ${SRCDIR}ex_output.c:72:F:Core:test_loop:2: Iteration 2 failed
-${SRCDIR}ex_output.c:78:F:description \" ' < > & \x9 \x0AX\x08 end:test_xml_esc_fail_msg:0: fail \" ' < > & \x9 \x0AX\x08 message"`
+${SRCDIR}ex_output.c:78:F:description \" ' < > & $tab_nl_X_bs end:test_xml_esc_fail_msg:0: fail \" ' < > & $tab_nl_X_bs message"`
 fi
 exp_verbose="$suite_output
 $exp_verbose_result"
 
 if [ $HAVE_FORK -eq 1 ]; then
-exp_subunit=`env printf "test: Core:test_pass
+exp_subunit=`printf "test: Core:test_pass
 success: Core:test_pass
 test: Core:test_fail
 failure: Core:test_fail [
@@ -93,12 +92,12 @@ test: Core:test_loop
 failure: Core:test_loop [
 ${SRCDIR}ex_output.c:72: Iteration 2 failed
 ]
-test: description \" ' < > & \x9 \x0AX\x08 end:test_xml_esc_fail_msg
-failure: description \" ' < > & \x9 \x0AX\x08 end:test_xml_esc_fail_msg [
-${SRCDIR}ex_output.c:78: fail \" ' < > & \x9 \x0AX\x08 message
+test: description \" ' < > & $tab_nl_X_bs end:test_xml_esc_fail_msg
+failure: description \" ' < > & $tab_nl_X_bs end:test_xml_esc_fail_msg [
+${SRCDIR}ex_output.c:78: fail \" ' < > & $tab_nl_X_bs message
 ]"`
 else
-exp_subunit=`env printf "test: Core:test_pass
+exp_subunit=`printf "test: Core:test_pass
 success: Core:test_pass
 test: Core:test_fail
 failure: Core:test_fail [
@@ -116,9 +115,9 @@ test: Core:test_loop
 failure: Core:test_loop [
 ${SRCDIR}ex_output.c:72: Iteration 2 failed
 ]
-test: description \" ' < > & \x9 \x0AX\x08 end:test_xml_esc_fail_msg
-failure: description \" ' < > & \x9 \x0AX\x08 end:test_xml_esc_fail_msg [
-${SRCDIR}ex_output.c:78: fail \" ' < > & \x9 \x0AX\x08 message
+test: description \" ' < > & $tab_nl_X_bs end:test_xml_esc_fail_msg
+failure: description \" ' < > & $tab_nl_X_bs end:test_xml_esc_fail_msg [
+${SRCDIR}ex_output.c:78: fail \" ' < > & $tab_nl_X_bs message
 ]"`
 fi
 
@@ -126,7 +125,7 @@ fi
 # log output
 ##################
 if [ $HAVE_FORK -eq 1 ]; then
-expected_log_log=`env printf "Running suite S1
+expected_log_log=`printf "Running suite S1
 ${SRCDIR}ex_output.c:31:P:Core:test_pass:0: Passed
 ${SRCDIR}ex_output.c:37:F:Core:test_fail:0: Failure
 ${SRCDIR}ex_output.c:46:E:Core:test_exit:0: (after this point) Early exit with return value 1
@@ -135,12 +134,12 @@ ${SRCDIR}ex_output.c:66:P:Core:test_pass2:0: Passed
 ${SRCDIR}ex_output.c:72:F:Core:test_loop:0: Iteration 0 failed
 ${SRCDIR}ex_output.c:72:P:Core:test_loop:1: Passed
 ${SRCDIR}ex_output.c:72:F:Core:test_loop:2: Iteration 2 failed
-Running suite XML escape \" ' < > & \x9 \x0AX\x08 tests
-${SRCDIR}ex_output.c:78:F:description \" ' < > & \x9 \x0AX\x08 end:test_xml_esc_fail_msg:0: fail \" ' < > & \x9 \x0AX\x08 message
+Running suite XML escape \" ' < > & $tab_nl_X_bs tests
+${SRCDIR}ex_output.c:78:F:description \" ' < > & $tab_nl_X_bs end:test_xml_esc_fail_msg:0: fail \" ' < > & $tab_nl_X_bs message
 Results for all suites run:
 37%%: Checks: 8, Failures: 4, Errors: 1"`
 else
-expected_log_log=`env printf "Running suite S1
+expected_log_log=`printf "Running suite S1
 ${SRCDIR}ex_output.c:31:P:Core:test_pass:0: Passed
 ${SRCDIR}ex_output.c:37:F:Core:test_fail:0: Failure
 Running suite S2
@@ -148,8 +147,8 @@ ${SRCDIR}ex_output.c:66:P:Core:test_pass2:0: Passed
 ${SRCDIR}ex_output.c:72:F:Core:test_loop:0: Iteration 0 failed
 ${SRCDIR}ex_output.c:72:P:Core:test_loop:1: Passed
 ${SRCDIR}ex_output.c:72:F:Core:test_loop:2: Iteration 2 failed
-Running suite XML escape \" ' < > & \x9 \x0AX\x08 tests
-${SRCDIR}ex_output.c:78:F:description \" ' < > & \x9 \x0AX\x08 end:test_xml_esc_fail_msg:0: fail \" ' < > & \x9 \x0AX\x08 message
+Running suite XML escape \" ' < > & $tab_nl_X_bs tests
+${SRCDIR}ex_output.c:78:F:description \" ' < > & $tab_nl_X_bs end:test_xml_esc_fail_msg:0: fail \" ' < > & $tab_nl_X_bs message
 Results for all suites run:
 42%%: Checks: 7, Failures: 4, Errors: 0"`
 fi
@@ -298,16 +297,16 @@ fi
 # tap output
 ##################
 if [ $HAVE_FORK -eq 1 ]; then
-expected_normal_tap=`env printf "ok 1 - ${SRCDIR}ex_output.c:Core:test_pass: Passed
+expected_normal_tap=`printf "ok 1 - ${SRCDIR}ex_output.c:Core:test_pass: Passed
 not ok 2 - ${SRCDIR}ex_output.c:Core:test_fail: Failure
 not ok 3 - ${SRCDIR}ex_output.c:Core:test_exit: Early exit with return value 1
 ok 4 - ${SRCDIR}ex_output.c:Core:test_pass2: Passed
 not ok 5 - ${SRCDIR}ex_output.c:Core:test_loop: Iteration 0 failed
 ok 6 - ${SRCDIR}ex_output.c:Core:test_loop: Passed
 not ok 7 - ${SRCDIR}ex_output.c:Core:test_loop: Iteration 2 failed
-not ok 8 - ${SRCDIR}ex_output.c:description \" ' < > & \x9 \x0AX\x08 end:test_xml_esc_fail_msg: fail \" ' < > & \x9 \x0AX\x08 message
+not ok 8 - ${SRCDIR}ex_output.c:description \" ' < > & $tab_nl_X_bs end:test_xml_esc_fail_msg: fail \" ' < > & $tab_nl_X_bs message
 1..8"`
-expected_aborted_tap=`env printf "ok 1 - ${SRCDIR}ex_output.c:Core:test_pass: Passed
+expected_aborted_tap=`printf "ok 1 - ${SRCDIR}ex_output.c:Core:test_pass: Passed
 not ok 2 - ${SRCDIR}ex_output.c:Core:test_fail: Failure
 not ok 3 - ${SRCDIR}ex_output.c:Core:test_exit: Early exit with return value 1
 not ok 4 - ${SRCDIR}ex_output.c:Core:test_abort: Early exit with return value 1
@@ -315,16 +314,16 @@ ok 5 - ${SRCDIR}ex_output.c:Core:test_pass2: Passed
 not ok 6 - ${SRCDIR}ex_output.c:Core:test_loop: Iteration 0 failed
 ok 7 - ${SRCDIR}ex_output.c:Core:test_loop: Passed
 not ok 8 - ${SRCDIR}ex_output.c:Core:test_loop: Iteration 2 failed
-not ok 9 - ${SRCDIR}ex_output.c:description \" ' < > & \x9 \x0AX\x08 end:test_xml_esc_fail_msg: fail \" ' < > & \x9 \x0AX\x08 message
+not ok 9 - ${SRCDIR}ex_output.c:description \" ' < > & $tab_nl_X_bs end:test_xml_esc_fail_msg: fail \" ' < > & $tab_nl_X_bs message
 1..9"`
 else
-expected_normal_tap=`env printf "ok 1 - ${SRCDIR}ex_output.c:Core:test_pass: Passed
+expected_normal_tap=`printf "ok 1 - ${SRCDIR}ex_output.c:Core:test_pass: Passed
 not ok 2 - ${SRCDIR}ex_output.c:Core:test_fail: Failure
 ok 3 - ${SRCDIR}ex_output.c:Core:test_pass2: Passed
 not ok 4 - ${SRCDIR}ex_output.c:Core:test_loop: Iteration 0 failed
 ok 5 - ${SRCDIR}ex_output.c:Core:test_loop: Passed
 not ok 6 - ${SRCDIR}ex_output.c:Core:test_loop: Iteration 2 failed
-not ok 7 - ${SRCDIR}ex_output.c:description \" ' < > & \x9 \x0AX\x08 end:test_xml_esc_fail_msg: fail \" ' < > & \x9 \x0AX\x08 message
+not ok 7 - ${SRCDIR}ex_output.c:description \" ' < > & $tab_nl_X_bs end:test_xml_esc_fail_msg: fail \" ' < > & $tab_nl_X_bs message
 1..7"`
 # When fork() is unavailable, one of the tests
 # will invoke exit() which will terminate the
