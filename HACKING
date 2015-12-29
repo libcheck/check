@@ -141,17 +141,36 @@ $ git push github gh-pages:gh-pages
 Automatic building of pull requests
 ===============
 
-The GitHub project is configured to build pull requests when asked.
-To trigger a build, add the following comment to the pull request:
+The GitHub project is configured to build pull requests either when
+asked or automatically. This is done using the GitHub Pull Request
+Builder Plugin. Documentation here:
 
-   "test this please"
+   https://wiki.jenkins-ci.org/display/JENKINS/GitHub+pull+request+builder+plugin
 
-This will result in a job on the Jenkins instance to start:
+When a new pull request is opened in the project and the author of the pull request
+isn't white-listed, builder will ask "Can one of the admins verify this patch?".
 
-https://check.ci.cloudbees.com/job/github-merge-builder/
+An admin can add one of the following comments to the pull request:
+   "ok to test" to accept this pull request for testing
+   "test this please" for a one time test run
+   "add to whitelist" to add the author to the whitelist
+
+If the build fails for other various reasons you can rebuild.
+
+   "retest this please" to start a new build
+
+When a build is triggered a job on the Jenkins instance will start:
+
+   https://check.ci.cloudbees.com/job/github-merge-builder/
 
 When complete, a comment will be added to the pull request, informing
 of the result.
+
+An admin can be added to the Jenkins instance by adding a username
+to the "Admin list" setting under the "GitHub Pull Request Builder"
+section here:
+
+   https://check.ci.cloudbees.com/configure
 
 This works because there is a user in the libcheck organization,
 "check-builder", which the Jenkins instance uses to install a
