@@ -33,3 +33,8 @@ exported.sym
 stamp-h1
 stamp-vti
 test_vars
+
+# gcovr files
+src/*.gcno
+tests/*.gcda
+tests/*.gcno

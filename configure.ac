@@ -171,6 +171,17 @@ case "${host_os}" in
     ;;
 esac
 
+AC_CHECK_PROG(GCOVR_CHECK,gcovr,yes)
+if test x"$GCOVR_CHECK" != x"yes" ; then
+    AC_MSG_ERROR([Please install gcovr costumization from https://github.com/krichter722/gcovr before building.])
+fi
+if bash -c 'TEMP=$(mktemp -d); touch $TEMP/empty.py; gcovr -coverage-min=0.0 $TEMP'
+then
+  AC_MSG_NOTICE([gcovr costumization installed and working])
+else
+  AC_MSG_ERROR([Please install gcovr customization from https://github.com/krichter722/gcovr before building.])
+fi
+
 AC_CHECK_PROGS(GCOV, gcov, false)
 AC_CHECK_PROGS(LCOV, lcov, false)
 AC_CHECK_PROGS(GENHTML, genhtml, false)
