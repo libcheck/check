@@ -7,6 +7,11 @@ os:
 compiler:
   - gcc
   - clang
+  
+addons:
+  apt:
+    packages:
+      - texinfo
 
 script:
   - autoreconf -i
