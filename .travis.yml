@@ -1,0 +1,20 @@
+language: c
+
+os:
+  - linux
+  - osx
+
+compiler:
+  - gcc
+  - clang
+  
+addons:
+  apt:
+    packages:
+      - texinfo
+
+script:
+  - autoreconf -i
+  - ./configure
+  - make
+  - make check
