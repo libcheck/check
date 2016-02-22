@@ -57,6 +57,7 @@ Contributors:
     Mario Sanchez Prada   (configure.ac cleanup)
     Tobias Frost          (strip timestamps from examples to enable reproducible builds)
     James Morris          (checkmk regex update for Solaris support)
+    Mick Beaver           (Visual Studio 2015 build fixes)
 
 Anybody who has contributed code to Check or Check's build system is
 considered an author.  Send patches to this file to 
