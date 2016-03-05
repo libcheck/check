@@ -465,6 +465,8 @@ RcvMsg *punpack(FILE * fdes)
         /* Parse one message */
         n = get_result(buf, rmsg);
         nparse -= n;
+        if (nparse < 0)
+            eprintf("Error in call to get_result", __FILE__, __LINE__ - 3);
         /* Move remaining data in buffer to the beginning */
         memmove(buf, buf + n, nparse);
         /* If EOF has not been seen */
