@@ -61,5 +61,5 @@ Contributors:
     Jan Pokorny           (corner case segfault fix)
 
 Anybody who has contributed code to Check or Check's build system is
-considered an author.  Send patches to this file to 
-<check-devel at lists dot sourceforge dot net>.
+considered an author.  Submit a pull request of this file or send
+a patch to <check-devel at lists dot sourceforge dot net>.
