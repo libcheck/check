@@ -16,6 +16,7 @@ Committers:
     
 Contributors:
     Cesar Ballardini      (signals)
+    Anthony G. Basile     (fix configure.ac and strsignal())
     Friedrich Beckmann    (mingw and msvc port #1)
     Frank Bergmann        (WIN32 tmpfile workaround)
     Ross Burton           (pkg-config patch)
