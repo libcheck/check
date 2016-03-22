@@ -141,6 +141,15 @@ else(HAVE_FORK)
     set(HAVE_FORK 0)
 endif(HAVE_FORK)
 
+if(HAVE_MKSTEMP)
+    add_definitions(-DHAVE_MKSTEMP=1)
+    set(HAVE_MKSTEMP 1)
+else(HAVE_MKSTEMP)
+    add_definitions(-DHAVE_MKSTEMP=0)
+    set(HAVE_MKSTEMP 0)
+endif(HAVE_MKSTEMP)
+
+
 ###############################################################################
 # Check defines
 set(headers "limits.h")
