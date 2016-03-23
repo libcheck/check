@@ -141,6 +141,15 @@ else(HAVE_FORK)
     set(HAVE_FORK 0)
 endif(HAVE_FORK)
 
+if(HAVE_MKSTEMP)
+    add_definitions(-DHAVE_MKSTEMP=1)
+    set(HAVE_MKSTEMP 1)
+else(HAVE_MKSTEMP)
+    add_definitions(-DHAVE_MKSTEMP=0)
+    set(HAVE_MKSTEMP 0)
+endif(HAVE_MKSTEMP)
+
+
 ###############################################################################
 # Check defines
 set(headers "limits.h")
@@ -163,7 +172,7 @@ check_symbol_exists(SSIZE_MAX "limits.h"   HAVE_SSIZE_MAX)
 ###############################################################################
 # Check struct members
 
-# Check for  tv_sec in struct timeval 
+# Check for  tv_sec in struct timeval
 if(NOT HAVE_SYS_TIME_H)
     if(MSVC)
         check_struct_member("struct timeval" tv_sec "Winsock2.h" HAVE_STRUCT_TIMEVAL_TV_SEC)
@@ -176,7 +185,7 @@ if(NOT HAVE_SYS_TIME_H)
             add_definitions(-DSTRUCT_TIMESPEC_DEFINITION_MISSING=1)
             set(STRUCT_TIMESPEC_DEFINITION_MISSING 1)
         endif(NOT HAVE_WINSOCK2_H_STRUCT_TIMESPEC_TV_SEC AND NOT HAVE_TIME_H_STRUCT_TIMESPEC_TV_SEC)
-        
+
         if(NOT HAVE_STRUCT_ITIMERSPEC_IT_VALUE)
             add_definitions(-DSTRUCT_ITIMERSPEC_DEFINITION_MISSING=1)
             set(STRUCT_ITIMERSPEC_DEFINITION_MISSING 1)
@@ -200,13 +209,13 @@ check_type_size("unsigned long long" SIZE_OF_UNSIGNED_LONG_LONG)
 check_type_size("__int64" __INT64)
 check_type_size("unsigned __int64" UNSIGNED___INT64)
 
-check_type_size(int16_t INT16_T) 
+check_type_size(int16_t INT16_T)
 check_type_size(int32_t INT32_T)
 check_type_size(int64_t INT64_T)
 check_type_size(intmax_t INTMAX_T)
-check_type_size(uint8_t UINT8_T) 
-check_type_size(uint16_t UINT16_T) 
-check_type_size(uint32_t UINT32_T) 
+check_type_size(uint8_t UINT8_T)
+check_type_size(uint16_t UINT16_T)
+check_type_size(uint32_t UINT32_T)
 check_type_size(uint64_t UINT64_T)
 check_type_size(uintmax_t UINTMAX_T)
 
