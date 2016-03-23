@@ -7,14 +7,21 @@ os:
 compiler:
   - gcc
   - clang
-  
+
+env:
+  - USE_CMAKE=YES
+  - USE_CMAKE=NO
+
 addons:
   apt:
     packages:
       - texinfo
 
 script:
-  - autoreconf -i
-  - ./configure
+  - mkdir build
+  - cd build
+  - if [ $USE_CMAKE == "YES" ] ; then cmake ../ ; fi
+  - if [ $USE_CMAKE == "NO" ] ; then pushd ../ ; autoreconf -i ; popd; fi
+  - if [ $USE_CMAKE == "NO" ] ; then ../configure ; fi
   - make
   - make check
