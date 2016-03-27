@@ -24,4 +24,5 @@ script:
   - if [ $USE_CMAKE == "NO" ] ; then pushd ../ ; autoreconf -i ; popd; fi
   - if [ $USE_CMAKE == "NO" ] ; then ../configure ; fi
   - make
-  - make check
+  - if [ $USE_CMAKE == "YES" ] ; then CTEST_OUTPUT_ON_FAILURE=1 make test ; fi
+  - if [ $USE_CMAKE == "NO" ] ; then make check ; fi
