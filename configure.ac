@@ -315,8 +315,6 @@ AC_CHECK_FUNCS([mkstemp])
 # If they are not, use the version in libcompat.
 HW_FUNC_VSNPRINTF
 HW_FUNC_SNPRINTF
-HW_FUNC_VASPRINTF
-HW_FUNC_ASPRINTF
 
 # Check for whether we can install checkmk (we have a usable awk)
 AC_ARG_VAR([AWK_PATH],[Awk interpreter command])
