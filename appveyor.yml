@@ -21,6 +21,7 @@ version: 1.0.{build}
 
 environment:
   matrix:
+  - platform: msvc
   - platform: vs
 
 # scripts that are called at very beginning, before repo cloning
@@ -44,13 +45,17 @@ configuration: Release
 before_build:
   - echo Running cmake...
   - cd c:\projects\check
+  - if %platform%==msvc call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat"
+  - if %platform%==msvc cmake -G "NMake Makefiles" -DCMAKE_INSTALL_PREFIX=%P%
   - if %platform%==vs cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_INSTALL_PREFIX=%P%
 
 build_script:
   # build code and unit tests
+  - if %platform%==msvc nmake
   - if %platform%==vs msbuild "ALL_BUILD.vcxproj"
 
 test_script:
   # run unit tests
   - echo Running unit tests...
+  - if %platform%==msvc nmake test
   - if %platform%==vs msbuild "RUN_TESTS.vcxproj"
