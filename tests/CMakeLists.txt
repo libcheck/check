@@ -58,6 +58,19 @@ set(CHECK_CHECK_HEADERS check_check.h)
 add_executable(check_check ${CHECK_CHECK_HEADERS} ${CHECK_CHECK_SOURCES})
 target_link_libraries(check_check check compat)
 
+set(CHECK_CHECK_EXPORT_SOURCES
+  check_check_sub.c
+  check_check_master.c
+  check_check_log.c
+  check_check_fork.c
+  check_check_export_main.c
+)
+set(CHECK_CHECK_EXPORT_HEADERS check_check.h)
+add_executable(check_check_export
+  ${CHECK_CHECK_EXPORT_HEADERS}
+  ${CHECK_CHECK_EXPORT_SOURCES})
+target_link_libraries(check_check_export check compat)
+
 set(EX_OUTPUT_SOURCES ex_output.c)
 add_executable(ex_output ${EX_OUTPUT_SOURCES})
 target_link_libraries(ex_output check compat)

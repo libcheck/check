@@ -322,6 +322,7 @@ add_subdirectory(tests)
 # Unit tests
 enable_testing()
 add_test(NAME check_check COMMAND check_check)
+add_test(NAME check_check_export COMMAND check_check_export)
 
 # Only offer to run shell scripts if we may have a working interpreter
 if(UNIX OR MINGW OR MSYS)
