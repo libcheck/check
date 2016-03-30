@@ -13,12 +13,13 @@ Committers:
     Zdenek Crha           (new Check API docs, fixes, and tests)     |  zdenekc
     Mateusz Loskot        (msvc port #2)                             |  mloskot
     Jose E. Marchesi      (selective testing support)                |  jemarch
-    
+
 Contributors:
     Cesar Ballardini      (signals)
     Anthony G. Basile     (fix configure.ac and strsignal())
     Friedrich Beckmann    (mingw and msvc port #1)
     Frank Bergmann        (WIN32 tmpfile workaround)
+    Joshua Boyd           (travis testing with both build systems, cmake fixes)
     Ross Burton           (pkg-config patch)
     Bogdan Cristea        (eclipse support in contrib dir)
     Lucas Di Pentima      (signals)
