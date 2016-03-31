@@ -38,6 +38,9 @@ DISTCLEANFILES = check_stdint.h
 
 ACLOCAL_AMFLAGS = -I m4
 
+README:
+	fgrep -v "Build Status]" README.md > $@
+
 doc/check_html:
 	$(MAKE) -C doc check_html
 
