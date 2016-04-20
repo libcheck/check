@@ -19,9 +19,6 @@ AC_CONFIG_MACRO_DIR([m4])
 # place where portability library functions are kept
 AC_CONFIG_LIBOBJ_DIR([lib])
 
-# place to put some extra build scripts installed
-AC_CONFIG_AUX_DIR([build-aux])
-
 # really severe build strictness
 AM_INIT_AUTOMAKE([-Wall gnits 1.11.2])
 # Change to using into-in-builddir in the future:
