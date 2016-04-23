@@ -390,14 +390,14 @@ static void __testname (int _i CK_ATTRIBUTE_UNUSED)\
  *
  * This call is deprecated.
  *
- * NOTE: The space before the comma sign before ## is essential to be compatible
- * with gcc 2.95.3 and earlier.
+ * NOTE: The helper makes the argument list contain at least one item.
  * FIXME: these macros may conflict with C89 if expr is
  * FIXME:   strcmp (str1, str2) due to excessive string length.
  */
-#define fail_if(expr, ...)\
+#define fail_if(...) _fail_if_helper(__VA_ARGS__, NULL)
+#define _fail_if_helper(expr, ...)\
   (expr) ? \
-     _ck_assert_failed(__FILE__, __LINE__, "Failure '"#expr"' occurred" , ## __VA_ARGS__, NULL) \
+     _ck_assert_failed(__FILE__, __LINE__, "Failure '"#expr"' occurred", __VA_ARGS__) \
      : _mark_point(__FILE__, __LINE__)
 
 /*
@@ -435,9 +435,7 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
  */
 #define ck_assert(expr) ck_assert_msg(expr, NULL)
 
-/* The space before the comma sign before ## is essential to be compatible
-   with gcc 2.95.3 and earlier.
-*/
+/* The helper makes the argument list contain at least one item. */
 /**
  * Fail the test if the expression is false; print message on failure
  *
@@ -448,10 +446,11 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
  *
  * @since 0.9.6
  */
-#define ck_assert_msg(expr, ...) \
+#define ck_assert_msg(...) _ck_assert_msg_helper(__VA_ARGS__, NULL)
+#define _ck_assert_msg_helper(expr, ...) \
   (expr) ? \
      _mark_point(__FILE__, __LINE__) : \
-     _ck_assert_failed(__FILE__, __LINE__, "Assertion '"#expr"' failed" , ## __VA_ARGS__, NULL)
+     _ck_assert_failed(__FILE__, __LINE__, "Assertion '"#expr"' failed", __VA_ARGS__)
 
 /**
  * Unconditionally fail the test
@@ -470,7 +469,7 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
  *
  * @since 0.9.6
  */
-#define ck_abort_msg(...) _ck_assert_failed(__FILE__, __LINE__, "Failed" , ## __VA_ARGS__, NULL)
+#define ck_abort_msg(...) _ck_assert_failed(__FILE__, __LINE__, "Failed", __VA_ARGS__, NULL)
 
 /* Signed and unsigned integer comparison macros with improved output compared to ck_assert(). */
 /* OP may be any comparison operator. */
