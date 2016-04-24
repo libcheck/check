@@ -57,5 +57,5 @@ build_script:
 test_script:
   # run unit tests
   - echo Running unit tests...
-  - if %platform%==msvc nmake test
+  - if %platform%==msvc nmake test VERBOSE=1 CTEST_OUTPUT_ON_FAILURE=TRUE
   - if %platform%==vs msbuild "RUN_TESTS.vcxproj"
