@@ -443,6 +443,20 @@ START_TEST(test_ck_assert_uint_expr)
   ck_assert_uint_eq(x, y);
 } END_TEST
 
+int returnsZero(const char* argument);
+int returnsZero(const char* argument)
+{
+    (void)argument;
+    return 0;
+}
+
+START_TEST(test_percent_n_escaped)
+{
+  /* If the %n is not escaped in the ck macro, then this results in a SEGFAULT */
+  record_failure_line_num(__LINE__);
+  ck_assert_int_eq(returnsZero("%n"), 1);
+} END_TEST
+
 START_TEST(test_ck_assert_str_eq)
 {
   const char *s = "test2";
@@ -1073,6 +1087,7 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_simple, test_ck_assert_uint_ge);
   tcase_add_test (tc_simple, test_ck_assert_uint_ge_with_mod);
   tcase_add_test (tc_simple, test_ck_assert_uint_expr);
+  tcase_add_test (tc_simple, test_percent_n_escaped);
   tcase_add_test (tc_simple, test_ck_assert_str_eq);
   tcase_add_test (tc_simple, test_ck_assert_str_ne);
   tcase_add_test (tc_simple, test_ck_assert_str_lt);
