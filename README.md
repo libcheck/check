@@ -18,13 +18,13 @@ tutorial.  The tutorial is also available as `info check`.
 
 Check has the following dependencies:
 
-* automake-1.9.6 (1.11.3 on OS X if you are using /usr/bin/ar)
-* autoconf-2.59
-* libtool-1.5.22
-* pkg-config-0.20
-* texinfo-4.7 (for documentation)
+* [automake](https://www.gnu.org/software/automake/)-1.9.6 (1.11.3 on OS X if you are using /usr/bin/ar)
+* [autoconf](https://www.gnu.org/software/autoconf/)-2.59
+* [libtool](https://www.gnu.org/software/libtool/)-1.5.22
+* [pkg-config](https://www.freedesktop.org/wiki/Software/pkg-config/)-0.20
+* [texinfo](https://www.gnu.org/software/texinfo/)-4.7 (for documentation)
 * tetex-bin (or any texinfo-compatible TeX installation, for documentation)
-* POSIX sed
+* POSIX [sed](https://en.wikipedia.org/wiki/Sed)
 
 The versions specified may be higher than those actually needed.
 
