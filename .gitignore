@@ -1,8 +1,28 @@
+# Temp files
+*~
+*.bak
+*.backup
+\#*
+.\#*
+*\#
+*.sav
+*.save
+*.autosav
+*.autosave
+
+# Generated binaries
 *.o
 *.lo
 *.la
 *.Po
 *.Plo
+
+# Generated folders
+bin/
+build/
+release/
+debug/
+
 build-aux
 Makefile.in
 Makefile
