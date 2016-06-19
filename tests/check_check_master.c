@@ -165,16 +165,6 @@ static master_test_t master_tests[] = {
   { "User Double Timeout Tests", CK_ERROR,  "Test timeout expired" },
   { "User Double Timeout Tests", CK_ERROR,  "Test timeout expired" },
   
-  /* Default Timeout tests are run twice , see check_check_sub.c:make_sub_suite() */
-  { "Default Timeout Tests", CK_ERROR,  "Test timeout expired" },
-#ifdef HAVE_LIBRT
-  { "Default Timeout Tests", CK_PASS,   "Passed" },
-  { "Default Timeout Tests", CK_PASS,   "Passed" },
-#endif /* HAVE_LIBRT */
-  { "Default Timeout Tests", CK_PASS,   "Passed" },
-  { "Default Timeout Tests", CK_ERROR,  "Test timeout expired" },
-  { "Default Timeout Tests", CK_ERROR,  "Test timeout expired" },
-  
 #if HAVE_DECL_SETENV
   { "Environment Integer Timeout Scaling Tests", CK_ERROR,  "Test timeout expired" },
 #ifdef HAVE_LIBRT
