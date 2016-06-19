@@ -1014,8 +1014,6 @@ Suite *make_sub_suite(void)
   suite_add_tcase (s, tc_timeout_usr_int);
   suite_add_tcase (s, tc_timeout_usr_double);
 
-  /* Add a second time to make sure tcase_set_timeout doesn't contaminate it. */
-  suite_add_tcase (s, tc_timeout_default);
 #if HAVE_DECL_SETENV
   suite_add_tcase (s, tc_timeout_env_scale_int);
   suite_add_tcase (s, tc_timeout_env_scale_double);

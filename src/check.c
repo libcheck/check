@@ -172,8 +172,11 @@ static void tcase_free(TCase * tc)
 
 void suite_add_tcase(Suite * s, TCase * tc)
 {
-    if(s == NULL || tc == NULL)
+    if(s == NULL || tc == NULL || check_list_contains(s->tclst, tc))
+    {
         return;
+    }
+
     check_list_add_end(s->tclst, tc);
 }
 
