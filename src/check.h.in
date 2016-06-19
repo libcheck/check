@@ -145,7 +145,10 @@ CK_DLL_EXP Suite *CK_EXPORT suite_create(const char *name);
 CK_DLL_EXP int CK_EXPORT suite_tcase(Suite * s, const char *tcname);
 
 /**
- * Add a test case to a suite
+ * Add a test case to a suite.
+ *
+ * Note that if the TCase has already been added attempting
+ * to add it again will be ignored.
  *
  * @param s suite to add test case to
  * @param tc test case to add to suite

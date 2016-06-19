@@ -72,6 +72,12 @@ static void selective_setup (void)
   suite_add_tcase (s1, tc11);
   suite_add_tcase (s1, tc12);
   
+  /* This line intentionally attempts to add an already
+   * added test case twice, to ensure it is not added
+   * again. If it was added again, when the test cases
+   * are freed a double-free failure will occur. */
+  suite_add_tcase (s1, tc12);
+
   /*
    * Create a test suite 'suite2' with one test case 'test21'
    * containing two tests.
