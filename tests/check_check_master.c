@@ -614,6 +614,18 @@ void record_failure_line_num(int linenum)
     exit(1);
   }
 
+  if(line_num_failures == NULL)
+  {
+    /* 
+     * The file may not be setup. This may be because some of the tests
+     * are being reused outside of the master suite. This is OK.
+     * If the master suite runs and does not find line numbers it will
+     * fail as expected.
+     */
+     fprintf(stderr, "Line number file not setup, not reporting test failure     line: %s", string);
+     return;
+  }
+
   written = fwrite(string, 1, to_write, line_num_failures);
   if(written != to_write)
   {
