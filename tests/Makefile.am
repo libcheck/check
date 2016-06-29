@@ -41,6 +41,7 @@ check_check_export_SOURCES = \
 	check_check_master.c	\
 	check_check_log.c	\
 	check_check_fork.c	\
+	check_check_tags.c      \
 	check_check_export_main.c
 check_check_export_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
 
@@ -57,7 +58,8 @@ check_check_SOURCES = \
 	check_check_fixture.c		\
 	check_check_pack.c		\
 	check_check_exit.c		\
-        check_check_selective.c         \
+	check_check_selective.c         \
+	check_check_tags.c         	\
 	check_check_main.c
 check_check_LDADD = $(top_builddir)/src/libcheckinternal.la $(top_builddir)/lib/libcompat.la
 
@@ -67,6 +69,7 @@ check_mem_leaks_SOURCES = 	\
 	check_check_fork.c		\
 	check_check_exit.c		\
 	check_check_selective.c	\
+	check_check_tags.c         	\
 	check_check_sub.c		\
 	check_check_master.c
 check_mem_leaks_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la

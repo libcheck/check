@@ -974,6 +974,8 @@ easier for the developer to write, run, and analyze tests.
 * Test Fixtures::               
 * Multiple Suites in one SRunner::  
 * Selective Running of Tests::
+* Selecting Tests by Suite or Test Case::
+* Selecting Tests Based on Arbitrary Tags::
 * Testing Signal Handling and Exit Values::  
 * Looping Tests::               
 * Test Timeouts::               
@@ -1302,19 +1304,105 @@ srunner_add_suite (sr, make_pack_suite ());
 @end example
 
 @node Selective Running of Tests, Testing Signal Handling and Exit Values, Multiple Suites in one SRunner, Advanced Features
+
 @section Selective Running of Tests
+
+After adding a couple of suites and some test cases in each, it is
+sometimes practical to be able to run only one suite, or one specific
+test case, without recompiling the test code.  Check provides two ways
+to accomplish this, either by specifying a suite or test case by name
+or by assigning tags to test cases and specifying one or more tags to
+run.
+
+@menu
+* Selecting Tests by Suite or Test Case::
+* Selecting Tests Based on Arbitrary Tags::
+@end menu
+
+@node Selecting Tests by Suite or Test Case, Selecting Tests Based on Arbitrary Tags, Selective Running of Tests, Selective Running of Tests
+@subsection Selecting Tests by Suite or Test Case
 
 @vindex CK_RUN_SUITE
 @vindex CK_RUN_CASE
-After adding a couple of suites and some test cases in each, it is
-sometimes practical to be able to run only one suite, or one
-specific test case, without recompiling the test code. There are
-two environment variables available that offers this ability,
-@code{CK_RUN_SUITE} and @code{CK_RUN_CASE}. Just set the value to
-the name of the suite and/or test case you want to run. These
-environment variables can also be a good integration tool for
-running specific tests from within another tool, e.g. an IDE.
-  
+
+There are two environment variables available that offer this
+ability, @code{CK_RUN_SUITE} and @code{CK_RUN_CASE}. Just set the
+value to the name of the suite and/or test case you want to run. These
+environment variables can also be a good integration tool for running
+specific tests from within another tool, e.g. an IDE.
+
+@node Selecting Tests Based on Arbitrary Tags, ,Selecting Tests by Suite or Test Case, Selective Running of Tests
+@subsection Selecting Tests Based on Arbitrary Tags
+
+@vindex CK_INCLUDE_TAGS
+@vindex CK_EXCLUDE_TAGS
+
+It can be useful to dynamically include or exclude groups of tests to
+be run based on criteria other than the suite or test case name. For
+example, one or more tags can be assigned to test cases. The tags
+could indicate if a test runs for a long time, so such tests could be
+excluded in order to run quicker tests for a sanity
+check. Alternately, tags may be used to indicate which functional
+areas test cover. Tests can then be run that include all test cases
+for a given set of functional areas.
+
+In Check, a tag is a string of characters without white space. One or
+more tags can be assigned to a test case by using the
+@code{tcase_set_tags} function. This function accepts a string, and
+multiple tags can be specified by delimiting them with spaces. For
+example:
+
+@example
+@verbatim
+    Suite *s;
+
+    TCase *red, *blue, *purple, *yellow, *black;
+
+    s = suite_create("Check Tag Filtering");
+
+    red = tcase_create("Red");
+    tcase_set_tags(red, "Red");
+    suite_add_tcase (s, red);
+    tcase_add_test(red, red_test1);
+
+    blue = tcase_create("Blue");
+    tcase_set_tags(blue, "Blue");
+    suite_add_tcase (s, blue);
+    tcase_add_test(blue, blue_test1);
+
+    purple = tcase_create("Purple");
+    tcase_set_tags(purple, "Red Blue");
+    suite_add_tcase (s, purple);
+    tcase_add_test(purple, purple_test1);
+
+@end verbatim
+@end example
+
+Once test cases are tagged they may be selectively run in one of two ways:
+
+a) Using Environment Variables
+
+There are two environment variables available for selecting test cases
+based on tags: @code{CK_INCLUDE_TAGS} and
+@code{CK_EXCLUDE_TAGS}. These can be set to a space separated list of
+tag names. If @code{CK_INCLUDE_TAGS} is set then test cases which
+include at least one tag in common with @code{CK_INCLUDE_TAGS} will be
+run. If @code{CK_EXCLUDE_TAGS} is set then test cases with one tag in
+common with @code{CK_EXCLUDE_TAGS} will not be run. In cases where
+both @code{CK_INCLUDE_TAGS} and @code{CK_EXCLUDE_TAGS} match a tag for
+a test case the test will be excluded.
+
+Both @code{CK_INCLUDE_TAGS} and @code{CK_EXCLUDE_TAGS} can be
+specified in conjunction with @code{CK_RUN_SUITE} or even
+@code{CK_RUN_CASE} in which case they will have the effect of further
+narrowing the selection.
+
+b) Programmatically
+
+The @code{srunner_run_tagged} function allows one to specify which
+tags to run or exclude from a suite runner. This can be used to
+programmatically control which test cases may run.
+
 @node Testing Signal Handling and Exit Values, Looping Tests, Selective Running of Tests, Advanced Features
 @section Testing Signal Handling and Exit Values
 
@@ -1975,6 +2063,10 @@ CK_RUN_CASE: Name of a test case, runs only that test. See section @ref{Selectiv
 
 CK_RUN_SUITE: Name of a test suite, runs only that suite. See section @ref{Selective Running of Tests}.
 
+CK_INCLUDE_TAGS: String of space separated tags, runs only test cases associated with at least one of the tags, See section @ref{Selecting Tests Based on Arbitrary Tags}.
+
+CK_EXCLUDE_TAGS: String of space separated tags, runs only test cases not associated with any of the tags, See section @ref{Selecting Tests Based on Arbitrary Tags}.
+ 
 CK_VERBOSITY: How much output to emit, accepts: ``silent'', ``minimal'', ``normal'', ``subunit'', or ``verbose''.  See section @ref{SRunner Output}.
 
 CK_FORK: Set to ``no'' to disable using fork() to run unit tests in their own process. This is useful for debugging segmentation faults.  See section @ref{No Fork Mode}.
