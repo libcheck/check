@@ -1,5 +1,6 @@
 # Copyright (C) 2016 Branden Archer <b.m.archer4@gmail.com>
 # Copyright (C) 2016 Joshua D. Boyd <jdboyd@jdboyd.net>
+# Copyright (C) 2016 Nicola Spanti  <dev@nicola-spanti.info>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -35,6 +36,7 @@ addons:
   apt:
     packages:
       - texinfo
+      - cppcheck
 
 matrix:
   exclude:
@@ -45,11 +47,12 @@ matrix:
     env: USE_CMAKE=YES
 
 script:
+  - if [ ${TRAVIS_OS_NAME} = 'linux' ]; then cppcheck --verbose --quiet --error-exitcode=1 --force --enable=performance,portability src/ tests/; fi
   - mkdir build
   - cd build
-  - if [ $USE_CMAKE == "YES" ] ; then cmake ../ ; fi
-  - if [ $USE_CMAKE == "NO" ] ; then pushd ../ ; autoreconf -i ; popd; fi
-  - if [ $USE_CMAKE == "NO" ] ; then ../configure ; fi
+  - if [ $USE_CMAKE == 'YES' ] ; then cmake .. ; fi
+  - if [ $USE_CMAKE == 'NO' ] ; then pushd .. ; autoreconf -i ; popd; fi
+  - if [ $USE_CMAKE == 'NO' ] ; then ../configure ; fi
   - make
-  - if [ $USE_CMAKE == "YES" ] ; then CTEST_OUTPUT_ON_FAILURE=1 make test ; fi
-  - if [ $USE_CMAKE == "NO" ] ; then make check ; fi
+  - if [ $USE_CMAKE == 'YES' ] ; then CTEST_OUTPUT_ON_FAILURE=1 make test ; fi
+  - if [ $USE_CMAKE == 'NO' ] ; then make check ; fi
