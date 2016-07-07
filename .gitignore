@@ -53,3 +53,10 @@ exported.sym
 stamp-h1
 stamp-vti
 test_vars
+tests/ex_output
+tests/test.xml
+tests/*.log
+tests/*.sh.trs
+tests/*.tap
+checkmk/*.log
+checkmk/test/*.log
