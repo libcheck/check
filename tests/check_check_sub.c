@@ -985,7 +985,7 @@ Suite *make_sub_suite(void)
   unsetenv("CK_DEFAULT_TIMEOUT");
   unsetenv("CK_TIMEOUT_MULTIPLIER");
   
-  setenv("CK_TIMEOUT_MULTIPLIER", "0.4", 1);
+  setenv("CK_TIMEOUT_MULTIPLIER", "0.35", 1);
   tc_timeout_scale_double = tcase_create("Timeout Double Scaling Tests");
   tc_timeout_usr_scale_double = tcase_create("User Double Timeout Scaling Tests");
   setenv("CK_DEFAULT_TIMEOUT", "0.9", 1);

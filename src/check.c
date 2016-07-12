@@ -103,6 +103,7 @@ static void suite_free(Suite * s)
     free(s);
 }
 
+
 TCase *tcase_create(const char *name)
 {
     char *env;
@@ -149,10 +150,49 @@ TCase *tcase_create(const char *name)
     tc->ch_sflst = check_list_create();
     tc->unch_tflst = check_list_create();
     tc->ch_tflst = check_list_create();
+    tc->tags = check_list_create();
 
     return tc;
 }
 
+/*
+ * Helper function to create a list of tags from
+ * a space separated string.
+ */
+List *tag_string_to_list(const char *tags_string)
+{
+    List *list;
+    char *tags;
+    char *tag;
+
+    list = check_list_create();
+
+    if (NULL == tags_string)
+    {
+	return list;
+    }
+
+    tags = strdup(tags_string);
+    tag = strtok(tags, " ");
+    while (tag)
+    {
+	check_list_add_end(list, strdup(tag));
+	tag = strtok(NULL, " ");
+    }
+    free(tags);
+    return list;
+}
+
+void tcase_set_tags(TCase * tc, const char *tags_orig)
+{
+    /* replace any pre-existing list */
+    if (tc->tags)
+    {
+	check_list_apply(tc->tags, free);
+	check_list_free(tc->tags);
+    }
+    tc->tags = tag_string_to_list(tags_orig);
+}
 
 static void tcase_free(TCase * tc)
 {
@@ -161,13 +201,38 @@ static void tcase_free(TCase * tc)
     check_list_apply(tc->ch_sflst, free);
     check_list_apply(tc->unch_tflst, free);
     check_list_apply(tc->ch_tflst, free);
+    check_list_apply(tc->tags, free);
     check_list_free(tc->tflst);
     check_list_free(tc->unch_sflst);
     check_list_free(tc->ch_sflst);
     check_list_free(tc->unch_tflst);
     check_list_free(tc->ch_tflst);
-
+    check_list_free(tc->tags);
     free(tc);
+}
+
+unsigned int tcase_matching_tag(TCase *tc, List *check_for)
+{
+
+    if (NULL == check_for)
+    {
+	return 0;
+    }
+
+    for(check_list_front(check_for); !check_list_at_end(check_for);
+        check_list_advance(check_for))
+    {
+	for(check_list_front(tc->tags); !check_list_at_end(tc->tags);
+	    check_list_advance(tc->tags))
+	{
+	    if (0 == strcmp((const char *)check_list_val(tc->tags),
+			    (const char *)check_list_val(check_for)))
+	    {
+		return 1;
+	    }
+	}
+    }
+    return 0;
 }
 
 void suite_add_tcase(Suite * s, TCase * tc)

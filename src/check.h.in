@@ -173,6 +173,19 @@ CK_DLL_EXP void CK_EXPORT suite_add_tcase(Suite * s, TCase * tc);
 CK_DLL_EXP TCase *CK_EXPORT tcase_create(const char *name);
 
 /**
+ * Associate a test case with certain tags.
+ * Replaces any existing tags with the new set.
+ *
+ * @param tc the test case
+ *
+ * @param tags string containing arbitrary tags separated by spaces.
+ *        This will be copied. Passing NULL clears all tags.
+ *
+ * @since 0.11.0
+ * */
+CK_DLL_EXP void CK_EXPORT tcase_set_tags(TCase * tc,
+					 const char *tags);
+/**
  * Add a test function to a test case
  *
  * @param tc test case to add test to
@@ -955,8 +968,9 @@ CK_DLL_EXP void CK_EXPORT srunner_free(SRunner * sr);
  * In addition to running all suites, if the suite runner has been
  * configured to output to a log, that is also performed.
  *
- * Note that if the CK_RUN_CASE and/or CK_RUN_SUITE environment variables
- * are defined, then only the named suite and/or test case is run.
+ * Note that if the CK_RUN_CASE, CK_RUN_SUITE, CK_INCLUDE_TAGS and/or
+ * CK_EXCLUDE_TAGS environment variables are defined, then only the
+ * named suites or test cases will run.
  *
  * @param sr suite runner to run all suites from
  * @param print_mode the verbosity in which to report results to stdout
@@ -974,9 +988,22 @@ CK_DLL_EXP void CK_EXPORT srunner_run_all(SRunner * sr,
  * suite runner has been configured to output to a log, that is also
  * performed.
  *
+ * Note that if the sname and tcname parameters are passed as null
+ * then the function will fallback to using the environment variables
+ * CK_RUN_SUITE and CK_RUN_CASE respectively in order to select the
+ * suite/cases.
+ * 
+ * Similarly if the CK_INCLUDE_TAGS and/or CK_EXCLUDE_TAGS environment
+ * variables are defined then these will further filter the test cases
+ * (see srunner_run_tagged, below).
+ *
  * @param sr suite runner where the given suite or test case must be
- * @param sname suite name to run. A NULL means "any suite".
- * @param tcname test case name to run. A NULL means "any test case"
+ * @param sname suite name to run. A NULL means use the value of the
+ * environment variable CK_RUN_SUITE if set, otherwise run "any/every
+ * suite".
+ * @param tcname test case name to run. A NULL means use the value of
+ * the environment variable CK_RUN_CASE if set, otherwise run
+ * "any/every case".
  * @param print_mode the verbosity in which to report results to stdout
  *
  * @since 0.9.9
@@ -985,6 +1012,46 @@ CK_DLL_EXP void CK_EXPORT srunner_run(SRunner * sr, const char *sname,
                                       const char *tcname,
                                       enum print_output print_mode);
 
+
+/**
+ * Run a specific suite or test case or testcases with specific tags
+ * from a suite runner, printing results to stdout as specified by the
+ * print_mode.
+ *
+ * In addition to running any applicable suites or test cases, if the
+ * suite runner has been configured to output to a log, that is also
+ * performed.
+ *
+ * Note that if sname, tcname, include_tags, exclude_tags parameters
+ * are passed as NULL then if the environment variables CK_RUN_SUITE,
+ * CK_RUN_CASE, CK_INCLUDE_TAGS, CK_EXCLUDE_TAGS are defined then these
+ * values will be used instead.
+ *
+ * @param sr suite runner where the given suite or test case must be
+ * @param sname suite name to run. A NULL means use the value of the
+ * environment variable CK_RUN_SUITE if set, otherwise run "any/every
+ * suite".
+ * @param tcname test case name to run. A NULL means use the value of
+ * the environment variable CK_RUN_CASE if set, otherwise run
+ * "any/every case".
+ * @param include_tags space separate list of tags. Only run test
+ * cases that share one of these tags. A NULL means use the value of
+ * the environment variable CK_INCLUDE_TAGS if set, otherwise run
+ * "any/every test case".
+ * @param exclude_tags space separate list of tags. Only run test
+ * cases that do not share one of these tags even if they are selected
+ * by an included tag. A NULL means use the value of the environment
+ * variable CK_EXCLUDE_TAGS if set, otherwise run "any/every test
+ * case".
+ * @param print_mode the verbosity in which to report results to stdout
+ *
+ * @since 0.11.0
+ */
+CK_DLL_EXP void CK_EXPORT srunner_run_tagged(SRunner * sr, const char *sname,
+					     const char *tcname,
+					     const char *include_tags,
+					     const char *exclude_tags,
+					     enum print_output print_mode);
 
 /**
  * Retrieve the number of failed tests executed by a suite runner.

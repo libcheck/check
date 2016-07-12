@@ -53,6 +53,7 @@ set(CHECK_CHECK_SOURCES
   check_check_pack.c
   check_check_selective.c
   check_check_sub.c
+  check_check_tags.c
   check_list.c)
 set(CHECK_CHECK_HEADERS check_check.h)
 add_executable(check_check ${CHECK_CHECK_HEADERS} ${CHECK_CHECK_SOURCES})
