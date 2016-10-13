@@ -259,7 +259,8 @@ void _tcase_add_test(TCase * tc, TFun fn, const char *name, int _signal,
     tf->loop_start = start;
     tf->loop_end = end;
     tf->signal = _signal;       /* 0 means no signal expected */
-    tf->allowed_exit_value = (WEXITSTATUS_MASK & allowed_exit_value);   /* 0 is default successful exit */
+    tf->allowed_exit_value =
+      (WEXITSTATUS_MASK & allowed_exit_value);   /* 0 is default successful exit */
     tf->name = name;
     check_list_add_end(tc->tflst, tf);
 }
