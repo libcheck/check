@@ -747,6 +747,113 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
  */
 #define ck_assert_str_ge(X, Y) _ck_assert_str(X, >=, Y)
 
+/* Memory location comparison macros with improved output compared to ck_assert() */
+/* OP might be any operator that can be used in '0 OP memcmp(X,Y,L)' comparison */
+/* The x and y parameter swap in memcmp() is needed to handle >, >=, <, <= operators */
+/* Output is limited to CK_MAX_ASSERT_MEM_PRINT_SIZE bytes */
+#ifndef CK_MAX_ASSERT_MEM_PRINT_SIZE
+#define CK_MAX_ASSERT_MEM_PRINT_SIZE 64
+#endif
+
+#define _ck_assert_mem(X, OP, Y, L) do { \
+  const uint8_t* _ck_x = (const uint8_t*)(X); \
+  const uint8_t* _ck_y = (const uint8_t*)(Y); \
+  size_t _ck_l = (L); \
+  char _ck_x_str[CK_MAX_ASSERT_MEM_PRINT_SIZE * 2 + 1]; \
+  char _ck_y_str[CK_MAX_ASSERT_MEM_PRINT_SIZE * 2 + 1]; \
+  static const char _ck_hexdigits[] = "0123456789abcdef"; \
+  size_t _ck_i; \
+  size_t _ck_maxl = (_ck_l > CK_MAX_ASSERT_MEM_PRINT_SIZE) ? CK_MAX_ASSERT_MEM_PRINT_SIZE : _ck_l; \
+  for (_ck_i = 0; _ck_i < _ck_maxl; _ck_i++) { \
+    _ck_x_str[_ck_i * 2  ]   = _ck_hexdigits[(_ck_x[_ck_i] >> 4) & 0xF]; \
+    _ck_y_str[_ck_i * 2  ]   = _ck_hexdigits[(_ck_y[_ck_i] >> 4) & 0xF]; \
+    _ck_x_str[_ck_i * 2 + 1] = _ck_hexdigits[_ck_x[_ck_i] & 0xF]; \
+    _ck_y_str[_ck_i * 2 + 1] = _ck_hexdigits[_ck_y[_ck_i] & 0xF]; \
+  } \
+  _ck_x_str[_ck_i * 2] = 0; \
+  _ck_y_str[_ck_i * 2] = 0; \
+  ck_assert_msg(0 OP memcmp(_ck_y, _ck_x, _ck_l), \
+    "Assertion '%s' failed: %s == \"%s\", %s == \"%s\"", #X" "#OP" "#Y, #X, _ck_x_str, #Y, _ck_y_str); \
+} while (0)
+/**
+ * Check two memory locations to determine if 0==memcmp(X,Y,L)
+ *
+ * If not 0==memcmp(X,Y,L), the test fails.
+ *
+ * @param X memory location
+ * @param Y memory location to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.10.1
+ */
+#define ck_assert_mem_eq(X, Y, L) _ck_assert_mem(X, ==, Y, L)
+/**
+ * Check two memory locations to determine if 0!=memcmp(X,Y,L)
+ *
+ * If not 0!=memcmp(X,Y,L), the test fails.
+ *
+ * @param X memory location
+ * @param Y memory location to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.10.1
+ */
+#define ck_assert_mem_ne(X, Y, L) _ck_assert_mem(X, !=, Y, L)
+/**
+ * Check two memory locations to determine if 0<memcmp(X,Y,L), (e.g. memcmp(X,Y,L)>0)
+ *
+ * If not 0<memcmp(X,Y,L), the test fails.
+ *
+ * @param X memory location
+ * @param Y memory location to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.10.1
+ */
+#define ck_assert_mem_lt(X, Y, L) _ck_assert_mem(X, <, Y, L)
+/**
+ * Check two memory locations to determine if 0<=memcmp(X,Y,L) (e.g. memcmp(X,Y,L)>=0)
+ *
+ * If not 0<=memcmp(X,Y,L), the test fails.
+ *
+ * @param X memory location
+ * @param Y memory location to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.10.1
+ */
+#define ck_assert_mem_le(X, Y, L) _ck_assert_mem(X, <=, Y, L)
+/**
+ * Check two memory locations to determine if 0<memcmp(X,Y,L) (e.g. memcmp(X,Y,L)>0)
+ *
+ * If not 0<memcmp(X,Y,L), the test fails.
+ *
+ * @param X memory location
+ * @param Y memory location to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.10.1
+ */
+#define ck_assert_mem_gt(X, Y, L) _ck_assert_mem(X, >, Y, L)
+/**
+ * Check two memory locations to determine if 0>=memcmp(X,Y,L) (e.g. memcmp(X,Y,L)<=0)
+ *
+ * If not 0>=memcmp(X,Y,L), the test fails.
+ *
+ * @param X memory location
+ * @param Y memory location to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.10.1
+ */
+#define ck_assert_mem_ge(X, Y, L) _ck_assert_mem(X, >=, Y, L)
+
 /* Pointer comparison macros with improved output compared to ck_assert(). */
 /* OP may only be == or !=  */
 #define _ck_assert_ptr(X, OP, Y) do { \
