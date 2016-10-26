@@ -772,6 +772,12 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
   } \
   _ck_x_str[_ck_i * 2] = 0; \
   _ck_y_str[_ck_i * 2] = 0; \
+  if (_ck_maxl != _ck_l) { \
+    _ck_x_str[_ck_i * 2 - 2] = '.'; \
+    _ck_y_str[_ck_i * 2 - 2] = '.'; \
+    _ck_x_str[_ck_i * 2 - 1] = '.'; \
+    _ck_y_str[_ck_i * 2 - 1] = '.'; \
+  } \
   ck_assert_msg(0 OP memcmp(_ck_y, _ck_x, _ck_l), \
     "Assertion '%s' failed: %s == \"%s\", %s == \"%s\"", #X" "#OP" "#Y, #X, _ck_x_str, #Y, _ck_y_str); \
 } while (0)
