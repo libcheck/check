@@ -553,6 +553,94 @@ START_TEST(test_ck_assert_ptr_ne)
 }
 END_TEST
 
+START_TEST(test_ck_assert_mem_eq)
+{
+  const char *s = "\x00\x00\x00\x00\x02";
+  ck_assert_mem_eq("\x00\x00\x00\x00\x02", s, 5);
+  record_failure_line_num(__LINE__);
+  ck_assert_mem_eq("\x00\x00\x00\x00\x01", s, 5);
+}
+END_TEST
+
+START_TEST(test_ck_assert_mem_ne)
+{
+  const char *s = "\x00\x00\x00\x00\x02";
+  const char *t = "\x00\x00\x00\x00\x01";
+  ck_assert_mem_ne(t, s, 5);
+  t = "\x00\x00\x00\x00\x02";
+  record_failure_line_num(__LINE__);
+  ck_assert_mem_ne(t, s, 5);
+}
+END_TEST
+
+START_TEST(test_ck_assert_mem_lt)
+{
+  const char *s = "\x00\x00\x00\x00\x01";
+  const char *t = "\x00\x00\x00\x00\x02";
+  ck_assert_mem_lt(s, t, 5);
+  record_failure_line_num(__LINE__);
+  ck_assert_mem_lt(s, s, 5);
+}
+END_TEST
+
+START_TEST(test_ck_assert_mem_le)
+{
+  const char *s = "\x00\x00\x00\x00\x01";
+  const char *t = "\x00\x00\x00\x00\x02";
+  ck_assert_mem_le(s, t, 5);
+  ck_assert_mem_le(s, s, 5);
+  record_failure_line_num(__LINE__);
+  ck_assert_mem_le(t, s, 5);
+}
+END_TEST
+
+START_TEST(test_ck_assert_mem_gt)
+{
+  const char *s = "\x00\x00\x00\x00\x01";
+  const char *t = "\x00\x00\x00\x00\x02";
+  ck_assert_mem_gt(t, s, 5);
+  record_failure_line_num(__LINE__);
+  ck_assert_mem_gt(t, t, 5);
+}
+END_TEST
+
+START_TEST(test_ck_assert_mem_ge)
+{
+  const char *s = "\x00\x00\x00\x00\x01";
+  const char *t = "\x00\x00\x00\x00\x02";
+  ck_assert_mem_ge(t, s, 5);
+  ck_assert_mem_ge(t, t, 5);
+  record_failure_line_num(__LINE__);
+  ck_assert_mem_ge(s, t, 5);
+}
+END_TEST
+
+START_TEST(test_ck_assert_mem_zerolen)
+{
+  const char *s = "\x00\x00\x00\x00\x02";
+  const char *t = "\x00\x00\x00\x00\x01";
+  ck_assert_mem_eq(t, s, 0);
+}
+END_TEST
+
+START_TEST(test_ck_assert_mem_eq_exact)
+{
+  const char *s = "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02";
+  const char *t = "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01";
+  record_failure_line_num(__LINE__);
+  ck_assert_mem_eq(t, s, 64);
+}
+END_TEST
+
+START_TEST(test_ck_assert_mem_eq_longer)
+{
+  const char *s = "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02";
+  const char *t = "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01";
+  record_failure_line_num(__LINE__);
+  ck_assert_mem_eq(t, s, 65);
+}
+END_TEST
+
 #if defined(HAVE_FORK) && HAVE_FORK == 1
 START_TEST(test_segv_pass)
 {
@@ -1095,6 +1183,15 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_simple, test_ck_assert_str_expr);
   tcase_add_test (tc_simple, test_ck_assert_ptr_eq);
   tcase_add_test (tc_simple, test_ck_assert_ptr_ne);
+  tcase_add_test (tc_simple, test_ck_assert_mem_eq);
+  tcase_add_test (tc_simple, test_ck_assert_mem_ne);
+  tcase_add_test (tc_simple, test_ck_assert_mem_lt);
+  tcase_add_test (tc_simple, test_ck_assert_mem_le);
+  tcase_add_test (tc_simple, test_ck_assert_mem_gt);
+  tcase_add_test (tc_simple, test_ck_assert_mem_ge);
+  tcase_add_test (tc_simple, test_ck_assert_mem_zerolen);
+  tcase_add_test (tc_simple, test_ck_assert_mem_eq_exact);
+  tcase_add_test (tc_simple, test_ck_assert_mem_eq_longer);
 
 #if defined(HAVE_FORK) && HAVE_FORK==1
   tcase_add_test (tc_signal, test_segv);

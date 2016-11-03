@@ -114,6 +114,15 @@ static master_test_t master_tests[] = {
   { "Simple Tests", CK_PASS,    "Passed" },
   { "Simple Tests", CK_FAILURE, "Assertion 'x == y' failed: x == 0x1, y == 0x2" },
   { "Simple Tests", CK_FAILURE, "Assertion 'x != z' failed: x == 0x1, z == 0x1" },
+  { "Simple Tests", CK_FAILURE, "Assertion '\"\\x00\\x00\\x00\\x00\\x01\" == s' failed: \"\\x00\\x00\\x00\\x00\\x01\" == \"0000000001\", s == \"0000000002\"" },
+  { "Simple Tests", CK_FAILURE, "Assertion 't != s' failed: t == \"0000000002\", s == \"0000000002\"" },
+  { "Simple Tests", CK_FAILURE, "Assertion 's < s' failed: s == \"0000000001\", s == \"0000000001\"" },
+  { "Simple Tests", CK_FAILURE, "Assertion 't <= s' failed: t == \"0000000002\", s == \"0000000001\"" },
+  { "Simple Tests", CK_FAILURE, "Assertion 't > t' failed: t == \"0000000002\", t == \"0000000002\"" },
+  { "Simple Tests", CK_FAILURE, "Assertion 's >= t' failed: s == \"0000000001\", t == \"0000000002\"" },
+  { "Simple Tests", CK_PASS,    "Passed" },
+  { "Simple Tests", CK_FAILURE, "Assertion 't == s' failed: t == \"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001\", s == \"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002\"" },
+  { "Simple Tests", CK_FAILURE, "Assertion 't == s' failed: t == \"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000..\", s == \"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000..\"" },
   
 #if defined(HAVE_FORK) && HAVE_FORK==1
   { "Signal Tests", CK_ERROR,   signal_11_str },

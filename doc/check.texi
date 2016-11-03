@@ -1055,6 +1055,20 @@ used for comparison is different for each function and is indicated by
 the last two letters of the function name.  The abbreviations @code{eq} and
 @code{ne} correspond to @code{==} and @code{!=} respectively.
 
+@item ck_assert_mem_eq
+@itemx ck_assert_mem_ne
+@itemx ck_assert_mem_lt
+@itemx ck_assert_mem_le
+@itemx ck_assert_mem_gt
+@itemx ck_assert_mem_ge
+
+Compares contents of two memory locations of the given length, using the
+@code{memcmp()} function internally, and displays predefined message
+with condition and input parameter values on failure.  The comparison
+operator is again indicated by last two letters of the function name.
+@code{ck_assert_mem_lt(a, b)} will pass if the unsigned numerical value
+of memory location @code{a} is less than that of @code{b}.
+
 @item fail
 (Deprecated) Unconditionally fails test with user supplied message.
 
