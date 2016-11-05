@@ -48,6 +48,8 @@ int check_major_version = CHECK_MAJOR_VERSION;
 int check_minor_version = CHECK_MINOR_VERSION;
 int check_micro_version = CHECK_MICRO_VERSION;
 
+const char* current_test_name = NULL;
+
 static int non_pass(int val);
 static Fixture *fixture_create(SFun fun, int ischecked);
 static void tcase_add_fixture(TCase * tc, SFun setup, SFun teardown,
@@ -337,11 +339,18 @@ void tcase_set_timeout(TCase * tc, double timeout)
 #endif /* HAVE_FORK */
 }
 
-void tcase_fn_start(const char *fname CK_ATTRIBUTE_UNUSED, const char *file,
+void tcase_fn_start(const char *fname, const char *file,
                     int line)
 {
     send_ctx_info(CK_CTX_TEST);
     send_loc_info(file, line);
+
+    current_test_name = fname;
+}
+
+const char* tcase_name()
+{
+	return current_test_name;
 }
 
 void _mark_point(const char *file, int line)
