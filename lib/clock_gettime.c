@@ -20,7 +20,7 @@
 
 #include "libcompat.h"
 
-#ifdef __MACH__
+#ifdef __APPLE__
 #include <mach/clock.h>
 #include <mach/mach.h>
 #include <mach/mach_time.h>
@@ -35,8 +35,9 @@
 int clock_gettime(clockid_t clk_id CK_ATTRIBUTE_UNUSED, struct timespec *ts)
 {
 
-#ifdef __MACH__
-    /* OS X does not have clock_gettime, use mach_absolute_time */
+#ifdef __APPLE__
+    /* Some versions of macOS and iOS do not have clock_gettime, use
+     * mach_absolute_time */
 
     static mach_timebase_info_data_t sTimebaseInfo;
     uint64_t rawTime;
