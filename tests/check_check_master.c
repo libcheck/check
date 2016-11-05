@@ -345,8 +345,9 @@ START_TEST(test_check_failure_msgs)
     if (strcmp(got_msg, expected_msg) != 0) {      
       char *emsg;
       char *tmp = (char *)malloc(MAXSTR);
-      snprintf(tmp, MAXSTR,"For test %d: Expected %s, got %s",
-               i, expected_msg, got_msg);
+      snprintf(tmp, MAXSTR,"For test %d:%s:%s Expected %s, got %s",
+               i, master_tests[i].tcname, master_tests[i].test_name,
+			   expected_msg, got_msg);
 
       /*
        * NOTE: ck_abort_msg() will take the passed string
@@ -423,7 +424,8 @@ START_TEST(test_check_failure_ftypes)
     tr = tr_fail_array[i - passed];
     ck_assert_msg(tr != NULL, NULL);
     ck_assert_msg(master_tests[i].failure_type == tr_rtype(tr),
-                "Failure type wrong for test %d", i);
+                "Failure type wrong for test %d:%s:%s",
+				i, master_tests[i].tcname, master_tests[i].test_name);
   }
 }
 END_TEST
@@ -436,7 +438,8 @@ START_TEST(test_check_failure_lfiles)
     ck_assert_msg(tr != NULL, NULL);
     ck_assert_msg(tr_lfile(tr) != NULL, "Bad file name for test %d", i);
     ck_assert_msg(strstr(tr_lfile(tr), "check_check_sub.c") != 0,
-                "Bad file name for test %d", i);
+                "Bad file name for test %d:%s:%s",
+				i, master_tests[i].tcname, master_tests[i].test_name);
   }
 }
 END_TEST
@@ -446,11 +449,9 @@ START_TEST(test_check_tcnames)
   const char *tcname;   
   tcname = tr_tcname(tr_all_array[_i]);
   if (strcmp(tcname, master_tests[_i].tcname) != 0) {
-    char *emsg = (char *)malloc (MAXSTR);
-    snprintf(emsg, MAXSTR,"Expected %s, got %s",
-             master_tests[_i].tcname, tcname);
-    ck_abort_msg(emsg);
-    free(emsg);
+    ck_abort_msg("Expected '%s', got '%s' for test %d:%s",
+         master_tests[_i].tcname, tcname,
+	     _i, master_tests[_i].test_name);
   } 
 }
 END_TEST
@@ -471,10 +472,10 @@ START_TEST(test_check_test_names)
 
 	  if(test_name == NULL || strcmp(master_tests[i].test_name, test_name) != 0)
 	  {
-		  ck_abort_msg("Expected test name '%s' but found '%s' for test %d",
+		  ck_abort_msg("Expected test name '%s' but found '%s' for test %d:%s",
 				  master_tests[i].test_name,
 				  (test_name == NULL ? "(null)" : test_name),
-				  i);
+				  i, master_tests[i].tcname);
 	  }
 
 	  free(test_name);
@@ -489,8 +490,9 @@ START_TEST(test_check_all_msgs)
   if (strcmp(msg, master_tests[_i].msg) != 0) {
     char *emsg;
     char *tmp = (char *)malloc (MAXSTR);
-    snprintf(tmp, MAXSTR,"Expected %s, got %s",
-             master_tests[_i].msg, msg);
+    snprintf(tmp, MAXSTR,"For test %i:%s:%s expected '%s', got '%s'",
+             _i, master_tests[_i].tcname, master_tests[_i].test_name,
+			 master_tests[_i].msg, msg);
 
    /*
     * NOTE: ck_abort_msg() will take the passed string
@@ -510,7 +512,9 @@ END_TEST
 START_TEST(test_check_all_ftypes)
 {
   ck_assert_msg(master_tests[_i].failure_type == tr_rtype(tr_all_array[_i]),
-              "Failure type wrong for test %d", _i);
+              "For test %d:%s:%s failure type wrong, expected %d but got %d",
+			  _i, master_tests[_i].tcname, master_tests[_i].test_name,
+			  master_tests[_i].failure_type, tr_rtype(tr_all_array[_i]));
 }
 END_TEST
 
