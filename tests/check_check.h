@@ -61,6 +61,23 @@ extern int master_tests_lineno[];
 void init_master_tests_lineno(int num_master_tests);
 
 /**
+ * Record a test name.
+ *
+ * This is used to record the test names of each test in
+ * check_check_sub.c. This allows the test name to be written
+ * in the master_tests table in check_check_master.c and have
+ * it verified at test time. With this data, one can easily
+ * determine the name of a failed test.
+ */
+void record_test_name(const char* test_name);
+
+/**
+ * Retrieve the next recorded test which was run, or
+ * NULL if no further tests are recorded.
+ */
+char* get_next_test_name(FILE * file);
+
+/**
  * Record a line number for a test which is to fail.
  *
  * This is used to record the failure line numbers for

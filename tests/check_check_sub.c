@@ -28,6 +28,7 @@
 
 START_TEST(test_lno)
 {
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   ck_abort_msg("Failure expected");
 }
@@ -36,6 +37,7 @@ END_TEST
 #if defined(HAVE_FORK) && HAVE_FORK==1
 START_TEST(test_mark_lno)
 {
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   mark_point();
   exit(EXIT_FAILURE); /* should fail with mark_point above as line */
@@ -45,6 +47,7 @@ END_TEST
 
 START_TEST(test_pass)
 {
+  record_test_name(tcase_name());
   ck_assert_msg(1 == 1, "This test should pass");
   ck_assert_msg(9999, "This test should pass");
 }
@@ -52,6 +55,7 @@ END_TEST
 
 START_TEST(test_fail_unless)
 {
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   fail_unless(1 == 2, "This test should fail");
 }
@@ -59,6 +63,7 @@ END_TEST
 
 START_TEST(test_fail_if_pass)
 {
+  record_test_name(tcase_name());
   fail_if(1 == 2, "This test should pass");
   fail_if(0, "This test should pass");
 }
@@ -66,6 +71,7 @@ END_TEST
 
 START_TEST(test_fail_if_fail)
 {
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   fail_if(1 == 1, "This test should fail");
 }
@@ -73,6 +79,7 @@ END_TEST
 
 START_TEST(test_fail_null_msg)
 {
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   fail_unless(2 == 3, NULL);
 }
@@ -80,7 +87,10 @@ END_TEST
 
 #if defined(__GNUC__)
 START_TEST(test_fail_no_msg)
-{ /* taking out the NULL provokes an ISO C99 warning in GCC */
+{
+  record_test_name(tcase_name());
+
+  /* taking out the NULL provokes an ISO C99 warning in GCC */
   record_failure_line_num(__LINE__);
   fail_unless(4 == 5, NULL);
 }
@@ -88,6 +98,7 @@ END_TEST
 #endif /* __GNUC__ */
 START_TEST(test_fail_if_null_msg)
 {
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   fail_if(2 != 3, NULL);
 }
@@ -95,7 +106,10 @@ END_TEST
 
 #if defined(__GNUC__)
 START_TEST(test_fail_if_no_msg)
-{ /* taking out the NULL provokes an ISO C99 warning in GCC */
+{
+  record_test_name(tcase_name());
+
+  /* taking out the NULL provokes an ISO C99 warning in GCC */
   record_failure_line_num(__LINE__);
   fail_if(4 != 5, NULL);
 }
@@ -105,6 +119,7 @@ START_TEST(test_fail_vararg_msg_1)
 {
   int x = 3;
   int y = 4;
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   fail_unless(x == y, "%d != %d", x, y);
 }
@@ -114,6 +129,7 @@ START_TEST(test_fail_vararg_msg_2)
 {
   int x = 5;
   int y = 6;
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   fail_if(x != y, "%d != %d", x, y);
 }
@@ -123,6 +139,7 @@ START_TEST(test_fail_vararg_msg_3)
 {
   int x = 7;
   int y = 7;
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   fail("%d == %d", x, y);
 }
@@ -130,7 +147,10 @@ END_TEST
 
 #if defined(__GNUC__)
 START_TEST(test_fail_empty)
-{ /* plain fail() doesn't compile with xlc in C mode because of `, ## __VA_ARGS__' problem */
+{
+  record_test_name(tcase_name());
+
+  /* plain fail() doesn't compile with xlc in C mode because of `, ## __VA_ARGS__' problem */
   /* on the other hand, taking out the NULL provokes an ISO C99 warning in GCC */
   record_failure_line_num(__LINE__);
   fail(NULL);
@@ -140,6 +160,7 @@ END_TEST
 
 START_TEST(test_ck_abort)
 {
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   ck_abort();
 }
@@ -147,6 +168,7 @@ END_TEST
 
 START_TEST(test_ck_abort_msg)
 {
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   ck_abort_msg("Failure expected");
 }
@@ -155,6 +177,7 @@ END_TEST
 /* FIXME: perhaps passing NULL to ck_abort_msg should be an error. */
 START_TEST(test_ck_abort_msg_null)
 {
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   ck_abort_msg(NULL);
 }
@@ -167,6 +190,9 @@ START_TEST(test_ck_assert)
 {
   int x = 3;
   int y = 3;
+
+  record_test_name(tcase_name());
+
   ck_assert(1);
   ck_assert(x == y);
   y++;
@@ -178,6 +204,7 @@ END_TEST
 
 START_TEST(test_ck_assert_null)
 {
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   ck_assert(0);
 }
@@ -186,6 +213,7 @@ END_TEST
 START_TEST(test_ck_assert_with_mod)
 {
   int f = 1;
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   ck_assert(1%f == 1);
 }
@@ -195,6 +223,7 @@ START_TEST(test_ck_assert_int_eq)
 {
   int x = 3;
   int y = 3;
+  record_test_name(tcase_name());
   ck_assert_int_eq(x, y);
   y++;
   record_failure_line_num(__LINE__);
@@ -206,6 +235,7 @@ START_TEST(test_ck_assert_int_eq_with_mod)
 {
   int d = 2;
   int f = 1;
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   ck_assert_int_eq(3%d, 2%f);
 }
@@ -215,6 +245,7 @@ START_TEST(test_ck_assert_int_ne)
 {
   int x = 3;
   int y = 2;
+  record_test_name(tcase_name());
   ck_assert_int_ne(x, y);
   y++;
   record_failure_line_num(__LINE__);
@@ -226,6 +257,7 @@ START_TEST(test_ck_assert_int_ne_with_mod)
 {
   int d = 2;
   int f = 2;
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   ck_assert_int_ne(3%d, 3%f);
 }
@@ -235,6 +267,7 @@ START_TEST(test_ck_assert_int_lt)
 {
   int x = 2;
   int y = 3;
+  record_test_name(tcase_name());
   ck_assert_int_lt(x, y);
   record_failure_line_num(__LINE__);
   ck_assert_int_lt(x, x);
@@ -245,6 +278,7 @@ START_TEST(test_ck_assert_int_lt_with_mod)
 {
   int d = 2;
   int f = 1;
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   ck_assert_int_lt(3%d, 3%f);
 }
@@ -254,6 +288,7 @@ START_TEST(test_ck_assert_int_le)
 {
   int x = 2;
   int y = 3;
+  record_test_name(tcase_name());
   ck_assert_int_le(x, y);
   ck_assert_int_le(x, x);
   record_failure_line_num(__LINE__);
@@ -265,6 +300,7 @@ START_TEST(test_ck_assert_int_le_with_mod)
 {
   int d = 2;
   int f = 1;
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   ck_assert_int_le(3%d, 2%f);
 }
@@ -274,6 +310,7 @@ START_TEST(test_ck_assert_int_gt)
 {
   int x = 2;
   int y = 3;
+  record_test_name(tcase_name());
   ck_assert_int_gt(y, x);
   record_failure_line_num(__LINE__);
   ck_assert_int_gt(y, y);
@@ -284,6 +321,7 @@ START_TEST(test_ck_assert_int_gt_with_mod)
 {
   int d = 1;
   int f = 2;
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   ck_assert_int_gt(3%d, 3%f);
 }
@@ -293,6 +331,7 @@ START_TEST(test_ck_assert_int_ge)
 {
   int x = 2;
   int y = 3;
+  record_test_name(tcase_name());
   ck_assert_int_ge(y, x);
   ck_assert_int_ge(y, x);
   record_failure_line_num(__LINE__);
@@ -304,6 +343,7 @@ START_TEST(test_ck_assert_int_ge_with_mod)
 {
   int d = 1;
   int f = 3;
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   ck_assert_int_ge(3%d, 4%f);
 }
@@ -313,6 +353,7 @@ START_TEST(test_ck_assert_int_expr)
 {
   int x = 1;
   int y = 0;
+  record_test_name(tcase_name());
   ck_assert_int_eq(x, ++y);
   ck_assert_int_eq(x, y);
 } END_TEST
@@ -321,6 +362,7 @@ START_TEST(test_ck_assert_uint_eq)
 {
   unsigned int x = 3;
   unsigned int y = 3;
+  record_test_name(tcase_name());
   ck_assert_uint_eq(x, y);
   y++;
   record_failure_line_num(__LINE__);
@@ -332,6 +374,7 @@ START_TEST(test_ck_assert_uint_eq_with_mod)
 {
   int d = 2;
   int f = 1;
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   ck_assert_uint_eq(3%d, 1%f);
 }
@@ -341,6 +384,7 @@ START_TEST(test_ck_assert_uint_ne)
 {
   unsigned int x = 3;
   unsigned int y = 2;
+  record_test_name(tcase_name());
   ck_assert_uint_ne(x, y);
   y++;
   record_failure_line_num(__LINE__);
@@ -352,6 +396,7 @@ START_TEST(test_ck_assert_uint_ne_with_mod)
 {
   int d = 1;
   int f = 1;
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   ck_assert_uint_ne(1%d, 1%f);
 }
@@ -361,6 +406,7 @@ START_TEST(test_ck_assert_uint_lt)
 {
   unsigned int x = 2;
   unsigned int y = 3;
+  record_test_name(tcase_name());
   ck_assert_uint_lt(x, y);
   record_failure_line_num(__LINE__);
   ck_assert_uint_lt(x, x);
@@ -371,6 +417,7 @@ START_TEST(test_ck_assert_uint_lt_with_mod)
 {
   int d = 2;
   int f = 1;
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   ck_assert_uint_lt(3%d, 1%f);
 }
@@ -380,6 +427,7 @@ START_TEST(test_ck_assert_uint_le)
 {
   unsigned int x = 2;
   unsigned int y = 3;
+  record_test_name(tcase_name());
   ck_assert_uint_le(x, y);
   ck_assert_uint_le(x, x);
   record_failure_line_num(__LINE__);
@@ -391,6 +439,7 @@ START_TEST(test_ck_assert_uint_le_with_mod)
 {
   int d = 2;
   int f = 1;
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   ck_assert_uint_le(3%d, 1%f);
 }
@@ -400,6 +449,7 @@ START_TEST(test_ck_assert_uint_gt)
 {
   unsigned int x = 2;
   unsigned int y = 3;
+  record_test_name(tcase_name());
   ck_assert_uint_gt(y, x);
   record_failure_line_num(__LINE__);
   ck_assert_uint_gt(y, y);
@@ -410,6 +460,7 @@ START_TEST(test_ck_assert_uint_gt_with_mod)
 {
   int d = 1;
   int f = 2;
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   ck_assert_uint_gt(1%d, 3%f);
 }
@@ -419,6 +470,7 @@ START_TEST(test_ck_assert_uint_ge)
 {
   unsigned int x = 2;
   unsigned int y = 3;
+  record_test_name(tcase_name());
   ck_assert_uint_ge(y, x);
   ck_assert_uint_ge(y, x);
   record_failure_line_num(__LINE__);
@@ -430,6 +482,7 @@ START_TEST(test_ck_assert_uint_ge_with_mod)
 {
   int d = 1;
   int f = 2;
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   ck_assert_uint_ge(1%d, 3%f);
 }
@@ -439,6 +492,7 @@ START_TEST(test_ck_assert_uint_expr)
 {
   unsigned int x = 1;
   unsigned int y = 0;
+  record_test_name(tcase_name());
   ck_assert_uint_eq(x, ++y);
   ck_assert_uint_eq(x, y);
 } END_TEST
@@ -452,6 +506,8 @@ int returnsZero(const char* argument)
 
 START_TEST(test_percent_n_escaped)
 {
+  record_test_name(tcase_name());
+
   /* If the %n is not escaped in the ck macro, then this results in a SEGFAULT */
   record_failure_line_num(__LINE__);
   ck_assert_int_eq(returnsZero("%n"), 1);
@@ -460,6 +516,7 @@ START_TEST(test_percent_n_escaped)
 START_TEST(test_ck_assert_str_eq)
 {
   const char *s = "test2";
+  record_test_name(tcase_name());
   ck_assert_str_eq("test2", s);
   record_failure_line_num(__LINE__);
   ck_assert_str_eq("test1", s);
@@ -470,6 +527,7 @@ START_TEST(test_ck_assert_str_ne)
 {
   const char *s = "test2";
   const char *t = "test1";
+  record_test_name(tcase_name());
   ck_assert_str_ne(t, s);
   t = "test2";
   record_failure_line_num(__LINE__);
@@ -481,6 +539,7 @@ START_TEST(test_ck_assert_str_lt)
 {
   const char *s = "test1";
   const char *t = "test2";
+  record_test_name(tcase_name());
   ck_assert_str_lt(s, t);
   record_failure_line_num(__LINE__);
   ck_assert_str_lt(s, s);
@@ -491,6 +550,7 @@ START_TEST(test_ck_assert_str_le)
 {
   const char *s = "test1";
   const char *t = "test2";
+  record_test_name(tcase_name());
   ck_assert_str_le(s, t);
   ck_assert_str_le(s, s);
   record_failure_line_num(__LINE__);
@@ -502,6 +562,7 @@ START_TEST(test_ck_assert_str_gt)
 {
   const char *s = "test1";
   const char *t = "test2";
+  record_test_name(tcase_name());
   ck_assert_str_gt(t, s);
   record_failure_line_num(__LINE__);
   ck_assert_str_gt(t, t);
@@ -512,6 +573,7 @@ START_TEST(test_ck_assert_str_ge)
 {
   const char *s = "test1";
   const char *t = "test2";
+  record_test_name(tcase_name());
   ck_assert_str_ge(t, s);
   ck_assert_str_ge(t, t);
   record_failure_line_num(__LINE__);
@@ -523,6 +585,7 @@ START_TEST(test_ck_assert_str_expr)
 {
   const char *s = "test1";
   const char *t[] = { "test1", "test2" };
+  record_test_name(tcase_name());
   int i = -1;
   ck_assert_str_eq(s, t[++i]);
   ck_assert_str_eq(s, t[i]);
@@ -533,6 +596,7 @@ START_TEST(test_ck_assert_ptr_eq)
 {
   int * x = (int*)0x1;
   int * y = (int*)0x2;
+  record_test_name(tcase_name());
   ck_assert_ptr_eq(NULL, NULL);
   ck_assert_ptr_eq(x,    x);
   record_failure_line_num(__LINE__);
@@ -545,6 +609,7 @@ START_TEST(test_ck_assert_ptr_ne)
   int * x = (int*)0x1;
   int * y = (int*)0x2;
   int * z = x;
+  record_test_name(tcase_name());
   ck_assert_ptr_ne(x,    y);
   ck_assert_ptr_ne(x,    NULL);
   ck_assert_ptr_ne(NULL, y);
@@ -556,6 +621,7 @@ END_TEST
 START_TEST(test_ck_assert_mem_eq)
 {
   const char *s = "\x00\x00\x00\x00\x02";
+  record_test_name(tcase_name());
   ck_assert_mem_eq("\x00\x00\x00\x00\x02", s, 5);
   record_failure_line_num(__LINE__);
   ck_assert_mem_eq("\x00\x00\x00\x00\x01", s, 5);
@@ -566,6 +632,7 @@ START_TEST(test_ck_assert_mem_ne)
 {
   const char *s = "\x00\x00\x00\x00\x02";
   const char *t = "\x00\x00\x00\x00\x01";
+  record_test_name(tcase_name());
   ck_assert_mem_ne(t, s, 5);
   t = "\x00\x00\x00\x00\x02";
   record_failure_line_num(__LINE__);
@@ -577,6 +644,7 @@ START_TEST(test_ck_assert_mem_lt)
 {
   const char *s = "\x00\x00\x00\x00\x01";
   const char *t = "\x00\x00\x00\x00\x02";
+  record_test_name(tcase_name());
   ck_assert_mem_lt(s, t, 5);
   record_failure_line_num(__LINE__);
   ck_assert_mem_lt(s, s, 5);
@@ -587,6 +655,7 @@ START_TEST(test_ck_assert_mem_le)
 {
   const char *s = "\x00\x00\x00\x00\x01";
   const char *t = "\x00\x00\x00\x00\x02";
+  record_test_name(tcase_name());
   ck_assert_mem_le(s, t, 5);
   ck_assert_mem_le(s, s, 5);
   record_failure_line_num(__LINE__);
@@ -598,6 +667,7 @@ START_TEST(test_ck_assert_mem_gt)
 {
   const char *s = "\x00\x00\x00\x00\x01";
   const char *t = "\x00\x00\x00\x00\x02";
+  record_test_name(tcase_name());
   ck_assert_mem_gt(t, s, 5);
   record_failure_line_num(__LINE__);
   ck_assert_mem_gt(t, t, 5);
@@ -608,6 +678,7 @@ START_TEST(test_ck_assert_mem_ge)
 {
   const char *s = "\x00\x00\x00\x00\x01";
   const char *t = "\x00\x00\x00\x00\x02";
+  record_test_name(tcase_name());
   ck_assert_mem_ge(t, s, 5);
   ck_assert_mem_ge(t, t, 5);
   record_failure_line_num(__LINE__);
@@ -619,6 +690,7 @@ START_TEST(test_ck_assert_mem_zerolen)
 {
   const char *s = "\x00\x00\x00\x00\x02";
   const char *t = "\x00\x00\x00\x00\x01";
+  record_test_name(tcase_name());
   ck_assert_mem_eq(t, s, 0);
 }
 END_TEST
@@ -627,6 +699,7 @@ START_TEST(test_ck_assert_mem_eq_exact)
 {
   const char *s = "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02";
   const char *t = "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01";
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   ck_assert_mem_eq(t, s, 64);
 }
@@ -636,6 +709,7 @@ START_TEST(test_ck_assert_mem_eq_longer)
 {
   const char *s = "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02";
   const char *t = "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01";
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   ck_assert_mem_eq(t, s, 65);
 }
@@ -644,6 +718,7 @@ END_TEST
 #if defined(HAVE_FORK) && HAVE_FORK == 1
 START_TEST(test_segv_pass)
 {
+  record_test_name(tcase_name());
   /*
    * This test is to be used when it would otherwise not cause a
    * failure. e.g., shen SIGSEGV is expected.
@@ -654,14 +729,16 @@ END_TEST
 
 START_TEST(test_segv)
 {
-  record_failure_line_num(__LINE__-3); /* -3 as the failure is reported at START_TEST() */
+  record_test_name(tcase_name());
+  record_failure_line_num(__LINE__-4); /* -4 as the failure is reported at START_TEST() */
   raise (SIGSEGV);
 }
 END_TEST
 
 START_TEST(test_fpe)
 {
-  record_failure_line_num(__LINE__-3); /* -3 as the failure is reported at START_TEST() */
+  record_test_name(tcase_name());
+  record_failure_line_num(__LINE__-4); /* -4 as the failure is reported at START_TEST() */
   raise (SIGFPE);
 }
 END_TEST
@@ -672,7 +749,8 @@ END_TEST
  */
 START_TEST(test_non_signal_8)
 {
-  record_failure_line_num(__LINE__-3); /* -3 as the failure is reported at START_TEST() */
+  record_test_name(tcase_name());
+  record_failure_line_num(__LINE__-4); /* -4 as the failure is reported at START_TEST() */
   exit(0);
 }
 END_TEST
@@ -683,6 +761,7 @@ END_TEST
 START_TEST(test_mark_point)
 {
   int i;
+  record_test_name(tcase_name());
   i = 0;
   i++;
   mark_point();
@@ -696,7 +775,8 @@ END_TEST
 #if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) && HAVE_FORK == 1
 START_TEST(test_eternal_fail)
 {
-  record_failure_line_num(__LINE__-3); /* -3 as the failure is reported at START_TEST() */
+  record_test_name(tcase_name());
+  record_failure_line_num(__LINE__-4); /* -4 as the failure is reported at START_TEST() */
   for (;;)
     sleep(1);
 }
@@ -709,19 +789,22 @@ END_TEST
 #ifdef HAVE_LIBRT
 START_TEST(test_sleep0_025_pass)
 {
+  record_test_name(tcase_name());
   usleep(25*1000);
 }
 END_TEST
 
 START_TEST(test_sleep1_pass)
 {
+  record_test_name(tcase_name());
   sleep(1);
 }
 END_TEST
 
 START_TEST(test_sleep1_fail)
 {
-  record_failure_line_num(__LINE__-3); /* -3 as the failure is reported at START_TEST() */
+  record_test_name(tcase_name());
+  record_failure_line_num(__LINE__-4); /* -4 as the failure is reported at START_TEST() */
   sleep(1);
 }
 END_TEST
@@ -729,47 +812,55 @@ END_TEST
 
 START_TEST(test_sleep2_pass)
 {
+  record_test_name(tcase_name());
   sleep(2);
 }
 END_TEST
 
 START_TEST(test_sleep2_fail)
 {
-  record_failure_line_num(__LINE__-3); /* -3 as the failure is reported at START_TEST() */
+  record_test_name(tcase_name());
+  record_failure_line_num(__LINE__-4); /* -4 as the failure is reported at START_TEST() */
   sleep(2);
 }
 END_TEST
 
 START_TEST(test_sleep5_pass)
 {
+  record_test_name(tcase_name());
   sleep(5);
 }
 END_TEST
 
 START_TEST(test_sleep5_fail)
 {
-  record_failure_line_num(__LINE__-3); /* -3 as the failure is reported at START_TEST() */
+  record_test_name(tcase_name());
+  record_failure_line_num(__LINE__-4); /* -4 as the failure is reported at START_TEST() */
   sleep(5);
 }
 END_TEST
 
 START_TEST(test_sleep9_pass)
 {
+  record_test_name(tcase_name());
   sleep(9);
 }
 END_TEST
 
 START_TEST(test_sleep9_fail)
 {
-  record_failure_line_num(__LINE__-3); /* -3 as the failure is reported at START_TEST() */
+  record_test_name(tcase_name());
+  record_failure_line_num(__LINE__-4); /* -4 as the failure is reported at START_TEST() */
   sleep(9);
 }
 END_TEST
 
 START_TEST(test_sleep14_fail)
 {
-  record_failure_line_num(__LINE__-3); /* -3 as the failure is reported at START_TEST() */
+  record_test_name(tcase_name());
+  record_failure_line_num(__LINE__-4); /* -4 as the failure is reported at START_TEST() */
   sleep(14);
+  exit(3);
 }
 END_TEST
 #endif /* TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) */
@@ -777,7 +868,8 @@ END_TEST
 #if defined(HAVE_FORK) && HAVE_FORK==1
 START_TEST(test_early_exit)
 {
-  record_failure_line_num(__LINE__-3); /* -3 as the failure is reported at START_TEST() */
+  record_test_name(tcase_name());
+  record_failure_line_num(__LINE__-4); /* -4 as the failure is reported at START_TEST() */
   exit(EXIT_FAILURE);
 }
 END_TEST
@@ -795,6 +887,8 @@ START_TEST(test_null)
   Suite *s;
   TCase *tc;
   
+  record_test_name(tcase_name());
+
   s = suite_create(NULL);
   tc = tcase_create(NULL);
   suite_add_tcase (s, NULL);
@@ -810,6 +904,7 @@ END_TEST
 
 START_TEST(test_null_2)
 {
+  record_test_name(tcase_name());
   SRunner *sr = srunner_create(NULL);
   srunner_run_all (sr, CK_NORMAL);
   srunner_free (sr);
@@ -823,6 +918,8 @@ END_TEST
 START_TEST(test_fork1p_pass)
 {
   pid_t pid;
+
+  record_test_name(tcase_name());
 
   if((pid = fork()) < 0) {
     ck_abort_msg("Failed to fork new process");
@@ -841,6 +938,8 @@ START_TEST(test_fork1p_fail)
 {
   pid_t pid;
   
+  record_test_name(tcase_name());
+
   if((pid = fork()) < 0) {
     ck_abort_msg("Failed to fork new process");
   } else if (pid > 0) {
@@ -858,6 +957,8 @@ END_TEST
 START_TEST(test_fork1c_pass)
 {
   pid_t pid;
+
+  record_test_name(tcase_name());
   
   if((pid = check_fork()) < 0) {
     ck_abort_msg("Failed to fork new process");
@@ -873,6 +974,8 @@ END_TEST
 START_TEST(test_fork1c_fail)
 {
   pid_t pid;
+
+  record_test_name(tcase_name());
   
   if((pid = check_fork()) < 0) {
     ck_abort_msg("Failed to fork new process");
@@ -890,6 +993,8 @@ START_TEST(test_fork2_pass)
   pid_t pid;
   pid_t pid2;
   
+  record_test_name(tcase_name());
+
   if((pid = check_fork()) < 0) {
     ck_abort_msg("Failed to fork new process");
   } else if (pid > 0) {
@@ -910,6 +1015,8 @@ START_TEST(test_fork2_fail)
   pid_t pid;
   pid_t pid2;
   
+  record_test_name(tcase_name());
+
   if((pid = check_fork()) < 0) {
     ck_abort_msg("Failed to fork new process");
   } else if (pid > 0) {
@@ -935,7 +1042,10 @@ START_TEST(test_invalid_set_fork_status)
    Suite *s1;
    TCase *tc1;
    SRunner *sr;
-   record_failure_line_num(__LINE__-6); /* -6 as the failure is reported at START_TEST() */
+
+   record_test_name(tcase_name());
+
+   record_failure_line_num(__LINE__-9); /* -9 as the failure is reported at START_TEST() */
    s1 = suite_create ("suite1");
    tc1 = tcase_create ("tcase1");
    tcase_add_test (tc1, test_pass);
@@ -951,6 +1061,8 @@ START_TEST(test_srunner)
 {
   Suite *s;
   SRunner *sr;
+
+  record_test_name(tcase_name());
 
   s = suite_create("Check Servant3");
   ck_assert_msg(s != NULL, NULL);
@@ -974,6 +1086,7 @@ END_TEST
 
 START_TEST(test_2nd_suite)
 {
+  record_test_name(tcase_name());
   record_failure_line_num(__LINE__);
   ck_abort_msg("We failed");
 }
@@ -1003,6 +1116,7 @@ void exit_handler ()
 
 START_TEST(test_ignore_exit_handlers)
 {
+  record_test_name(tcase_name());
   int result = atexit(exit_handler);
   if(result != 0)
   {
