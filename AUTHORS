@@ -38,6 +38,7 @@ Contributors:
     Dietmar Petras        (bug fixes)
     Rick Poyner           (pipe handling, bug fixes)
     Bernhard Reiter       (configure issues)
+    Pavol Rusnak          (memory location comparison macros ck_assert_mem_*)
     Neil Spring           (const fixes)
     Roland Stigge         (bug fix: allow fail inside setup)
     Sebastian Rasmussen   (duration bug fix, 64-bit API fix)
