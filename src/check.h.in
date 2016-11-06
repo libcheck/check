@@ -376,6 +376,16 @@ CK_DLL_EXP void CK_EXPORT tcase_fn_start(const char *fname, const char *file,
                                          int line);
 
 /**
+ * Retreive the name of the current running test. This is the name
+ * of the test passed to START_TEST. This is only valid when called
+ * from a running test. The value return outside of a running test is
+ * undefined.
+ *
+ * @since 0.11.0
+ */
+CK_DLL_EXP const char* CK_EXPORT tcase_name();
+
+/**
  * Start a unit test with START_TEST(unit_name), end with END_TEST.
  *
  * One must use braces within a START_/END_ pair to declare new variables
