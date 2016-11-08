@@ -1014,8 +1014,8 @@ provided message.
 @itemx ck_assert_int_gt
 @itemx ck_assert_int_ge
 
-Compares two signed integer values (@code{intmax_t}) and displays predefined
-message with condition and values of both input parameters on failure.  The
+Compares two signed integer values (@code{intmax_t}) and displays a predefined
+message with both the condition and input parameters on failure.  The
 operator used for comparison is different for each function and is indicated
 by the last two letters of the function name.  The abbreviations @code{eq},
 @code{ne}, @code{lt}, @code{le}, @code{gt}, and @code{ge} correspond to
@@ -1031,6 +1031,163 @@ respectively.
 
 Similar to @code{ck_assert_int_*}, but compares two unsigned integer values
 (@code{uintmax_t}) instead.
+
+@item ck_assert_float_eq
+@itemx ck_assert_float_ne
+@itemx ck_assert_float_lt
+@itemx ck_assert_float_le
+@itemx ck_assert_float_gt
+@itemx ck_assert_float_ge
+
+Compares two floating point numbers (@code{float}) and displays a predefined
+message with both the condition and input parameters on failure.
+The operator used for comparison is different for each function
+and is indicated by the last two letters of the function name. 
+The abbreviations @code{eq}, @code{ne}, @code{lt}, @code{le}, @code{gt},
+and @code{ge} correspond to @code{==}, @code{!=}, @code{<}, @code{<=}, @code{>},
+and @code{>=} respectively.
+Beware using those operators for floating point numbers because of precision
+possible loss on every operation on floating point numbers. For example
+(1/3)*3==1 would return false, because 1/3==1.333... (or 1.(3) notation
+in Europe) and cannot be represented by computer logic. As another example
+1.1f in fact could be 1.10000002384185791015625 and 2.1f could be
+2.099999904632568359375 because of binary representation of floating
+point numbers.
+If you have different mathematical operations used on floating point numbers
+consider using precision comparisons or integer numbers instead. But in some
+cases those operators could be used. For example if you cyclically increment
+your floating point number only by positive or only by negative values than
+you may use @code{<}, @code{<=}, @code{>} and @code{>=} operators in tests.
+If your computations must end up with a certain value than @code{==} and
+@code{!=} operators may be used.
+
+@item ck_assert_double_eq
+@itemx ck_assert_double_ne
+@itemx ck_assert_double_lt
+@itemx ck_assert_double_le
+@itemx ck_assert_double_gt
+@itemx ck_assert_double_ge
+
+Similar to @code{ck_assert_float_*}, but compares two double precision
+floating point values (@code{double}) instead.
+
+@item ck_assert_ldouble_eq
+@itemx ck_assert_ldouble_ne
+@itemx ck_assert_ldouble_lt
+@itemx ck_assert_ldouble_le
+@itemx ck_assert_ldouble_gt
+@itemx ck_assert_ldouble_ge
+
+Similar to @code{ck_assert_float_*}, but compares two double precision
+floating point values (@code{long double}) instead.
+
+@item ck_assert_float_eq_tol
+@itemx ck_assert_float_ne_tol
+@itemx ck_assert_float_le_tol
+@itemx ck_assert_float_ge_tol
+
+Compares two floating point numbers (@code{float}) with specified user tolerance
+set by the third parameter (@code{float}) and displays a predefined message
+with both the condition and input parameters on failure.
+The abbreviations @code{eq}, @code{ne}, @code{le}, and @code{ge} correspond
+to @code{==}, @code{!=}, @code{<=}, and @code{>=} respectively with acceptable
+error (tolerance) specified by the last parameter.
+Beware using those functions for floating comparisons because of
+(1) errors coming from floating point number representation,
+(2) rounding errors,
+(3) floating point errors are platform dependent.
+Floating point numbers are often internally represented in binary
+so they cannot be exact power of 10. All these operators have significant
+error in comparisons so use them only if you know what you're doing.
+Some assertions could fail on one platform and would be passed on another.
+For example expression @code{0.02<=0.01+10^-2} is true by meaning,
+but some platforms may calculate it as false. IEEE 754 standard specifies
+the floating point number format representation but it does not promise that
+the same computation carried out on all hardware will produce the same result.
+
+@item ck_assert_double_eq_tol
+@itemx ck_assert_double_ne_tol
+@itemx ck_assert_double_le_tol
+@itemx ck_assert_double_ge_tol
+
+Similar to @code{ck_assert_float_*_tol}, but compares two double precision
+floating point values (@code{double}) instead.
+
+@item ck_assert_ldouble_eq_tol
+@itemx ck_assert_ldouble_ne_tol
+@itemx ck_assert_ldouble_le_tol
+@itemx ck_assert_ldouble_ge_tol
+
+Similar to @code{ck_assert_float_*_tol}, but compares two double precision
+floating point values (@code{long double}) instead.
+
+@item ck_assert_float_finite
+
+Checks that a floating point number (@code{float}) is finite and displays
+a predefined message with both the condition and input parameter on failure.
+Finite means that value cannot be positive infinity, negative infinity
+or NaN ("Not a Number").
+
+@item ck_assert_double_finite
+
+Similar to @code{ck_assert_float_finite}, but checks double precision
+floating point value (@code{double}) instead.
+
+
+@item ck_assert_ldouble_finite
+
+Similar to @code{ck_assert_float_finite}, but checks double precision
+floating point value (@code{long double}) instead.
+
+@item ck_assert_float_infinite
+
+Checks that a floating point number (@code{float}) is infinite and displays
+a predefined message with both the condition and input parameter on failure.
+Infinite means that value may only be positive infinity or negative infinity.
+
+@item ck_assert_double_infinite
+
+Similar to @code{ck_assert_float_infinite}, but checks double precision
+floating point value (@code{double}) instead.
+
+@item ck_assert_ldouble_infinite
+
+Similar to @code{ck_assert_float_infinite}, but checks double precision
+floating point value (@code{long double}) instead.
+
+@item ck_assert_float_nan
+
+Checks that a floating point number (@code{float}, @code{double} or
+@code{long double} abbreviated as @code{ldouble}) is NaN ("Not a Number")
+and displays a predefined message with both the condition and input parameter
+on failure.
+
+@item ck_assert_double_nan
+
+Similar to @code{ck_assert_float_nan}, but checks double precision
+floating point value (@code{double}) instead.
+
+@item ck_assert_ldouble_nan
+
+Similar to @code{ck_assert_float_nan}, but checks double precision
+floating point value (@code{long double}) instead.
+
+@item ck_assert_float_nonnan
+
+Checks that a floating point number (@code{float}) is not NaN ("Not a Number")
+and displays a predefined message with both the condition and input parameter
+on failure.
+
+@item ck_assert_double_nonnan
+
+Similar to @code{ck_assert_float_nonnan}, but checks double precision
+floating point value (@code{double}) instead.
+
+@item ck_assert_ldouble_nonnan
+
+Similar to @code{ck_assert_float_nonnan}, but checks double precision
+floating point value (@code{long double}) instead.
+
 
 @item ck_assert_str_eq
 @itemx ck_assert_str_ne
