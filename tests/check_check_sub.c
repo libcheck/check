@@ -497,6 +497,1398 @@ START_TEST(test_ck_assert_uint_expr)
   ck_assert_uint_eq(x, y);
 } END_TEST
 
+START_TEST(test_ck_assert_float_eq)
+{
+  record_test_name(tcase_name());
+
+  float x = 1.1f;
+  float y = 1.1f;
+  ck_assert_float_eq(x, y);
+  y+=0.1f;
+  record_failure_line_num(__LINE__);
+  ck_assert_float_eq(x, y);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_eq_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_float_eq(3%d, 2%f);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_ne)
+{
+  record_test_name(tcase_name());
+
+  float x = 1.1f;
+  float y = 1.2f;
+  ck_assert_float_ne(x, y);
+  y = x;
+  record_failure_line_num(__LINE__);
+  ck_assert_float_ne(x, y);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_ne_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_float_ne(1%d, 1%f);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_lt)
+{
+  record_test_name(tcase_name());
+
+  float x = 2.0f;
+  float y = 2.5f;
+  ck_assert_float_lt(x, y);
+  y-=1.0f;
+  record_failure_line_num(__LINE__);
+  ck_assert_float_lt(x, y);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_lt_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_float_lt(3%d, 2%f);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_le)
+{
+  record_test_name(tcase_name());
+
+  float x = 2.0f;
+  float y = 2.5f;
+  ck_assert_float_le(x, y);
+  ck_assert_float_le(x, x);
+  y-=1.0f;
+  record_failure_line_num(__LINE__);
+  ck_assert_float_le(x, y);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_le_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_float_le(3%d, 2%f);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_gt)
+{
+  record_test_name(tcase_name());
+
+  float x = 2.5f;
+  float y = 2.0f;
+  ck_assert_float_gt(x, y);
+  y+=1.0f;
+  record_failure_line_num(__LINE__);
+  ck_assert_float_gt(x, y);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_gt_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_float_gt(2%d, 3%f);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_ge)
+{
+  record_test_name(tcase_name());
+
+  float x = 2.5f;
+  float y = 2.0f;
+  ck_assert_float_ge(x, y);
+  ck_assert_float_ge(x, x);
+  y+=1.0f;
+  record_failure_line_num(__LINE__);
+  ck_assert_float_ge(x, y);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_ge_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_float_ge(2%d, 3%f);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_with_expr)
+{
+  record_test_name(tcase_name());
+
+  float x[] = {NAN, 1.1f, 1.1f, 1.2f, 1.2f, NAN};
+  float y = 1.1f;
+  int i;
+
+  i = 1;
+  ck_assert_float_eq(x[i++], y);
+  ck_assert_float_eq(x[i++], y);
+
+  i = 4;
+  ck_assert_float_ne(x[i--], y);
+  ck_assert_float_ne(x[i--], y);
+
+  y = 1.15f;
+
+  i = 1;
+  ck_assert_float_le(x[i++], y);
+  ck_assert_float_le(x[i++], y);
+
+  i = 1;
+  ck_assert_float_lt(x[i++], y);
+  ck_assert_float_lt(x[i++], y);
+
+  i = 4;
+  ck_assert_float_gt(x[i--], y);
+  ck_assert_float_gt(x[i--], y);
+
+  i = 4;
+  ck_assert_float_ge(x[i--], y);
+  ck_assert_float_ge(x[i--], y);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_eq_tol)
+{
+  record_test_name(tcase_name());
+
+  float x = 0.0001f;
+  float y = 0.0003f;
+  float t = 0.001f;
+  ck_assert_float_eq_tol(x, y, t);
+  ck_assert_float_eq_tol(x, x, t);
+  x*=10.0f;
+  y*=10.0f;
+  t*=10.0f;
+  ck_assert_float_eq_tol(x, y, t);
+  t/=10.0f;
+  record_failure_line_num(__LINE__);
+  ck_assert_float_eq_tol(x, y, t);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_eq_tol_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  int p = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_float_eq_tol(3%d, 2%f, 2%p);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_ne_tol)
+{
+  record_test_name(tcase_name());
+
+  float x = 0.0001f;
+  float y = 0.0002f;
+  float t = 0.0001f;
+  ck_assert_float_ne_tol(x, y, t);
+  x*=10.0f;
+  y*=10.0f;
+  t*=10.0f;
+  ck_assert_float_ne_tol(x, y, t);
+  t*=10.0f;
+  record_failure_line_num(__LINE__);
+  ck_assert_float_ne_tol(x, y, t);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_ne_tol_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  int p = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_float_ne_tol(3%d, 3%f, 3%p);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_ge_tol)
+{
+  record_test_name(tcase_name());
+
+  float x = 0.001f;
+  float y = 0.003f;
+  float t = 0.001f;
+  ck_assert_float_ge_tol(y, x, t);
+  ck_assert_float_ge_tol(x, x, t);
+  ck_assert_float_ge_tol(y, y, t);
+  x*=10.0f;
+  y*=10.0f;
+  t*=10.0f;
+  ck_assert_float_ge_tol(y, x, t);
+  ck_assert_float_ge_tol(x, x, t);
+  ck_assert_float_ge_tol(y, y, t);
+  record_failure_line_num(__LINE__);
+  ck_assert_float_ge_tol(x, y, t);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_ge_tol_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  int p = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_float_ge_tol(2%d, 3%f, 3%p);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_le_tol)
+{
+  record_test_name(tcase_name());
+
+  float x = 0.001f;
+  float y = 0.003f;
+  float t = 0.001f;
+  ck_assert_float_le_tol(x, y, t);
+  ck_assert_float_le_tol(x, x, t);
+  ck_assert_float_le_tol(y, y, t);
+  x*=10.0f;
+  y*=10.0f;
+  t*=10.0f;
+  ck_assert_float_le_tol(x, y, t);
+  ck_assert_float_le_tol(x, x, t);
+  ck_assert_float_le_tol(y, y, t);
+  record_failure_line_num(__LINE__);
+  ck_assert_float_le_tol(y, x, t);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_le_tol_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  int p = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_float_le_tol(3%d, 2%f, 3%p);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_tol_with_expr)
+{
+  record_test_name(tcase_name());
+
+  float x[] = {NAN, 1.1f, 1.1f, 1.2f, 1.2f, NAN};
+  float y = 1.1f;
+  float t = 0.01f;
+  int i;
+
+  i = 1;
+  ck_assert_float_eq_tol(x[i++], y, t);
+  ck_assert_float_eq_tol(x[i++], y, t);
+
+  i = 4;
+  ck_assert_float_ne_tol(x[i--], y, t);
+  ck_assert_float_ne_tol(x[i--], y, t);
+
+  y = 1.15f;
+
+  i = 1;
+  ck_assert_float_le_tol(x[i++], y, t);
+  ck_assert_float_le_tol(x[i++], y, t);
+
+  i = 4;
+  ck_assert_float_ge_tol(x[i--], y, t);
+  ck_assert_float_ge_tol(x[i--], y, t);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_finite)
+{
+  record_test_name(tcase_name());
+
+  float x = 0.0001f;
+  ck_assert_float_finite(x);
+  // MS VS doesn't allow explicit division by zero
+  float t = 1.0f;
+  x = 1.0f / (1.0f - t);
+  record_failure_line_num(__LINE__);
+  ck_assert_float_finite(x);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_finite_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  float t = 1.0f;
+  float x = 1.0f / (1.0f - t);
+  record_failure_line_num(__LINE__);
+  ck_assert_float_finite(x*(1%d));
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_infinite)
+{
+  record_test_name(tcase_name());
+
+  float t = 1.0f;
+  float x = 1.0f / (1.0f - t);
+  ck_assert_float_infinite(x);
+  x = -1.0f / (1.0f - t);
+  ck_assert_float_infinite(x);
+  x = 0.0f;
+  record_failure_line_num(__LINE__);
+  ck_assert_float_infinite(x);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_infinite_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_float_infinite(2%d);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_nan)
+{
+  record_test_name(tcase_name());
+
+  float t = 1.0f;
+  float x = 0.0f / (1.0f - t);
+  ck_assert_float_nan(x);
+  x = 1.0f / (1.0f - t);
+  record_failure_line_num(__LINE__);
+  ck_assert_float_nan(x);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_nan_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_float_nan(2%d);
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_nonnan)
+{
+  record_test_name(tcase_name());
+
+  float t = 1.0f;
+  float x = 0.0f;
+  ck_assert_float_nonnan(x);
+  // TODO: test with 0.0/0.0 and platform specific output.
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_nonnan_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int s = 2;
+  ck_assert_float_nonnan(2%s);
+  // TODO: test with 0.0/0.0 and platform specific output.
+}
+END_TEST
+
+START_TEST(test_ck_assert_float_nan_and_inf_with_expr)
+{
+  record_test_name(tcase_name());
+
+  float x[] = {0.0f, 0.0f, INFINITY, INFINITY, NAN, NAN, 0.0f, 0.0f, NAN};
+  int i = 0;
+  ck_assert_float_finite(x[i++]);
+  ck_assert_float_finite(x[i++]);
+  ck_assert_float_infinite(x[i++]);
+  ck_assert_float_infinite(x[i++]);
+  ck_assert_float_nan(x[i++]);
+  ck_assert_float_nan(x[i++]);
+  ck_assert_float_nonnan(x[i++]);
+  ck_assert_float_nonnan(x[i++]);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_eq)
+{
+  record_test_name(tcase_name());
+
+  double x = 1.1;
+  double y = 1.1;
+  ck_assert_double_eq(x, y);
+  y+=0.1;
+  record_failure_line_num(__LINE__);
+  ck_assert_double_eq(x, y);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_eq_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_double_eq(3%d, 2%f);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_eq_with_promotion)
+{
+  record_test_name(tcase_name());
+
+  float x = 0.1;
+  double y = x;
+  ck_assert_double_eq(x, y);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_eq_with_conv)
+{
+  record_test_name(tcase_name());
+
+  float x = 0.1;
+  record_failure_line_num(__LINE__);
+  ck_assert_double_eq(x, 0.1);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_ne)
+{
+  record_test_name(tcase_name());
+
+  double x = 1.1;
+  double y = 1.2;
+  ck_assert_double_ne(x, y);
+  y = x;
+  record_failure_line_num(__LINE__);
+  ck_assert_double_ne(x, y);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_ne_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_double_ne(1%d, 1%f);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_lt)
+{
+  record_test_name(tcase_name());
+
+  double x = 2.0;
+  double y = 2.5;
+  ck_assert_double_lt(x, y);
+  y-=1;
+  record_failure_line_num(__LINE__);
+  ck_assert_double_lt(x, y);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_lt_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_double_lt(3%d, 2%f);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_le)
+{
+  record_test_name(tcase_name());
+
+  double x = 2.0;
+  double y = 2.5;
+  ck_assert_double_le(x, y);
+  ck_assert_double_le(x, x);
+  y-=1;
+  record_failure_line_num(__LINE__);
+  ck_assert_double_le(x, y);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_le_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_double_le(3%d, 2%f);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_gt)
+{
+  record_test_name(tcase_name());
+
+  double x = 2.5;
+  double y = 2.0;
+  ck_assert_double_gt(x, y);
+  y+=1;
+  record_failure_line_num(__LINE__);
+  ck_assert_double_gt(x, y);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_gt_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_double_gt(2%d, 3%f);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_ge)
+{
+  record_test_name(tcase_name());
+
+  double x = 2.5;
+  double y = 2.0;
+  ck_assert_double_ge(x, y);
+  ck_assert_double_ge(x, x);
+  y+=1;
+  record_failure_line_num(__LINE__);
+  ck_assert_double_ge(x, y);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_ge_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_double_ge(2%d, 3%f);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_with_expr)
+{
+  record_test_name(tcase_name());
+
+  double x[] = {NAN, 1.1, 1.1, 1.2, 1.2, NAN};
+  double y = 1.1;
+  int i;
+
+  i = 1;
+  ck_assert_double_eq(x[i++], y);
+  ck_assert_double_eq(x[i++], y);
+
+  i = 4;
+  ck_assert_double_ne(x[i--], y);
+  ck_assert_double_ne(x[i--], y);
+
+  y = 1.15;
+
+  i = 1;
+  ck_assert_double_le(x[i++], y);
+  ck_assert_double_le(x[i++], y);
+
+  i = 1;
+  ck_assert_double_lt(x[i++], y);
+  ck_assert_double_lt(x[i++], y);
+
+  i = 4;
+  ck_assert_double_gt(x[i--], y);
+  ck_assert_double_gt(x[i--], y);
+
+  i = 4;
+  ck_assert_double_ge(x[i--], y);
+  ck_assert_double_ge(x[i--], y);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_eq_tol)
+{
+  record_test_name(tcase_name());
+
+  double x = 0.0001;
+  double y = 0.0002;
+  double t = 0.001;
+  ck_assert_double_eq_tol(x, y, t);
+  ck_assert_double_eq_tol(x, x, t);
+  x*=10;
+  y*=10;
+  t*=10;
+  ck_assert_double_eq_tol(x, y, t);
+  t/=10;
+  record_failure_line_num(__LINE__);
+  ck_assert_double_eq_tol(x, y, t);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_eq_tol_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  int p = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_double_eq_tol(3%d, 2%f, 2%p);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_ne_tol)
+{
+  record_test_name(tcase_name());
+
+  double x = 0.0001;
+  double y = 0.0002;
+  double t = 0.0001;
+  ck_assert_double_ne_tol(x, y, t);
+  x*=10;
+  y*=10;
+  t*=10;
+  ck_assert_double_ne_tol(x, y, t);
+  t*=10;
+  record_failure_line_num(__LINE__);
+  ck_assert_double_ne_tol(x, y, t);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_ne_tol_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  int p = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_double_ne_tol(3%d, 3%f, 3%p);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_ge_tol)
+{
+  record_test_name(tcase_name());
+
+  double x = 0.001;
+  double y = 0.003;
+  double t = 0.001;
+  ck_assert_double_ge_tol(y, x, t);
+  ck_assert_double_ge_tol(x, x, t);
+  ck_assert_double_ge_tol(y, y, t);
+  x*=10.0;
+  y*=10.0;
+  t*=10.0;
+  ck_assert_double_ge_tol(y, x, t);
+  ck_assert_double_ge_tol(x, x, t);
+  ck_assert_double_ge_tol(y, y, t);
+  record_failure_line_num(__LINE__);
+  ck_assert_double_ge_tol(x, y, t);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_ge_tol_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  int p = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_double_ge_tol(2%d, 3%f, 3%p);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_le_tol)
+{
+  record_test_name(tcase_name());
+
+  double x = 0.001;
+  double y = 0.003;
+  double t = 0.001;
+  ck_assert_double_le_tol(x, y, t);
+  ck_assert_double_le_tol(x, x, t);
+  ck_assert_double_le_tol(y, y, t);
+  x*=10.0;
+  y*=10.0;
+  t*=10.0;
+  ck_assert_double_le_tol(x, y, t);
+  ck_assert_double_le_tol(x, x, t);
+  ck_assert_double_le_tol(y, y, t);
+  record_failure_line_num(__LINE__);
+  ck_assert_double_le_tol(y, x, t);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_le_tol_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  int p = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_double_le_tol(3%d, 2%f, 3%p);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_tol_with_expr)
+{
+  record_test_name(tcase_name());
+
+  double x[] = {NAN, 1.1, 1.1, 1.2, 1.2, NAN};
+  double y = 1.1;
+  double t = 0.01;
+  int i;
+
+  i = 1;
+  ck_assert_double_eq_tol(x[i++], y, t);
+  ck_assert_double_eq_tol(x[i++], y, t);
+
+  i = 4;
+  ck_assert_double_ne_tol(x[i--], y, t);
+  ck_assert_double_ne_tol(x[i--], y, t);
+
+  y = 1.15;
+
+  i = 1;
+  ck_assert_double_le_tol(x[i++], y, t);
+  ck_assert_double_le_tol(x[i++], y, t);
+
+  i = 4;
+  ck_assert_double_ge_tol(x[i--], y, t);
+  ck_assert_double_ge_tol(x[i--], y, t);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_finite)
+{
+  record_test_name(tcase_name());
+
+  double x = 0.0001;
+  ck_assert_double_finite(x);
+  // MS VS doesn't allow explicit division by zero
+  double t = 1;
+  x = 1.0 / (1.0 - t);
+  record_failure_line_num(__LINE__);
+  ck_assert_double_finite(x);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_finite_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  double t = 1;
+  double x = 1.0 / (1.0 - t);
+  record_failure_line_num(__LINE__);
+  ck_assert_double_finite(x*(1%d));
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_infinite)
+{
+  record_test_name(tcase_name());
+
+  double t = 1;
+  double x = 1.0 / (1.0 - t);
+  ck_assert_double_infinite(x);
+  x = -1.0 / (1.0 - t);
+  ck_assert_double_infinite(x);
+  x = 0;
+  record_failure_line_num(__LINE__);
+  ck_assert_double_infinite(x);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_infinite_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_double_infinite(2%d);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_nan)
+{
+  record_test_name(tcase_name());
+
+  double t = 1;
+  double x = 0.0 / (1.0 - t);
+  ck_assert_double_nan(x);
+  x = 1.0 / (1.0 - t);
+  record_failure_line_num(__LINE__);
+  ck_assert_double_nan(x);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_nan_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_double_nan(2%d);
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_nonnan)
+{
+  record_test_name(tcase_name());
+
+  double t = 1;
+  double x = 0;
+  ck_assert_double_nonnan(x);
+  // TODO: test with 0.0/0.0 and platform specific output.
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_nonnan_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int s = 2;
+  ck_assert_double_nonnan(2%s);
+  // TODO: test with 0.0/0.0 and platform specific output.
+}
+END_TEST
+
+START_TEST(test_ck_assert_double_nan_and_inf_with_expr)
+{
+  record_test_name(tcase_name());
+
+  double x[] = {0.0, 0.0, INFINITY, INFINITY, NAN, NAN, 0.0, 0.0, NAN};
+  int i = 0;
+  ck_assert_double_finite(x[i++]);
+  ck_assert_double_finite(x[i++]);
+  ck_assert_double_infinite(x[i++]);
+  ck_assert_double_infinite(x[i++]);
+  ck_assert_double_nan(x[i++]);
+  ck_assert_double_nan(x[i++]);
+  ck_assert_double_nonnan(x[i++]);
+  ck_assert_double_nonnan(x[i++]);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_eq)
+{
+  record_test_name(tcase_name());
+
+  long double x = 1.1l;
+  long double y = 1.1l;
+  ck_assert_ldouble_eq(x, y);
+  y+=0.1l;
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_eq(x, y);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_eq_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_eq(3%d, 2%f);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_eq_with_promotion)
+{
+  record_test_name(tcase_name());
+
+  float x = 1.1;
+  long double y = x;
+  ck_assert_ldouble_eq(x, y);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_eq_with_conv)
+{
+  record_test_name(tcase_name());
+
+  float x = 1.1;
+  long double y = x;
+  ck_assert_ldouble_eq(x, y);
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_eq(x, 1.1);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_ne)
+{
+  record_test_name(tcase_name());
+
+  long double x = 1.1l;
+  long double y = 1.2l;
+  ck_assert_ldouble_ne(x, y);
+  y = x;
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_ne(x, y);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_ne_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_ne(1%d, 1%f);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_lt)
+{
+  record_test_name(tcase_name());
+
+  long double x = 2.0l;
+  long double y = 2.5l;
+  ck_assert_ldouble_lt(x, y);
+  y-=1.0l;
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_lt(x, y);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_lt_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_lt(3%d, 2%f);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_le)
+{
+  record_test_name(tcase_name());
+
+  long double x = 2.0l;
+  long double y = 2.5l;
+  ck_assert_ldouble_le(x, y);
+  ck_assert_ldouble_le(x, x);
+  y-=1.0l;
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_le(x, y);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_le_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_le(3%d, 2%f);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_gt)
+{
+  record_test_name(tcase_name());
+
+  long double x = 2.5l;
+  long double y = 2.0l;
+  ck_assert_ldouble_gt(x, y);
+  y+=1.0l;
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_gt(x, y);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_gt_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_gt(2%d, 3%f);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_ge)
+{
+  record_test_name(tcase_name());
+
+  long double x = 2.5l;
+  long double y = 2.0l;
+  ck_assert_ldouble_ge(x, y);
+  ck_assert_ldouble_ge(x, x);
+  y+=1.0l;
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_ge(x, y);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_ge_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_ge(2%d, 3%f);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_with_expr)
+{
+  record_test_name(tcase_name());
+
+  long double x[] = {NAN, 1.1l, 1.1l, 1.2l, 1.2l, NAN};
+  long double y = 1.1l;
+  int i;
+
+  i = 1;
+  ck_assert_ldouble_eq(x[i++], y);
+  ck_assert_ldouble_eq(x[i++], y);
+
+  i = 4;
+  ck_assert_ldouble_ne(x[i--], y);
+  ck_assert_ldouble_ne(x[i--], y);
+
+  y = 1.15l;
+
+  i = 1;
+  ck_assert_ldouble_le(x[i++], y);
+  ck_assert_ldouble_le(x[i++], y);
+
+  i = 1;
+  ck_assert_ldouble_lt(x[i++], y);
+  ck_assert_ldouble_lt(x[i++], y);
+
+  i = 4;
+  ck_assert_ldouble_gt(x[i--], y);
+  ck_assert_ldouble_gt(x[i--], y);
+
+  i = 4;
+  ck_assert_ldouble_ge(x[i--], y);
+  ck_assert_ldouble_ge(x[i--], y);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_eq_tol)
+{
+  record_test_name(tcase_name());
+
+  long double x = 0.0001l;
+  long double y = 0.0002l;
+  long double t = 0.001l;
+  ck_assert_ldouble_eq_tol(x, y, t);
+  ck_assert_ldouble_eq_tol(x, x, t);
+  x*=10.0l;
+  y*=10.0l;
+  t*=10.0l;
+  ck_assert_ldouble_eq_tol(x, y, t);
+  t/=10.0l;
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_eq_tol(x, y, t);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_eq_tol_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  int p = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_eq_tol(3%d, 2%f, 2%p);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_ne_tol)
+{
+  record_test_name(tcase_name());
+
+  long double x = 0.0001l;
+  long double y = 0.0002l;
+  long double t = 0.0001l;
+  ck_assert_ldouble_ne_tol(x, y, t);
+  x*=10.0l;
+  y*=10.0l;
+  t*=10.0l;
+  ck_assert_ldouble_ne_tol(x, y, t);
+  t*=10.0l;
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_ne_tol(x, y, t);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_ne_tol_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  int p = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_ne_tol(3%d, 3%f, 3%p);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_ge_tol)
+{
+  record_test_name(tcase_name());
+
+  long double x = 0.001l;
+  long double y = 0.003l;
+  long double t = 0.001l;
+  ck_assert_ldouble_ge_tol(y, x, t);
+  ck_assert_ldouble_ge_tol(x, x, t);
+  ck_assert_ldouble_ge_tol(y, y, t);
+  x*=10.0l;
+  y*=10.0l;
+  t*=10.0l;
+  ck_assert_ldouble_ge_tol(y, x, t);
+  ck_assert_ldouble_ge_tol(x, x, t);
+  ck_assert_ldouble_ge_tol(y, y, t);
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_ge_tol(x, y, t);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_ge_tol_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  int p = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_ge_tol(2%d, 3%f, 3%p);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_le_tol)
+{
+  record_test_name(tcase_name());
+
+  long double x = 0.001l;
+  long double y = 0.003l;
+  long double t = 0.001l;
+  ck_assert_ldouble_le_tol(x, y, t);
+  ck_assert_ldouble_le_tol(x, x, t);
+  ck_assert_ldouble_le_tol(y, y, t);
+  x*=10.0l;
+  y*=10.0l;
+  t*=10.0l;
+  ck_assert_ldouble_le_tol(x, y, t);
+  ck_assert_ldouble_le_tol(x, x, t);
+  ck_assert_ldouble_le_tol(y, y, t);
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_le_tol(y, x, t);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_le_tol_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  int f = 2;
+  int p = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_le_tol(3%d, 2%f, 3%p);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_tol_with_expr)
+{
+  record_test_name(tcase_name());
+
+  long double x[] = {NAN, 1.1l, 1.1l, 1.2l, 1.2l, NAN};
+  long double y = 1.1l;
+  long double t = 0.01l;
+  int i;
+
+  i = 1;
+  ck_assert_ldouble_eq_tol(x[i++], y, t);
+  ck_assert_ldouble_eq_tol(x[i++], y, t);
+
+  i = 4;
+  ck_assert_ldouble_ne_tol(x[i--], y, t);
+  ck_assert_ldouble_ne_tol(x[i--], y, t);
+
+  y = 1.15l;
+
+  i = 1;
+  ck_assert_ldouble_le_tol(x[i++], y, t);
+  ck_assert_ldouble_le_tol(x[i++], y, t);
+
+  i = 4;
+  ck_assert_ldouble_ge_tol(x[i--], y, t);
+  ck_assert_ldouble_ge_tol(x[i--], y, t);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_finite)
+{
+  record_test_name(tcase_name());
+
+  long double x = 0.0001l;
+  ck_assert_ldouble_finite(x);
+  // MS VS doesn't allow explicit division by zero
+  long double t = 1.0l;
+  x = 1.0l / (1.0l - t);
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_finite(x);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_finite_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  long double t = 1.0l;
+  long double x = 1.0l / (1.0l - t);
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_finite(x*(1%d));
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_infinite)
+{
+  record_test_name(tcase_name());
+
+  long double t = 1.0l;
+  long double x = 1.0l / (1.0l - t);
+  ck_assert_ldouble_infinite(x);
+  x = -1.0l / (1.0l - t);
+  ck_assert_ldouble_infinite(x);
+  x = 0.0l;
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_infinite(x);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_infinite_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_infinite(2%d);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_nan)
+{
+  record_test_name(tcase_name());
+
+  long double t = 1.0l;
+  long double x = 0.0l / (1.0l - t);
+  ck_assert_ldouble_nan(x);
+  x = 1.0l / (1.0l - t);
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_nan(x);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_nan_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int d = 2;
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_nan(2%d);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_nonnan)
+{
+  record_test_name(tcase_name());
+
+  long double t = 1.0l;
+  long double x = 0.0l;
+  ck_assert_ldouble_nonnan(x);
+  // TODO: test with 0.0/0.0 and platform specific output.
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_nonnan_with_mod)
+{
+  record_test_name(tcase_name());
+
+  int s = 2;
+  ck_assert_ldouble_nonnan(2%s);
+  // TODO: test with 0.0/0.0 and platform specific output.
+}
+END_TEST
+
+START_TEST(test_ck_assert_ldouble_nan_and_inf_with_expr)
+{
+  record_test_name(tcase_name());
+
+  long double x[] = {0.0l, 0.0l, INFINITY, INFINITY, NAN, NAN, 0.0l, 0.0l, NAN};
+  int i = 0;
+  ck_assert_ldouble_finite(x[i++]);
+  ck_assert_ldouble_finite(x[i++]);
+  ck_assert_ldouble_infinite(x[i++]);
+  ck_assert_ldouble_infinite(x[i++]);
+  ck_assert_ldouble_nan(x[i++]);
+  ck_assert_ldouble_nan(x[i++]);
+  ck_assert_ldouble_nonnan(x[i++]);
+  ck_assert_ldouble_nonnan(x[i++]);
+}
+END_TEST
+
 int returnsZero(const char* argument);
 int returnsZero(const char* argument)
 {
@@ -1287,6 +2679,103 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_simple, test_ck_assert_uint_ge);
   tcase_add_test (tc_simple, test_ck_assert_uint_ge_with_mod);
   tcase_add_test (tc_simple, test_ck_assert_uint_expr);
+  tcase_add_test (tc_simple, test_ck_assert_float_eq);
+  tcase_add_test (tc_simple, test_ck_assert_float_eq_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_float_ne);
+  tcase_add_test (tc_simple, test_ck_assert_float_ne_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_float_lt);
+  tcase_add_test (tc_simple, test_ck_assert_float_lt_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_float_le);
+  tcase_add_test (tc_simple, test_ck_assert_float_le_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_float_gt);
+  tcase_add_test (tc_simple, test_ck_assert_float_gt_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_float_ge);
+  tcase_add_test (tc_simple, test_ck_assert_float_ge_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_float_with_expr);
+  tcase_add_test (tc_simple, test_ck_assert_float_eq_tol);
+  tcase_add_test (tc_simple, test_ck_assert_float_eq_tol_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_float_ne_tol);
+  tcase_add_test (tc_simple, test_ck_assert_float_ne_tol_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_float_ge_tol);
+  tcase_add_test (tc_simple, test_ck_assert_float_ge_tol_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_float_le_tol);
+  tcase_add_test (tc_simple, test_ck_assert_float_le_tol_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_float_tol_with_expr);
+  tcase_add_test (tc_simple, test_ck_assert_float_finite);
+  tcase_add_test (tc_simple, test_ck_assert_float_finite_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_float_infinite);
+  tcase_add_test (tc_simple, test_ck_assert_float_infinite_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_float_nan);
+  tcase_add_test (tc_simple, test_ck_assert_float_nan_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_float_nonnan);
+  tcase_add_test (tc_simple, test_ck_assert_float_nonnan_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_float_nan_and_inf_with_expr);
+  tcase_add_test (tc_simple, test_ck_assert_double_eq);
+  tcase_add_test (tc_simple, test_ck_assert_double_eq_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_double_eq_with_promotion);
+  tcase_add_test (tc_simple, test_ck_assert_double_eq_with_conv);
+  tcase_add_test (tc_simple, test_ck_assert_double_ne);
+  tcase_add_test (tc_simple, test_ck_assert_double_ne_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_double_lt);
+  tcase_add_test (tc_simple, test_ck_assert_double_lt_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_double_le);
+  tcase_add_test (tc_simple, test_ck_assert_double_le_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_double_gt);
+  tcase_add_test (tc_simple, test_ck_assert_double_gt_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_double_ge);
+  tcase_add_test (tc_simple, test_ck_assert_double_ge_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_double_with_expr);
+  tcase_add_test (tc_simple, test_ck_assert_double_eq_tol);
+  tcase_add_test (tc_simple, test_ck_assert_double_eq_tol_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_double_ne_tol);
+  tcase_add_test (tc_simple, test_ck_assert_double_ne_tol_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_double_ge_tol);
+  tcase_add_test (tc_simple, test_ck_assert_double_ge_tol_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_double_le_tol);
+  tcase_add_test (tc_simple, test_ck_assert_double_le_tol_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_double_tol_with_expr);
+  tcase_add_test (tc_simple, test_ck_assert_double_finite);
+  tcase_add_test (tc_simple, test_ck_assert_double_finite_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_double_infinite);
+  tcase_add_test (tc_simple, test_ck_assert_double_infinite_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_double_nan);
+  tcase_add_test (tc_simple, test_ck_assert_double_nan_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_double_nonnan);
+  tcase_add_test (tc_simple, test_ck_assert_double_nonnan_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_double_nan_and_inf_with_expr);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_eq);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_eq_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_eq_with_promotion);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_eq_with_conv);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_ne);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_ne_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_lt);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_lt_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_le);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_le_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_gt);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_gt_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_ge);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_ge_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_with_expr);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_eq_tol);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_eq_tol_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_ne_tol);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_ne_tol_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_ge_tol);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_ge_tol_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_le_tol);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_le_tol_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_tol_with_expr);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_finite);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_finite_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_infinite);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_infinite_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_nan);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_nan_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_nonnan);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_nonnan_with_mod);
+  tcase_add_test (tc_simple, test_ck_assert_ldouble_nan_and_inf_with_expr);
   tcase_add_test (tc_simple, test_percent_n_escaped);
   tcase_add_test (tc_simple, test_ck_assert_str_eq);
   tcase_add_test (tc_simple, test_ck_assert_str_ne);
