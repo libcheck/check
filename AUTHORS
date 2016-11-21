@@ -114,6 +114,8 @@ Contributors:
         (Visual Studio 2015 build fixes)
     Jan Pokorny
         (corner case segfault fix)
+    Dotsenko Andrey Nikolaevich
+        (floating point comparison macros ck_assert_floating_*)
 
 Anybody who has contributed code to Check or Check's build system is
 considered an author.  Submit a pull request of this file or send
