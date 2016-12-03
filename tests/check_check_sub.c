@@ -1907,19 +1907,32 @@ START_TEST(test_percent_n_escaped)
 
 START_TEST(test_ck_assert_str_eq)
 {
-  const char *s = "test2";
   record_test_name(tcase_name());
+
+  const char *s = "test2";
   ck_assert_str_eq("test2", s);
   record_failure_line_num(__LINE__);
   ck_assert_str_eq("test1", s);
 }
 END_TEST
 
+START_TEST(test_ck_assert_str_eq_with_null)
+{
+  record_test_name(tcase_name());
+
+  const char *s = NULL;
+  const char *t = NULL;
+  record_failure_line_num(__LINE__);
+  ck_assert_str_eq(t, s);
+}
+END_TEST
+
 START_TEST(test_ck_assert_str_ne)
 {
+  record_test_name(tcase_name());
+
   const char *s = "test2";
   const char *t = "test1";
-  record_test_name(tcase_name());
   ck_assert_str_ne(t, s);
   t = "test2";
   record_failure_line_num(__LINE__);
@@ -1927,22 +1940,46 @@ START_TEST(test_ck_assert_str_ne)
 }
 END_TEST
 
+START_TEST(test_ck_assert_str_ne_with_null)
+{
+  record_test_name(tcase_name());
+
+  const char *s = NULL;
+  const char *t = "test";
+  record_failure_line_num(__LINE__);
+  ck_assert_str_ne(t, s);
+}
+END_TEST
+
 START_TEST(test_ck_assert_str_lt)
 {
+  record_test_name(tcase_name());
+
   const char *s = "test1";
   const char *t = "test2";
-  record_test_name(tcase_name());
   ck_assert_str_lt(s, t);
   record_failure_line_num(__LINE__);
   ck_assert_str_lt(s, s);
 }
 END_TEST
 
+START_TEST(test_ck_assert_str_lt_with_null)
+{
+  record_test_name(tcase_name());
+
+  const char *s = NULL;
+  const char *t = "test";
+  record_failure_line_num(__LINE__);
+  ck_assert_str_lt(s, t);
+}
+END_TEST
+
 START_TEST(test_ck_assert_str_le)
 {
+  record_test_name(tcase_name());
+
   const char *s = "test1";
   const char *t = "test2";
-  record_test_name(tcase_name());
   ck_assert_str_le(s, t);
   ck_assert_str_le(s, s);
   record_failure_line_num(__LINE__);
@@ -1950,22 +1987,46 @@ START_TEST(test_ck_assert_str_le)
 }
 END_TEST
 
+START_TEST(test_ck_assert_str_le_with_null)
+{
+  record_test_name(tcase_name());
+
+  const char *s = NULL;
+  const char *t = NULL;
+  record_failure_line_num(__LINE__);
+  ck_assert_str_le(t, s);
+}
+END_TEST
+
 START_TEST(test_ck_assert_str_gt)
 {
+  record_test_name(tcase_name());
+
   const char *s = "test1";
   const char *t = "test2";
-  record_test_name(tcase_name());
   ck_assert_str_gt(t, s);
   record_failure_line_num(__LINE__);
   ck_assert_str_gt(t, t);
 }
 END_TEST
 
+START_TEST(test_ck_assert_str_gt_with_null)
+{
+  record_test_name(tcase_name());
+
+  const char *s = NULL;
+  const char *t = "test";
+  record_failure_line_num(__LINE__);
+  ck_assert_str_gt(t, s);
+}
+END_TEST
+
 START_TEST(test_ck_assert_str_ge)
 {
+  record_test_name(tcase_name());
+
   const char *s = "test1";
   const char *t = "test2";
-  record_test_name(tcase_name());
   ck_assert_str_ge(t, s);
   ck_assert_str_ge(t, t);
   record_failure_line_num(__LINE__);
@@ -1973,11 +2034,23 @@ START_TEST(test_ck_assert_str_ge)
 }
 END_TEST
 
+START_TEST(test_ck_assert_str_ge_with_null)
+{
+  record_test_name(tcase_name());
+
+  const char *s = NULL;
+  const char *t = NULL;
+  record_failure_line_num(__LINE__);
+  ck_assert_str_ge(s, t);
+}
+END_TEST
+
 START_TEST(test_ck_assert_str_expr)
 {
+  record_test_name(tcase_name());
+
   const char *s = "test1";
   const char *t[] = { "test1", "test2" };
-  record_test_name(tcase_name());
   int i = -1;
   ck_assert_str_eq(s, t[++i]);
   ck_assert_str_eq(s, t[i]);
@@ -2778,11 +2851,17 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_simple, test_ck_assert_ldouble_nan_and_inf_with_expr);
   tcase_add_test (tc_simple, test_percent_n_escaped);
   tcase_add_test (tc_simple, test_ck_assert_str_eq);
+  tcase_add_test (tc_simple, test_ck_assert_str_eq_with_null);
   tcase_add_test (tc_simple, test_ck_assert_str_ne);
+  tcase_add_test (tc_simple, test_ck_assert_str_ne_with_null);
   tcase_add_test (tc_simple, test_ck_assert_str_lt);
+  tcase_add_test (tc_simple, test_ck_assert_str_lt_with_null);
   tcase_add_test (tc_simple, test_ck_assert_str_le);
+  tcase_add_test (tc_simple, test_ck_assert_str_le_with_null);
   tcase_add_test (tc_simple, test_ck_assert_str_gt);
+  tcase_add_test (tc_simple, test_ck_assert_str_gt_with_null);
   tcase_add_test (tc_simple, test_ck_assert_str_ge);
+  tcase_add_test (tc_simple, test_ck_assert_str_ge_with_null);
   tcase_add_test (tc_simple, test_ck_assert_str_expr);
   tcase_add_test (tc_simple, test_ck_assert_ptr_eq);
   tcase_add_test (tc_simple, test_ck_assert_ptr_ne);
