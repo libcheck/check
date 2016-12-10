@@ -1487,6 +1487,46 @@ do { \
  */
 #define ck_assert_str_ge(X, Y) _ck_assert_str(X, >=, Y, 0, 0)
 
+/**
+ * Check two strings to determine if 0==strcmp(X,Y) or if both are undefined 
+ *
+ * If both X and Y are NULL the test passes. However, if only one is NULL
+ * the test fails.
+ * If not ((X==NULL)&&(Y==NULL)) || (0==strcmp(X,Y)), the test fails.
+ *
+ * @param X string
+ * @param Y string to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_pstr_eq(X, Y) _ck_assert_str(X, ==, Y, 1, 0)
+
+/**
+ * Check two strings to determine if 0!=strcmp(X,Y) or one of them is undefined
+ *
+ * If either X or Y is NULL the test passes, however if both are NULL
+ * the test fails.
+ * If not (X!=NULL)&&(Y!=NULL)&&(0!=strcmp(X,Y)), the test fails.
+ *
+ * @param X string
+ * @param Y string to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_pstr_ne(X, Y) _ck_assert_str(X, !=, Y, 0, 1)
+
+/* Memory location comparison macros with improved output compared to ck_assert() */
+/* OP might be any operator that can be used in '0 OP memcmp(X,Y,L)' comparison */
+/* The x and y parameter swap in memcmp() is needed to handle >, >=, <, <= operators */
+/* Output is limited to CK_MAX_ASSERT_MEM_PRINT_SIZE bytes */
+#ifndef CK_MAX_ASSERT_MEM_PRINT_SIZE
+#define CK_MAX_ASSERT_MEM_PRINT_SIZE 64
+#endif
+
 /* Memory location comparison macros with improved output compared to ck_assert() */
 /* OP might be any operator that can be used in '0 OP memcmp(X,Y,L)' comparison */
 /* The x and y parameter swap in memcmp() is needed to handle >, >=, <, <= operators */
