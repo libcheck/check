@@ -1204,6 +1204,16 @@ operator is again indicated by last two letters of the function name.
 of the character string @code{a} is less than that of @code{b}.
 If a NULL pointer would be passed to any comparison macro than check would fail.
 
+@item ck_assert_pstr_eq
+@itemx ck_assert_pstr_ne
+
+Similar to @code{ck_assert_str_*} macros, but able to check undefined strings.
+If a NULL pointer would be passed to a comparison macro it would mean that
+a string is undefined. If both strings are undefined @code{ck_assert_pstr_eq}
+would pass, but @code{ck_assert_pstr_ne} would fail. If only one of strings is
+undefined @code{ck_assert_pstr_eq} macro would fail and @code{ck_assert_pstr_ne}
+would pass.
+
 @item ck_assert_ptr_eq
 @itemx ck_assert_ptr_ne
 
