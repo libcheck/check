@@ -1362,18 +1362,46 @@ do { \
 #define ck_assert_ldouble_nonnan(X) _ck_assert_floating_nonnan(X, long double, "L")
 
 /* String comparison macros with improved output compared to ck_assert() */
-/* OP might be any operator that can be used in '0 OP strcmp(X,Y)' comparison */
-/* The x and y parameter swap in strcmp() is needed to handle >, >=, <, <= operators */
-#define _ck_assert_str(X, OP, Y) do { \
+/* OP might be any operator that can be used in '0 OP strcmp(X,Y)' comparison. */
+/* String pointer could be compared againts NULL with == (NULLEQ = 1) and != (NULLNE = 1) operators. */
+/* The x and y parameter swap in strcmp() is needed to handle >, >=, <, <= operators. */
+/* If the x or y parameter is NULL its value will be printed without quotes. */
+#define _ck_assert_str(X, OP, Y, NULLEQ, NULLNE) do { \
   const char* _ck_x = (X); \
   const char* _ck_y = (Y); \
-  ck_assert_msg(0 OP strcmp(_ck_y, _ck_x), \
-    "Assertion '%s' failed: %s == \"%s\", %s == \"%s\"", #X" "#OP" "#Y, #X, _ck_x, #Y, _ck_y); \
+  const char* _ck_x_s; \
+  const char* _ck_y_s; \
+  const char* _ck_x_q; \
+  const char* _ck_y_q; \
+  if (_ck_x != NULL) { \
+    _ck_x_q = "\""; \
+    _ck_x_s = _ck_x; \
+  } else { \
+    _ck_x_q = ""; \
+    _ck_x_s = "(null)"; \
+  } \
+  if (_ck_y != NULL) { \
+    _ck_y_q = "\""; \
+    _ck_y_s = _ck_y; \
+  } else { \
+    _ck_y_q = ""; \
+    _ck_y_s = "(null)"; \
+  } \
+  ck_assert_msg( \
+    (NULLEQ && (_ck_x == NULL) && (_ck_y == NULL)) || \
+    (NULLNE && ((_ck_x == NULL) || (_ck_y == NULL)) && (_ck_x != _ck_y)) || \
+    ((_ck_x != NULL) && (_ck_y != NULL) && (0 OP strcmp(_ck_y, _ck_x))), \
+    "Assertion '%s' failed: %s == %s%s%s, %s == %s%s%s", \
+    #X" "#OP" "#Y, \
+    #X, _ck_x_q, _ck_x_s, _ck_x_q, \
+    #Y, _ck_y_q, _ck_y_s, _ck_y_q); \
 } while (0)
+
 /**
  * Check two strings to determine if 0==strcmp(X,Y)
  *
- * If not 0==strcmp(X,Y), the test fails.
+ * If X or Y is NULL the test failes.
+ * If (0==strcmp(X,Y)), the test fails.
  *
  * @param X string
  * @param Y string to compare against X
@@ -1382,10 +1410,12 @@ do { \
  *
  * @since 0.9.6
  */
-#define ck_assert_str_eq(X, Y) _ck_assert_str(X, ==, Y)
+#define ck_assert_str_eq(X, Y) _ck_assert_str(X, ==, Y, 0, 0)
+
 /**
  * Check two strings to determine if 0!=strcmp(X,Y)
  *
+ * If X or Y is NULL the test fails.
  * If not 0!=strcmp(X,Y), the test fails.
  *
  * @param X string
@@ -1395,10 +1425,12 @@ do { \
  *
  * @since 0.9.6
  */
-#define ck_assert_str_ne(X, Y) _ck_assert_str(X, !=, Y)
+#define ck_assert_str_ne(X, Y) _ck_assert_str(X, !=, Y, 0, 0)
+
 /**
  * Check two strings to determine if 0<strcmp(X,Y), (e.g. strcmp(X,Y)>0)
  *
+ * If X or Y is NULL the test fails.
  * If not 0<strcmp(X,Y), the test fails.
  *
  * @param X string
@@ -1408,10 +1440,12 @@ do { \
  *
  * @since 0.9.10
  */
-#define ck_assert_str_lt(X, Y) _ck_assert_str(X, <, Y)
+#define ck_assert_str_lt(X, Y) _ck_assert_str(X, <, Y, 0, 0)
+
 /**
  * Check two strings to determine if 0<=strcmp(X,Y) (e.g. strcmp(X,Y)>=0)
  *
+ * If X or Y is NULL the test fails.
  * If not 0<=strcmp(X,Y), the test fails.
  *
  * @param X string
@@ -1421,10 +1455,12 @@ do { \
  *
  * @since 0.9.10
  */
-#define ck_assert_str_le(X, Y) _ck_assert_str(X, <=, Y)
+#define ck_assert_str_le(X, Y) _ck_assert_str(X, <=, Y, 0, 0)
+
 /**
  * Check two strings to determine if 0<strcmp(X,Y) (e.g. strcmp(X,Y)>0)
  *
+ * If X or Y is NULL the test fails.
  * If not 0<strcmp(X,Y), the test fails.
  *
  * @param X string
@@ -1434,10 +1470,12 @@ do { \
  *
  * @since 0.9.10
  */
-#define ck_assert_str_gt(X, Y) _ck_assert_str(X, >, Y)
+#define ck_assert_str_gt(X, Y) _ck_assert_str(X, >, Y, 0, 0)
+
 /**
  * Check two strings to determine if 0>=strcmp(X,Y) (e.g. strcmp(X,Y)<=0)
  *
+ * If X or Y is NULL the test fails.
  * If not 0>=strcmp(X,Y), the test fails.
  *
  * @param X string
@@ -1447,7 +1485,7 @@ do { \
  *
  * @since 0.9.10
  */
-#define ck_assert_str_ge(X, Y) _ck_assert_str(X, >=, Y)
+#define ck_assert_str_ge(X, Y) _ck_assert_str(X, >=, Y, 0, 0)
 
 /* Memory location comparison macros with improved output compared to ck_assert() */
 /* OP might be any operator that can be used in '0 OP memcmp(X,Y,L)' comparison */
