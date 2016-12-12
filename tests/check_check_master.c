@@ -230,6 +230,8 @@ static master_test_t master_tests[] = {
   { "Simple Tests", "test_ck_assert_pstr_ne_with_null", CK_FAILURE, "Assertion 't != s' failed: t == (null), s == (null)" },
   { "Simple Tests", "test_ck_assert_ptr_eq", CK_FAILURE, "Assertion 'x == y' failed: x == 0x1, y == 0x2" },
   { "Simple Tests", "test_ck_assert_ptr_ne", CK_FAILURE, "Assertion 'x != z' failed: x == 0x1, z == 0x1" },
+  { "Simple Tests", "test_ck_assert_ptr_null", CK_FAILURE, "Assertion 'x == NULL' failed: x == 0x1" },
+  { "Simple Tests", "test_ck_assert_ptr_nonnull", CK_FAILURE, "Assertion 'x != NULL' failed: x == 0" },
   { "Simple Tests", "test_ck_assert_mem_eq", CK_FAILURE, "Assertion '\"\\x00\\x00\\x00\\x00\\x01\" == s' failed: \"\\x00\\x00\\x00\\x00\\x01\" == \"0000000001\", s == \"0000000002\"" },
   { "Simple Tests", "test_ck_assert_mem_ne", CK_FAILURE, "Assertion 't != s' failed: t == \"0000000002\", s == \"0000000002\"" },
   { "Simple Tests", "test_ck_assert_mem_lt", CK_FAILURE, "Assertion 's < s' failed: s == \"0000000001\", s == \"0000000001\"" },

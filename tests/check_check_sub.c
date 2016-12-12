@@ -2131,6 +2131,30 @@ START_TEST(test_ck_assert_ptr_ne)
 }
 END_TEST
 
+START_TEST(test_ck_assert_ptr_null)
+{
+  record_test_name(tcase_name());
+
+  void* x = (void*)0x1;
+  void* y = NULL;
+  ck_assert_ptr_null(y);
+  record_failure_line_num(__LINE__);
+  ck_assert_ptr_null(x);
+}
+END_TEST
+
+START_TEST(test_ck_assert_ptr_nonnull)
+{
+  record_test_name(tcase_name());
+
+  void* x = NULL;
+  void* y = (void*)0x1;
+  ck_assert_ptr_nonnull(y);
+  record_failure_line_num(__LINE__);
+  ck_assert_ptr_nonnull(x);
+}
+END_TEST
+
 START_TEST(test_ck_assert_mem_eq)
 {
   const char *s = "\x00\x00\x00\x00\x02";
@@ -2917,6 +2941,8 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_simple, test_ck_assert_pstr_ne_with_null);
   tcase_add_test (tc_simple, test_ck_assert_ptr_eq);
   tcase_add_test (tc_simple, test_ck_assert_ptr_ne);
+  tcase_add_test (tc_simple, test_ck_assert_ptr_null);
+  tcase_add_test (tc_simple, test_ck_assert_ptr_nonnull);
   tcase_add_test (tc_simple, test_ck_assert_mem_eq);
   tcase_add_test (tc_simple, test_ck_assert_mem_ne);
   tcase_add_test (tc_simple, test_ck_assert_mem_lt);
