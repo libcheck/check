@@ -2057,6 +2057,54 @@ START_TEST(test_ck_assert_str_expr)
 }
 END_TEST
 
+START_TEST(test_ck_assert_pstr_eq)
+{
+  record_test_name(tcase_name());
+
+  const char *s = "test";
+  ck_assert_pstr_eq("test", s);
+  ck_assert_pstr_eq(NULL, NULL);
+  record_failure_line_num(__LINE__);
+  ck_assert_pstr_eq("test1", s);
+}
+END_TEST
+
+START_TEST(test_ck_assert_pstr_eq_with_null)
+{
+  record_test_name(tcase_name());
+
+  const char *t = "test";
+  const char *s = NULL;
+  record_failure_line_num(__LINE__);
+  ck_assert_pstr_eq(t, s);
+}
+END_TEST
+
+START_TEST(test_ck_assert_pstr_ne)
+{
+  record_test_name(tcase_name());
+
+  const char *t = "test1";
+  const char *s = "test2";
+  ck_assert_pstr_ne(t, s);
+  ck_assert_pstr_ne(t, NULL);
+  t = "test2";
+  record_failure_line_num(__LINE__);
+  ck_assert_pstr_ne(t, s);
+}
+END_TEST
+
+START_TEST(test_ck_assert_pstr_ne_with_null)
+{
+  record_test_name(tcase_name());
+
+  const char *s = NULL;
+  const char *t = NULL;
+  record_failure_line_num(__LINE__);
+  ck_assert_pstr_ne(t, s);
+}
+END_TEST
+
 START_TEST(test_ck_assert_ptr_eq)
 {
   int * x = (int*)0x1;
@@ -2863,6 +2911,10 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_simple, test_ck_assert_str_ge);
   tcase_add_test (tc_simple, test_ck_assert_str_ge_with_null);
   tcase_add_test (tc_simple, test_ck_assert_str_expr);
+  tcase_add_test (tc_simple, test_ck_assert_pstr_eq);
+  tcase_add_test (tc_simple, test_ck_assert_pstr_eq_with_null);
+  tcase_add_test (tc_simple, test_ck_assert_pstr_ne);
+  tcase_add_test (tc_simple, test_ck_assert_pstr_ne_with_null);
   tcase_add_test (tc_simple, test_ck_assert_ptr_eq);
   tcase_add_test (tc_simple, test_ck_assert_ptr_ne);
   tcase_add_test (tc_simple, test_ck_assert_mem_eq);
