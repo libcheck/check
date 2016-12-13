@@ -14,6 +14,30 @@ In Development:
   allow build output to be reproducible.
   Bug #112
 
+* Use double slash for regular expressions in checkmk for better Solaris support.
+
+* Improve CMake build files for better Visual Studio 2015 support.
+  Pull Request #19
+
+* Fix potential SIGSEGV in Check related to the disk filling up during a test.
+  Pull Request #21
+
+* Support added for applying tags to test cases and selectively running
+  test cases based on tags.
+  Pull Request #44
+
+* Macros for comparing memory regions (ck_assert_mem_eq, ck_assert_mem_ne)
+  have been added.
+  Pull Request #64
+
+* Macros for comparing floating point numbers have been added.
+  Pull Request #69
+
+* Macros for comparing string, but allowing for NULL (ck_assert_pstr_eq,
+  ck_assert_pstr_ne) have been added.
+  Pull Request #80
+
+
 Sun Aug 2, 2015: Released Check 0.10.0
   based on r1217 (2015-08-02 19:21:14 +0000)
 
