@@ -1223,6 +1223,17 @@ used for comparison is different for each function and is indicated by
 the last two letters of the function name.  The abbreviations @code{eq} and
 @code{ne} correspond to @code{==} and @code{!=} respectively.
 
+@item ck_assert_ptr_null
+@itemx ck_assert_ptr_nonnull
+
+Compares a pointers against null and displays predefined message with
+condition and value of the input parameter on failure.
+@code{ck_assert_ptr_null} checks that pointer is equal to NULL and
+@code{ck_assert_ptr_nonnull} checks that pointer is not equal to NULL.
+@code{ck_assert_ptr_nonnull} is highly recommended to use in situations
+when a function call can return NULL as error indication (like functions
+that use malloc, calloc, strdup, mmap, etc).
+
 @item ck_assert_mem_eq
 @itemx ck_assert_mem_ne
 @itemx ck_assert_mem_lt
