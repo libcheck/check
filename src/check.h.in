@@ -1571,7 +1571,7 @@ do { \
  *
  * @note If the check fails, the remaining of the test is aborted
  *
- * @since 0.10.1
+ * @since 0.11.0
  */
 #define ck_assert_mem_eq(X, Y, L) _ck_assert_mem(X, ==, Y, L)
 /**
@@ -1584,7 +1584,7 @@ do { \
  *
  * @note If the check fails, the remaining of the test is aborted
  *
- * @since 0.10.1
+ * @since 0.11.0
  */
 #define ck_assert_mem_ne(X, Y, L) _ck_assert_mem(X, !=, Y, L)
 /**
@@ -1597,7 +1597,7 @@ do { \
  *
  * @note If the check fails, the remaining of the test is aborted
  *
- * @since 0.10.1
+ * @since 0.11.0
  */
 #define ck_assert_mem_lt(X, Y, L) _ck_assert_mem(X, <, Y, L)
 /**
@@ -1610,7 +1610,7 @@ do { \
  *
  * @note If the check fails, the remaining of the test is aborted
  *
- * @since 0.10.1
+ * @since 0.11.0
  */
 #define ck_assert_mem_le(X, Y, L) _ck_assert_mem(X, <=, Y, L)
 /**
@@ -1623,7 +1623,7 @@ do { \
  *
  * @note If the check fails, the remaining of the test is aborted
  *
- * @since 0.10.1
+ * @since 0.11.0
  */
 #define ck_assert_mem_gt(X, Y, L) _ck_assert_mem(X, >, Y, L)
 /**
@@ -1636,7 +1636,7 @@ do { \
  *
  * @note If the check fails, the remaining of the test is aborted
  *
- * @since 0.10.1
+ * @since 0.11.0
  */
 #define ck_assert_mem_ge(X, Y, L) _ck_assert_mem(X, >=, Y, L)
 
