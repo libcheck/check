@@ -1648,6 +1648,17 @@ do { \
   ck_assert_msg(_ck_x OP _ck_y, "Assertion '%s' failed: %s == %#x, %s == %#x", #X" "#OP" "#Y, #X, _ck_x, #Y, _ck_y); \
 } while (0)
 
+/* Pointer against NULL comparison macros with improved output
+ * compared to ck_assert(). */
+/* OP may only be == or !=  */
+#define _ck_assert_ptr_null(X, OP) do { \
+  const void* _ck_x = (X); \
+  ck_assert_msg(_ck_x OP NULL, \
+  "Assertion '%s' failed: %s == %#x", \
+  #X" "#OP" NULL", \
+  #X, _ck_x); \
+} while (0)
+
 /**
  * Check if two pointers are equal.
  *
@@ -1674,6 +1685,32 @@ do { \
  * @since 0.9.10
  */
 #define ck_assert_ptr_ne(X, Y) _ck_assert_ptr(X, !=, Y)
+
+/**
+ * Check if a pointer is equal to NULL.
+ *
+ * If X != NULL, the test fails.
+ *
+ * @param X pointer to compare against NULL
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_ptr_null(X) _ck_assert_ptr_null(X, ==)
+
+/**
+ * Check if a pointer is not equal to NULL.
+ *
+ * If X == NULL, the test fails.
+ *
+ * @param X pointer to compare against NULL
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_ptr_nonnull(X) _ck_assert_ptr_null(X, !=)
 
 /**
  * Mark the last point reached in a unit test.
