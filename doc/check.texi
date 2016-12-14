@@ -1202,7 +1202,7 @@ with condition and input parameter values on failure. The comparison
 operator is again indicated by last two letters of the function name.
 @code{ck_assert_str_lt(a, b)} will pass if the unsigned numerical value
 of the character string @code{a} is less than that of @code{b}.
-If a NULL pointer would be passed to any comparison macro than check would fail.
+If a NULL pointer is be passed to any comparison macro the check will fail.
 
 @item ck_assert_pstr_eq
 @itemx ck_assert_pstr_ne
