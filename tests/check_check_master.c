@@ -23,6 +23,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#if ENABLE_REGEX
+# include <regex.h>
+#endif
 #include <check.h>
 #include <assert.h>
 #include "check_check.h"
@@ -38,12 +41,22 @@ char * test_names_file_name = NULL;
 FILE * line_num_failures = NULL;
 char * line_num_failures_file_name = NULL;
 
+enum ck_test_msg_type_t {
+#if ENABLE_REGEX
+  // For tests with different output on different platforms
+  CK_MSG_REGEXP,
+#endif
+  // Simple text
+  CK_MSG_TEXT
+};
+
 #define MAXSTR 300
 
 typedef struct {
   const char *tcname;
   const char *test_name;
   int failure_type;
+  enum ck_test_msg_type_t msg_type;
   const char *msg;
 } master_test_t;
 
@@ -53,332 +66,332 @@ static char signal_11_8_str[SIG_STR_LEN];
 static char signal_8_str[SIG_STR_LEN];
 
 static master_test_t master_tests[] = {
-  { "Simple Tests", "test_lno", CK_FAILURE, "Failure expected" },
+  { "Simple Tests", "test_lno", CK_FAILURE, CK_MSG_TEXT, "Failure expected" },
 #if defined(HAVE_FORK) && HAVE_FORK==1
-  { "Simple Tests", "test_mark_lno", CK_ERROR,   "Early exit with return value 1" },
+  { "Simple Tests", "test_mark_lno", CK_ERROR, CK_MSG_TEXT,   "Early exit with return value 1" },
 #endif
-  { "Simple Tests", "test_pass", CK_PASS,    "Passed" },
-  { "Simple Tests", "test_fail_unless", CK_FAILURE, "This test should fail" },
-  { "Simple Tests", "test_fail_if_pass", CK_PASS,    "Passed" },
-  { "Simple Tests", "test_fail_if_fail", CK_FAILURE, "This test should fail" },
-  { "Simple Tests", "test_fail_null_msg", CK_FAILURE, "Assertion '2 == 3' failed" },
+  { "Simple Tests", "test_pass", CK_PASS, CK_MSG_TEXT,    "Passed" },
+  { "Simple Tests", "test_fail_unless", CK_FAILURE, CK_MSG_TEXT, "This test should fail" },
+  { "Simple Tests", "test_fail_if_pass", CK_PASS, CK_MSG_TEXT,    "Passed" },
+  { "Simple Tests", "test_fail_if_fail", CK_FAILURE, CK_MSG_TEXT, "This test should fail" },
+  { "Simple Tests", "test_fail_null_msg", CK_FAILURE, CK_MSG_TEXT, "Assertion '2 == 3' failed" },
 #if defined(__GNUC__)
-  { "Simple Tests", "test_fail_no_msg", CK_FAILURE, "Assertion '4 == 5' failed" },
+  { "Simple Tests", "test_fail_no_msg", CK_FAILURE, CK_MSG_TEXT, "Assertion '4 == 5' failed" },
 #endif /* __GNUC__ */
-  { "Simple Tests", "test_fail_if_null_msg", CK_FAILURE, "Failure '2 != 3' occurred" },
+  { "Simple Tests", "test_fail_if_null_msg", CK_FAILURE, CK_MSG_TEXT, "Failure '2 != 3' occurred" },
 #if defined(__GNUC__)
-  { "Simple Tests", "test_fail_if_no_msg", CK_FAILURE, "Failure '4 != 5' occurred" },
+  { "Simple Tests", "test_fail_if_no_msg", CK_FAILURE, CK_MSG_TEXT, "Failure '4 != 5' occurred" },
 #endif /* __GNUC__ */
-  { "Simple Tests", "test_fail_vararg_msg_1", CK_FAILURE, "3 != 4" },
-  { "Simple Tests", "test_fail_vararg_msg_2", CK_FAILURE, "5 != 6" },
-  { "Simple Tests", "test_fail_vararg_msg_3", CK_FAILURE, "7 == 7" },
+  { "Simple Tests", "test_fail_vararg_msg_1", CK_FAILURE, CK_MSG_TEXT, "3 != 4" },
+  { "Simple Tests", "test_fail_vararg_msg_2", CK_FAILURE, CK_MSG_TEXT, "5 != 6" },
+  { "Simple Tests", "test_fail_vararg_msg_3", CK_FAILURE, CK_MSG_TEXT, "7 == 7" },
 #if defined(__GNUC__)
-  { "Simple Tests", "test_fail_empty", CK_FAILURE, "Failed" },
+  { "Simple Tests", "test_fail_empty", CK_FAILURE, CK_MSG_TEXT, "Failed" },
 #endif /* __GNUC__ */
-  { "Simple Tests", "test_ck_abort", CK_FAILURE, "Failed" },
-  { "Simple Tests", "test_ck_abort_msg", CK_FAILURE, "Failure expected" },
-  { "Simple Tests", "test_ck_abort_msg_null", CK_FAILURE, "Failed" },
-  { "Simple Tests", "test_ck_assert", CK_FAILURE, "Assertion 'x == y' failed" },
-  { "Simple Tests", "test_ck_assert_null", CK_FAILURE, "Assertion '0' failed" },
-  { "Simple Tests", "test_ck_assert_with_mod", CK_FAILURE, "Assertion '1%f == 1' failed" },
-  { "Simple Tests", "test_ck_assert_int_eq", CK_FAILURE, "Assertion 'x == y' failed: x == 3, y == 4" },
-  { "Simple Tests", "test_ck_assert_int_eq_with_mod", CK_FAILURE, "Assertion '3%d == 2%f' failed: 3%d == 1, 2%f == 0" },
-  { "Simple Tests", "test_ck_assert_int_ne", CK_FAILURE, "Assertion 'x != y' failed: x == 3, y == 3" },
-  { "Simple Tests", "test_ck_assert_int_ne_with_mod", CK_FAILURE, "Assertion '3%d != 3%f' failed: 3%d == 1, 3%f == 1" },
-  { "Simple Tests", "test_ck_assert_int_lt", CK_FAILURE, "Assertion 'x < x' failed: x == 2, x == 2" },
-  { "Simple Tests", "test_ck_assert_int_lt_with_mod", CK_FAILURE, "Assertion '3%d < 3%f' failed: 3%d == 1, 3%f == 0" },
-  { "Simple Tests", "test_ck_assert_int_le", CK_FAILURE, "Assertion 'y <= x' failed: y == 3, x == 2" },
-  { "Simple Tests", "test_ck_assert_int_le_with_mod", CK_FAILURE, "Assertion '3%d <= 2%f' failed: 3%d == 1, 2%f == 0" },
-  { "Simple Tests", "test_ck_assert_int_gt", CK_FAILURE, "Assertion 'y > y' failed: y == 3, y == 3" },
-  { "Simple Tests", "test_ck_assert_int_gt_with_mod", CK_FAILURE, "Assertion '3%d > 3%f' failed: 3%d == 0, 3%f == 1" },
-  { "Simple Tests", "test_ck_assert_int_ge", CK_FAILURE, "Assertion 'x >= y' failed: x == 2, y == 3" },
-  { "Simple Tests", "test_ck_assert_int_ge_with_mod", CK_FAILURE, "Assertion '3%d >= 4%f' failed: 3%d == 0, 4%f == 1" },
-  { "Simple Tests", "test_ck_assert_int_expr", CK_PASS,    "Passed" },
-  { "Simple Tests", "test_ck_assert_uint_eq", CK_FAILURE, "Assertion 'x == y' failed: x == 3, y == 4" },
-  { "Simple Tests", "test_ck_assert_uint_eq_with_mod", CK_FAILURE, "Assertion '3%d == 1%f' failed: 3%d == 1, 1%f == 0" },
-  { "Simple Tests", "test_ck_assert_uint_ne", CK_FAILURE, "Assertion 'x != y' failed: x == 3, y == 3" },
-  { "Simple Tests", "test_ck_assert_uint_ne_with_mod", CK_FAILURE, "Assertion '1%d != 1%f' failed: 1%d == 0, 1%f == 0" },
-  { "Simple Tests", "test_ck_assert_uint_lt", CK_FAILURE, "Assertion 'x < x' failed: x == 2, x == 2" },
-  { "Simple Tests", "test_ck_assert_uint_lt_with_mod", CK_FAILURE, "Assertion '3%d < 1%f' failed: 3%d == 1, 1%f == 0" },
-  { "Simple Tests", "test_ck_assert_uint_le", CK_FAILURE, "Assertion 'y <= x' failed: y == 3, x == 2" },
-  { "Simple Tests", "test_ck_assert_uint_le_with_mod", CK_FAILURE, "Assertion '3%d <= 1%f' failed: 3%d == 1, 1%f == 0" },
-  { "Simple Tests", "test_ck_assert_uint_gt", CK_FAILURE, "Assertion 'y > y' failed: y == 3, y == 3" },
-  { "Simple Tests", "test_ck_assert_uint_gt_with_mod", CK_FAILURE, "Assertion '1%d > 3%f' failed: 1%d == 0, 3%f == 1" },
-  { "Simple Tests", "test_ck_assert_uint_ge", CK_FAILURE, "Assertion 'x >= y' failed: x == 2, y == 3" },
-  { "Simple Tests", "test_ck_assert_uint_ge_with_mod", CK_FAILURE, "Assertion '1%d >= 3%f' failed: 1%d == 0, 3%f == 1" },
-  { "Simple Tests", "test_ck_assert_uint_expr", CK_PASS,    "Passed" },
+  { "Simple Tests", "test_ck_abort", CK_FAILURE, CK_MSG_TEXT, "Failed" },
+  { "Simple Tests", "test_ck_abort_msg", CK_FAILURE, CK_MSG_TEXT, "Failure expected" },
+  { "Simple Tests", "test_ck_abort_msg_null", CK_FAILURE, CK_MSG_TEXT, "Failed" },
+  { "Simple Tests", "test_ck_assert", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x == y' failed" },
+  { "Simple Tests", "test_ck_assert_null", CK_FAILURE, CK_MSG_TEXT, "Assertion '0' failed" },
+  { "Simple Tests", "test_ck_assert_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '1%f == 1' failed" },
+  { "Simple Tests", "test_ck_assert_int_eq", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x == y' failed: x == 3, y == 4" },
+  { "Simple Tests", "test_ck_assert_int_eq_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '3%d == 2%f' failed: 3%d == 1, 2%f == 0" },
+  { "Simple Tests", "test_ck_assert_int_ne", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x != y' failed: x == 3, y == 3" },
+  { "Simple Tests", "test_ck_assert_int_ne_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '3%d != 3%f' failed: 3%d == 1, 3%f == 1" },
+  { "Simple Tests", "test_ck_assert_int_lt", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x < x' failed: x == 2, x == 2" },
+  { "Simple Tests", "test_ck_assert_int_lt_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '3%d < 3%f' failed: 3%d == 1, 3%f == 0" },
+  { "Simple Tests", "test_ck_assert_int_le", CK_FAILURE, CK_MSG_TEXT, "Assertion 'y <= x' failed: y == 3, x == 2" },
+  { "Simple Tests", "test_ck_assert_int_le_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '3%d <= 2%f' failed: 3%d == 1, 2%f == 0" },
+  { "Simple Tests", "test_ck_assert_int_gt", CK_FAILURE, CK_MSG_TEXT, "Assertion 'y > y' failed: y == 3, y == 3" },
+  { "Simple Tests", "test_ck_assert_int_gt_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '3%d > 3%f' failed: 3%d == 0, 3%f == 1" },
+  { "Simple Tests", "test_ck_assert_int_ge", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x >= y' failed: x == 2, y == 3" },
+  { "Simple Tests", "test_ck_assert_int_ge_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '3%d >= 4%f' failed: 3%d == 0, 4%f == 1" },
+  { "Simple Tests", "test_ck_assert_int_expr", CK_PASS, CK_MSG_TEXT,    "Passed" },
+  { "Simple Tests", "test_ck_assert_uint_eq", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x == y' failed: x == 3, y == 4" },
+  { "Simple Tests", "test_ck_assert_uint_eq_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '3%d == 1%f' failed: 3%d == 1, 1%f == 0" },
+  { "Simple Tests", "test_ck_assert_uint_ne", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x != y' failed: x == 3, y == 3" },
+  { "Simple Tests", "test_ck_assert_uint_ne_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '1%d != 1%f' failed: 1%d == 0, 1%f == 0" },
+  { "Simple Tests", "test_ck_assert_uint_lt", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x < x' failed: x == 2, x == 2" },
+  { "Simple Tests", "test_ck_assert_uint_lt_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '3%d < 1%f' failed: 3%d == 1, 1%f == 0" },
+  { "Simple Tests", "test_ck_assert_uint_le", CK_FAILURE, CK_MSG_TEXT, "Assertion 'y <= x' failed: y == 3, x == 2" },
+  { "Simple Tests", "test_ck_assert_uint_le_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '3%d <= 1%f' failed: 3%d == 1, 1%f == 0" },
+  { "Simple Tests", "test_ck_assert_uint_gt", CK_FAILURE, CK_MSG_TEXT, "Assertion 'y > y' failed: y == 3, y == 3" },
+  { "Simple Tests", "test_ck_assert_uint_gt_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '1%d > 3%f' failed: 1%d == 0, 3%f == 1" },
+  { "Simple Tests", "test_ck_assert_uint_ge", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x >= y' failed: x == 2, y == 3" },
+  { "Simple Tests", "test_ck_assert_uint_ge_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '1%d >= 3%f' failed: 1%d == 0, 3%f == 1" },
+  { "Simple Tests", "test_ck_assert_uint_expr", CK_PASS, CK_MSG_TEXT,    "Passed" },
   /* Tests on float macros */
-  { "Simple Tests", "test_ck_assert_float_eq", CK_FAILURE, "Assertion 'x == y' failed: x == 1.1, y == 1.2" },
-  { "Simple Tests", "test_ck_assert_float_eq_with_mod", CK_FAILURE, "Assertion '3%d == 2%f' failed: 3%d == 1, 2%f == 0" },
-  { "Simple Tests", "test_ck_assert_float_ne", CK_FAILURE, "Assertion 'x != y' failed: x == 1.1, y == 1.1" },
-  { "Simple Tests", "test_ck_assert_float_ne_with_mod", CK_FAILURE, "Assertion '1%d != 1%f' failed: 1%d == 1, 1%f == 1" },
-  { "Simple Tests", "test_ck_assert_float_lt", CK_FAILURE, "Assertion 'x < y' failed: x == 2, y == 1.5" },
-  { "Simple Tests", "test_ck_assert_float_lt_with_mod", CK_FAILURE, "Assertion '3%d < 2%f' failed: 3%d == 1, 2%f == 0" },
-  { "Simple Tests", "test_ck_assert_float_le", CK_FAILURE, "Assertion 'x <= y' failed: x == 2, y == 1.5" },
-  { "Simple Tests", "test_ck_assert_float_le_with_mod", CK_FAILURE, "Assertion '3%d <= 2%f' failed: 3%d == 1, 2%f == 0" },
-  { "Simple Tests", "test_ck_assert_float_gt", CK_FAILURE, "Assertion 'x > y' failed: x == 2.5, y == 3" },
-  { "Simple Tests", "test_ck_assert_float_gt_with_mod", CK_FAILURE, "Assertion '2%d > 3%f' failed: 2%d == 0, 3%f == 1" },
-  { "Simple Tests", "test_ck_assert_float_ge", CK_FAILURE, "Assertion 'x >= y' failed: x == 2.5, y == 3" },
-  { "Simple Tests", "test_ck_assert_float_ge_with_mod", CK_FAILURE, "Assertion '2%d >= 3%f' failed: 2%d == 0, 3%f == 1" },
-  { "Simple Tests", "test_ck_assert_float_with_expr", CK_PASS, "Passed" },
-  { "Simple Tests", "test_ck_assert_float_eq_tol", CK_FAILURE, "Assertion 'fabsl(y - x) < t' failed: x == 0.001, y == 0.003, t == 0.001" },
-  { "Simple Tests", "test_ck_assert_float_eq_tol_with_mod", CK_FAILURE, "Assertion 'fabsl(2%f - 3%d) < 2%p' failed: 3%d == 1, 2%f == 0, 2%p == 0" },
-  { "Simple Tests", "test_ck_assert_float_ne_tol", CK_FAILURE, "Assertion 'fabsl(y - x) >= t' failed: x == 0.001, y == 0.002, t == 0.01" },
-  { "Simple Tests", "test_ck_assert_float_ne_tol_with_mod", CK_FAILURE, "Assertion 'fabsl(3%f - 3%d) >= 3%p' failed: 3%d == 1, 3%f == 1, 3%p == 1" },
-  { "Simple Tests", "test_ck_assert_float_ge_tol", CK_FAILURE, "Assertion 'x >= y, error < t' failed: x == 0.01, y == 0.03, t == 0.01" },
-  { "Simple Tests", "test_ck_assert_float_ge_tol_with_mod", CK_FAILURE, "Assertion '2%d >= 3%f, error < 3%p' failed: 2%d == 0, 3%f == 1, 3%p == 1" },
-  { "Simple Tests", "test_ck_assert_float_le_tol", CK_FAILURE, "Assertion 'y <= x, error < t' failed: y == 0.03, x == 0.01, t == 0.01" },
-  { "Simple Tests", "test_ck_assert_float_le_tol_with_mod", CK_FAILURE, "Assertion '3%d <= 2%f, error < 3%p' failed: 3%d == 1, 2%f == 0, 3%p == 1" },
-  { "Simple Tests", "test_ck_assert_float_tol_with_expr", CK_PASS, "Passed" },
-  { "Simple Tests", "test_ck_assert_float_finite", CK_FAILURE, "Assertion 'x is finite' failed: x == inf" },
-  { "Simple Tests", "test_ck_assert_float_finite_with_mod", CK_FAILURE, "Assertion 'x*(1%d) is finite' failed: x*(1%d) == inf" },
-  { "Simple Tests", "test_ck_assert_float_infinite", CK_FAILURE, "Assertion 'x is infinite' failed: x == 0" },
-  { "Simple Tests", "test_ck_assert_float_infinite_with_mod", CK_FAILURE, "Assertion '2%d is infinite' failed: 2%d == 0" },
-  { "Simple Tests", "test_ck_assert_float_nan", CK_FAILURE, "Assertion 'x is NaN' failed: x == inf" },
-  { "Simple Tests", "test_ck_assert_float_nan_with_mod", CK_FAILURE, "Assertion '2%d is NaN' failed: 2%d == 0" },
-  { "Simple Tests", "test_ck_assert_float_nonnan", CK_PASS, "Passed" },
-  { "Simple Tests", "test_ck_assert_float_nonnan_with_mod", CK_PASS, "Passed" },
-  { "Simple Tests", "test_ck_assert_float_nan_and_inf_with_expr", CK_PASS, "Passed" },
+  { "Simple Tests", "test_ck_assert_float_eq", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x == y' failed: x == 1.1, y == 1.2" },
+  { "Simple Tests", "test_ck_assert_float_eq_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '3%d == 2%f' failed: 3%d == 1, 2%f == 0" },
+  { "Simple Tests", "test_ck_assert_float_ne", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x != y' failed: x == 1.1, y == 1.1" },
+  { "Simple Tests", "test_ck_assert_float_ne_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '1%d != 1%f' failed: 1%d == 1, 1%f == 1" },
+  { "Simple Tests", "test_ck_assert_float_lt", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x < y' failed: x == 2, y == 1.5" },
+  { "Simple Tests", "test_ck_assert_float_lt_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '3%d < 2%f' failed: 3%d == 1, 2%f == 0" },
+  { "Simple Tests", "test_ck_assert_float_le", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x <= y' failed: x == 2, y == 1.5" },
+  { "Simple Tests", "test_ck_assert_float_le_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '3%d <= 2%f' failed: 3%d == 1, 2%f == 0" },
+  { "Simple Tests", "test_ck_assert_float_gt", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x > y' failed: x == 2.5, y == 3" },
+  { "Simple Tests", "test_ck_assert_float_gt_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '2%d > 3%f' failed: 2%d == 0, 3%f == 1" },
+  { "Simple Tests", "test_ck_assert_float_ge", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x >= y' failed: x == 2.5, y == 3" },
+  { "Simple Tests", "test_ck_assert_float_ge_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '2%d >= 3%f' failed: 2%d == 0, 3%f == 1" },
+  { "Simple Tests", "test_ck_assert_float_with_expr", CK_PASS, CK_MSG_TEXT, "Passed" },
+  { "Simple Tests", "test_ck_assert_float_eq_tol", CK_FAILURE, CK_MSG_TEXT, "Assertion 'fabsl(y - x) < t' failed: x == 0.001, y == 0.003, t == 0.001" },
+  { "Simple Tests", "test_ck_assert_float_eq_tol_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion 'fabsl(2%f - 3%d) < 2%p' failed: 3%d == 1, 2%f == 0, 2%p == 0" },
+  { "Simple Tests", "test_ck_assert_float_ne_tol", CK_FAILURE, CK_MSG_TEXT, "Assertion 'fabsl(y - x) >= t' failed: x == 0.001, y == 0.002, t == 0.01" },
+  { "Simple Tests", "test_ck_assert_float_ne_tol_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion 'fabsl(3%f - 3%d) >= 3%p' failed: 3%d == 1, 3%f == 1, 3%p == 1" },
+  { "Simple Tests", "test_ck_assert_float_ge_tol", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x >= y, error < t' failed: x == 0.01, y == 0.03, t == 0.01" },
+  { "Simple Tests", "test_ck_assert_float_ge_tol_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '2%d >= 3%f, error < 3%p' failed: 2%d == 0, 3%f == 1, 3%p == 1" },
+  { "Simple Tests", "test_ck_assert_float_le_tol", CK_FAILURE, CK_MSG_TEXT, "Assertion 'y <= x, error < t' failed: y == 0.03, x == 0.01, t == 0.01" },
+  { "Simple Tests", "test_ck_assert_float_le_tol_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '3%d <= 2%f, error < 3%p' failed: 3%d == 1, 2%f == 0, 3%p == 1" },
+  { "Simple Tests", "test_ck_assert_float_tol_with_expr", CK_PASS, CK_MSG_TEXT, "Passed" },
+  { "Simple Tests", "test_ck_assert_float_finite", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x is finite' failed: x == inf" },
+  { "Simple Tests", "test_ck_assert_float_finite_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x*(1%d) is finite' failed: x*(1%d) == inf" },
+  { "Simple Tests", "test_ck_assert_float_infinite", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x is infinite' failed: x == 0" },
+  { "Simple Tests", "test_ck_assert_float_infinite_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '2%d is infinite' failed: 2%d == 0" },
+  { "Simple Tests", "test_ck_assert_float_nan", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x is NaN' failed: x == inf" },
+  { "Simple Tests", "test_ck_assert_float_nan_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '2%d is NaN' failed: 2%d == 0" },
+  { "Simple Tests", "test_ck_assert_float_nonnan", CK_PASS, CK_MSG_TEXT, "Passed" },
+  { "Simple Tests", "test_ck_assert_float_nonnan_with_mod", CK_PASS, CK_MSG_TEXT, "Passed" },
+  { "Simple Tests", "test_ck_assert_float_nan_and_inf_with_expr", CK_PASS, CK_MSG_TEXT, "Passed" },
   /* End of tests on float macros */
   /* Tests on double macros */
-  { "Simple Tests", "test_ck_assert_double_eq", CK_FAILURE, "Assertion 'x == y' failed: x == 1.1, y == 1.2" },
-  { "Simple Tests", "test_ck_assert_double_eq_with_mod", CK_FAILURE, "Assertion '3%d == 2%f' failed: 3%d == 1, 2%f == 0" },
-  { "Simple Tests", "test_ck_assert_double_eq_with_promotion", CK_PASS, "Passed" },
-  { "Simple Tests", "test_ck_assert_double_eq_with_conv", CK_FAILURE, "Assertion 'x == 0.1' failed: x == 0.1, 0.1 == 0.1" },
-  { "Simple Tests", "test_ck_assert_double_ne", CK_FAILURE, "Assertion 'x != y' failed: x == 1.1, y == 1.1" },
-  { "Simple Tests", "test_ck_assert_double_ne_with_mod", CK_FAILURE, "Assertion '1%d != 1%f' failed: 1%d == 1, 1%f == 1" },
-  { "Simple Tests", "test_ck_assert_double_lt", CK_FAILURE, "Assertion 'x < y' failed: x == 2, y == 1.5" },
-  { "Simple Tests", "test_ck_assert_double_lt_with_mod", CK_FAILURE, "Assertion '3%d < 2%f' failed: 3%d == 1, 2%f == 0" },
-  { "Simple Tests", "test_ck_assert_double_le", CK_FAILURE, "Assertion 'x <= y' failed: x == 2, y == 1.5" },
-  { "Simple Tests", "test_ck_assert_double_le_with_mod", CK_FAILURE, "Assertion '3%d <= 2%f' failed: 3%d == 1, 2%f == 0" },
-  { "Simple Tests", "test_ck_assert_double_gt", CK_FAILURE, "Assertion 'x > y' failed: x == 2.5, y == 3" },
-  { "Simple Tests", "test_ck_assert_double_gt_with_mod", CK_FAILURE, "Assertion '2%d > 3%f' failed: 2%d == 0, 3%f == 1" },
-  { "Simple Tests", "test_ck_assert_double_ge", CK_FAILURE, "Assertion 'x >= y' failed: x == 2.5, y == 3" },
-  { "Simple Tests", "test_ck_assert_double_ge_with_mod", CK_FAILURE, "Assertion '2%d >= 3%f' failed: 2%d == 0, 3%f == 1" },
-  { "Simple Tests", "test_ck_assert_double_with_expr", CK_PASS, "Passed" },
-  { "Simple Tests", "test_ck_assert_double_eq_tol", CK_FAILURE, "Assertion 'fabsl(y - x) < t' failed: x == 0.001, y == 0.002, t == 0.001" },
-  { "Simple Tests", "test_ck_assert_double_eq_tol_with_mod", CK_FAILURE, "Assertion 'fabsl(2%f - 3%d) < 2%p' failed: 3%d == 1, 2%f == 0, 2%p == 0" },
-  { "Simple Tests", "test_ck_assert_double_ne_tol", CK_FAILURE, "Assertion 'fabsl(y - x) >= t' failed: x == 0.001, y == 0.002, t == 0.01" },
-  { "Simple Tests", "test_ck_assert_double_ne_tol_with_mod", CK_FAILURE, "Assertion 'fabsl(3%f - 3%d) >= 3%p' failed: 3%d == 1, 3%f == 1, 3%p == 1" },
-  { "Simple Tests", "test_ck_assert_double_ge_tol", CK_FAILURE, "Assertion 'x >= y, error < t' failed: x == 0.01, y == 0.03, t == 0.01" },
-  { "Simple Tests", "test_ck_assert_double_ge_tol_with_mod", CK_FAILURE, "Assertion '2%d >= 3%f, error < 3%p' failed: 2%d == 0, 3%f == 1, 3%p == 1" },
-  { "Simple Tests", "test_ck_assert_double_le_tol", CK_FAILURE, "Assertion 'y <= x, error < t' failed: y == 0.03, x == 0.01, t == 0.01" },
-  { "Simple Tests", "test_ck_assert_double_le_tol_with_mod", CK_FAILURE, "Assertion '3%d <= 2%f, error < 3%p' failed: 3%d == 1, 2%f == 0, 3%p == 1" },
-  { "Simple Tests", "test_ck_assert_double_tol_with_expr", CK_PASS, "Passed" },
-  { "Simple Tests", "test_ck_assert_double_finite", CK_FAILURE, "Assertion 'x is finite' failed: x == inf" },
-  { "Simple Tests", "test_ck_assert_double_finite_with_mod", CK_FAILURE, "Assertion 'x*(1%d) is finite' failed: x*(1%d) == inf" },
-  { "Simple Tests", "test_ck_assert_double_infinite", CK_FAILURE, "Assertion 'x is infinite' failed: x == 0" },
-  { "Simple Tests", "test_ck_assert_double_infinite_with_mod", CK_FAILURE, "Assertion '2%d is infinite' failed: 2%d == 0" },
-  { "Simple Tests", "test_ck_assert_double_nan", CK_FAILURE, "Assertion 'x is NaN' failed: x == inf" },
-  { "Simple Tests", "test_ck_assert_double_nan_with_mod", CK_FAILURE, "Assertion '2%d is NaN' failed: 2%d == 0" },
-  { "Simple Tests", "test_ck_assert_double_nonnan", CK_PASS, "Passed" },
-  { "Simple Tests", "test_ck_assert_double_nonnan_with_mod", CK_PASS, "Passed" },
-  { "Simple Tests", "test_ck_assert_double_nan_and_inf_with_expr", CK_PASS, "Passed" },
+  { "Simple Tests", "test_ck_assert_double_eq", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x == y' failed: x == 1.1, y == 1.2" },
+  { "Simple Tests", "test_ck_assert_double_eq_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '3%d == 2%f' failed: 3%d == 1, 2%f == 0" },
+  { "Simple Tests", "test_ck_assert_double_eq_with_promotion", CK_PASS, CK_MSG_TEXT, "Passed" },
+  { "Simple Tests", "test_ck_assert_double_eq_with_conv", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x == 0.1' failed: x == 0.1, 0.1 == 0.1" },
+  { "Simple Tests", "test_ck_assert_double_ne", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x != y' failed: x == 1.1, y == 1.1" },
+  { "Simple Tests", "test_ck_assert_double_ne_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '1%d != 1%f' failed: 1%d == 1, 1%f == 1" },
+  { "Simple Tests", "test_ck_assert_double_lt", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x < y' failed: x == 2, y == 1.5" },
+  { "Simple Tests", "test_ck_assert_double_lt_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '3%d < 2%f' failed: 3%d == 1, 2%f == 0" },
+  { "Simple Tests", "test_ck_assert_double_le", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x <= y' failed: x == 2, y == 1.5" },
+  { "Simple Tests", "test_ck_assert_double_le_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '3%d <= 2%f' failed: 3%d == 1, 2%f == 0" },
+  { "Simple Tests", "test_ck_assert_double_gt", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x > y' failed: x == 2.5, y == 3" },
+  { "Simple Tests", "test_ck_assert_double_gt_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '2%d > 3%f' failed: 2%d == 0, 3%f == 1" },
+  { "Simple Tests", "test_ck_assert_double_ge", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x >= y' failed: x == 2.5, y == 3" },
+  { "Simple Tests", "test_ck_assert_double_ge_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '2%d >= 3%f' failed: 2%d == 0, 3%f == 1" },
+  { "Simple Tests", "test_ck_assert_double_with_expr", CK_PASS, CK_MSG_TEXT, "Passed" },
+  { "Simple Tests", "test_ck_assert_double_eq_tol", CK_FAILURE, CK_MSG_TEXT, "Assertion 'fabsl(y - x) < t' failed: x == 0.001, y == 0.002, t == 0.001" },
+  { "Simple Tests", "test_ck_assert_double_eq_tol_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion 'fabsl(2%f - 3%d) < 2%p' failed: 3%d == 1, 2%f == 0, 2%p == 0" },
+  { "Simple Tests", "test_ck_assert_double_ne_tol", CK_FAILURE, CK_MSG_TEXT, "Assertion 'fabsl(y - x) >= t' failed: x == 0.001, y == 0.002, t == 0.01" },
+  { "Simple Tests", "test_ck_assert_double_ne_tol_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion 'fabsl(3%f - 3%d) >= 3%p' failed: 3%d == 1, 3%f == 1, 3%p == 1" },
+  { "Simple Tests", "test_ck_assert_double_ge_tol", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x >= y, error < t' failed: x == 0.01, y == 0.03, t == 0.01" },
+  { "Simple Tests", "test_ck_assert_double_ge_tol_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '2%d >= 3%f, error < 3%p' failed: 2%d == 0, 3%f == 1, 3%p == 1" },
+  { "Simple Tests", "test_ck_assert_double_le_tol", CK_FAILURE, CK_MSG_TEXT, "Assertion 'y <= x, error < t' failed: y == 0.03, x == 0.01, t == 0.01" },
+  { "Simple Tests", "test_ck_assert_double_le_tol_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '3%d <= 2%f, error < 3%p' failed: 3%d == 1, 2%f == 0, 3%p == 1" },
+  { "Simple Tests", "test_ck_assert_double_tol_with_expr", CK_PASS, CK_MSG_TEXT, "Passed" },
+  { "Simple Tests", "test_ck_assert_double_finite", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x is finite' failed: x == inf" },
+  { "Simple Tests", "test_ck_assert_double_finite_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x*(1%d) is finite' failed: x*(1%d) == inf" },
+  { "Simple Tests", "test_ck_assert_double_infinite", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x is infinite' failed: x == 0" },
+  { "Simple Tests", "test_ck_assert_double_infinite_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '2%d is infinite' failed: 2%d == 0" },
+  { "Simple Tests", "test_ck_assert_double_nan", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x is NaN' failed: x == inf" },
+  { "Simple Tests", "test_ck_assert_double_nan_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '2%d is NaN' failed: 2%d == 0" },
+  { "Simple Tests", "test_ck_assert_double_nonnan", CK_PASS, CK_MSG_TEXT, "Passed" },
+  { "Simple Tests", "test_ck_assert_double_nonnan_with_mod", CK_PASS, CK_MSG_TEXT, "Passed" },
+  { "Simple Tests", "test_ck_assert_double_nan_and_inf_with_expr", CK_PASS, CK_MSG_TEXT, "Passed" },
   /* End of tests on double macros */
   /* Tests on long double macros */
-  { "Simple Tests", "test_ck_assert_ldouble_eq", CK_FAILURE, "Assertion 'x == y' failed: x == 1.1, y == 1.2" },
-  { "Simple Tests", "test_ck_assert_ldouble_eq_with_mod", CK_FAILURE, "Assertion '3%d == 2%f' failed: 3%d == 1, 2%f == 0" },
-  { "Simple Tests", "test_ck_assert_ldouble_eq_with_promotion", CK_PASS, "Passed" },
-  { "Simple Tests", "test_ck_assert_ldouble_eq_with_conv", CK_FAILURE, "Assertion 'x == 1.1' failed: x == 1.1, 1.1 == 1.1" },
-  { "Simple Tests", "test_ck_assert_ldouble_ne", CK_FAILURE, "Assertion 'x != y' failed: x == 1.1, y == 1.1" },
-  { "Simple Tests", "test_ck_assert_ldouble_ne_with_mod", CK_FAILURE, "Assertion '1%d != 1%f' failed: 1%d == 1, 1%f == 1" },
-  { "Simple Tests", "test_ck_assert_ldouble_lt", CK_FAILURE, "Assertion 'x < y' failed: x == 2, y == 1.5" },
-  { "Simple Tests", "test_ck_assert_ldouble_lt_with_mod", CK_FAILURE, "Assertion '3%d < 2%f' failed: 3%d == 1, 2%f == 0" },
-  { "Simple Tests", "test_ck_assert_ldouble_le", CK_FAILURE, "Assertion 'x <= y' failed: x == 2, y == 1.5" },
-  { "Simple Tests", "test_ck_assert_ldouble_le_with_mod", CK_FAILURE, "Assertion '3%d <= 2%f' failed: 3%d == 1, 2%f == 0" },
-  { "Simple Tests", "test_ck_assert_ldouble_gt", CK_FAILURE, "Assertion 'x > y' failed: x == 2.5, y == 3" },
-  { "Simple Tests", "test_ck_assert_ldouble_gt_with_mod", CK_FAILURE, "Assertion '2%d > 3%f' failed: 2%d == 0, 3%f == 1" },
-  { "Simple Tests", "test_ck_assert_ldouble_ge", CK_FAILURE, "Assertion 'x >= y' failed: x == 2.5, y == 3" },
-  { "Simple Tests", "test_ck_assert_ldouble_ge_with_mod", CK_FAILURE, "Assertion '2%d >= 3%f' failed: 2%d == 0, 3%f == 1" },
-  { "Simple Tests", "test_ck_assert_ldouble_with_expr", CK_PASS, "Passed" },
-  { "Simple Tests", "test_ck_assert_ldouble_eq_tol", CK_FAILURE, "Assertion 'fabsl(y - x) < t' failed: x == 0.001, y == 0.002, t == 0.001" },
-  { "Simple Tests", "test_ck_assert_ldouble_eq_tol_with_mod", CK_FAILURE, "Assertion 'fabsl(2%f - 3%d) < 2%p' failed: 3%d == 1, 2%f == 0, 2%p == 0" },
-  { "Simple Tests", "test_ck_assert_ldouble_ne_tol", CK_FAILURE, "Assertion 'fabsl(y - x) >= t' failed: x == 0.001, y == 0.002, t == 0.01" },
-  { "Simple Tests", "test_ck_assert_ldouble_ne_tol_with_mod", CK_FAILURE, "Assertion 'fabsl(3%f - 3%d) >= 3%p' failed: 3%d == 1, 3%f == 1, 3%p == 1" },
-  { "Simple Tests", "test_ck_assert_ldouble_ge_tol", CK_FAILURE, "Assertion 'x >= y, error < t' failed: x == 0.01, y == 0.03, t == 0.01" },
-  { "Simple Tests", "test_ck_assert_ldouble_ge_tol_with_mod", CK_FAILURE, "Assertion '2%d >= 3%f, error < 3%p' failed: 2%d == 0, 3%f == 1, 3%p == 1" },
-  { "Simple Tests", "test_ck_assert_ldouble_le_tol", CK_FAILURE, "Assertion 'y <= x, error < t' failed: y == 0.03, x == 0.01, t == 0.01" },
-  { "Simple Tests", "test_ck_assert_ldouble_le_tol_with_mod", CK_FAILURE, "Assertion '3%d <= 2%f, error < 3%p' failed: 3%d == 1, 2%f == 0, 3%p == 1" },
-  { "Simple Tests", "test_ck_assert_ldouble_tol_with_expr", CK_PASS, "Passed" },
-  { "Simple Tests", "test_ck_assert_ldouble_finite", CK_FAILURE, "Assertion 'x is finite' failed: x == inf" },
-  { "Simple Tests", "test_ck_assert_ldouble_finite_with_mod", CK_FAILURE, "Assertion 'x*(1%d) is finite' failed: x*(1%d) == inf" },
-  { "Simple Tests", "test_ck_assert_ldouble_infinite", CK_FAILURE, "Assertion 'x is infinite' failed: x == 0" },
-  { "Simple Tests", "test_ck_assert_ldouble_infinite_with_mod", CK_FAILURE, "Assertion '2%d is infinite' failed: 2%d == 0" },
-  { "Simple Tests", "test_ck_assert_ldouble_nan", CK_FAILURE, "Assertion 'x is NaN' failed: x == inf" },
-  { "Simple Tests", "test_ck_assert_ldouble_nan_with_mod", CK_FAILURE, "Assertion '2%d is NaN' failed: 2%d == 0" },
-  { "Simple Tests", "test_ck_assert_ldouble_nonnan", CK_PASS, "Passed" },
-  { "Simple Tests", "test_ck_assert_ldouble_nonnan_with_mod", CK_PASS, "Passed" },
-  { "Simple Tests", "test_ck_assert_ldouble_nan_and_inf_with_expr", CK_PASS, "Passed" },
+  { "Simple Tests", "test_ck_assert_ldouble_eq", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x == y' failed: x == 1.1, y == 1.2" },
+  { "Simple Tests", "test_ck_assert_ldouble_eq_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '3%d == 2%f' failed: 3%d == 1, 2%f == 0" },
+  { "Simple Tests", "test_ck_assert_ldouble_eq_with_promotion", CK_PASS, CK_MSG_TEXT, "Passed" },
+  { "Simple Tests", "test_ck_assert_ldouble_eq_with_conv", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x == 1.1' failed: x == 1.1, 1.1 == 1.1" },
+  { "Simple Tests", "test_ck_assert_ldouble_ne", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x != y' failed: x == 1.1, y == 1.1" },
+  { "Simple Tests", "test_ck_assert_ldouble_ne_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '1%d != 1%f' failed: 1%d == 1, 1%f == 1" },
+  { "Simple Tests", "test_ck_assert_ldouble_lt", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x < y' failed: x == 2, y == 1.5" },
+  { "Simple Tests", "test_ck_assert_ldouble_lt_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '3%d < 2%f' failed: 3%d == 1, 2%f == 0" },
+  { "Simple Tests", "test_ck_assert_ldouble_le", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x <= y' failed: x == 2, y == 1.5" },
+  { "Simple Tests", "test_ck_assert_ldouble_le_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '3%d <= 2%f' failed: 3%d == 1, 2%f == 0" },
+  { "Simple Tests", "test_ck_assert_ldouble_gt", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x > y' failed: x == 2.5, y == 3" },
+  { "Simple Tests", "test_ck_assert_ldouble_gt_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '2%d > 3%f' failed: 2%d == 0, 3%f == 1" },
+  { "Simple Tests", "test_ck_assert_ldouble_ge", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x >= y' failed: x == 2.5, y == 3" },
+  { "Simple Tests", "test_ck_assert_ldouble_ge_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '2%d >= 3%f' failed: 2%d == 0, 3%f == 1" },
+  { "Simple Tests", "test_ck_assert_ldouble_with_expr", CK_PASS, CK_MSG_TEXT, "Passed" },
+  { "Simple Tests", "test_ck_assert_ldouble_eq_tol", CK_FAILURE, CK_MSG_TEXT, "Assertion 'fabsl(y - x) < t' failed: x == 0.001, y == 0.002, t == 0.001" },
+  { "Simple Tests", "test_ck_assert_ldouble_eq_tol_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion 'fabsl(2%f - 3%d) < 2%p' failed: 3%d == 1, 2%f == 0, 2%p == 0" },
+  { "Simple Tests", "test_ck_assert_ldouble_ne_tol", CK_FAILURE, CK_MSG_TEXT, "Assertion 'fabsl(y - x) >= t' failed: x == 0.001, y == 0.002, t == 0.01" },
+  { "Simple Tests", "test_ck_assert_ldouble_ne_tol_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion 'fabsl(3%f - 3%d) >= 3%p' failed: 3%d == 1, 3%f == 1, 3%p == 1" },
+  { "Simple Tests", "test_ck_assert_ldouble_ge_tol", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x >= y, error < t' failed: x == 0.01, y == 0.03, t == 0.01" },
+  { "Simple Tests", "test_ck_assert_ldouble_ge_tol_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '2%d >= 3%f, error < 3%p' failed: 2%d == 0, 3%f == 1, 3%p == 1" },
+  { "Simple Tests", "test_ck_assert_ldouble_le_tol", CK_FAILURE, CK_MSG_TEXT, "Assertion 'y <= x, error < t' failed: y == 0.03, x == 0.01, t == 0.01" },
+  { "Simple Tests", "test_ck_assert_ldouble_le_tol_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '3%d <= 2%f, error < 3%p' failed: 3%d == 1, 2%f == 0, 3%p == 1" },
+  { "Simple Tests", "test_ck_assert_ldouble_tol_with_expr", CK_PASS, CK_MSG_TEXT, "Passed" },
+  { "Simple Tests", "test_ck_assert_ldouble_finite", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x is finite' failed: x == inf" },
+  { "Simple Tests", "test_ck_assert_ldouble_finite_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x*(1%d) is finite' failed: x*(1%d) == inf" },
+  { "Simple Tests", "test_ck_assert_ldouble_infinite", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x is infinite' failed: x == 0" },
+  { "Simple Tests", "test_ck_assert_ldouble_infinite_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '2%d is infinite' failed: 2%d == 0" },
+  { "Simple Tests", "test_ck_assert_ldouble_nan", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x is NaN' failed: x == inf" },
+  { "Simple Tests", "test_ck_assert_ldouble_nan_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '2%d is NaN' failed: 2%d == 0" },
+  { "Simple Tests", "test_ck_assert_ldouble_nonnan", CK_PASS, CK_MSG_TEXT, "Passed" },
+  { "Simple Tests", "test_ck_assert_ldouble_nonnan_with_mod", CK_PASS, CK_MSG_TEXT, "Passed" },
+  { "Simple Tests", "test_ck_assert_ldouble_nan_and_inf_with_expr", CK_PASS, CK_MSG_TEXT, "Passed" },
   /* End of tests on long double macros */
-  { "Simple Tests", "test_percent_n_escaped", CK_FAILURE, "Assertion 'returnsZero(\"%n\") == 1' failed: returnsZero(\"%n\") == 0, 1 == 1" },
-  { "Simple Tests", "test_ck_assert_str_eq", CK_FAILURE, "Assertion '\"test1\" == s' failed: \"test1\" == \"test1\", s == \"test2\"" },
-  { "Simple Tests", "test_ck_assert_str_eq_with_null", CK_FAILURE, "Assertion 't == s' failed: t == (null), s == (null)" },
-  { "Simple Tests", "test_ck_assert_str_ne", CK_FAILURE, "Assertion 't != s' failed: t == \"test2\", s == \"test2\"" },
-  { "Simple Tests", "test_ck_assert_str_ne_with_null", CK_FAILURE, "Assertion 't != s' failed: t == \"test\", s == (null)" },
-  { "Simple Tests", "test_ck_assert_str_lt", CK_FAILURE, "Assertion 's < s' failed: s == \"test1\", s == \"test1\"" },
-  { "Simple Tests", "test_ck_assert_str_lt_with_null", CK_FAILURE, "Assertion 's < t' failed: s == (null), t == \"test\"" },
-  { "Simple Tests", "test_ck_assert_str_le", CK_FAILURE, "Assertion 't <= s' failed: t == \"test2\", s == \"test1\"" },
-  { "Simple Tests", "test_ck_assert_str_le_with_null", CK_FAILURE, "Assertion 't <= s' failed: t == (null), s == (null)" },
-  { "Simple Tests", "test_ck_assert_str_gt", CK_FAILURE, "Assertion 't > t' failed: t == \"test2\", t == \"test2\"" },
-  { "Simple Tests", "test_ck_assert_str_gt_with_null", CK_FAILURE, "Assertion 't > s' failed: t == \"test\", s == (null)" },
-  { "Simple Tests", "test_ck_assert_str_ge", CK_FAILURE, "Assertion 's >= t' failed: s == \"test1\", t == \"test2\"" },
-  { "Simple Tests", "test_ck_assert_str_ge_with_null", CK_FAILURE, "Assertion 's >= t' failed: s == (null), t == (null)" },
-  { "Simple Tests", "test_ck_assert_str_expr", CK_PASS,    "Passed" },
-  { "Simple Tests", "test_ck_assert_pstr_eq", CK_FAILURE, "Assertion '\"test1\" == s' failed: \"test1\" == \"test1\", s == \"test\"" },
-  { "Simple Tests", "test_ck_assert_pstr_eq_with_null", CK_FAILURE, "Assertion 't == s' failed: t == \"test\", s == (null)" },
-  { "Simple Tests", "test_ck_assert_pstr_ne", CK_FAILURE, "Assertion 't != s' failed: t == \"test2\", s == \"test2\"" },
-  { "Simple Tests", "test_ck_assert_pstr_ne_with_null", CK_FAILURE, "Assertion 't != s' failed: t == (null), s == (null)" },
-  { "Simple Tests", "test_ck_assert_ptr_eq", CK_FAILURE, "Assertion 'x == y' failed: x == 0x1, y == 0x2" },
-  { "Simple Tests", "test_ck_assert_ptr_ne", CK_FAILURE, "Assertion 'x != z' failed: x == 0x1, z == 0x1" },
-  { "Simple Tests", "test_ck_assert_ptr_null", CK_FAILURE, "Assertion 'x == NULL' failed: x == 0x1" },
-  { "Simple Tests", "test_ck_assert_ptr_nonnull", CK_FAILURE, "Assertion 'x != NULL' failed: x == 0" },
-  { "Simple Tests", "test_ck_assert_mem_eq", CK_FAILURE, "Assertion '\"\\x00\\x00\\x00\\x00\\x01\" == s' failed: \"\\x00\\x00\\x00\\x00\\x01\" == \"0000000001\", s == \"0000000002\"" },
-  { "Simple Tests", "test_ck_assert_mem_ne", CK_FAILURE, "Assertion 't != s' failed: t == \"0000000002\", s == \"0000000002\"" },
-  { "Simple Tests", "test_ck_assert_mem_lt", CK_FAILURE, "Assertion 's < s' failed: s == \"0000000001\", s == \"0000000001\"" },
-  { "Simple Tests", "test_ck_assert_mem_le", CK_FAILURE, "Assertion 't <= s' failed: t == \"0000000002\", s == \"0000000001\"" },
-  { "Simple Tests", "test_ck_assert_mem_gt", CK_FAILURE, "Assertion 't > t' failed: t == \"0000000002\", t == \"0000000002\"" },
-  { "Simple Tests", "test_ck_assert_mem_ge", CK_FAILURE, "Assertion 's >= t' failed: s == \"0000000001\", t == \"0000000002\"" },
-  { "Simple Tests", "test_ck_assert_mem_zerolen", CK_PASS,    "Passed" },
-  { "Simple Tests", "test_ck_assert_mem_eq_exact", CK_FAILURE, "Assertion 't == s' failed: t == \"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001\", s == \"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002\"" },
-  { "Simple Tests", "test_ck_assert_mem_eq_longer", CK_FAILURE, "Assertion 't == s' failed: t == \"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000..\", s == \"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000..\"" },
+  { "Simple Tests", "test_percent_n_escaped", CK_FAILURE, CK_MSG_TEXT, "Assertion 'returnsZero(\"%n\") == 1' failed: returnsZero(\"%n\") == 0, 1 == 1" },
+  { "Simple Tests", "test_ck_assert_str_eq", CK_FAILURE, CK_MSG_TEXT, "Assertion '\"test1\" == s' failed: \"test1\" == \"test1\", s == \"test2\"" },
+  { "Simple Tests", "test_ck_assert_str_eq_with_null", CK_FAILURE, CK_MSG_TEXT, "Assertion 't == s' failed: t == (null), s == (null)" },
+  { "Simple Tests", "test_ck_assert_str_ne", CK_FAILURE, CK_MSG_TEXT, "Assertion 't != s' failed: t == \"test2\", s == \"test2\"" },
+  { "Simple Tests", "test_ck_assert_str_ne_with_null", CK_FAILURE, CK_MSG_TEXT, "Assertion 't != s' failed: t == \"test\", s == (null)" },
+  { "Simple Tests", "test_ck_assert_str_lt", CK_FAILURE, CK_MSG_TEXT, "Assertion 's < s' failed: s == \"test1\", s == \"test1\"" },
+  { "Simple Tests", "test_ck_assert_str_lt_with_null", CK_FAILURE, CK_MSG_TEXT, "Assertion 's < t' failed: s == (null), t == \"test\"" },
+  { "Simple Tests", "test_ck_assert_str_le", CK_FAILURE, CK_MSG_TEXT, "Assertion 't <= s' failed: t == \"test2\", s == \"test1\"" },
+  { "Simple Tests", "test_ck_assert_str_le_with_null", CK_FAILURE, CK_MSG_TEXT, "Assertion 't <= s' failed: t == (null), s == (null)" },
+  { "Simple Tests", "test_ck_assert_str_gt", CK_FAILURE, CK_MSG_TEXT, "Assertion 't > t' failed: t == \"test2\", t == \"test2\"" },
+  { "Simple Tests", "test_ck_assert_str_gt_with_null", CK_FAILURE, CK_MSG_TEXT, "Assertion 't > s' failed: t == \"test\", s == (null)" },
+  { "Simple Tests", "test_ck_assert_str_ge", CK_FAILURE, CK_MSG_TEXT, "Assertion 's >= t' failed: s == \"test1\", t == \"test2\"" },
+  { "Simple Tests", "test_ck_assert_str_ge_with_null", CK_FAILURE, CK_MSG_TEXT, "Assertion 's >= t' failed: s == (null), t == (null)" },
+  { "Simple Tests", "test_ck_assert_str_expr", CK_PASS, CK_MSG_TEXT,    "Passed" },
+  { "Simple Tests", "test_ck_assert_pstr_eq", CK_FAILURE, CK_MSG_TEXT, "Assertion '\"test1\" == s' failed: \"test1\" == \"test1\", s == \"test\"" },
+  { "Simple Tests", "test_ck_assert_pstr_eq_with_null", CK_FAILURE, CK_MSG_TEXT, "Assertion 't == s' failed: t == \"test\", s == (null)" },
+  { "Simple Tests", "test_ck_assert_pstr_ne", CK_FAILURE, CK_MSG_TEXT, "Assertion 't != s' failed: t == \"test2\", s == \"test2\"" },
+  { "Simple Tests", "test_ck_assert_pstr_ne_with_null", CK_FAILURE, CK_MSG_TEXT, "Assertion 't != s' failed: t == (null), s == (null)" },
+  { "Simple Tests", "test_ck_assert_ptr_eq", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x == y' failed: x == 0x1, y == 0x2" },
+  { "Simple Tests", "test_ck_assert_ptr_ne", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x != z' failed: x == 0x1, z == 0x1" },
+  { "Simple Tests", "test_ck_assert_ptr_null", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x == NULL' failed: x == 0x1" },
+  { "Simple Tests", "test_ck_assert_ptr_nonnull", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x != NULL' failed: x == 0" },
+  { "Simple Tests", "test_ck_assert_mem_eq", CK_FAILURE, CK_MSG_TEXT, "Assertion '\"\\x00\\x00\\x00\\x00\\x01\" == s' failed: \"\\x00\\x00\\x00\\x00\\x01\" == \"0000000001\", s == \"0000000002\"" },
+  { "Simple Tests", "test_ck_assert_mem_ne", CK_FAILURE, CK_MSG_TEXT, "Assertion 't != s' failed: t == \"0000000002\", s == \"0000000002\"" },
+  { "Simple Tests", "test_ck_assert_mem_lt", CK_FAILURE, CK_MSG_TEXT, "Assertion 's < s' failed: s == \"0000000001\", s == \"0000000001\"" },
+  { "Simple Tests", "test_ck_assert_mem_le", CK_FAILURE, CK_MSG_TEXT, "Assertion 't <= s' failed: t == \"0000000002\", s == \"0000000001\"" },
+  { "Simple Tests", "test_ck_assert_mem_gt", CK_FAILURE, CK_MSG_TEXT, "Assertion 't > t' failed: t == \"0000000002\", t == \"0000000002\"" },
+  { "Simple Tests", "test_ck_assert_mem_ge", CK_FAILURE, CK_MSG_TEXT, "Assertion 's >= t' failed: s == \"0000000001\", t == \"0000000002\"" },
+  { "Simple Tests", "test_ck_assert_mem_zerolen", CK_PASS, CK_MSG_TEXT,    "Passed" },
+  { "Simple Tests", "test_ck_assert_mem_eq_exact", CK_FAILURE, CK_MSG_TEXT, "Assertion 't == s' failed: t == \"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001\", s == \"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002\"" },
+  { "Simple Tests", "test_ck_assert_mem_eq_longer", CK_FAILURE, CK_MSG_TEXT, "Assertion 't == s' failed: t == \"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000..\", s == \"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000..\"" },
   
 #if defined(HAVE_FORK) && HAVE_FORK==1
-  { "Signal Tests", "test_segv", CK_ERROR,   signal_11_str },
-  { "Signal Tests", "test_segv_pass", CK_PASS,    "Passed" },
-  { "Signal Tests", "test_segv", CK_ERROR,   signal_11_8_str },
-  { "Signal Tests", "test_non_signal_8", CK_FAILURE, "Early exit with return value 0" },
-  { "Signal Tests", "test_fail_unless", CK_FAILURE, "Early exit with return value 1" },
-  { "Signal Tests", "test_fpe", CK_ERROR,   signal_8_str },
-  { "Signal Tests", "test_mark_point", CK_ERROR,   signal_8_str },
+  { "Signal Tests", "test_segv", CK_ERROR, CK_MSG_TEXT,   signal_11_str },
+  { "Signal Tests", "test_segv_pass", CK_PASS, CK_MSG_TEXT,    "Passed" },
+  { "Signal Tests", "test_segv", CK_ERROR, CK_MSG_TEXT,   signal_11_8_str },
+  { "Signal Tests", "test_non_signal_8", CK_FAILURE, CK_MSG_TEXT, "Early exit with return value 0" },
+  { "Signal Tests", "test_fail_unless", CK_FAILURE, CK_MSG_TEXT, "Early exit with return value 1" },
+  { "Signal Tests", "test_fpe", CK_ERROR, CK_MSG_TEXT,   signal_8_str },
+  { "Signal Tests", "test_mark_point", CK_ERROR, CK_MSG_TEXT,   signal_8_str },
 #endif
 
 #if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) && HAVE_FORK==1
 #if HAVE_DECL_SETENV
-  { "Environment Integer Timeout Tests", "test_eternal_fail", CK_ERROR,  "Test timeout expired" },
-  { "Environment Integer Timeout Tests", "test_sleep2_pass", CK_PASS,   "Passed" },
-  { "Environment Integer Timeout Tests", "test_sleep5_pass", CK_PASS,   "Passed" },
-  { "Environment Integer Timeout Tests", "test_sleep9_fail", CK_ERROR,  "Test timeout expired" },
+  { "Environment Integer Timeout Tests", "test_eternal_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
+  { "Environment Integer Timeout Tests", "test_sleep2_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
+  { "Environment Integer Timeout Tests", "test_sleep5_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
+  { "Environment Integer Timeout Tests", "test_sleep9_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
   
-  { "Environment Double Timeout Tests", "test_eternal_fail", CK_ERROR,  "Test timeout expired" },
+  { "Environment Double Timeout Tests", "test_eternal_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
 #ifdef HAVE_LIBRT
-  { "Environment Double Timeout Tests", "test_sleep0_025_pass", CK_PASS,  "Passed" },
-  { "Environment Double Timeout Tests", "test_sleep1_fail", CK_ERROR,  "Test timeout expired" },
+  { "Environment Double Timeout Tests", "test_sleep0_025_pass", CK_PASS, CK_MSG_TEXT,  "Passed" },
+  { "Environment Double Timeout Tests", "test_sleep1_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
 #endif /* HAVE_LIBRT */
-  { "Environment Double Timeout Tests", "test_sleep2_fail", CK_ERROR,  "Test timeout expired" },
-  { "Environment Double Timeout Tests", "test_sleep5_fail", CK_ERROR,  "Test timeout expired" },
-  { "Environment Double Timeout Tests", "test_sleep9_fail", CK_ERROR,  "Test timeout expired" },
+  { "Environment Double Timeout Tests", "test_sleep2_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
+  { "Environment Double Timeout Tests", "test_sleep5_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
+  { "Environment Double Timeout Tests", "test_sleep9_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
 #endif /* HAVE_DECL_SETENV */
 
-  { "Default Timeout Tests", "test_eternal_fail", CK_ERROR,  "Test timeout expired" },
+  { "Default Timeout Tests", "test_eternal_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
 #ifdef HAVE_LIBRT
-  { "Default Timeout Tests", "test_sleep0_025_pass", CK_PASS,   "Passed" },
-  { "Default Timeout Tests", "test_sleep1_pass", CK_PASS,   "Passed" },
+  { "Default Timeout Tests", "test_sleep0_025_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
+  { "Default Timeout Tests", "test_sleep1_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
 #endif /* HAVE_LIBRT */
-  { "Default Timeout Tests", "test_sleep2_pass", CK_PASS,   "Passed" },
-  { "Default Timeout Tests", "test_sleep5_fail", CK_ERROR,  "Test timeout expired" },
-  { "Default Timeout Tests", "test_sleep9_fail", CK_ERROR,  "Test timeout expired" },
+  { "Default Timeout Tests", "test_sleep2_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
+  { "Default Timeout Tests", "test_sleep5_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
+  { "Default Timeout Tests", "test_sleep9_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
   
-  { "User Integer Timeout Tests", "test_eternal_fail", CK_ERROR,  "Test timeout expired" },
-  { "User Integer Timeout Tests", "test_sleep2_pass", CK_PASS,   "Passed" },
-  { "User Integer Timeout Tests", "test_sleep5_pass", CK_PASS,   "Passed" },
-  { "User Integer Timeout Tests", "test_sleep9_fail", CK_ERROR,  "Test timeout expired" },
+  { "User Integer Timeout Tests", "test_eternal_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
+  { "User Integer Timeout Tests", "test_sleep2_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
+  { "User Integer Timeout Tests", "test_sleep5_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
+  { "User Integer Timeout Tests", "test_sleep9_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
 
-  { "User Double Timeout Tests", "test_eternal_fail", CK_ERROR,  "Test timeout expired" },
+  { "User Double Timeout Tests", "test_eternal_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
 #ifdef HAVE_LIBRT
-  { "User Double Timeout Tests", "test_sleep0_025_pass", CK_PASS,   "Passed" },
-  { "User Double Timeout Tests", "test_sleep1_fail", CK_ERROR,  "Test timeout expired" },
+  { "User Double Timeout Tests", "test_sleep0_025_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
+  { "User Double Timeout Tests", "test_sleep1_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
 #endif /* HAVE_LIBRT */
-  { "User Double Timeout Tests", "test_sleep2_fail", CK_ERROR,  "Test timeout expired" },
-  { "User Double Timeout Tests", "test_sleep5_fail", CK_ERROR,  "Test timeout expired" },
-  { "User Double Timeout Tests", "test_sleep9_fail", CK_ERROR,  "Test timeout expired" },
+  { "User Double Timeout Tests", "test_sleep2_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
+  { "User Double Timeout Tests", "test_sleep5_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
+  { "User Double Timeout Tests", "test_sleep9_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
   
 #if HAVE_DECL_SETENV
-  { "Environment Integer Timeout Scaling Tests", "test_eternal_fail", CK_ERROR,  "Test timeout expired" },
+  { "Environment Integer Timeout Scaling Tests", "test_eternal_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
 #ifdef HAVE_LIBRT
-  { "Environment Integer Timeout Scaling Tests", "test_sleep0_025_pass", CK_PASS,   "Passed" },
-  { "Environment Integer Timeout Scaling Tests", "test_sleep1_pass", CK_PASS,   "Passed" },
+  { "Environment Integer Timeout Scaling Tests", "test_sleep0_025_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
+  { "Environment Integer Timeout Scaling Tests", "test_sleep1_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
 #endif /* HAVE_LIBRT */
-  { "Environment Integer Timeout Scaling Tests", "test_sleep2_pass", CK_PASS,   "Passed" },
-  { "Environment Integer Timeout Scaling Tests", "test_sleep5_pass", CK_PASS,   "Passed" },
-  { "Environment Integer Timeout Scaling Tests", "test_sleep9_pass", CK_PASS,   "Passed" },
-  { "Environment Integer Timeout Scaling Tests", "test_sleep14_fail", CK_ERROR,  "Test timeout expired" },
+  { "Environment Integer Timeout Scaling Tests", "test_sleep2_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
+  { "Environment Integer Timeout Scaling Tests", "test_sleep5_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
+  { "Environment Integer Timeout Scaling Tests", "test_sleep9_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
+  { "Environment Integer Timeout Scaling Tests", "test_sleep14_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
 
-  { "Environment Double Timeout Scaling Tests", "test_eternal_fail", CK_ERROR,  "Test timeout expired" },
+  { "Environment Double Timeout Scaling Tests", "test_eternal_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
 #ifdef HAVE_LIBRT
-  { "Environment Double Timeout Scaling Tests", "test_sleep0_025_pass", CK_PASS,   "Passed" },
-  { "Environment Double Timeout Scaling Tests", "test_sleep1_fail", CK_ERROR,  "Test timeout expired" },
+  { "Environment Double Timeout Scaling Tests", "test_sleep0_025_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
+  { "Environment Double Timeout Scaling Tests", "test_sleep1_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
 #endif /* HAVE_LIBRT */
-  { "Environment Double Timeout Scaling Tests", "test_sleep2_fail", CK_ERROR,  "Test timeout expired" },
-  { "Environment Double Timeout Scaling Tests", "test_sleep5_fail", CK_ERROR,  "Test timeout expired" },
-  { "Environment Double Timeout Scaling Tests", "test_sleep9_fail", CK_ERROR,  "Test timeout expired" },
-  { "Environment Double Timeout Scaling Tests", "test_sleep14_fail", CK_ERROR,  "Test timeout expired" },
+  { "Environment Double Timeout Scaling Tests", "test_sleep2_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
+  { "Environment Double Timeout Scaling Tests", "test_sleep5_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
+  { "Environment Double Timeout Scaling Tests", "test_sleep9_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
+  { "Environment Double Timeout Scaling Tests", "test_sleep14_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
   
-  { "Timeout Integer Scaling Tests", "test_eternal_fail", CK_ERROR,  "Test timeout expired" },
+  { "Timeout Integer Scaling Tests", "test_eternal_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
 #ifdef HAVE_LIBRT
-  { "Timeout Integer Scaling Tests", "test_sleep0_025_pass", CK_PASS,   "Passed" },
-  { "Timeout Integer Scaling Tests", "test_sleep1_pass", CK_PASS,   "Passed" },
-  { "Timeout Integer Scaling Tests", "test_sleep2_pass", CK_PASS,   "Passed" },
+  { "Timeout Integer Scaling Tests", "test_sleep0_025_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
+  { "Timeout Integer Scaling Tests", "test_sleep1_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
+  { "Timeout Integer Scaling Tests", "test_sleep2_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
 #endif /* HAVE_LIBRT */
-  { "Timeout Integer Scaling Tests", "test_sleep5_pass", CK_PASS,   "Passed" },
-  { "Timeout Integer Scaling Tests", "test_sleep9_fail", CK_ERROR,  "Test timeout expired" },
+  { "Timeout Integer Scaling Tests", "test_sleep5_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
+  { "Timeout Integer Scaling Tests", "test_sleep9_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
   
-  { "Timeout Double Scaling Tests", "test_eternal_fail", CK_ERROR,  "Test timeout expired" },
+  { "Timeout Double Scaling Tests", "test_eternal_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
 #ifdef HAVE_LIBRT
-  { "Timeout Double Scaling Tests", "test_sleep0_025_pass", CK_PASS,   "Passed" },
-  { "Timeout Double Scaling Tests", "test_sleep1_pass", CK_PASS,   "Passed" },
+  { "Timeout Double Scaling Tests", "test_sleep0_025_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
+  { "Timeout Double Scaling Tests", "test_sleep1_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
 #endif /* HAVE_LIBRT */
-  { "Timeout Double Scaling Tests", "test_sleep2_fail", CK_ERROR,  "Test timeout expired" },
-  { "Timeout Double Scaling Tests", "test_sleep5_fail", CK_ERROR,  "Test timeout expired" },
-  { "Timeout Double Scaling Tests", "test_sleep9_fail", CK_ERROR,  "Test timeout expired" },
+  { "Timeout Double Scaling Tests", "test_sleep2_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
+  { "Timeout Double Scaling Tests", "test_sleep5_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
+  { "Timeout Double Scaling Tests", "test_sleep9_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
   
-  { "User Integer Timeout Scaling Tests", "test_eternal_fail", CK_ERROR,  "Test timeout expired" },
+  { "User Integer Timeout Scaling Tests", "test_eternal_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
 #ifdef HAVE_LIBRT
-  { "User Integer Timeout Scaling Tests", "test_sleep0_025_pass", CK_PASS,   "Passed" },
-  { "User Integer Timeout Scaling Tests", "test_sleep1_pass", CK_PASS,   "Passed" },
+  { "User Integer Timeout Scaling Tests", "test_sleep0_025_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
+  { "User Integer Timeout Scaling Tests", "test_sleep1_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
 #endif /* HAVE_LIBRT */
-  { "User Integer Timeout Scaling Tests", "test_sleep2_pass", CK_PASS,   "Passed" },
-  { "User Integer Timeout Scaling Tests", "test_sleep5_pass", CK_PASS,   "Passed" },
-  { "User Integer Timeout Scaling Tests", "test_sleep9_pass", CK_PASS,   "Passed" },
-  { "User Integer Timeout Scaling Tests", "test_sleep14_fail", CK_ERROR,  "Test timeout expired" },
+  { "User Integer Timeout Scaling Tests", "test_sleep2_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
+  { "User Integer Timeout Scaling Tests", "test_sleep5_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
+  { "User Integer Timeout Scaling Tests", "test_sleep9_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
+  { "User Integer Timeout Scaling Tests", "test_sleep14_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
   
-  { "User Double Timeout Scaling Tests", "test_eternal_fail", CK_ERROR,  "Test timeout expired" },
+  { "User Double Timeout Scaling Tests", "test_eternal_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
 #ifdef HAVE_LIBRT
-  { "User Double Timeout Scaling Tests", "test_sleep0_025_pass", CK_PASS,   "Passed" },
-  { "User Double Timeout Scaling Tests", "test_sleep1_fail", CK_ERROR,  "Test timeout expired" },
+  { "User Double Timeout Scaling Tests", "test_sleep0_025_pass", CK_PASS, CK_MSG_TEXT,   "Passed" },
+  { "User Double Timeout Scaling Tests", "test_sleep1_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
 #endif /* HAVE_LIBRT */
-  { "User Double Timeout Scaling Tests", "test_sleep2_fail", CK_ERROR,  "Test timeout expired" },
-  { "User Double Timeout Scaling Tests", "test_sleep5_fail", CK_ERROR,  "Test timeout expired" },
-  { "User Double Timeout Scaling Tests", "test_sleep9_fail", CK_ERROR,  "Test timeout expired" },
-  { "User Double Timeout Scaling Tests", "test_sleep14_fail", CK_ERROR,  "Test timeout expired" },
+  { "User Double Timeout Scaling Tests", "test_sleep2_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
+  { "User Double Timeout Scaling Tests", "test_sleep5_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
+  { "User Double Timeout Scaling Tests", "test_sleep9_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
+  { "User Double Timeout Scaling Tests", "test_sleep14_fail", CK_ERROR, CK_MSG_TEXT,  "Test timeout expired" },
 #endif /* HAVE_DECL_SETENV */
 #endif /* TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) */
 
 #if defined(HAVE_FORK) && HAVE_FORK==1
-  { "Limit Tests", "test_early_exit", CK_ERROR,   "Early exit with return value 1" },
+  { "Limit Tests", "test_early_exit", CK_ERROR, CK_MSG_TEXT,   "Early exit with return value 1" },
 #endif /* HAVE_FORK */
 #if MEMORY_LEAKING_TESTS_ENABLED
-  { "Limit Tests", "test_null", CK_FAILURE, "Completed properly" },
+  { "Limit Tests", "test_null", CK_FAILURE, CK_MSG_TEXT, "Completed properly" },
 #endif /* MEMORY_LEAKING_TESTS_ENABLED */
-  { "Limit Tests", "test_null_2", CK_FAILURE, "Completed properly" },
+  { "Limit Tests", "test_null_2", CK_FAILURE, CK_MSG_TEXT, "Completed properly" },
 
 #if defined(HAVE_FORK) && HAVE_FORK==1
-  { "Msg and fork Tests", "test_fork1p_pass", CK_PASS,       "Passed" },
-  { "Msg and fork Tests", "test_fork1p_fail", CK_FAILURE,    "Expected fail" },
-  { "Msg and fork Tests", "test_fork1c_pass", CK_PASS,       "Passed" },
-  { "Msg and fork Tests", "test_fork1c_fail", CK_FAILURE,    "Expected fail" },
-  { "Msg and fork Tests", "test_fork2_pass", CK_PASS,       "Passed" },
-  { "Msg and fork Tests", "test_fork2_fail", CK_FAILURE,    "Expected fail" },
+  { "Msg and fork Tests", "test_fork1p_pass", CK_PASS, CK_MSG_TEXT,       "Passed" },
+  { "Msg and fork Tests", "test_fork1p_fail", CK_FAILURE, CK_MSG_TEXT,    "Expected fail" },
+  { "Msg and fork Tests", "test_fork1c_pass", CK_PASS, CK_MSG_TEXT,       "Passed" },
+  { "Msg and fork Tests", "test_fork1c_fail", CK_FAILURE, CK_MSG_TEXT,    "Expected fail" },
+  { "Msg and fork Tests", "test_fork2_pass", CK_PASS, CK_MSG_TEXT,       "Passed" },
+  { "Msg and fork Tests", "test_fork2_fail", CK_FAILURE, CK_MSG_TEXT,    "Expected fail" },
 #endif  /* HAVE_FORK */
 
 #if defined(HAVE_FORK) && HAVE_FORK==1
 #if MEMORY_LEAKING_TESTS_ENABLED
-  { "Check Errors Tests", "test_invalid_set_fork_status", CK_FAILURE,    "Early exit with return value 2" },
+  { "Check Errors Tests", "test_invalid_set_fork_status", CK_FAILURE, CK_MSG_TEXT,    "Early exit with return value 2" },
 #endif
-  { "Check Ignore Exit Handlers", "test_ignore_exit_handlers", CK_FAILURE, "Failed" },
+  { "Check Ignore Exit Handlers", "test_ignore_exit_handlers", CK_FAILURE, CK_MSG_TEXT, "Failed" },
 #endif /* HAVE_FORK */
 
-  { "Core", "test_srunner", CK_PASS,    "Passed" },
-  { "Core", "test_2nd_suite", CK_FAILURE, "We failed" }
+  { "Core", "test_srunner", CK_PASS, CK_MSG_TEXT,    "Passed" },
+  { "Core", "test_2nd_suite", CK_FAILURE, CK_MSG_TEXT, "We failed" }
 };
 
 static int nr_of_master_tests = sizeof master_tests /sizeof master_tests[0];
@@ -446,7 +459,9 @@ START_TEST(test_check_failure_msgs)
   TestResult *tr;
 
   for (i = 0; i < sub_ntests; i++) {
-    if (master_tests[i].failure_type == CK_PASS) {
+    master_test_t *master_test = &master_tests[i];
+
+    if (master_test->failure_type == CK_PASS) {
       passed++;
       continue;
     }
@@ -455,14 +470,55 @@ START_TEST(test_check_failure_msgs)
     tr = tr_fail_array[i - passed];
     ck_assert_msg(tr != NULL, NULL);
     got_msg = tr_msg(tr);
-    expected_msg = master_tests[i].msg;
+    expected_msg = master_test->msg;
 
-    if (strcmp(got_msg, expected_msg) != 0) {      
-      char *emsg;
-      char *tmp = (char *)malloc(MAXSTR);
-      snprintf(tmp, MAXSTR,"For test %d:%s:%s Expected %s, got %s",
-               i, master_tests[i].tcname, master_tests[i].test_name,
-			   expected_msg, got_msg);
+    unsigned char not_equal = 0;
+
+    switch (master_test->msg_type) {
+    case CK_MSG_TEXT:
+      if (strcmp(got_msg, expected_msg) != 0) {
+        not_equal = 1;
+      }
+      break;
+#if ENABLE_REGEX
+    case CK_MSG_REGEXP: {
+      regex_t re;
+      int reg_err = regcomp(&re, expected_msg, REG_EXTENDED | REG_NOSUB);
+      if (reg_err) {
+        char err_text[256];
+        regerror(reg_err, &re, err_text, sizeof(err_text));
+        ck_assert_msg(reg_err == 0,
+                "For test %d:%s:%s Expected regexp '%s', but regcomp returned error '%s'",
+                i, master_test->tcname, master_test->test_name, expected_msg,
+                err_text);
+      }
+      reg_err = regexec(&re, got_msg, 0, NULL, 0);
+      regfree(&re);
+      if (reg_err) {
+        not_equal = 1;
+      }
+      break;
+    }
+#endif /* ENABLE_REGEX */
+    }
+    
+    if (not_equal) {
+      const char *msg_type_str;
+      switch(master_test->msg_type) {
+#if ENABLE_REGEX
+      case CK_MSG_REGEXP:
+        msg_type_str = " regexp";
+        break;
+#endif
+      default:
+        msg_type_str = "";
+      }
+
+      char emsg[MAXSTR];
+      snprintf(emsg, MAXSTR - 1,"For test %d:%s:%s Expected%s '%s', got '%s'",
+               i, master_test->tcname, master_test->test_name, msg_type_str,
+               expected_msg, got_msg);
+      emsg[MAXSTR - 1] = '\0';
 
       /*
        * NOTE: ck_abort_msg() will take the passed string
@@ -470,11 +526,10 @@ START_TEST(test_check_failure_msgs)
        * '%' found, else they will result in odd formatting
        * in ck_abort_msg().
        */
-      emsg = escape_percent(tmp, MAXSTR);
-      free(tmp);
+      char *emsg_escaped = escape_percent(emsg, MAXSTR);
 
-      ck_abort_msg(emsg);
-      free(emsg);
+      ck_abort_msg(emsg_escaped);
+      free(emsg_escaped);
     }
   }
 }
@@ -600,14 +655,57 @@ END_TEST
 
 START_TEST(test_check_all_msgs)
 {
-  const char *msg;
-  msg = tr_msg(tr_all_array[_i]);
-  if (strcmp(msg, master_tests[_i].msg) != 0) {
-    char *emsg;
-    char *tmp = (char *)malloc (MAXSTR);
-    snprintf(tmp, MAXSTR,"For test %i:%s:%s expected '%s', got '%s'",
-             _i, master_tests[_i].tcname, master_tests[_i].test_name,
-			 master_tests[_i].msg, msg);
+  const char *got_msg = tr_msg(tr_all_array[_i]);
+  master_test_t *master_test = &master_tests[_i];
+  const char *expected_msg = master_test->msg;
+
+  unsigned char not_equal = 0;
+
+  switch (master_test->msg_type) {
+  case CK_MSG_TEXT:
+    if (strcmp(got_msg, expected_msg) != 0) {
+      not_equal = 1;
+    }
+    break;
+#if ENABLE_REGEX
+  case CK_MSG_REGEXP: {
+    regex_t re;
+    int reg_err = regcomp(&re, expected_msg, REG_EXTENDED | REG_NOSUB);
+    if (reg_err) {
+      char err_text[256];
+      regerror(reg_err, &re, err_text, sizeof(err_text));
+      ck_assert_msg(reg_err == 0,
+                "For test %d:%s:%s Expected regexp '%s', but regcomp returned error '%s'",
+                _i, master_test->tcname, master_test->test_name, expected_msg,
+                err_text);
+    }
+    reg_err = regexec(&re, got_msg, 0, NULL, 0);
+    regfree(&re);
+    if (reg_err) {
+      not_equal = 1;
+    }
+    break;
+  }
+#endif /* ENABLE_REGEX */
+  }
+
+  if (not_equal) {
+    const char *msg_type_str;
+    switch(master_test->msg_type) {
+#if ENABLE_REGEX
+    case CK_MSG_REGEXP:
+      msg_type_str = " regexp";
+      break;
+#endif
+    default:
+      msg_type_str = "";
+    }
+
+    char emsg[MAXSTR];
+    snprintf(emsg, MAXSTR - 1, "For test %i:%s:%s expected%s '%s', got '%s'",
+             _i, master_test->tcname, master_test->test_name, msg_type_str,
+             expected_msg, got_msg);
+    emsg[MAXSTR - 1] = '\0';
 
    /*
     * NOTE: ck_abort_msg() will take the passed string
@@ -615,11 +713,10 @@ START_TEST(test_check_all_msgs)
     * '%' found, else they will result in odd formatting
     * in ck_abort_msg().
     */
-    emsg = escape_percent(tmp, MAXSTR);
-    free(tmp);
+    char *emsg_escaped = escape_percent(emsg, MAXSTR);
 
-    ck_abort_msg(emsg);
-    free(emsg);
+    ck_abort_msg(emsg_escaped);
+    free(emsg_escaped);
   }
 }
 END_TEST  
