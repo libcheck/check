@@ -149,8 +149,13 @@ static master_test_t master_tests[] = {
   { "Simple Tests", "test_ck_assert_float_infinite_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '2%d is infinite' failed: 2%d == 0" },
   { "Simple Tests", "test_ck_assert_float_nan", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x is NaN' failed: x == inf" },
   { "Simple Tests", "test_ck_assert_float_nan_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '2%d is NaN' failed: 2%d == 0" },
+#if ENABLE_REGEX
+  { "Simple Tests", "test_ck_assert_float_nonnan", CK_FAILURE, CK_MSG_REGEXP, "^Assertion 'x is not NaN' failed: x == -?nan$" },
+  { "Simple Tests", "test_ck_assert_float_nonnan_with_mod", CK_FAILURE, CK_MSG_REGEXP, "^Assertion '\\(2%s\\)\\*x is not NaN' failed: \\(2%s\\)\\*x == -?nan$" },
+#else
   { "Simple Tests", "test_ck_assert_float_nonnan", CK_PASS, CK_MSG_TEXT, "Passed" },
   { "Simple Tests", "test_ck_assert_float_nonnan_with_mod", CK_PASS, CK_MSG_TEXT, "Passed" },
+#endif
   { "Simple Tests", "test_ck_assert_float_nan_and_inf_with_expr", CK_PASS, CK_MSG_TEXT, "Passed" },
   /* End of tests on float macros */
   /* Tests on double macros */
@@ -184,8 +189,13 @@ static master_test_t master_tests[] = {
   { "Simple Tests", "test_ck_assert_double_infinite_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '2%d is infinite' failed: 2%d == 0" },
   { "Simple Tests", "test_ck_assert_double_nan", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x is NaN' failed: x == inf" },
   { "Simple Tests", "test_ck_assert_double_nan_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '2%d is NaN' failed: 2%d == 0" },
+#if ENABLE_REGEX
+  { "Simple Tests", "test_ck_assert_double_nonnan", CK_FAILURE, CK_MSG_REGEXP, "^Assertion 'x is not NaN' failed: x == -?nan$" },
+  { "Simple Tests", "test_ck_assert_double_nonnan_with_mod", CK_FAILURE, CK_MSG_REGEXP, "^Assertion '\\(2%s\\)\\*x is not NaN' failed: \\(2%s\\)\\*x == -?nan$" },
+#else
   { "Simple Tests", "test_ck_assert_double_nonnan", CK_PASS, CK_MSG_TEXT, "Passed" },
   { "Simple Tests", "test_ck_assert_double_nonnan_with_mod", CK_PASS, CK_MSG_TEXT, "Passed" },
+#endif
   { "Simple Tests", "test_ck_assert_double_nan_and_inf_with_expr", CK_PASS, CK_MSG_TEXT, "Passed" },
   /* End of tests on double macros */
   /* Tests on long double macros */
@@ -219,8 +229,13 @@ static master_test_t master_tests[] = {
   { "Simple Tests", "test_ck_assert_ldouble_infinite_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '2%d is infinite' failed: 2%d == 0" },
   { "Simple Tests", "test_ck_assert_ldouble_nan", CK_FAILURE, CK_MSG_TEXT, "Assertion 'x is NaN' failed: x == inf" },
   { "Simple Tests", "test_ck_assert_ldouble_nan_with_mod", CK_FAILURE, CK_MSG_TEXT, "Assertion '2%d is NaN' failed: 2%d == 0" },
+#if ENABLE_REGEX
+  { "Simple Tests", "test_ck_assert_ldouble_nonnan", CK_FAILURE, CK_MSG_REGEXP, "^Assertion 'x is not NaN' failed: x == -?nan$" },
+  { "Simple Tests", "test_ck_assert_ldouble_nonnan_with_mod", CK_FAILURE, CK_MSG_REGEXP, "^Assertion '\\(2%s\\)\\*x is not NaN' failed: \\(2%s\\)\\*x == -?nan$" },
+#else
   { "Simple Tests", "test_ck_assert_ldouble_nonnan", CK_PASS, CK_MSG_TEXT, "Passed" },
   { "Simple Tests", "test_ck_assert_ldouble_nonnan_with_mod", CK_PASS, CK_MSG_TEXT, "Passed" },
+#endif
   { "Simple Tests", "test_ck_assert_ldouble_nan_and_inf_with_expr", CK_PASS, CK_MSG_TEXT, "Passed" },
   /* End of tests on long double macros */
   { "Simple Tests", "test_percent_n_escaped", CK_FAILURE, CK_MSG_TEXT, "Assertion 'returnsZero(\"%n\") == 1' failed: returnsZero(\"%n\") == 0, 1 == 1" },

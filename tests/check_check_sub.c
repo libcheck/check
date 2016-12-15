@@ -913,10 +913,14 @@ START_TEST(test_ck_assert_float_nonnan)
 {
   record_test_name(tcase_name());
 
-  float t = 1.0f;
   float x = 0.0f;
   ck_assert_float_nonnan(x);
-  // TODO: test with 0.0/0.0 and platform specific output.
+#if ENABLE_REGEX
+  float t = 1.0f;
+  x = 0.0f / (1.0f - t);
+  record_failure_line_num(__LINE__);
+  ck_assert_float_nonnan(x);
+#endif
 }
 END_TEST
 
@@ -926,7 +930,12 @@ START_TEST(test_ck_assert_float_nonnan_with_mod)
 
   int s = 2;
   ck_assert_float_nonnan(2%s);
-  // TODO: test with 0.0/0.0 and platform specific output.
+#if ENABLE_REGEX
+  float t = 1.0f;
+  float x = 0.0f / (1.0f - t);
+  record_failure_line_num(__LINE__);
+  ck_assert_float_nonnan((2%s)*x);
+#endif
 }
 END_TEST
 
@@ -1383,10 +1392,14 @@ START_TEST(test_ck_assert_double_nonnan)
 {
   record_test_name(tcase_name());
 
-  double t = 1;
   double x = 0;
   ck_assert_double_nonnan(x);
-  // TODO: test with 0.0/0.0 and platform specific output.
+#if ENABLE_REGEX
+  double t = 1;
+  x = 0.0 / (1.0 - t);
+  record_failure_line_num(__LINE__);
+  ck_assert_double_nonnan(x);
+#endif
 }
 END_TEST
 
@@ -1396,7 +1409,12 @@ START_TEST(test_ck_assert_double_nonnan_with_mod)
 
   int s = 2;
   ck_assert_double_nonnan(2%s);
-  // TODO: test with 0.0/0.0 and platform specific output.
+#if ENABLE_REGEX
+  double t = 1.0;
+  double x = 0.0 / (1.0 - t);
+  record_failure_line_num(__LINE__);
+  ck_assert_double_nonnan((2%s)*x);
+#endif
 }
 END_TEST
 
@@ -1855,10 +1873,14 @@ START_TEST(test_ck_assert_ldouble_nonnan)
 {
   record_test_name(tcase_name());
 
-  long double t = 1.0l;
   long double x = 0.0l;
   ck_assert_ldouble_nonnan(x);
-  // TODO: test with 0.0/0.0 and platform specific output.
+#if ENABLE_REGEX
+  long double t = 1.0l;
+  x = 0.0l / (1.0l - t);
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_nonnan(x);
+#endif
 }
 END_TEST
 
@@ -1868,7 +1890,12 @@ START_TEST(test_ck_assert_ldouble_nonnan_with_mod)
 
   int s = 2;
   ck_assert_ldouble_nonnan(2%s);
-  // TODO: test with 0.0/0.0 and platform specific output.
+#if ENABLE_REGEX
+  long double t = 1.0l;
+  long double x = 0.0l / (1.0l - t);
+  record_failure_line_num(__LINE__);
+  ck_assert_ldouble_nonnan((2%s)*x);
+#endif
 }
 END_TEST
 
