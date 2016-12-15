@@ -289,12 +289,12 @@ void xml_lfun(SRunner * sr CK_ATTRIBUTE_UNUSED, FILE * file,
     switch (evt)
     {
         case CLINITLOG_SR:
-            fprintf(file, "<?xml version=\"1.0\"?>\n");
             fprintf(file,
-                    "<?xml-stylesheet type=\"text/xsl\" href=\"http://check.sourceforge.net/xml/check_unittest.xslt\"?>\n");
-            fprintf(file,
-                    "<testsuites xmlns=\"http://check.sourceforge.net/ns\">\n");
-            fprintf(file, "  <datetime>%s</datetime>\n", t);
+		    "<?xml version=\"1.0\"?>\n"
+		    "<?xml-stylesheet type=\"text/xsl\" "
+		    "href=\"http://check.sourceforge.net/xml/check_unittest.xslt\"?>\n"
+		    "<testsuites xmlns=\"http://check.sourceforge.net/ns\">\n"
+		    "  <datetime>%s</datetime>\n", t);
             break;
         case CLENDLOG_SR:
         {
@@ -304,17 +304,19 @@ void xml_lfun(SRunner * sr CK_ATTRIBUTE_UNUSED, FILE * file,
             /* calculate time the test were running */
             clock_gettime(check_get_clockid(), &ts_end);
             duration = (unsigned long)DIFF_IN_USEC(ts_start, ts_end);
-            fprintf(file, "  <duration>%lu.%06lu</duration>\n",
+            fprintf(file,
+		    "  <duration>%lu.%06lu</duration>\n"
+		    "</testsuites>\n",
                     duration / US_PER_SEC, duration % US_PER_SEC);
-            fprintf(file, "</testsuites>\n");
         }
             break;
         case CLSTART_SR:
             break;
         case CLSTART_S:
             s = (Suite *)obj;
-            fprintf(file, "  <suite>\n");
-            fprintf(file, "    <title>");
+            fprintf(file,
+		    "  <suite>\n"
+		    "    <title>");
             fprint_xml_esc(file, s->name);
             fprintf(file, "</title>\n");
             break;

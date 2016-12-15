@@ -33,7 +33,7 @@
 #ifndef HAVE_PTHREAD
 #define pthread_mutex_lock(arg)
 #define pthread_mutex_unlock(arg)
-#define pthread_cleanup_push(f,a) {
+#define pthread_cleanup_push(f, a) {
 #define pthread_cleanup_pop(e) }
 #endif
 

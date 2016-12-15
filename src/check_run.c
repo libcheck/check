@@ -505,7 +505,7 @@ static TestResult *tcase_run_tfun_fork(SRunner * sr, TCase * tc, TF * tfun,
     alarm_received = 0;
 
     if(timer_create(check_get_clockid(),
-                    NULL /* fire SIGALRM if timer expires */ ,
+                    NULL /* fire SIGALRM if timer expires */,
                     &timerid) == 0)
     {
         /* Set the timer to fire once */
