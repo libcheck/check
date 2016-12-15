@@ -37,6 +37,9 @@ In Development:
   ck_assert_pstr_ne) have been added.
   Pull Request #80
 
+* Macros for checking if a pointer is NULL or not have been added.
+  Pull Request #87
+
 
 Sun Aug 2, 2015: Released Check 0.10.0
   based on r1217 (2015-08-02 19:21:14 +0000)
