@@ -164,6 +164,31 @@ START_TEST(test_list_abuse)
 }
 END_TEST
 
+START_TEST(test_contains)
+{
+    List *lp = check_list_create();
+
+    char otherData[] = "other";
+    char goalData[] = "goal";
+
+    ck_assert_msg (check_list_contains(lp, goalData) == false,
+                       "The goal data should not be in the list yet");
+
+    int index;
+    for(index = 0; index < 10; index++)
+    {
+        check_list_add_end (lp, otherData);
+        ck_assert_msg (check_list_contains(lp, goalData) == false,
+                   "The goal data should not be in the list yet");
+    }
+
+    check_list_add_end (lp, goalData);
+    ck_assert_msg (check_list_contains(lp, goalData) ,
+                       "The goal data should be in the list");
+
+    check_list_free(lp);
+}
+END_TEST
 
 Suite *make_list_suite (void)
 {
@@ -179,6 +204,7 @@ Suite *make_list_suite (void)
   tcase_add_test (tc, test_add_front_and_next);
   tcase_add_test (tc, test_add_a_bunch);
   tcase_add_test (tc, test_list_abuse);
+  tcase_add_test (tc, test_contains);
 
   return s;
 }

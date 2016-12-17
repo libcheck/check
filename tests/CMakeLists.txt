@@ -38,7 +38,9 @@ if(WIN32)
 endif(WIN32)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/test_vars.in
-  ${CMAKE_CURRENT_SOURCE_DIR}/test_vars)
+  ${CMAKE_CURRENT_BINARY_DIR}/test_vars)
+
+include(CTest)
 
 set(CHECK_CHECK_SOURCES
   check_check_exit.c
@@ -53,10 +55,24 @@ set(CHECK_CHECK_SOURCES
   check_check_pack.c
   check_check_selective.c
   check_check_sub.c
+  check_check_tags.c
   check_list.c)
 set(CHECK_CHECK_HEADERS check_check.h)
 add_executable(check_check ${CHECK_CHECK_HEADERS} ${CHECK_CHECK_SOURCES})
 target_link_libraries(check_check check compat)
+
+set(CHECK_CHECK_EXPORT_SOURCES
+  check_check_sub.c
+  check_check_master.c
+  check_check_log.c
+  check_check_fork.c
+  check_check_export_main.c
+)
+set(CHECK_CHECK_EXPORT_HEADERS check_check.h)
+add_executable(check_check_export
+  ${CHECK_CHECK_EXPORT_HEADERS}
+  ${CHECK_CHECK_EXPORT_SOURCES})
+target_link_libraries(check_check_export check compat)
 
 set(EX_OUTPUT_SOURCES ex_output.c)
 add_executable(ex_output ${EX_OUTPUT_SOURCES})

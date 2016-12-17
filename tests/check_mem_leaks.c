@@ -67,7 +67,7 @@ int main ()
 #if defined(HAVE_FORK) && HAVE_FORK==1
     srunner_add_suite(sr, make_exit_suite());
 #endif
-
+    srunner_add_suite(sr, make_tag_suite());
     srunner_add_suite(sr, make_selective_suite());
 
     /*

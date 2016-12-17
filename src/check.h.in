@@ -24,6 +24,8 @@
 
 #include <stddef.h>
 #include <string.h>
+#include <math.h>
+#include <float.h>
 
 #include <check_stdint.h>
 
@@ -145,7 +147,10 @@ CK_DLL_EXP Suite *CK_EXPORT suite_create(const char *name);
 CK_DLL_EXP int CK_EXPORT suite_tcase(Suite * s, const char *tcname);
 
 /**
- * Add a test case to a suite
+ * Add a test case to a suite.
+ *
+ * Note that if the TCase has already been added attempting
+ * to add it again will be ignored.
  *
  * @param s suite to add test case to
  * @param tc test case to add to suite
@@ -169,6 +174,19 @@ CK_DLL_EXP void CK_EXPORT suite_add_tcase(Suite * s, TCase * tc);
  * */
 CK_DLL_EXP TCase *CK_EXPORT tcase_create(const char *name);
 
+/**
+ * Associate a test case with certain tags.
+ * Replaces any existing tags with the new set.
+ *
+ * @param tc the test case
+ *
+ * @param tags string containing arbitrary tags separated by spaces.
+ *        This will be copied. Passing NULL clears all tags.
+ *
+ * @since 0.11.0
+ * */
+CK_DLL_EXP void CK_EXPORT tcase_set_tags(TCase * tc,
+					 const char *tags);
 /**
  * Add a test function to a test case
  *
@@ -358,6 +376,16 @@ CK_DLL_EXP void CK_EXPORT tcase_set_timeout(TCase * tc, double timeout);
 /* Internal function to mark the start of a test function */
 CK_DLL_EXP void CK_EXPORT tcase_fn_start(const char *fname, const char *file,
                                          int line);
+
+/**
+ * Retreive the name of the current running test. This is the name
+ * of the test passed to START_TEST. This is only valid when called
+ * from a running test. The value return outside of a running test is
+ * undefined.
+ *
+ * @since 0.11.0
+ */
+CK_DLL_EXP const char* CK_EXPORT tcase_name();
 
 /**
  * Start a unit test with START_TEST(unit_name), end with END_TEST.
@@ -643,19 +671,737 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
  */
 #define ck_assert_uint_ge(X, Y) _ck_assert_uint(X, >=, Y)
 
+/* Number of digits after the decimal point to output via printf */
+#ifndef CK_FLOATING_DIG
+# define CK_FLOATING_DIG 6
+#endif /* CK_FLOATING_DIG */
+
+/* Floating point number comparison macros with improved output
+ * compared to ck_assert(). */
+/* OP may be any comparison operator, TP is type, TM is type modifier. */
+#define _ck_assert_floating(X, OP, Y, TP, TM) do { \
+  TP _ck_x = (X); \
+  TP _ck_y = (Y); \
+  ck_assert_msg(_ck_x OP _ck_y, \
+  "Assertion '%s' failed: %s == %.*"TM"g, %s == %.*"TM"g", \
+  #X" "#OP" "#Y, \
+  #X, (int)CK_FLOATING_DIG, _ck_x, \
+  #Y, (int)CK_FLOATING_DIG, _ck_y); \
+} while (0)
+
+/* Check floating point number is finise. */
+/* TP is type, TM is type modifier. */
+#define _ck_assert_floating_finite(X, TP, TM) \
+do { \
+  TP _ck_x = (X); \
+  ck_assert_msg(isfinite(_ck_x), \
+    "Assertion '%s' failed: %s == %.*"TM"g", \
+    #X" is finite", \
+    #X, (int)CK_FLOATING_DIG, _ck_x); \
+} while (0)
+
+/* Check floating point number is infinise. */
+/* TP is type, TM is type modifier. */
+#define _ck_assert_floating_infinite(X, TP, TM) \
+do { \
+  TP _ck_x = (X); \
+  ck_assert_msg(isinf(_ck_x), \
+    "Assertion '%s' failed: %s == %.*"TM"g", \
+    #X" is infinite", \
+    #X, (int)CK_FLOATING_DIG, _ck_x); \
+} while (0)
+
+/* Check floating point number is "Not a Number". */
+/* TP is type, TM is type modifier. */
+#define _ck_assert_floating_nan(X, TP, TM) \
+do { \
+  TP _ck_x = (X); \
+  ck_assert_msg(isnan(_ck_x), \
+    "Assertion '%s' failed: %s == %.*"TM"g", \
+    #X" is NaN", \
+    #X, (int)CK_FLOATING_DIG, _ck_x); \
+} while (0)
+
+/* Check floating point number is not "Not a Number". */
+/* TP is type, TM is type modifier. */
+#define _ck_assert_floating_nonnan(X, TP, TM) \
+do { \
+  TP _ck_x = (X); \
+  ck_assert_msg(!isnan(_ck_x), \
+    "Assertion '%s' failed: %s == %.*"TM"g", \
+    #X" is not NaN", \
+    #X, (int)CK_FLOATING_DIG, _ck_x); \
+} while (0)
+
+/* Floating point tolerance comparison macros with improved output
+ * compared to ck_assert(). */
+/* OP, D can have values: >, -1; <, 1. */
+#define _ck_assert_floating_op_tol(X, OP, Y, T, D, TP, TM) do { \
+  TP _ck_x = (X); \
+  TP _ck_y = (Y); \
+  TP _ck_t = (T); \
+  ck_assert_msg((_ck_x - _ck_y) OP _ck_t * (D), \
+  "Assertion '%s' failed: %s == %.*"TM"g, %s == %.*"TM"g, %s == %.*"TM"g", \
+  #X" "#OP"= "#Y", error < "#T, \
+  #X, (int)CK_FLOATING_DIG, _ck_x, \
+  #Y, (int)CK_FLOATING_DIG, _ck_y, \
+  #T, (int)CK_FLOATING_DIG, _ck_t); \
+} while (0)
+
+/* Floating point tolerance comparison macros with improved output
+ * compared to ck_assert(). */
+/* OP can have values: <; >=. */
+#define _ck_assert_floating_absdiff_op_tol(X, Y, OP, T, TP, TM) \
+do { \
+  TP _ck_x = (X); \
+  TP _ck_y = (Y); \
+  TP _ck_t = (T); \
+  ck_assert_msg(fabsl(_ck_y - _ck_x) OP _ck_t, \
+    "Assertion '%s' failed: %s == %.*"TM"g, %s == %.*"TM"g, %s == %.*"TM"g", \
+    "fabsl("#Y" - "#X") "#OP" "#T, \
+    #X, (int)CK_FLOATING_DIG, _ck_x, \
+    #Y, (int)CK_FLOATING_DIG, _ck_y, \
+    #T, (int)CK_FLOATING_DIG, _ck_t); \
+} while (0)
+
+/**
+ * Check two single precision floating point numbers to determine if X == Y
+ *
+ * If not X == Y, the test fails.
+ *
+ * @param X floating point number (float)
+ * @param Y floating point number (float) to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_float_eq(X, Y) _ck_assert_floating(X, ==, Y, float, "")
+/**
+ * Check two single precision floating point numbers to determine if X != Y
+ *
+ * If not X != Y, the test fails.
+ *
+ * @param X floating point number (float)
+ * @param Y floating point number (float) to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_float_ne(X, Y) _ck_assert_floating(X, !=, Y, float, "")
+/**
+ * Check two single precision floating point numbers to determine if X < Y
+ *
+ * If not X < Y, the test fails.
+ *
+ * @param X floating point number (float)
+ * @param Y floating point number (float) to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_float_lt(X, Y) _ck_assert_floating(X, <, Y, float, "")
+/**
+ * Check two single precision floating point numbers to determine if X <= Y
+ *
+ * If not X <= Y, the test fails.
+ *
+ * @param X floating point number (float)
+ * @param Y floating point number (float) to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_float_le(X, Y) _ck_assert_floating(X, <=, Y, float, "")
+/**
+ * Check two single precision floating point numbers to determine if X > Y
+ *
+ * If not X > Y, the test fails.
+ *
+ * @param X floating point number (float)
+ * @param Y floating point number (float) to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_float_gt(X, Y) _ck_assert_floating(X, >, Y, float, "")
+/**
+ * Check two single precision floating point numbers to determine if X >= Y
+ *
+ * If not X >= Y, the test fails.
+ *
+ * @param X floating point number (float)
+ * @param Y floating point number (float) to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_float_ge(X, Y) _ck_assert_floating(X, >=, Y, float, "")
+
+/**
+ * Check two single precision floating point numbers to determine if X≈Y
+ * with specified tolerance
+ *
+ * If not X ≈ Y with error < T, the test fails.
+ *
+ * @param X floating point number (float)
+ * @param Y floating point number (float) to compare against X
+ * @param T tolerance (float)
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_float_eq_tol(X, Y, T)  _ck_assert_floating_absdiff_op_tol(X, Y, <, T, float, "")
+
+/**
+ * Check two single precision floating point numbers to determine if not X≈Y
+ * with specified tolerance
+ *
+ * If X ≈ Y with error < T, the test fails.
+ *
+ * @param X floating point number (float)
+ * @param Y floating point number (float) to compare against X
+ * @param T tolerance (float)
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_float_ne_tol(X, Y, T) _ck_assert_floating_absdiff_op_tol(X, Y, >=, T, float, "")
+
+/**
+ * Check two single precision floating point numbers to determine if X>≈Y
+ * with specified tolerance
+ *
+ * If not X >≈ Y with error < T, the test fails.
+ *
+ * @param X floating point number (float)
+ * @param Y floating point number (float) to compare against X
+ * @param T tolerance (float)
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_float_ge_tol(X, Y, T) _ck_assert_floating_op_tol(X, >, Y, T, -1, float, "")
+
+/**
+ * Check two single precision floating point numbers to determine if X<≈Y
+ * with specified tolerance
+ *
+ * If not X <≈ Y with error < T, the test fails.
+ *
+ * @param X floating point number (float)
+ * @param Y floating point number (float) to compare against X
+ * @param T tolerance (float)
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_float_le_tol(X, Y, T) _ck_assert_floating_op_tol(X, <, Y, T, 1, float, "")
+
+/**
+ * Check that a single precision floating point number is finite; i.e. is
+ * not +infinity, -infinity, or "Not a Number" (NaN)
+ *
+ * If X is +INFINITY or X is -INFINITY, or X is NaN, the test fails.
+ *
+ * @param X floating point number (float) to be checked
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_float_finite(X) _ck_assert_floating_finite(X, float, "")
+
+/**
+ * Check that a single precision floating point number is infinite,
+ * either +infinity or -infinity
+ *
+ * If X is not +INFINITY and X is not -INFINITY, the test fails.
+ *
+ * @param X floating point number (float) to be checked
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_float_infinite(X) _ck_assert_floating_infinite(X, float, "")
+
+/**
+ * Check that a single precision floating point number
+ * is "Not a Number" (NaN)
+ *  
+ * If X is not NaN, the test fails.
+ *
+ * @param X floating point number (float) to be checked
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_float_nan(X) _ck_assert_floating_nan(X, float, "")
+
+/**
+ * Check that a single precision floating point number is
+ * not "Not a Number" (NaN)
+ *
+ * If X is NaN, the test fails.
+ *
+ * @param X floating point number (float) to be checked
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_float_nonnan(X) _ck_assert_floating_nonnan(X, float, "l")
+
+/**
+ * Check two double precision floating point numbers to determine if X == Y
+ *
+ * If not X == Y, the test fails.
+ *
+ * @param X floating point number (double)
+ * @param Y floating point number (double) to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_double_eq(X, Y) _ck_assert_floating(X, ==, Y, double, "l")
+/**
+ * Check two double precision floating point numbers to determine if X != Y
+ *
+ * If not X != Y, the test fails.
+ *
+ * @param X floating point number (double)
+ * @param Y floating point number (double) to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_double_ne(X, Y) _ck_assert_floating(X, !=, Y, double, "l")
+/**
+ * Check two double precision floating point numbers to determine if X < Y
+ *
+ * If not X < Y, the test fails.
+ *
+ * @param X floating point number (double)
+ * @param Y floating point number (double) to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_double_lt(X, Y) _ck_assert_floating(X, <, Y, double, "l")
+/**
+ * Check two double precision floating point numbers to determine if X <= Y
+ *
+ * If not X <= Y, the test fails.
+ *
+ * @param X floating point number (double)
+ * @param Y floating point number (double) to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_double_le(X, Y) _ck_assert_floating(X, <=, Y, double, "l")
+/**
+ * Check two double precision floating point numbers to determine if X > Y
+ *
+ * If not X > Y, the test fails.
+ *
+ * @param X floating point number (double)
+ * @param Y floating point number (double) to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_double_gt(X, Y) _ck_assert_floating(X, >, Y, double, "l")
+/**
+ * Check two double precision floating point numbers to determine if X >= Y
+ *
+ * If not X >= Y, the test fails.
+ *
+ * @param X floating point number (double)
+ * @param Y floating point number (double) to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_double_ge(X, Y) _ck_assert_floating(X, >=, Y, double, "l")
+
+/**
+ * Check two double precision floating point numbers to determine if X≈Y
+ * with specified tolerance
+ *
+ * If not X ≈ Y with error < T, the test fails.
+ *
+ * @param X floating point number (double)
+ * @param Y floating point number (double) to compare against X
+ * @param T tolerance (double)
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_double_eq_tol(X, Y, T)  _ck_assert_floating_absdiff_op_tol(X, Y, <, T, double, "l")
+
+/**
+ * Check two double precision floating point numbers to determine if not X≈Y
+ * with specified tolerance
+ *
+ * If X ≈ Y with error < T, the test fails.
+ *
+ * @param X floating point number (double)
+ * @param Y floating point number (double) to compare against X
+ * @param T tolerance (double)
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_double_ne_tol(X, Y, T) _ck_assert_floating_absdiff_op_tol(X, Y, >=, T, double, "l")
+
+/**
+ * Check two double precision floating point numbers to determine if X>≈Y
+ * with specified tolerance
+ *
+ * If not X >≈ Y with error < T, the test fails.
+ *
+ * @param X floating point number (double)
+ * @param Y floating point number (double) to compare against X
+ * @param T tolerance (double)
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_double_ge_tol(X, Y, T) _ck_assert_floating_op_tol(X, >, Y, T, -1, double, "l")
+
+/**
+ * Check two double precision floating point numbers to determine if X<≈Y
+ * with specified tolerance
+ *
+ * If not X <≈ Y with error < T, the test fails.
+ *
+ * @param X floating point number (double)
+ * @param Y floating point number (double) to compare against X
+ * @param T tolerance (double)
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_double_le_tol(X, Y, T) _ck_assert_floating_op_tol(X, <, Y, T, 1, double, "l")
+
+/**
+ * Check that a double precision floating point number is finite; i.e. is
+ * not +infinity, -infinity, or "Not a Number" (NaN)
+ *
+ * If X is +INFINITY or X is -INFINITY, or X is NaN, the test fails.
+ *
+ * @param X floating point number (double) to be checked
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_double_finite(X) _ck_assert_floating_finite(X, double, "l")
+
+/**
+ * Check that a double precision floating point number is infinite,
+ * either +infinity or -infinity
+ *
+ * If X is not +INFINITY and X is not -INFINITY, the test fails.
+ *
+ * @param X floating point number (double) to be checked
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_double_infinite(X) _ck_assert_floating_infinite(X, double, "l")
+
+/**
+ * Check that a double precision floating point number
+ * is "Not a Number" (NaN)
+ *  
+ * If X is not NaN, the test fails.
+ *
+ * @param X floating point number (double) to be checked
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_double_nan(X) _ck_assert_floating_nan(X, double, "l")
+
+/**
+ * Check that a double precision floating point number is
+ * not "Not a Number" (NaN)
+ *
+ * If X is NaN, the test fails.
+ *
+ * @param X floating point number (double) to be checked
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_double_nonnan(X) _ck_assert_floating_nonnan(X, double, "l")
+
+/** 
+ * Check two double precision floating point numbers to determine if X == Y
+ *
+ * If not X == Y, the test fails.
+ *
+ * @param X floating point number (long double)
+ * @param Y floating point number (long double) to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_ldouble_eq(X, Y) _ck_assert_floating(X, ==, Y, long double, "L")
+/**
+ * Check two double precision floating point numbers to determine if X != Y
+ *
+ * If not X != Y, the test fails.
+ *
+ * @param X floating point number (long double)
+ * @param Y floating point number (long double) to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_ldouble_ne(X, Y) _ck_assert_floating(X, !=, Y, long double, "L")
+/**
+ * Check two double precision floating point numbers to determine if X < Y
+ *
+ * If not X < Y, the test fails.
+ *
+ * @param X floating point number (long double)
+ * @param Y floating point number (long double) to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_ldouble_lt(X, Y) _ck_assert_floating(X, <, Y, long double, "L")
+/**
+ * Check two double precision floating point numbers to determine if X <= Y
+ *
+ * If not X <= Y, the test fails.
+ *
+ * @param X floating point number (long double)
+ * @param Y floating point number (long double) to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_ldouble_le(X, Y) _ck_assert_floating(X, <=, Y, long double, "L")
+/**
+ * Check two double precision floating point numbers to determine if X > Y
+ *
+ * If not X > Y, the test fails.
+ *
+ * @param X floating point number (long double)
+ * @param Y floating point number (long double) to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_ldouble_gt(X, Y) _ck_assert_floating(X, >, Y, long double, "L")
+/**
+ * Check two double precision floating point numbers to determine if X >= Y
+ *
+ * If not X >= Y, the test fails.
+ *
+ * @param X floating point number (long double)
+ * @param Y floating point number (long double) to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_ldouble_ge(X, Y) _ck_assert_floating(X, >=, Y, long double, "L")
+
+/**
+ * Check two double precision floating point numbers to determine if X≈Y
+ * with specified tolerance
+ *
+ * If not X ≈ Y with error < T, the test fails.
+ *
+ * @param X floating point number (long double)
+ * @param Y floating point number (long double) to compare against X
+ * @param T tolerance (long double)
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_ldouble_eq_tol(X, Y, T)  _ck_assert_floating_absdiff_op_tol(X, Y, <, T, long double, "L")
+
+/**
+ * Check two double precision floating point numbers to determine if not X≈Y
+ * with specified tolerance
+ *
+ * If X ≈ Y with error < T, the test fails.
+ *
+ * @param X floating point number (long double)
+ * @param Y floating point number (long double) to compare against X
+ * @param T tolerance (long double)
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_ldouble_ne_tol(X, Y, T) _ck_assert_floating_absdiff_op_tol(X, Y, >=, T, long double, "L")
+
+/**
+ * Check two double precision floating point numbers to determine if X>≈Y
+ * with specified tolerance
+ *
+ * If not X >≈ Y with error < T, the test fails.
+ *
+ * @param X floating point number (long double)
+ * @param Y floating point number (long double) to compare against X
+ * @param T tolerance (long double)
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_ldouble_ge_tol(X, Y, T) _ck_assert_floating_op_tol(X, >, Y, T, -1, long double, "L")
+
+/**
+ * Check two double precision floating point numbers to determine if X<≈Y
+ * with specified tolerance
+ *
+ * If not X <≈ Y with error < T, the test fails.
+ *
+ * @param X floating point number (long double)
+ * @param Y floating point number (long double) to compare against X
+ * @param T tolerance (long double)
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_ldouble_le_tol(X, Y, T) _ck_assert_floating_op_tol(X, <, Y, T, 1, long double, "L")
+
+/**
+ * Check that a double precision floating point number is finite; i.e. is
+ * not +infinity, -infinity, or "Not a Number" (NaN)
+ *
+ * If X is +INFINITY or X is -INFINITY, or X is NaN, the test fails.
+ *
+ * @param X floating point number (long double) to be checked
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_ldouble_finite(X) _ck_assert_floating_finite(X, long double, "L")
+
+/**
+ * Check that a double precision floating point number is infinite,
+ * either +infinity or -infinity
+ *
+ * If X is not +INFINITY and X is not -INFINITY, the test fails.
+ *
+ * @param X floating point number (long double) to be checked
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_ldouble_infinite(X) _ck_assert_floating_infinite(X, long double, "L")
+
+/**
+ * Check that a double precision floating point number
+ * is "Not a Number" (NaN)
+ *  
+ * If X is not NaN, the test fails.
+ *
+ * @param X floating point number (long double) to be checked
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_ldouble_nan(X) _ck_assert_floating_nan(X, long double, "L")
+
+/**
+ * Check that a double precision floating point number is
+ * not "Not a Number" (NaN)
+ *
+ * If X is NaN, the test fails.
+ *
+ * @param X floating point number (long double) to be checked
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_ldouble_nonnan(X) _ck_assert_floating_nonnan(X, long double, "L")
+
 /* String comparison macros with improved output compared to ck_assert() */
-/* OP might be any operator that can be used in '0 OP strcmp(X,Y)' comparison */
-/* The x and y parameter swap in strcmp() is needed to handle >, >=, <, <= operators */
-#define _ck_assert_str(X, OP, Y) do { \
+/* OP might be any operator that can be used in '0 OP strcmp(X,Y)' comparison. */
+/* String pointer could be compared againts NULL with == (NULLEQ = 1) and != (NULLNE = 1) operators. */
+/* The x and y parameter swap in strcmp() is needed to handle >, >=, <, <= operators. */
+/* If the x or y parameter is NULL its value will be printed without quotes. */
+#define _ck_assert_str(X, OP, Y, NULLEQ, NULLNE) do { \
   const char* _ck_x = (X); \
   const char* _ck_y = (Y); \
-  ck_assert_msg(0 OP strcmp(_ck_y, _ck_x), \
-    "Assertion '%s' failed: %s == \"%s\", %s == \"%s\"", #X" "#OP" "#Y, #X, _ck_x, #Y, _ck_y); \
+  const char* _ck_x_s; \
+  const char* _ck_y_s; \
+  const char* _ck_x_q; \
+  const char* _ck_y_q; \
+  if (_ck_x != NULL) { \
+    _ck_x_q = "\""; \
+    _ck_x_s = _ck_x; \
+  } else { \
+    _ck_x_q = ""; \
+    _ck_x_s = "(null)"; \
+  } \
+  if (_ck_y != NULL) { \
+    _ck_y_q = "\""; \
+    _ck_y_s = _ck_y; \
+  } else { \
+    _ck_y_q = ""; \
+    _ck_y_s = "(null)"; \
+  } \
+  ck_assert_msg( \
+    (NULLEQ && (_ck_x == NULL) && (_ck_y == NULL)) || \
+    (NULLNE && ((_ck_x == NULL) || (_ck_y == NULL)) && (_ck_x != _ck_y)) || \
+    ((_ck_x != NULL) && (_ck_y != NULL) && (0 OP strcmp(_ck_y, _ck_x))), \
+    "Assertion '%s' failed: %s == %s%s%s, %s == %s%s%s", \
+    #X" "#OP" "#Y, \
+    #X, _ck_x_q, _ck_x_s, _ck_x_q, \
+    #Y, _ck_y_q, _ck_y_s, _ck_y_q); \
 } while (0)
+
 /**
  * Check two strings to determine if 0==strcmp(X,Y)
  *
- * If not 0==strcmp(X,Y), the test fails.
+ * If X or Y is NULL the test failes.
+ * If (0==strcmp(X,Y)), the test fails.
  *
  * @param X string
  * @param Y string to compare against X
@@ -664,10 +1410,12 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
  *
  * @since 0.9.6
  */
-#define ck_assert_str_eq(X, Y) _ck_assert_str(X, ==, Y)
+#define ck_assert_str_eq(X, Y) _ck_assert_str(X, ==, Y, 0, 0)
+
 /**
  * Check two strings to determine if 0!=strcmp(X,Y)
  *
+ * If X or Y is NULL the test fails.
  * If not 0!=strcmp(X,Y), the test fails.
  *
  * @param X string
@@ -677,10 +1425,12 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
  *
  * @since 0.9.6
  */
-#define ck_assert_str_ne(X, Y) _ck_assert_str(X, !=, Y)
+#define ck_assert_str_ne(X, Y) _ck_assert_str(X, !=, Y, 0, 0)
+
 /**
  * Check two strings to determine if 0<strcmp(X,Y), (e.g. strcmp(X,Y)>0)
  *
+ * If X or Y is NULL the test fails.
  * If not 0<strcmp(X,Y), the test fails.
  *
  * @param X string
@@ -690,10 +1440,12 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
  *
  * @since 0.9.10
  */
-#define ck_assert_str_lt(X, Y) _ck_assert_str(X, <, Y)
+#define ck_assert_str_lt(X, Y) _ck_assert_str(X, <, Y, 0, 0)
+
 /**
  * Check two strings to determine if 0<=strcmp(X,Y) (e.g. strcmp(X,Y)>=0)
  *
+ * If X or Y is NULL the test fails.
  * If not 0<=strcmp(X,Y), the test fails.
  *
  * @param X string
@@ -703,10 +1455,12 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
  *
  * @since 0.9.10
  */
-#define ck_assert_str_le(X, Y) _ck_assert_str(X, <=, Y)
+#define ck_assert_str_le(X, Y) _ck_assert_str(X, <=, Y, 0, 0)
+
 /**
  * Check two strings to determine if 0<strcmp(X,Y) (e.g. strcmp(X,Y)>0)
  *
+ * If X or Y is NULL the test fails.
  * If not 0<strcmp(X,Y), the test fails.
  *
  * @param X string
@@ -716,10 +1470,12 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
  *
  * @since 0.9.10
  */
-#define ck_assert_str_gt(X, Y) _ck_assert_str(X, >, Y)
+#define ck_assert_str_gt(X, Y) _ck_assert_str(X, >, Y, 0, 0)
+
 /**
  * Check two strings to determine if 0>=strcmp(X,Y) (e.g. strcmp(X,Y)<=0)
  *
+ * If X or Y is NULL the test fails.
  * If not 0>=strcmp(X,Y), the test fails.
  *
  * @param X string
@@ -729,7 +1485,160 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
  *
  * @since 0.9.10
  */
-#define ck_assert_str_ge(X, Y) _ck_assert_str(X, >=, Y)
+#define ck_assert_str_ge(X, Y) _ck_assert_str(X, >=, Y, 0, 0)
+
+/**
+ * Check two strings to determine if 0==strcmp(X,Y) or if both are undefined 
+ *
+ * If both X and Y are NULL the test passes. However, if only one is NULL
+ * the test fails.
+ * If not ((X==NULL)&&(Y==NULL)) || (0==strcmp(X,Y)), the test fails.
+ *
+ * @param X string
+ * @param Y string to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_pstr_eq(X, Y) _ck_assert_str(X, ==, Y, 1, 0)
+
+/**
+ * Check two strings to determine if 0!=strcmp(X,Y) or one of them is undefined
+ *
+ * If either X or Y is NULL the test passes, however if both are NULL
+ * the test fails.
+ * If not (X!=NULL)&&(Y!=NULL)&&(0!=strcmp(X,Y)), the test fails.
+ *
+ * @param X string
+ * @param Y string to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_pstr_ne(X, Y) _ck_assert_str(X, !=, Y, 0, 1)
+
+/* Memory location comparison macros with improved output compared to ck_assert() */
+/* OP might be any operator that can be used in '0 OP memcmp(X,Y,L)' comparison */
+/* The x and y parameter swap in memcmp() is needed to handle >, >=, <, <= operators */
+/* Output is limited to CK_MAX_ASSERT_MEM_PRINT_SIZE bytes */
+#ifndef CK_MAX_ASSERT_MEM_PRINT_SIZE
+#define CK_MAX_ASSERT_MEM_PRINT_SIZE 64
+#endif
+
+/* Memory location comparison macros with improved output compared to ck_assert() */
+/* OP might be any operator that can be used in '0 OP memcmp(X,Y,L)' comparison */
+/* The x and y parameter swap in memcmp() is needed to handle >, >=, <, <= operators */
+/* Output is limited to CK_MAX_ASSERT_MEM_PRINT_SIZE bytes */
+#ifndef CK_MAX_ASSERT_MEM_PRINT_SIZE
+#define CK_MAX_ASSERT_MEM_PRINT_SIZE 64
+#endif
+
+#define _ck_assert_mem(X, OP, Y, L) do { \
+  const uint8_t* _ck_x = (const uint8_t*)(X); \
+  const uint8_t* _ck_y = (const uint8_t*)(Y); \
+  size_t _ck_l = (L); \
+  char _ck_x_str[CK_MAX_ASSERT_MEM_PRINT_SIZE * 2 + 1]; \
+  char _ck_y_str[CK_MAX_ASSERT_MEM_PRINT_SIZE * 2 + 1]; \
+  static const char _ck_hexdigits[] = "0123456789abcdef"; \
+  size_t _ck_i; \
+  size_t _ck_maxl = (_ck_l > CK_MAX_ASSERT_MEM_PRINT_SIZE) ? CK_MAX_ASSERT_MEM_PRINT_SIZE : _ck_l; \
+  for (_ck_i = 0; _ck_i < _ck_maxl; _ck_i++) { \
+    _ck_x_str[_ck_i * 2  ]   = _ck_hexdigits[(_ck_x[_ck_i] >> 4) & 0xF]; \
+    _ck_y_str[_ck_i * 2  ]   = _ck_hexdigits[(_ck_y[_ck_i] >> 4) & 0xF]; \
+    _ck_x_str[_ck_i * 2 + 1] = _ck_hexdigits[_ck_x[_ck_i] & 0xF]; \
+    _ck_y_str[_ck_i * 2 + 1] = _ck_hexdigits[_ck_y[_ck_i] & 0xF]; \
+  } \
+  _ck_x_str[_ck_i * 2] = 0; \
+  _ck_y_str[_ck_i * 2] = 0; \
+  if (_ck_maxl != _ck_l) { \
+    _ck_x_str[_ck_i * 2 - 2] = '.'; \
+    _ck_y_str[_ck_i * 2 - 2] = '.'; \
+    _ck_x_str[_ck_i * 2 - 1] = '.'; \
+    _ck_y_str[_ck_i * 2 - 1] = '.'; \
+  } \
+  ck_assert_msg(0 OP memcmp(_ck_y, _ck_x, _ck_l), \
+    "Assertion '%s' failed: %s == \"%s\", %s == \"%s\"", #X" "#OP" "#Y, #X, _ck_x_str, #Y, _ck_y_str); \
+} while (0)
+/**
+ * Check two memory locations to determine if 0==memcmp(X,Y,L)
+ *
+ * If not 0==memcmp(X,Y,L), the test fails.
+ *
+ * @param X memory location
+ * @param Y memory location to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_mem_eq(X, Y, L) _ck_assert_mem(X, ==, Y, L)
+/**
+ * Check two memory locations to determine if 0!=memcmp(X,Y,L)
+ *
+ * If not 0!=memcmp(X,Y,L), the test fails.
+ *
+ * @param X memory location
+ * @param Y memory location to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_mem_ne(X, Y, L) _ck_assert_mem(X, !=, Y, L)
+/**
+ * Check two memory locations to determine if 0<memcmp(X,Y,L), (e.g. memcmp(X,Y,L)>0)
+ *
+ * If not 0<memcmp(X,Y,L), the test fails.
+ *
+ * @param X memory location
+ * @param Y memory location to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_mem_lt(X, Y, L) _ck_assert_mem(X, <, Y, L)
+/**
+ * Check two memory locations to determine if 0<=memcmp(X,Y,L) (e.g. memcmp(X,Y,L)>=0)
+ *
+ * If not 0<=memcmp(X,Y,L), the test fails.
+ *
+ * @param X memory location
+ * @param Y memory location to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_mem_le(X, Y, L) _ck_assert_mem(X, <=, Y, L)
+/**
+ * Check two memory locations to determine if 0<memcmp(X,Y,L) (e.g. memcmp(X,Y,L)>0)
+ *
+ * If not 0<memcmp(X,Y,L), the test fails.
+ *
+ * @param X memory location
+ * @param Y memory location to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_mem_gt(X, Y, L) _ck_assert_mem(X, >, Y, L)
+/**
+ * Check two memory locations to determine if 0>=memcmp(X,Y,L) (e.g. memcmp(X,Y,L)<=0)
+ *
+ * If not 0>=memcmp(X,Y,L), the test fails.
+ *
+ * @param X memory location
+ * @param Y memory location to compare against X
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_mem_ge(X, Y, L) _ck_assert_mem(X, >=, Y, L)
 
 /* Pointer comparison macros with improved output compared to ck_assert(). */
 /* OP may only be == or !=  */
@@ -737,6 +1646,17 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
   const void* _ck_x = (X); \
   const void* _ck_y = (Y); \
   ck_assert_msg(_ck_x OP _ck_y, "Assertion '%s' failed: %s == %#x, %s == %#x", #X" "#OP" "#Y, #X, _ck_x, #Y, _ck_y); \
+} while (0)
+
+/* Pointer against NULL comparison macros with improved output
+ * compared to ck_assert(). */
+/* OP may only be == or !=  */
+#define _ck_assert_ptr_null(X, OP) do { \
+  const void* _ck_x = (X); \
+  ck_assert_msg(_ck_x OP NULL, \
+  "Assertion '%s' failed: %s == %#x", \
+  #X" "#OP" NULL", \
+  #X, _ck_x); \
 } while (0)
 
 /**
@@ -765,6 +1685,32 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
  * @since 0.9.10
  */
 #define ck_assert_ptr_ne(X, Y) _ck_assert_ptr(X, !=, Y)
+
+/**
+ * Check if a pointer is equal to NULL.
+ *
+ * If X != NULL, the test fails.
+ *
+ * @param X pointer to compare against NULL
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_ptr_null(X) _ck_assert_ptr_null(X, ==)
+
+/**
+ * Check if a pointer is not equal to NULL.
+ *
+ * If X == NULL, the test fails.
+ *
+ * @param X pointer to compare against NULL
+ *
+ * @note If the check fails, the remaining of the test is aborted
+ *
+ * @since 0.11.0
+ */
+#define ck_assert_ptr_nonnull(X) _ck_assert_ptr_null(X, !=)
 
 /**
  * Mark the last point reached in a unit test.
@@ -952,8 +1898,9 @@ CK_DLL_EXP void CK_EXPORT srunner_free(SRunner * sr);
  * In addition to running all suites, if the suite runner has been
  * configured to output to a log, that is also performed.
  *
- * Note that if the CK_RUN_CASE and/or CK_RUN_SUITE environment variables
- * are defined, then only the named suite and/or test case is run.
+ * Note that if the CK_RUN_CASE, CK_RUN_SUITE, CK_INCLUDE_TAGS and/or
+ * CK_EXCLUDE_TAGS environment variables are defined, then only the
+ * named suites or test cases will run.
  *
  * @param sr suite runner to run all suites from
  * @param print_mode the verbosity in which to report results to stdout
@@ -971,9 +1918,22 @@ CK_DLL_EXP void CK_EXPORT srunner_run_all(SRunner * sr,
  * suite runner has been configured to output to a log, that is also
  * performed.
  *
+ * Note that if the sname and tcname parameters are passed as null
+ * then the function will fallback to using the environment variables
+ * CK_RUN_SUITE and CK_RUN_CASE respectively in order to select the
+ * suite/cases.
+ * 
+ * Similarly if the CK_INCLUDE_TAGS and/or CK_EXCLUDE_TAGS environment
+ * variables are defined then these will further filter the test cases
+ * (see srunner_run_tagged, below).
+ *
  * @param sr suite runner where the given suite or test case must be
- * @param sname suite name to run. A NULL means "any suite".
- * @param tcname test case name to run. A NULL means "any test case"
+ * @param sname suite name to run. A NULL means use the value of the
+ * environment variable CK_RUN_SUITE if set, otherwise run "any/every
+ * suite".
+ * @param tcname test case name to run. A NULL means use the value of
+ * the environment variable CK_RUN_CASE if set, otherwise run
+ * "any/every case".
  * @param print_mode the verbosity in which to report results to stdout
  *
  * @since 0.9.9
@@ -982,6 +1942,46 @@ CK_DLL_EXP void CK_EXPORT srunner_run(SRunner * sr, const char *sname,
                                       const char *tcname,
                                       enum print_output print_mode);
 
+
+/**
+ * Run a specific suite or test case or testcases with specific tags
+ * from a suite runner, printing results to stdout as specified by the
+ * print_mode.
+ *
+ * In addition to running any applicable suites or test cases, if the
+ * suite runner has been configured to output to a log, that is also
+ * performed.
+ *
+ * Note that if sname, tcname, include_tags, exclude_tags parameters
+ * are passed as NULL then if the environment variables CK_RUN_SUITE,
+ * CK_RUN_CASE, CK_INCLUDE_TAGS, CK_EXCLUDE_TAGS are defined then these
+ * values will be used instead.
+ *
+ * @param sr suite runner where the given suite or test case must be
+ * @param sname suite name to run. A NULL means use the value of the
+ * environment variable CK_RUN_SUITE if set, otherwise run "any/every
+ * suite".
+ * @param tcname test case name to run. A NULL means use the value of
+ * the environment variable CK_RUN_CASE if set, otherwise run
+ * "any/every case".
+ * @param include_tags space separate list of tags. Only run test
+ * cases that share one of these tags. A NULL means use the value of
+ * the environment variable CK_INCLUDE_TAGS if set, otherwise run
+ * "any/every test case".
+ * @param exclude_tags space separate list of tags. Only run test
+ * cases that do not share one of these tags even if they are selected
+ * by an included tag. A NULL means use the value of the environment
+ * variable CK_EXCLUDE_TAGS if set, otherwise run "any/every test
+ * case".
+ * @param print_mode the verbosity in which to report results to stdout
+ *
+ * @since 0.11.0
+ */
+CK_DLL_EXP void CK_EXPORT srunner_run_tagged(SRunner * sr, const char *sname,
+					     const char *tcname,
+					     const char *include_tags,
+					     const char *exclude_tags,
+					     enum print_output print_mode);
 
 /**
  * Retrieve the number of failed tests executed by a suite runner.

@@ -1,0 +1,61 @@
+# This is the configuration file for AppVeyor builds.
+# Look at the following for reference:
+# https://www.appveyor.com/docs/appveyor-yml
+
+# Notes:
+#   - Minimal appveyor.yml file is an empty file. All sections are optional.
+#   - Indent each level of configuration with 2 spaces. Do not use tabs!
+#   - All section names are case-sensitive.
+#   - Section names should be unique on each level.
+
+#---------------------------------#
+#      general configuration      #
+#---------------------------------#
+
+# version format
+version: 1.0.{build}
+
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+
+environment:
+  matrix:
+  - platform: msvc
+  - platform: vs
+
+# scripts that are called at very beginning, before repo cloning
+# init:
+
+# clone directory
+clone_folder: c:\projects\check
+
+# scripts that are called at very beginning, before repo cloning
+init:
+  - git config --global core.autocrlf input
+
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+
+# build Configuration, i.e. Debug, Release, etc.
+configuration: Release
+
+# scripts to run before build
+before_build:
+  - echo Running cmake...
+  - cd c:\projects\check
+  - if %platform%==msvc call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat"
+  - if %platform%==msvc cmake -G "NMake Makefiles" -DCMAKE_INSTALL_PREFIX=%P%
+  - if %platform%==vs cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_INSTALL_PREFIX=%P%
+
+build_script:
+  # build code and unit tests
+  - if %platform%==msvc nmake
+  - if %platform%==vs msbuild "ALL_BUILD.vcxproj"
+
+test_script:
+  # run unit tests
+  - echo Running unit tests...
+  - if %platform%==msvc nmake test VERBOSE=1 CTEST_OUTPUT_ON_FAILURE=TRUE
+  - if %platform%==vs ctest --extra-verbose -C Release

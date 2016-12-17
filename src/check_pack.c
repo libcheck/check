@@ -33,7 +33,7 @@
 #ifndef HAVE_PTHREAD
 #define pthread_mutex_lock(arg)
 #define pthread_mutex_unlock(arg)
-#define pthread_cleanup_push(f,a) {
+#define pthread_cleanup_push(f, a) {
 #define pthread_cleanup_pop(e) }
 #endif
 
@@ -465,6 +465,8 @@ RcvMsg *punpack(FILE * fdes)
         /* Parse one message */
         n = get_result(buf, rmsg);
         nparse -= n;
+        if (nparse < 0)
+            eprintf("Error in call to get_result", __FILE__, __LINE__ - 3);
         /* Move remaining data in buffer to the beginning */
         memmove(buf, buf + n, nparse);
         /* If EOF has not been seen */

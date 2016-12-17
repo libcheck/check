@@ -60,6 +60,8 @@ static void srunner_run_init(SRunner * sr, enum print_output print_mode);
 static void srunner_run_end(SRunner * sr, enum print_output print_mode);
 static void srunner_iterate_suites(SRunner * sr,
                                    const char *sname, const char *tcname,
+				   const char *include_tags,
+				   const char *exclude_tags,
                                    enum print_output print_mode);
 static void srunner_iterate_tcase_tfuns(SRunner * sr, TCase * tc);
 static void srunner_add_failure(SRunner * sr, TestResult * tf);
@@ -160,14 +162,21 @@ static void srunner_run_end(SRunner * sr,
 
 static void srunner_iterate_suites(SRunner * sr,
                                    const char *sname, const char *tcname,
+				   const char *include_tags,
+				   const char *exclude_tags,
                                    enum print_output CK_ATTRIBUTE_UNUSED
                                    print_mode)
 {
+    List *include_tag_lst;
+    List *exclude_tag_lst;
     List *slst;
     List *tcl;
     TCase *tc;
 
     slst = sr->slst;
+
+    include_tag_lst = tag_string_to_list(include_tags);
+    exclude_tag_lst = tag_string_to_list(exclude_tags);
 
     for(check_list_front(slst); !check_list_at_end(slst);
         check_list_advance(slst))
@@ -191,12 +200,31 @@ static void srunner_iterate_suites(SRunner * sr,
             {
                 continue;
             }
+	    if (include_tags != NULL)
+	    {
+		if (!tcase_matching_tag(tc, include_tag_lst))
+		{
+		    continue;
+		}
+	    }
+	    if (exclude_tags != NULL)
+	    {
+		if (tcase_matching_tag(tc, exclude_tag_lst))
+		{
+		    continue;
+		}
+	    }
 
             srunner_run_tcase(sr, tc);
         }
 
         log_suite_end(sr, s);
     }
+
+    check_list_apply(include_tag_lst, free);
+    check_list_apply(exclude_tag_lst, free);
+    check_list_free(include_tag_lst);
+    check_list_free(exclude_tag_lst);
 }
 
 static void srunner_iterate_tcase_tfuns(SRunner * sr, TCase * tc)
@@ -477,7 +505,7 @@ static TestResult *tcase_run_tfun_fork(SRunner * sr, TCase * tc, TF * tfun,
     alarm_received = 0;
 
     if(timer_create(check_get_clockid(),
-                    NULL /* fire SIGALRM if timer expires */ ,
+                    NULL /* fire SIGALRM if timer expires */,
                     &timerid) == 0)
     {
         /* Set the timer to fire once */
@@ -741,8 +769,9 @@ void srunner_run_all(SRunner * sr, enum print_output print_mode)
                 print_mode);
 }
 
-void srunner_run(SRunner * sr, const char *sname, const char *tcname,
-                 enum print_output print_mode)
+void srunner_run_tagged(SRunner * sr, const char *sname, const char *tcname,
+			const char *include_tags, const char *exclude_tags,
+			enum print_output print_mode)
 {
 #if defined(HAVE_SIGACTION) && defined(HAVE_FORK)
     static struct sigaction sigalarm_old_action;
@@ -756,7 +785,11 @@ void srunner_run(SRunner * sr, const char *sname, const char *tcname,
     if(!tcname)
         tcname = getenv("CK_RUN_CASE");
     if(!sname)
-        sname = getenv("CK_RUN_SUITE");
+	sname = getenv("CK_RUN_SUITE");
+    if(!include_tags)
+	include_tags = getenv("CK_INCLUDE_TAGS");
+    if(!exclude_tags)
+	exclude_tags = getenv("CK_EXCLUDE_TAGS");
 
     if(sr == NULL)
         return;
@@ -779,13 +812,20 @@ void srunner_run(SRunner * sr, const char *sname, const char *tcname,
     sigaction(SIGTERM, &sigterm_new_action, &sigterm_old_action);
 #endif /* HAVE_SIGACTION && HAVE_FORK */
     srunner_run_init(sr, print_mode);
-    srunner_iterate_suites(sr, sname, tcname, print_mode);
+    srunner_iterate_suites(sr, sname, tcname, include_tags, exclude_tags,
+			   print_mode);
     srunner_run_end(sr, print_mode);
 #if defined(HAVE_SIGACTION) && defined(HAVE_FORK)
     sigaction(SIGALRM, &sigalarm_old_action, NULL);
     sigaction(SIGINT, &sigint_old_action, NULL);
     sigaction(SIGTERM, &sigterm_old_action, NULL);
 #endif /* HAVE_SIGACTION && HAVE_FORK */
+}
+
+void srunner_run(SRunner * sr, const char *sname, const char *tcname,
+                 enum print_output print_mode)
+{
+    srunner_run_tagged(sr, sname, tcname, NULL, NULL, print_mode);
 }
 
 pid_t check_fork(void)

@@ -195,24 +195,12 @@
 #ifdef HAVE_VSNPRINTF
 #undef HAVE_VSNPRINTF
 #endif	/* defined(HAVE_VSNPRINTF) */
-#ifdef HAVE_ASPRINTF
-#undef HAVE_ASPRINTF
-#endif	/* defined(HAVE_ASPRINTF) */
-#ifdef HAVE_VASPRINTF
-#undef HAVE_VASPRINTF
-#endif	/* defined(HAVE_VASPRINTF) */
 #ifdef snprintf
 #undef snprintf
 #endif	/* defined(snprintf) */
 #ifdef vsnprintf
 #undef vsnprintf
 #endif	/* defined(vsnprintf) */
-#ifdef asprintf
-#undef asprintf
-#endif	/* defined(asprintf) */
-#ifdef vasprintf
-#undef vasprintf
-#endif	/* defined(vasprintf) */
 #else	/* By default, we assume a modern system for testing. */
 #ifndef HAVE_STDARG_H
 #define HAVE_STDARG_H 1
@@ -271,11 +259,9 @@
 #endif	/* HAVE_CONFIG_H */
 #define snprintf rpl_snprintf
 #define vsnprintf rpl_vsnprintf
-#define asprintf rpl_asprintf
-#define vasprintf rpl_vasprintf
 #endif	/* TEST_SNPRINTF */
 
-#if !HAVE_SNPRINTF || !HAVE_VSNPRINTF || !HAVE_ASPRINTF || !HAVE_VASPRINTF
+#if !HAVE_SNPRINTF || !HAVE_VSNPRINTF
 #include <stdio.h>	/* For NULL, size_t, vsnprintf(3), and vasprintf(3). */
 #ifdef VA_START
 #undef VA_START
@@ -292,31 +278,6 @@
 #define VA_START(ap, last) va_start(ap)	/* "last" is ignored. */
 #define VA_SHIFT(ap, value, type) value = va_arg(ap, type)
 #endif	/* HAVE_STDARG_H */
-
-#if !HAVE_VASPRINTF
-int rpl_vasprintf(char **, const char *, va_list);
-#if HAVE_STDLIB_H
-#include <stdlib.h>	/* For malloc(3). */
-#endif	/* HAVE_STDLIB_H */
-#ifdef VA_COPY
-#undef VA_COPY
-#endif	/* defined(VA_COPY) */
-#ifdef VA_END_COPY
-#undef VA_END_COPY
-#endif	/* defined(VA_END_COPY) */
-#if HAVE_VA_COPY
-#define VA_COPY(dest, src) va_copy(dest, src)
-#define VA_END_COPY(ap) va_end(ap)
-#elif HAVE___VA_COPY
-#define VA_COPY(dest, src) __va_copy(dest, src)
-#define VA_END_COPY(ap) va_end(ap)
-#else
-#define VA_COPY(dest, src) (void)mymemcpy(&dest, &src, sizeof(va_list))
-#define VA_END_COPY(ap) /* No-op. */
-#define NEED_MYMEMCPY 1
-static void *mymemcpy(void *, void *, size_t);
-#endif	/* HAVE_VA_COPY */
-#endif	/* !HAVE_VASPRINTF */
 
 #if !HAVE_VSNPRINTF
 #include <errno.h>	/* For ERANGE and errno. */
@@ -1488,37 +1449,6 @@ mypow10(int exponent)
 }
 #endif	/* !HAVE_VSNPRINTF */
 
-#if !HAVE_VASPRINTF
-#if NEED_MYMEMCPY
-void *
-mymemcpy(void *dst, void *src, size_t len)
-{
-	const char *from = src;
-	char *to = dst;
-
-	/* No need for optimization, we use this only to replace va_copy(3). */
-	while (len-- > 0)
-		*to++ = *from++;
-	return dst;
-}
-#endif	/* NEED_MYMEMCPY */
-
-int
-rpl_vasprintf(char **ret, const char *format, va_list ap)
-{
-	size_t size;
-	int len;
-	va_list aq;
-
-	VA_COPY(aq, ap);
-	len = vsnprintf(NULL, 0, format, aq);
-	VA_END_COPY(aq);
-	if (len < 0 || (*ret = (char *)malloc(size = len + 1)) == NULL)
-		return -1;
-	return vsnprintf(*ret, size, format, ap);
-}
-#endif	/* !HAVE_VASPRINTF */
-
 #if !HAVE_SNPRINTF
 #if HAVE_STDARG_H
 int
@@ -1546,37 +1476,9 @@ rpl_snprintf(va_alist) va_dcl
 }
 #endif	/* !HAVE_SNPRINTF */
 
-#if !HAVE_ASPRINTF
-#if HAVE_STDARG_H
-int
-rpl_asprintf(char **ret, const char *format, ...);
-int
-rpl_asprintf(char **ret, const char *format, ...)
-#else
-int
-rpl_asprintf(va_alist) va_dcl;
-int
-rpl_asprintf(va_alist) va_dcl
-#endif	/* HAVE_STDARG_H */
-{
-#if !HAVE_STDARG_H
-	char **ret;
-	char *format;
-#endif	/* HAVE_STDARG_H */
-	va_list ap;
-	int len;
-
-	VA_START(ap, format);
-	VA_SHIFT(ap, ret, char **);
-	VA_SHIFT(ap, format, const char *);
-	len = vasprintf(ret, format, ap);
-	va_end(ap);
-	return len;
-}
-#endif	/* !HAVE_ASPRINTF */
 #else	/* Dummy declaration to avoid empty translation unit warnings. */
 int main(void);
-#endif	/* !HAVE_SNPRINTF || !HAVE_VSNPRINTF || !HAVE_ASPRINTF || [...] */
+#endif	/* !HAVE_SNPRINTF || !HAVE_VSNPRINTF*/
 
 #if TEST_SNPRINTF
 int

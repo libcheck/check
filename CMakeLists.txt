@@ -116,29 +116,22 @@ check_function_exists(_getpid HAVE__GETPID)
 check_function_exists(_strdup HAVE__STRDUP)
 
 # printf related checks
-check_function_exists(snprintf HAVE_SNPRINTF)
-check_function_exists(vsnprintf HAVE_VSNPRINTF)
-check_function_exists(vasnprintf HAVE_VASNPRINTF)
-check_function_exists(asprintf HAVE_ASPRINTF)
-check_function_exists(vasprintf HAVE_VASPRINTF)
+check_function_exists(snprintf HAVE_SNPRINTF_FUNCTION)
+check_function_exists(vsnprintf HAVE_VSNPRINTF_FUNCTION)
+check_symbol_exists(snprintf stdio.h HAVE_SNPRINTF_SYMBOL)
+check_symbol_exists(vsnprintf stdio.h HAVE_VSNPRINTF_SYMBOL)
 
-if(NOT HAVE_SNPRINTF)
+if(NOT HAVE_SNPRINTF_FUNCTION AND NOT HAVE_SNPRINTF_SYMBOL)
     add_definitions(-Dsnprintf=rpl_snprintf)
     set(snprintf rpl_snprintf)
     add_definitions(-Dvsnprintf=rpl_vsnprintf)
     set(vsnprintf rpl_vsnprintf)
-    add_definitions(-Dvasnprintf=rpl_vasnprintf)
-    set(vasnprintf rpl_vasnprintf)
-    add_definitions(-Dasprintf=rpl_asprintf)
-    set(asprintf rpl_asprintf)
-    add_definitions(-Dvasprintf=rpl_vasprintf)
-    set(vasprintf rpl_vasprintf)
-else(NOT HAVE_SNPRINTF)
+else(NOT HAVE_SNPRINTF_FUNCTION AND NOT HAVE_SNPRINTF_SYMBOL)
     set(HAVE_SNPRINTF 1)
     add_definitions(-DHAVE_SNPRINTF=1)
     set(HAVE_VSNPRINTF 1)
     add_definitions(-DHAVE_VSNPRINTF=1)
-endif(NOT HAVE_SNPRINTF)
+endif(NOT HAVE_SNPRINTF_FUNCTION AND NOT HAVE_SNPRINTF_SYMBOL)
 
 if(HAVE_FORK)
     add_definitions(-DHAVE_FORK=1)
@@ -147,6 +140,15 @@ else(HAVE_FORK)
     add_definitions(-DHAVE_FORK=0)
     set(HAVE_FORK 0)
 endif(HAVE_FORK)
+
+if(HAVE_MKSTEMP)
+    add_definitions(-DHAVE_MKSTEMP=1)
+    set(HAVE_MKSTEMP 1)
+else(HAVE_MKSTEMP)
+    add_definitions(-DHAVE_MKSTEMP=0)
+    set(HAVE_MKSTEMP 0)
+endif(HAVE_MKSTEMP)
+
 
 ###############################################################################
 # Check defines
@@ -170,19 +172,20 @@ check_symbol_exists(SSIZE_MAX "limits.h"   HAVE_SSIZE_MAX)
 ###############################################################################
 # Check struct members
 
-# Check for  tv_sec in struct timeval 
+# Check for  tv_sec in struct timeval
 if(NOT HAVE_SYS_TIME_H)
     if(MSVC)
         check_struct_member("struct timeval" tv_sec "Winsock2.h" HAVE_STRUCT_TIMEVAL_TV_SEC)
         check_struct_member("struct timeval" tv_usec "Winsock2.h" HAVE_STRUCT_TIMEVAL_TV_USEC)
-        check_struct_member("struct timespec" tv_usec "Winsock2.h" HAVE_STRUCT_TIMESPEC_TV_SEC)
+        check_struct_member("struct timespec" tv_sec "Winsock2.h" HAVE_WINSOCK2_H_STRUCT_TIMESPEC_TV_SEC)
+        check_struct_member("struct timespec" tv_sec "time.h" HAVE_TIME_H_STRUCT_TIMESPEC_TV_SEC)
         check_struct_member("struct itimerspec" it_value "Winsock2.h" HAVE_STRUCT_ITIMERSPEC_IT_VALUE)
 
-        if(NOT HAVE_STRUCT_TIMESPEC_TV_SEC)
+        if(NOT HAVE_WINSOCK2_H_STRUCT_TIMESPEC_TV_SEC AND NOT HAVE_TIME_H_STRUCT_TIMESPEC_TV_SEC)
             add_definitions(-DSTRUCT_TIMESPEC_DEFINITION_MISSING=1)
             set(STRUCT_TIMESPEC_DEFINITION_MISSING 1)
-        endif(NOT HAVE_STRUCT_TIMESPEC_TV_SEC)
-        
+        endif(NOT HAVE_WINSOCK2_H_STRUCT_TIMESPEC_TV_SEC AND NOT HAVE_TIME_H_STRUCT_TIMESPEC_TV_SEC)
+
         if(NOT HAVE_STRUCT_ITIMERSPEC_IT_VALUE)
             add_definitions(-DSTRUCT_ITIMERSPEC_DEFINITION_MISSING=1)
             set(STRUCT_ITIMERSPEC_DEFINITION_MISSING 1)
@@ -190,6 +193,14 @@ if(NOT HAVE_SYS_TIME_H)
     endif(MSVC)
 endif(NOT HAVE_SYS_TIME_H)
 
+# OSX has sys/time.h, but it still lacks itimerspec
+if(HAVE_SYS_TIME_H)
+    check_struct_member("struct itimerspec" it_value "sys/time.h" HAVE_STRUCT_ITIMERSPEC_IT_VALUE)
+    if(NOT HAVE_STRUCT_ITIMERSPEC_IT_VALUE)
+        add_definitions(-DSTRUCT_ITIMERSPEC_DEFINITION_MISSING=1)
+        set(STRUCT_ITIMERSPEC_DEFINITION_MISSING 1)
+    endif(NOT HAVE_STRUCT_ITIMERSPEC_IT_VALUE)
+endif(HAVE_SYS_TIME_H)
 
 ###############################################################################
 # Check for integer types
@@ -206,13 +217,13 @@ check_type_size("unsigned long long" SIZE_OF_UNSIGNED_LONG_LONG)
 check_type_size("__int64" __INT64)
 check_type_size("unsigned __int64" UNSIGNED___INT64)
 
-check_type_size(int16_t INT16_T) 
+check_type_size(int16_t INT16_T)
 check_type_size(int32_t INT32_T)
 check_type_size(int64_t INT64_T)
 check_type_size(intmax_t INTMAX_T)
-check_type_size(uint8_t UINT8_T) 
-check_type_size(uint16_t UINT16_T) 
-check_type_size(uint32_t UINT32_T) 
+check_type_size(uint8_t UINT8_T)
+check_type_size(uint16_t UINT16_T)
+check_type_size(uint32_t UINT32_T)
 check_type_size(uint64_t UINT64_T)
 check_type_size(uintmax_t UINTMAX_T)
 
@@ -311,13 +322,26 @@ add_subdirectory(tests)
 # Unit tests
 enable_testing()
 add_test(NAME check_check COMMAND check_check)
+add_test(NAME check_check_export COMMAND check_check_export)
 
 # Only offer to run shell scripts if we may have a working interpreter
 if(UNIX OR MINGW OR MSYS)
-    add_test(NAME test_output.sh WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests COMMAND sh test_output.sh)
-    add_test(NAME test_log_output.sh WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests COMMAND sh test_log_output.sh)
-    add_test(NAME test_xml_output.sh WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests COMMAND sh test_xml_output.sh)
-    add_test(NAME test_tap_output.sh WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests COMMAND sh test_tap_output.sh)
-    add_test(NAME test_check_nofork.sh WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests COMMAND sh test_check_nofork.sh)
-    add_test(NAME test_check_nofork_teardown.sh WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests COMMAND sh test_check_nofork_teardown.sh)
+  add_test(NAME test_output.sh
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_output.sh)
+  add_test(NAME test_log_output.sh
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_log_output.sh)
+  add_test(NAME test_xml_output.sh
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_xml_output.sh)
+  add_test(NAME test_tap_output.sh
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_tap_output.sh)
+  add_test(NAME test_check_nofork.sh
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork.sh)
+  add_test(NAME test_check_nofork_teardown.sh
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork_teardown.sh)
 endif(UNIX OR MINGW OR MSYS)

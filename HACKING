@@ -115,22 +115,99 @@ the gh-pages branch in the Check git repository. To update
 the website, merge the contents of the master branch into
 the gh-pages branch.
 
+To update the generated documentation for the website:
+
+$ git remote -v
+github  https://github.com/libcheck/check.git (fetch)
+github  https://github.com/libcheck/check.git (push)
+$ git fetch github
+$ git checkout github/gh-pages -b gh-pages
+Branch gh-pages set up to track remote branch gh-pages from github.
+Switched to a new branch 'gh-pages'
+$ git rebase github/master
+First, rewinding head to replay your work on top of it...
+Fast-forwarded gh-pages to github/master.
+$ autoreconf -i
+$ ./configure
+$ make clean
+$ make
+$ make doc/check_html
+$ make doc/doxygen
+$ git add doc
+$ git commit -m “Update documentation”
+$ git push github gh-pages:gh-pages
+
 
 Automatic building of pull requests
 ===============
 
-The GitHub project is configured to build pull requests when asked.
-To trigger a build, add the following comment to the pull request:
+The GitHub project is configured to build pull requests either when
+asked or automatically. This is done using the GitHub Pull Request
+Builder Plugin. Documentation here:
 
-   "test this please"
+   https://wiki.jenkins-ci.org/display/JENKINS/GitHub+pull+request+builder+plugin
 
-This will result in a job on the Jenkins instance to start:
+When a new pull request is opened in the project and the author of the pull request
+isn't white-listed, builder will ask "Can one of the admins verify this patch?".
 
-https://check.ci.cloudbees.com/job/github-merge-builder/
+An admin can add one of the following comments to the pull request:
+   "ok to test" to accept this pull request for testing
+   "test this please" for a one time test run
+   "add to whitelist" to add the author to the whitelist
+
+If the build fails for other various reasons you can rebuild.
+
+   "retest this please" to start a new build
+
+When a build is triggered a job on the Jenkins instance will start:
+
+   https://check.ci.cloudbees.com/job/github-merge-builder/
 
 When complete, a comment will be added to the pull request, informing
 of the result.
 
+An admin can be added to the Jenkins instance by adding a username
+to the "Admin list" setting under the "GitHub Pull Request Builder"
+section here:
+
+   https://check.ci.cloudbees.com/configure
+
 This works because there is a user in the libcheck organization,
 "check-builder", which the Jenkins instance uses to install a
 git hook and push comments to pull requests.
+
+
+Using gcov
+===============
+
+The gcov tool can be used to determine the unit test coverage in Check
+itself. This is currently supported on GNU/Linux only. To enable the
+necessary build time flags, add the following argument to the
+configure script:
+
+   --enable-gcov
+
+Once the unit tests have been run with
+
+$ make check
+
+assuming the terminal is in the top src directory, the following will
+generate summary information using gcov:
+
+$ cp src/*.c src/.libs/
+$ cd src/.libs
+$ for file in `ls *.c`; do
+   gcov -f $file > $file.gcov.summary.txt
+   mv $file.gcov $file.gcov.txt
+  done
+
+The *.gcov.txt files will contain the source code annotated with
+the number of times each line was executed. The .*gcov.summary.txt
+files will contain a line execution summary per function.
+
+To determine the line execution summary for all of Check, either
+the gcovr tool can be used, or the following quick-and-dirty script:
+
+$ for file in ls *.summary.txt; do cat $file; done \
+  | grep "Lines executed" | cut -d ":" -f 2 | tr -d "%" \
+  | awk '{checked+=$1*$3/100; total+=$3} END {print checked/total*100}'

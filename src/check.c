@@ -48,6 +48,8 @@ int check_major_version = CHECK_MAJOR_VERSION;
 int check_minor_version = CHECK_MINOR_VERSION;
 int check_micro_version = CHECK_MICRO_VERSION;
 
+const char* current_test_name = NULL;
+
 static int non_pass(int val);
 static Fixture *fixture_create(SFun fun, int ischecked);
 static void tcase_add_fixture(TCase * tc, SFun setup, SFun teardown,
@@ -103,6 +105,7 @@ static void suite_free(Suite * s)
     free(s);
 }
 
+
 TCase *tcase_create(const char *name)
 {
     char *env;
@@ -149,10 +152,49 @@ TCase *tcase_create(const char *name)
     tc->ch_sflst = check_list_create();
     tc->unch_tflst = check_list_create();
     tc->ch_tflst = check_list_create();
+    tc->tags = check_list_create();
 
     return tc;
 }
 
+/*
+ * Helper function to create a list of tags from
+ * a space separated string.
+ */
+List *tag_string_to_list(const char *tags_string)
+{
+    List *list;
+    char *tags;
+    char *tag;
+
+    list = check_list_create();
+
+    if (NULL == tags_string)
+    {
+	return list;
+    }
+
+    tags = strdup(tags_string);
+    tag = strtok(tags, " ");
+    while (tag)
+    {
+	check_list_add_end(list, strdup(tag));
+	tag = strtok(NULL, " ");
+    }
+    free(tags);
+    return list;
+}
+
+void tcase_set_tags(TCase * tc, const char *tags_orig)
+{
+    /* replace any pre-existing list */
+    if (tc->tags)
+    {
+	check_list_apply(tc->tags, free);
+	check_list_free(tc->tags);
+    }
+    tc->tags = tag_string_to_list(tags_orig);
+}
 
 static void tcase_free(TCase * tc)
 {
@@ -161,19 +203,47 @@ static void tcase_free(TCase * tc)
     check_list_apply(tc->ch_sflst, free);
     check_list_apply(tc->unch_tflst, free);
     check_list_apply(tc->ch_tflst, free);
+    check_list_apply(tc->tags, free);
     check_list_free(tc->tflst);
     check_list_free(tc->unch_sflst);
     check_list_free(tc->ch_sflst);
     check_list_free(tc->unch_tflst);
     check_list_free(tc->ch_tflst);
-
+    check_list_free(tc->tags);
     free(tc);
+}
+
+unsigned int tcase_matching_tag(TCase *tc, List *check_for)
+{
+
+    if (NULL == check_for)
+    {
+	return 0;
+    }
+
+    for(check_list_front(check_for); !check_list_at_end(check_for);
+        check_list_advance(check_for))
+    {
+	for(check_list_front(tc->tags); !check_list_at_end(tc->tags);
+	    check_list_advance(tc->tags))
+	{
+	    if (0 == strcmp((const char *)check_list_val(tc->tags),
+			    (const char *)check_list_val(check_for)))
+	    {
+		return 1;
+	    }
+	}
+    }
+    return 0;
 }
 
 void suite_add_tcase(Suite * s, TCase * tc)
 {
-    if(s == NULL || tc == NULL)
+    if(s == NULL || tc == NULL || check_list_contains(s->tclst, tc))
+    {
         return;
+    }
+
     check_list_add_end(s->tclst, tc);
 }
 
@@ -189,7 +259,8 @@ void _tcase_add_test(TCase * tc, TFun fn, const char *name, int _signal,
     tf->loop_start = start;
     tf->loop_end = end;
     tf->signal = _signal;       /* 0 means no signal expected */
-    tf->allowed_exit_value = (WEXITSTATUS_MASK & allowed_exit_value);   /* 0 is default successful exit */
+    tf->allowed_exit_value =
+      (WEXITSTATUS_MASK & allowed_exit_value);   /* 0 is default successful exit */
     tf->name = name;
     check_list_add_end(tc->tflst, tf);
 }
@@ -269,11 +340,18 @@ void tcase_set_timeout(TCase * tc, double timeout)
 #endif /* HAVE_FORK */
 }
 
-void tcase_fn_start(const char *fname CK_ATTRIBUTE_UNUSED, const char *file,
+void tcase_fn_start(const char *fname, const char *file,
                     int line)
 {
     send_ctx_info(CK_CTX_TEST);
     send_loc_info(file, line);
+
+    current_test_name = fname;
+}
+
+const char* tcase_name()
+{
+	return current_test_name;
 }
 
 void _mark_point(const char *file, int line)

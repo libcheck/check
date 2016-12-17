@@ -4,9 +4,9 @@
 # Prelude.
 AC_PREREQ([2.59])
 
-AC_INIT([Check], [0.10.0], [check-devel at lists dot sourceforge dot net])
+AC_INIT([Check], [0.11.0], [check-devel at lists dot sourceforge dot net])
 CHECK_MAJOR_VERSION=0
-CHECK_MINOR_VERSION=10
+CHECK_MINOR_VERSION=11
 CHECK_MICRO_VERSION=0
 CHECK_VERSION=$CHECK_MAJOR_VERSION.$CHECK_MINOR_VERSION.$CHECK_MICRO_VERSION
 
@@ -18,9 +18,6 @@ AC_CONFIG_MACRO_DIR([m4])
 
 # place where portability library functions are kept
 AC_CONFIG_LIBOBJ_DIR([lib])
-
-# place to put some extra build scripts installed
-AC_CONFIG_AUX_DIR([build-aux])
 
 # really severe build strictness
 AM_INIT_AUTOMAKE([-Wall gnits 1.11.2])
@@ -293,7 +290,7 @@ HW_LIBRT_TIMERS
 
 # The following checks will replace missing functions from libcompat
 AC_REPLACE_FUNCS([alarm clock_gettime getline gettimeofday localtime_r strdup strsignal])
-AC_CHECK_DECLS([alarm, clock_gettime, getline gettimeofday, localtime_r, strdup, strsignal])
+AC_CHECK_DECLS([alarm, clock_gettime, getline, gettimeofday, localtime_r, strdup, strsignal])
 
 # The following checks are to only detect if the functions exist, but
 # not replace them
@@ -315,8 +312,6 @@ AC_CHECK_FUNCS([mkstemp])
 # If they are not, use the version in libcompat.
 HW_FUNC_VSNPRINTF
 HW_FUNC_SNPRINTF
-HW_FUNC_VASPRINTF
-HW_FUNC_ASPRINTF
 
 # Check for whether we can install checkmk (we have a usable awk)
 AC_ARG_VAR([AWK_PATH],[Awk interpreter command])
