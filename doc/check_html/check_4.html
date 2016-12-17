@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <!-- This manual is for Check
-(version 0.10.0, 13 September 2015),
+(version 0.11.0, 17 December 2016),
 a unit testing framework for C.
 
 Copyright (C) 2001-2014 Arien Malec, Branden Archer, Chris Pickett,
@@ -15,7 +15,7 @@ Back-Cover Texts.  A copy of the license is included in the section
 entitled "GNU Free Documentation License."
 
  -->
-<!-- Created on December 24, 2015 by texi2html 5.0
+<!-- Created on December 17, 2016 by texi2html 5.0
 texi2html was written by: 
             Lionel Cons <Lionel.Cons@cern.ch> (original author)
             Karl Berry  <karl@freefriends.org>
@@ -25,10 +25,10 @@ Maintained by: Many creative people.
 Send bugs and suggestions to <texi2html-bug@nongnu.org>
 -->
 <head>
-<title>Check 0.10.0: 4 Advanced Features</title>
+<title>Check 0.11.0: 4 Advanced Features</title>
 
-<meta name="description" content="Check 0.10.0: 4 Advanced Features">
-<meta name="keywords" content="Check 0.10.0: 4 Advanced Features">
+<meta name="description" content="Check 0.11.0: 4 Advanced Features">
+<meta name="keywords" content="Check 0.11.0: 4 Advanced Features">
 <meta name="resource-type" content="document">
 <meta name="distribution" content="global">
 <meta name="Generator" content="texi2html 5.0">
@@ -99,6 +99,10 @@ easier for the developer to write, run, and analyze tests.
 <tr><td align="left" valign="top"><a href="#Multiple-Suites-in-one-SRunner">4.5 Multiple Suites in one SRunner</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">  
 </td></tr>
 <tr><td align="left" valign="top"><a href="#Selective-Running-of-Tests">4.6 Selective Running of Tests</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top"><a href="#Selecting-Tests-by-Suite-or-Test-Case">4.6.1 Selecting Tests by Suite or Test Case</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top"><a href="#Selecting-Tests-Based-on-Arbitrary-Tags">4.6.2 Selecting Tests Based on Arbitrary Tags</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
 </td></tr>
 <tr><td align="left" valign="top"><a href="#Testing-Signal-Handling-and-Exit-Values">4.7 Testing Signal Handling and Exit Values</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">  
 </td></tr>
@@ -186,8 +190,8 @@ provided message.
 <a name="index-ck_005fassert_005fint_005fge"></a>
 </dt>
 <dd>
-<p>Compares two signed integer values (<code>intmax_t</code>) and displays predefined
-message with condition and values of both input parameters on failure.  The
+<p>Compares two signed integer values (<code>intmax_t</code>) and displays a predefined
+message with both the condition and input parameters on failure.  The
 operator used for comparison is different for each function and is indicated
 by the last two letters of the function name.  The abbreviations <code>eq</code>,
 <code>ne</code>, <code>lt</code>, <code>le</code>, <code>gt</code>, and <code>ge</code> correspond to
@@ -218,6 +222,265 @@ respectively.
 (<code>uintmax_t</code>) instead.
 </p>
 </dd>
+<dt><code>ck_assert_float_eq</code>
+<a name="index-ck_005fassert_005ffloat_005feq"></a>
+</dt>
+<dt><code>ck_assert_float_ne</code>
+<a name="index-ck_005fassert_005ffloat_005fne"></a>
+</dt>
+<dt><code>ck_assert_float_lt</code>
+<a name="index-ck_005fassert_005ffloat_005flt"></a>
+</dt>
+<dt><code>ck_assert_float_le</code>
+<a name="index-ck_005fassert_005ffloat_005fle"></a>
+</dt>
+<dt><code>ck_assert_float_gt</code>
+<a name="index-ck_005fassert_005ffloat_005fgt"></a>
+</dt>
+<dt><code>ck_assert_float_ge</code>
+<a name="index-ck_005fassert_005ffloat_005fge"></a>
+</dt>
+<dd>
+<p>Compares two floating point numbers (<code>float</code>) and displays a predefined
+message with both the condition and input parameters on failure.
+The operator used for comparison is different for each function
+and is indicated by the last two letters of the function name. 
+The abbreviations <code>eq</code>, <code>ne</code>, <code>lt</code>, <code>le</code>, <code>gt</code>,
+and <code>ge</code> correspond to <code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>,
+and <code>&gt;=</code> respectively.
+Beware using those operators for floating point numbers because of precision
+possible loss on every operation on floating point numbers. For example
+(1/3)*3==1 would return false, because 1/3==1.333... (or 1.(3) notation
+in Europe) and cannot be represented by computer logic. As another example
+1.1f in fact could be 1.10000002384185791015625 and 2.1f could be
+2.099999904632568359375 because of binary representation of floating
+point numbers.
+If you have different mathematical operations used on floating point numbers
+consider using precision comparisons or integer numbers instead. But in some
+cases those operators could be used. For example if you cyclically increment
+your floating point number only by positive or only by negative values than
+you may use <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code> and <code>&gt;=</code> operators in tests.
+If your computations must end up with a certain value than <code>==</code> and
+<code>!=</code> operators may be used.
+</p>
+</dd>
+<dt><code>ck_assert_double_eq</code>
+<a name="index-ck_005fassert_005fdouble_005feq"></a>
+</dt>
+<dt><code>ck_assert_double_ne</code>
+<a name="index-ck_005fassert_005fdouble_005fne"></a>
+</dt>
+<dt><code>ck_assert_double_lt</code>
+<a name="index-ck_005fassert_005fdouble_005flt"></a>
+</dt>
+<dt><code>ck_assert_double_le</code>
+<a name="index-ck_005fassert_005fdouble_005fle"></a>
+</dt>
+<dt><code>ck_assert_double_gt</code>
+<a name="index-ck_005fassert_005fdouble_005fgt"></a>
+</dt>
+<dt><code>ck_assert_double_ge</code>
+<a name="index-ck_005fassert_005fdouble_005fge"></a>
+</dt>
+<dd>
+<p>Similar to <code>ck_assert_float_*</code>, but compares two double precision
+floating point values (<code>double</code>) instead.
+</p>
+</dd>
+<dt><code>ck_assert_ldouble_eq</code>
+<a name="index-ck_005fassert_005fldouble_005feq"></a>
+</dt>
+<dt><code>ck_assert_ldouble_ne</code>
+<a name="index-ck_005fassert_005fldouble_005fne"></a>
+</dt>
+<dt><code>ck_assert_ldouble_lt</code>
+<a name="index-ck_005fassert_005fldouble_005flt"></a>
+</dt>
+<dt><code>ck_assert_ldouble_le</code>
+<a name="index-ck_005fassert_005fldouble_005fle"></a>
+</dt>
+<dt><code>ck_assert_ldouble_gt</code>
+<a name="index-ck_005fassert_005fldouble_005fgt"></a>
+</dt>
+<dt><code>ck_assert_ldouble_ge</code>
+<a name="index-ck_005fassert_005fldouble_005fge"></a>
+</dt>
+<dd>
+<p>Similar to <code>ck_assert_float_*</code>, but compares two double precision
+floating point values (<code>long double</code>) instead.
+</p>
+</dd>
+<dt><code>ck_assert_float_eq_tol</code>
+<a name="index-ck_005fassert_005ffloat_005feq_005ftol"></a>
+</dt>
+<dt><code>ck_assert_float_ne_tol</code>
+<a name="index-ck_005fassert_005ffloat_005fne_005ftol"></a>
+</dt>
+<dt><code>ck_assert_float_le_tol</code>
+<a name="index-ck_005fassert_005ffloat_005fle_005ftol"></a>
+</dt>
+<dt><code>ck_assert_float_ge_tol</code>
+<a name="index-ck_005fassert_005ffloat_005fge_005ftol"></a>
+</dt>
+<dd>
+<p>Compares two floating point numbers (<code>float</code>) with specified user tolerance
+set by the third parameter (<code>float</code>) and displays a predefined message
+with both the condition and input parameters on failure.
+The abbreviations <code>eq</code>, <code>ne</code>, <code>le</code>, and <code>ge</code> correspond
+to <code>==</code>, <code>!=</code>, <code>&lt;=</code>, and <code>&gt;=</code> respectively with acceptable
+error (tolerance) specified by the last parameter.
+Beware using those functions for floating comparisons because of
+(1) errors coming from floating point number representation,
+(2) rounding errors,
+(3) floating point errors are platform dependent.
+Floating point numbers are often internally represented in binary
+so they cannot be exact power of 10. All these operators have significant
+error in comparisons so use them only if you know what you&rsquo;re doing.
+Some assertions could fail on one platform and would be passed on another.
+For example expression <code>0.02&lt;=0.01+10^-2</code> is true by meaning,
+but some platforms may calculate it as false. IEEE 754 standard specifies
+the floating point number format representation but it does not promise that
+the same computation carried out on all hardware will produce the same result.
+</p>
+</dd>
+<dt><code>ck_assert_double_eq_tol</code>
+<a name="index-ck_005fassert_005fdouble_005feq_005ftol"></a>
+</dt>
+<dt><code>ck_assert_double_ne_tol</code>
+<a name="index-ck_005fassert_005fdouble_005fne_005ftol"></a>
+</dt>
+<dt><code>ck_assert_double_le_tol</code>
+<a name="index-ck_005fassert_005fdouble_005fle_005ftol"></a>
+</dt>
+<dt><code>ck_assert_double_ge_tol</code>
+<a name="index-ck_005fassert_005fdouble_005fge_005ftol"></a>
+</dt>
+<dd>
+<p>Similar to <code>ck_assert_float_*_tol</code>, but compares two double precision
+floating point values (<code>double</code>) instead.
+</p>
+</dd>
+<dt><code>ck_assert_ldouble_eq_tol</code>
+<a name="index-ck_005fassert_005fldouble_005feq_005ftol"></a>
+</dt>
+<dt><code>ck_assert_ldouble_ne_tol</code>
+<a name="index-ck_005fassert_005fldouble_005fne_005ftol"></a>
+</dt>
+<dt><code>ck_assert_ldouble_le_tol</code>
+<a name="index-ck_005fassert_005fldouble_005fle_005ftol"></a>
+</dt>
+<dt><code>ck_assert_ldouble_ge_tol</code>
+<a name="index-ck_005fassert_005fldouble_005fge_005ftol"></a>
+</dt>
+<dd>
+<p>Similar to <code>ck_assert_float_*_tol</code>, but compares two double precision
+floating point values (<code>long double</code>) instead.
+</p>
+</dd>
+<dt><code>ck_assert_float_finite</code>
+<a name="index-ck_005fassert_005ffloat_005ffinite"></a>
+</dt>
+<dd>
+<p>Checks that a floating point number (<code>float</code>) is finite and displays
+a predefined message with both the condition and input parameter on failure.
+Finite means that value cannot be positive infinity, negative infinity
+or NaN (&quot;Not a Number&quot;).
+</p>
+</dd>
+<dt><code>ck_assert_double_finite</code>
+<a name="index-ck_005fassert_005fdouble_005ffinite"></a>
+</dt>
+<dd>
+<p>Similar to <code>ck_assert_float_finite</code>, but checks double precision
+floating point value (<code>double</code>) instead.
+</p>
+
+</dd>
+<dt><code>ck_assert_ldouble_finite</code>
+<a name="index-ck_005fassert_005fldouble_005ffinite"></a>
+</dt>
+<dd>
+<p>Similar to <code>ck_assert_float_finite</code>, but checks double precision
+floating point value (<code>long double</code>) instead.
+</p>
+</dd>
+<dt><code>ck_assert_float_infinite</code>
+<a name="index-ck_005fassert_005ffloat_005finfinite"></a>
+</dt>
+<dd>
+<p>Checks that a floating point number (<code>float</code>) is infinite and displays
+a predefined message with both the condition and input parameter on failure.
+Infinite means that value may only be positive infinity or negative infinity.
+</p>
+</dd>
+<dt><code>ck_assert_double_infinite</code>
+<a name="index-ck_005fassert_005fdouble_005finfinite"></a>
+</dt>
+<dd>
+<p>Similar to <code>ck_assert_float_infinite</code>, but checks double precision
+floating point value (<code>double</code>) instead.
+</p>
+</dd>
+<dt><code>ck_assert_ldouble_infinite</code>
+<a name="index-ck_005fassert_005fldouble_005finfinite"></a>
+</dt>
+<dd>
+<p>Similar to <code>ck_assert_float_infinite</code>, but checks double precision
+floating point value (<code>long double</code>) instead.
+</p>
+</dd>
+<dt><code>ck_assert_float_nan</code>
+<a name="index-ck_005fassert_005ffloat_005fnan"></a>
+</dt>
+<dd>
+<p>Checks that a floating point number (<code>float</code>, <code>double</code> or
+<code>long double</code> abbreviated as <code>ldouble</code>) is NaN (&quot;Not a Number&quot;)
+and displays a predefined message with both the condition and input parameter
+on failure.
+</p>
+</dd>
+<dt><code>ck_assert_double_nan</code>
+<a name="index-ck_005fassert_005fdouble_005fnan"></a>
+</dt>
+<dd>
+<p>Similar to <code>ck_assert_float_nan</code>, but checks double precision
+floating point value (<code>double</code>) instead.
+</p>
+</dd>
+<dt><code>ck_assert_ldouble_nan</code>
+<a name="index-ck_005fassert_005fldouble_005fnan"></a>
+</dt>
+<dd>
+<p>Similar to <code>ck_assert_float_nan</code>, but checks double precision
+floating point value (<code>long double</code>) instead.
+</p>
+</dd>
+<dt><code>ck_assert_float_nonnan</code>
+<a name="index-ck_005fassert_005ffloat_005fnonnan"></a>
+</dt>
+<dd>
+<p>Checks that a floating point number (<code>float</code>) is not NaN (&quot;Not a Number&quot;)
+and displays a predefined message with both the condition and input parameter
+on failure.
+</p>
+</dd>
+<dt><code>ck_assert_double_nonnan</code>
+<a name="index-ck_005fassert_005fdouble_005fnonnan"></a>
+</dt>
+<dd>
+<p>Similar to <code>ck_assert_float_nonnan</code>, but checks double precision
+floating point value (<code>double</code>) instead.
+</p>
+</dd>
+<dt><code>ck_assert_ldouble_nonnan</code>
+<a name="index-ck_005fassert_005fldouble_005fnonnan"></a>
+</dt>
+<dd>
+<p>Similar to <code>ck_assert_float_nonnan</code>, but checks double precision
+floating point value (<code>long double</code>) instead.
+</p>
+
+</dd>
 <dt><code>ck_assert_str_eq</code>
 <a name="index-ck_005fassert_005fstr_005feq-1"></a>
 </dt>
@@ -239,10 +502,26 @@ respectively.
 <dd>
 <p>Compares two null-terminated <code>char *</code> string values, using the
 <code>strcmp()</code> function internally, and displays predefined message
-with condition and input parameter values on failure.  The comparison
+with condition and input parameter values on failure. The comparison
 operator is again indicated by last two letters of the function name.
 <code>ck_assert_str_lt(a, b)</code> will pass if the unsigned numerical value
 of the character string <code>a</code> is less than that of <code>b</code>.
+If a NULL pointer is be passed to any comparison macro the check will fail.
+</p>
+</dd>
+<dt><code>ck_assert_pstr_eq</code>
+<a name="index-ck_005fassert_005fpstr_005feq"></a>
+</dt>
+<dt><code>ck_assert_pstr_ne</code>
+<a name="index-ck_005fassert_005fpstr_005fne"></a>
+</dt>
+<dd>
+<p>Similar to <code>ck_assert_str_*</code> macros, but able to check undefined strings.
+If a NULL pointer would be passed to a comparison macro it would mean that
+a string is undefined. If both strings are undefined <code>ck_assert_pstr_eq</code>
+would pass, but <code>ck_assert_pstr_ne</code> would fail. If only one of strings is
+undefined <code>ck_assert_pstr_eq</code> macro would fail and <code>ck_assert_pstr_ne</code>
+would pass.
 </p>
 </dd>
 <dt><code>ck_assert_ptr_eq</code>
@@ -257,6 +536,49 @@ condition and values of both input parameters on failure.  The operator
 used for comparison is different for each function and is indicated by
 the last two letters of the function name.  The abbreviations <code>eq</code> and
 <code>ne</code> correspond to <code>==</code> and <code>!=</code> respectively.
+</p>
+</dd>
+<dt><code>ck_assert_ptr_null</code>
+<a name="index-ck_005fassert_005fptr_005fnull"></a>
+</dt>
+<dt><code>ck_assert_ptr_nonnull</code>
+<a name="index-ck_005fassert_005fptr_005fnonnull"></a>
+</dt>
+<dd>
+<p>Compares a pointers against null and displays predefined message with
+condition and value of the input parameter on failure.
+<code>ck_assert_ptr_null</code> checks that pointer is equal to NULL and
+<code>ck_assert_ptr_nonnull</code> checks that pointer is not equal to NULL.
+<code>ck_assert_ptr_nonnull</code> is highly recommended to use in situations
+when a function call can return NULL as error indication (like functions
+that use malloc, calloc, strdup, mmap, etc).
+</p>
+</dd>
+<dt><code>ck_assert_mem_eq</code>
+<a name="index-ck_005fassert_005fmem_005feq"></a>
+</dt>
+<dt><code>ck_assert_mem_ne</code>
+<a name="index-ck_005fassert_005fmem_005fne"></a>
+</dt>
+<dt><code>ck_assert_mem_lt</code>
+<a name="index-ck_005fassert_005fmem_005flt"></a>
+</dt>
+<dt><code>ck_assert_mem_le</code>
+<a name="index-ck_005fassert_005fmem_005fle"></a>
+</dt>
+<dt><code>ck_assert_mem_gt</code>
+<a name="index-ck_005fassert_005fmem_005fgt"></a>
+</dt>
+<dt><code>ck_assert_mem_ge</code>
+<a name="index-ck_005fassert_005fmem_005fge"></a>
+</dt>
+<dd>
+<p>Compares contents of two memory locations of the given length, using the
+<code>memcmp()</code> function internally, and displays predefined message
+with condition and input parameter values on failure.  The comparison
+operator is again indicated by last two letters of the function name.
+<code>ck_assert_mem_lt(a, b)</code> will pass if the unsigned numerical value
+of memory location <code>a</code> is less than that of <code>b</code>.
 </p>
 </dd>
 <dt><code>fail</code>
@@ -311,8 +633,8 @@ changed like so:
 </p>
 <table class="cartouche" border="1"><tr><td>
 <div class="example">
-<pre class="example"><pre class="verbatim">--- tests/check_money.3.c	2015-09-13 12:11:11.000000000 -0400
-+++ tests/check_money.6.c	2015-09-13 12:11:09.000000000 -0400
+<pre class="example"><pre class="verbatim">--- tests/check_money.3.c	2016-11-03 20:45:10.000000000 -0400
++++ tests/check_money.6.c	2016-11-03 20:45:10.000000000 -0400
 @@ -1,65 +1,94 @@
  /*
   * Check: a unit test framework for C
@@ -418,8 +740,8 @@ additional information about where things broke.
 </p>
 <table class="cartouche" border="1"><tr><td>
 <div class="example">
-<pre class="example"><pre class="verbatim">--- src/money.5.c	2015-09-13 12:11:23.000000000 -0400
-+++ src/money.6.c	2015-09-13 12:11:21.000000000 -0400
+<pre class="example"><pre class="verbatim">--- src/money.5.c	2016-11-03 20:45:10.000000000 -0400
++++ src/money.6.c	2016-11-03 20:45:10.000000000 -0400
 @@ -1,58 +1,65 @@
  /*
   * Check: a unit test framework for C
@@ -665,8 +987,8 @@ with the following patch:
 </p>
 <table class="cartouche" border="1"><tr><td>
 <div class="example">
-<pre class="example"><pre class="verbatim">--- tests/check_money.6.c	2015-09-13 12:11:09.000000000 -0400
-+++ tests/check_money.7.c	2015-09-13 12:11:07.000000000 -0400
+<pre class="example"><pre class="verbatim">--- tests/check_money.6.c	2016-11-03 20:45:10.000000000 -0400
++++ tests/check_money.7.c	2016-11-03 20:45:10.000000000 -0400
 @@ -1,94 +1,103 @@
  /*
   * Check: a unit test framework for C
@@ -895,6 +1217,70 @@ srunner_add_suite (sr, make_pack_suite ());
 <tr><td valign="middle" align="left">[<a href="#Advanced-Features" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
 <td valign="middle" align="left">[<a href="#Multiple-Suites-in-one-SRunner" title="Previous section in reading order"> &lt; </a>]</td>
 <td valign="middle" align="left">[<a href="#Advanced-Features" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#Selecting-Tests-by-Suite-or-Test-Case" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+
+<a name="Selective-Running-of-Tests-1"></a>
+<h2 class="section">4.6 Selective Running of Tests</h2>
+
+<p>After adding a couple of suites and some test cases in each, it is
+sometimes practical to be able to run only one suite, or one specific
+test case, without recompiling the test code.  Check provides two ways
+to accomplish this, either by specifying a suite or test case by name
+or by assigning tags to test cases and specifying one or more tags to
+run.
+</p>
+<table class="menu" border="0" cellspacing="0">
+<tr><td align="left" valign="top"><a href="#Selecting-Tests-by-Suite-or-Test-Case">4.6.1 Selecting Tests by Suite or Test Case</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top"><a href="#Selecting-Tests-Based-on-Arbitrary-Tags">4.6.2 Selecting Tests Based on Arbitrary Tags</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+</table>
+
+<hr>
+<a name="Selecting-Tests-by-Suite-or-Test-Case"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Advanced-Features" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Selective-Running-of-Tests" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Selective-Running-of-Tests" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="#Selecting-Tests-Based-on-Arbitrary-Tags" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="index.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="check_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Selecting-Tests-by-Suite-or-Test-Case-1"></a>
+<h3 class="subsection">4.6.1 Selecting Tests by Suite or Test Case</h3>
+
+<a name="index-CK_005fRUN_005fSUITE"></a>
+<a name="index-CK_005fRUN_005fCASE"></a>
+
+<p>There are two environment variables available that offer this
+ability, <code>CK_RUN_SUITE</code> and <code>CK_RUN_CASE</code>. Just set the
+value to the name of the suite and/or test case you want to run. These
+environment variables can also be a good integration tool for running
+specific tests from within another tool, e.g. an IDE.
+</p>
+<hr>
+<a name="Selecting-Tests-Based-on-Arbitrary-Tags"></a>
+<table class="header" cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#Advanced-Features" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Selecting-Tests-by-Suite-or-Test-Case" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Selective-Running-of-Tests" title="Up section"> Up </a>]</td>
 <td valign="middle" align="left">[<a href="#Testing-Signal-Handling-and-Exit-Values" title="Next section in reading order"> &gt; </a>]</td>
 <td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next chapter"> &gt;&gt; </a>]</td>
 <td valign="middle" align="left"> &nbsp; </td>
@@ -906,25 +1292,81 @@ srunner_add_suite (sr, make_pack_suite ());
 <td valign="middle" align="left">[<a href="check_9.html#Index" title="Index">Index</a>]</td>
 <td valign="middle" align="left">[<a href="check_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
 </tr></table>
-<a name="Selective-Running-of-Tests-1"></a>
-<h2 class="section">4.6 Selective Running of Tests</h2>
+<a name="Selecting-Tests-Based-on-Arbitrary-Tags-1"></a>
+<h3 class="subsection">4.6.2 Selecting Tests Based on Arbitrary Tags</h3>
 
-<a name="index-CK_005fRUN_005fSUITE"></a>
-<a name="index-CK_005fRUN_005fCASE"></a>
-<p>After adding a couple of suites and some test cases in each, it is
-sometimes practical to be able to run only one suite, or one
-specific test case, without recompiling the test code. There are
-two environment variables available that offers this ability,
-<code>CK_RUN_SUITE</code> and <code>CK_RUN_CASE</code>. Just set the value to
-the name of the suite and/or test case you want to run. These
-environment variables can also be a good integration tool for
-running specific tests from within another tool, e.g. an IDE.
-</p>  
+<a name="index-CK_005fINCLUDE_005fTAGS"></a>
+<a name="index-CK_005fEXCLUDE_005fTAGS"></a>
+
+<p>It can be useful to dynamically include or exclude groups of tests to
+be run based on criteria other than the suite or test case name. For
+example, one or more tags can be assigned to test cases. The tags
+could indicate if a test runs for a long time, so such tests could be
+excluded in order to run quicker tests for a sanity
+check. Alternately, tags may be used to indicate which functional
+areas test cover. Tests can then be run that include all test cases
+for a given set of functional areas.
+</p>
+<p>In Check, a tag is a string of characters without white space. One or
+more tags can be assigned to a test case by using the
+<code>tcase_set_tags</code> function. This function accepts a string, and
+multiple tags can be specified by delimiting them with spaces. For
+example:
+</p>
+<div class="example">
+<pre class="verbatim">    Suite *s;
+
+    TCase *red, *blue, *purple, *yellow, *black;
+
+    s = suite_create(&quot;Check Tag Filtering&quot;);
+
+    red = tcase_create(&quot;Red&quot;);
+    tcase_set_tags(red, &quot;Red&quot;);
+    suite_add_tcase (s, red);
+    tcase_add_test(red, red_test1);
+
+    blue = tcase_create(&quot;Blue&quot;);
+    tcase_set_tags(blue, &quot;Blue&quot;);
+    suite_add_tcase (s, blue);
+    tcase_add_test(blue, blue_test1);
+
+    purple = tcase_create(&quot;Purple&quot;);
+    tcase_set_tags(purple, &quot;Red Blue&quot;);
+    suite_add_tcase (s, purple);
+    tcase_add_test(purple, purple_test1);
+
+</pre></div>
+
+<p>Once test cases are tagged they may be selectively run in one of two ways:
+</p>
+<p>a) Using Environment Variables
+</p>
+<p>There are two environment variables available for selecting test cases
+based on tags: <code>CK_INCLUDE_TAGS</code> and
+<code>CK_EXCLUDE_TAGS</code>. These can be set to a space separated list of
+tag names. If <code>CK_INCLUDE_TAGS</code> is set then test cases which
+include at least one tag in common with <code>CK_INCLUDE_TAGS</code> will be
+run. If <code>CK_EXCLUDE_TAGS</code> is set then test cases with one tag in
+common with <code>CK_EXCLUDE_TAGS</code> will not be run. In cases where
+both <code>CK_INCLUDE_TAGS</code> and <code>CK_EXCLUDE_TAGS</code> match a tag for
+a test case the test will be excluded.
+</p>
+<p>Both <code>CK_INCLUDE_TAGS</code> and <code>CK_EXCLUDE_TAGS</code> can be
+specified in conjunction with <code>CK_RUN_SUITE</code> or even
+<code>CK_RUN_CASE</code> in which case they will have the effect of further
+narrowing the selection.
+</p>
+<p>b) Programmatically
+</p>
+<p>The <code>srunner_run_tagged</code> function allows one to specify which
+tags to run or exclude from a suite runner. This can be used to
+programmatically control which test cases may run.
+</p>
 <hr>
 <a name="Testing-Signal-Handling-and-Exit-Values"></a>
 <table class="header" cellpadding="1" cellspacing="1" border="0">
 <tr><td valign="middle" align="left">[<a href="#Advanced-Features" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
-<td valign="middle" align="left">[<a href="#Selective-Running-of-Tests" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#Selecting-Tests-Based-on-Arbitrary-Tags" title="Previous section in reading order"> &lt; </a>]</td>
 <td valign="middle" align="left">[<a href="#Advanced-Features" title="Up section"> Up </a>]</td>
 <td valign="middle" align="left">[<a href="#Looping-Tests" title="Next section in reading order"> &gt; </a>]</td>
 <td valign="middle" align="left">[<a href="check_5.html#Supported-Build-Systems" title="Next chapter"> &gt;&gt; </a>]</td>
@@ -1590,7 +2032,7 @@ control details.
 </tr></table>
 <p>
  <font size="-1">
-  This document was generated on <i>December 24, 2015</i> using <a href="http://www.nongnu.org/texi2html/"><i>texi2html 5.0</i></a>.
+  This document was generated on <i>December 17, 2016</i> using <a href="http://www.nongnu.org/texi2html/"><i>texi2html 5.0</i></a>.
  </font>
  <br>
 

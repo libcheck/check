@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <!-- This manual is for Check
-(version 0.10.0, 13 September 2015),
+(version 0.11.0, 17 December 2016),
 a unit testing framework for C.
 
 Copyright (C) 2001-2014 Arien Malec, Branden Archer, Chris Pickett,
@@ -15,7 +15,7 @@ Back-Cover Texts.  A copy of the license is included in the section
 entitled "GNU Free Documentation License."
 
  -->
-<!-- Created on December 24, 2015 by texi2html 5.0
+<!-- Created on December 17, 2016 by texi2html 5.0
 texi2html was written by: 
             Lionel Cons <Lionel.Cons@cern.ch> (original author)
             Karl Berry  <karl@freefriends.org>
@@ -25,10 +25,10 @@ Maintained by: Many creative people.
 Send bugs and suggestions to <texi2html-bug@nongnu.org>
 -->
 <head>
-<title>Check 0.10.0: Appendix A Environment Variable Reference</title>
+<title>Check 0.11.0: Appendix A Environment Variable Reference</title>
 
-<meta name="description" content="Check 0.10.0: Appendix A Environment Variable Reference">
-<meta name="keywords" content="Check 0.10.0: Appendix A Environment Variable Reference">
+<meta name="description" content="Check 0.11.0: Appendix A Environment Variable Reference">
+<meta name="keywords" content="Check 0.11.0: Appendix A Environment Variable Reference">
 <meta name="resource-type" content="document">
 <meta name="distribution" content="global">
 <meta name="Generator" content="texi2html 5.0">
@@ -89,6 +89,10 @@ ul.no-bullet {list-style: none}
 </p>
 <p>CK_RUN_SUITE: Name of a test suite, runs only that suite. See section <a href="check_4.html#Selective-Running-of-Tests">Selective Running of Tests</a>.
 </p>
+<p>CK_INCLUDE_TAGS: String of space separated tags, runs only test cases associated with at least one of the tags, See section <a href="check_4.html#Selecting-Tests-Based-on-Arbitrary-Tags">Selecting Tests Based on Arbitrary Tags</a>.
+</p>
+<p>CK_EXCLUDE_TAGS: String of space separated tags, runs only test cases not associated with any of the tags, See section <a href="check_4.html#Selecting-Tests-Based-on-Arbitrary-Tags">Selecting Tests Based on Arbitrary Tags</a>.
+</p> 
 <p>CK_VERBOSITY: How much output to emit, accepts: &ldquo;silent&rdquo;, &ldquo;minimal&rdquo;, &ldquo;normal&rdquo;, &ldquo;subunit&rdquo;, or &ldquo;verbose&rdquo;.  See section <a href="check_3.html#SRunner-Output">SRunner Output</a>.
 </p>
 <p>CK_FORK: Set to &ldquo;no&rdquo; to disable using fork() to run unit tests in their own process. This is useful for debugging segmentation faults.  See section <a href="check_4.html#No-Fork-Mode">No Fork Mode</a>.
@@ -120,7 +124,7 @@ ul.no-bullet {list-style: none}
 </tr></table>
 <p>
  <font size="-1">
-  This document was generated on <i>December 24, 2015</i> using <a href="http://www.nongnu.org/texi2html/"><i>texi2html 5.0</i></a>.
+  This document was generated on <i>December 17, 2016</i> using <a href="http://www.nongnu.org/texi2html/"><i>texi2html 5.0</i></a>.
  </font>
  <br>
 

@@ -17,6 +17,7 @@ var searchData=
   ['srunner_5fresults',['srunner_results',['../check_8h.html#acbe2efeee6c91918cd3f3efcb0dca725',1,'check.h']]],
   ['srunner_5frun',['srunner_run',['../check_8h.html#a6a9df974ea61b4ea1fff6893e5205d8e',1,'check.h']]],
   ['srunner_5frun_5fall',['srunner_run_all',['../check_8h.html#ac3ece0b13b517ec2112eaef583b007d9',1,'check.h']]],
+  ['srunner_5frun_5ftagged',['srunner_run_tagged',['../check_8h.html#a3a8c8b3299b35b3557b18b1e0592dec4',1,'check.h']]],
   ['srunner_5fset_5ffork_5fstatus',['srunner_set_fork_status',['../check_8h.html#a0085fc05eba2e9048822aa93aeebc2d2',1,'check.h']]],
   ['srunner_5fset_5flog',['srunner_set_log',['../check_8h.html#aa2d0e8719d6ac4322d104c04911dd8d7',1,'check.h']]],
   ['srunner_5fset_5ftap',['srunner_set_tap',['../check_8h.html#a08bfa33293cdff88c60a2db683b6a9c5',1,'check.h']]],
