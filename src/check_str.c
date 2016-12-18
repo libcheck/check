@@ -127,9 +127,8 @@ static int percent_passed(TestStats * t)
 {
     if(t->n_failed == 0 && t->n_errors == 0)
         return 100;
-    else if(t->n_checked == 0)
+    if(t->n_checked == 0)
         return 0;
-    else
-        return (int)((float)(t->n_checked - (t->n_failed + t->n_errors)) /
-                     (float)t->n_checked * 100);
+    return (int)((float)(t->n_checked - (t->n_failed + t->n_errors)) /
+                 (float)t->n_checked * 100);
 }
