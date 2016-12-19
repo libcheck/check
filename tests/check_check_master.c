@@ -24,7 +24,11 @@
 #include <stdio.h>
 #include <string.h>
 #if ENABLE_REGEX
-# include <regex.h>
+# if ENABLE_PCREPOSIX
+#   include <pcreposix.h>
+# else
+#   include <regex.h>
+# endif
 #endif
 #include <check.h>
 #include <assert.h>

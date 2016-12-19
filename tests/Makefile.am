@@ -43,7 +43,7 @@ check_check_export_SOURCES = \
 	check_check_fork.c	\
 	check_check_tags.c      \
 	check_check_export_main.c
-check_check_export_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
+check_check_export_LDADD = $(PCREPOSIX_LIBS) $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
 
 check_check_SOURCES = \
 	check_check.h			\
@@ -61,7 +61,7 @@ check_check_SOURCES = \
 	check_check_selective.c         \
 	check_check_tags.c         	\
 	check_check_main.c
-check_check_LDADD = $(top_builddir)/src/libcheckinternal.la $(top_builddir)/lib/libcompat.la
+check_check_LDADD = $(PCREPOSIX_LIBS) $(top_builddir)/src/libcheckinternal.la $(top_builddir)/lib/libcompat.la
 
 check_mem_leaks_SOURCES = 	\
 	check_mem_leaks.c 		\
@@ -72,21 +72,21 @@ check_mem_leaks_SOURCES = 	\
 	check_check_tags.c         	\
 	check_check_sub.c		\
 	check_check_master.c
-check_mem_leaks_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
+check_mem_leaks_LDADD = $(PCREPOSIX_LIBS) $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
 check_mem_leaks_CFLAGS = -DTIMEOUT_TESTS_ENABLED=0 -DMEMORY_LEAKING_TESTS_ENABLED=0
 
 check_stress_SOURCES = check_stress.c
-check_stress_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
+check_stress_LDADD = $(PCREPOSIX_LIBS) $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
 
 check_thread_stress_SOURCES = check_thread_stress.c
-check_thread_stress_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la @PTHREAD_LIBS@
+check_thread_stress_LDADD = $(PCREPOSIX_LIBS) $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la @PTHREAD_LIBS@
 check_thread_stress_CFLAGS = @PTHREAD_CFLAGS@
 
 check_nofork_SOURCES = check_nofork.c
-check_nofork_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
+check_nofork_LDADD = $(PCREPOSIX_LIBS) $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
 
 check_nofork_teardown_SOURCES = check_nofork_teardown.c
-check_nofork_teardown_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
+check_nofork_teardown_LDADD = $(PCREPOSIX_LIBS) $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
 
 ex_output_SOURCES = ex_output.c
 ex_output_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
