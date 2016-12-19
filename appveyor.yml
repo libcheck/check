@@ -23,6 +23,7 @@ environment:
   matrix:
   - platform: msvc
   - platform: vs
+  - platform: cygwin
 
 # scripts that are called at very beginning, before repo cloning
 # init:
@@ -43,19 +44,24 @@ configuration: Release
 
 # scripts to run before build
 before_build:
-  - echo Running cmake...
   - cd c:\projects\check
   - if %platform%==msvc call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat"
   - if %platform%==msvc cmake -G "NMake Makefiles" -DCMAKE_INSTALL_PREFIX=%P%
   - if %platform%==vs cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_INSTALL_PREFIX=%P%
+  - if %platform%==cygwin set PATH=C:\cygwin\bin;%PATH%
+  - if %platform%==cygwin bash -c "autoreconf -i"
+  - if %platform%==cygwin bash -c "./configure"
 
 build_script:
   # build code and unit tests
   - if %platform%==msvc nmake
   - if %platform%==vs msbuild "ALL_BUILD.vcxproj"
+  - if %platform%==cygwin bash -c "make"
 
 test_script:
   # run unit tests
   - echo Running unit tests...
   - if %platform%==msvc nmake test VERBOSE=1 CTEST_OUTPUT_ON_FAILURE=TRUE
   - if %platform%==vs ctest --extra-verbose -C Release
+  # Unit tests on Cygwin currently do not all pass
+  #- if %platform%==cygwin bash -c "make check || cat tests/test-suite.log && false"
