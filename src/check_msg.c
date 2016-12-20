@@ -243,6 +243,13 @@ FILE *open_tmp_file(char **name)
     file = tmpfile();
     if(file == NULL)
     {
+        /*
+         * The heuristic for selecting a temporary folder is as follows:
+         * 1) If the TEMP environment variable is defined, use that directory.
+         * 2) If the P_tmpdir macro is defined, use that directory.
+         * 3) If the TMPDIR environment variable is defined, use that directory.
+         * 4) Use the platform defined temporary directory, or the current directory.
+         */
         char *tmp = getenv("TEMP");
         char *tmp_file = tempnam(tmp, "check_");
 
@@ -263,9 +270,27 @@ FILE *open_tmp_file(char **name)
         free(tmp_file);
     }
 #else
+    /*
+     * The heuristic for selecting a temporary folder is as follows:
+     * 1) If the TEMP environment variable is defined, use that directory.
+     * 2) If the P_tmpdir macro is defined, use that directory.
+     * 3) If the TMPDIR environment variable is defined, use that directory.
+     * 4) Use the current directory
+     */
+
     int fd = -1;
     const char *tmp_dir = getenv ("TEMP");
-    if (!tmp_dir)
+#ifdef P_tmpdir
+    if (tmp_dir == NULL)
+    {
+        tmp_dir = P_tmpdir;
+    }
+#endif /*P_tmpdir*/
+    if (tmp_dir == NULL)
+    {
+        tmp_dir = getenv ("TMPDIR");
+    }
+    if (tmp_dir == NULL)
     {
         tmp_dir = ".";
     }
