@@ -35,6 +35,7 @@ addons:
   apt:
     packages:
       - texinfo
+      - kwstyle
 
 matrix:
   exclude:
@@ -45,6 +46,7 @@ matrix:
     env: USE_CMAKE=YES
 
 script:
+  - if [ ${TRAVIS_OS_NAME} = 'linux' ]; then KWStyle -R -v -gcc -d src; fi
   - mkdir build
   - cd build
   - if [ $USE_CMAKE == 'YES' ] ; then cmake .. ; fi
