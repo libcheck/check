@@ -21,11 +21,11 @@ version: 1.0.{build}
 
 environment:
   matrix:
-  - platform: msvc
-  - platform: vs
-  - platform: cygwin
+#  - platform: msvc
+#  - platform: vs
+#  - platform: cygwin
   - platform: mingw32
-  - platform: mingw64msys
+#  - platform: mingw64msys
 
 # scripts that are called at very beginning, before repo cloning
 # init:
@@ -36,6 +36,10 @@ clone_folder: c:\projects\check
 # scripts that are called at very beginning, before repo cloning
 init:
   - git config --global core.autocrlf input
+#  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
+#on_finish:
+#  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 #---------------------------------#
 #       build configuration       #
@@ -77,6 +81,5 @@ test_script:
   - if %platform%==vs ctest --extra-verbose -C Release
   # Unit tests on Cygwin currently do not all pass
   #- if %platform%==cygwin bash -c "make check || cat tests/test-suite.log && false"
-  # check_check does not work on MinGW
-  #- if %platform%==mingw32 tests\check_check.exe
+  - if %platform%==mingw32 tests\ex_output.exe CK_NORMAL STDOUT NORMAL
   - if %platform%==mingw64msys bash -c "tests/check_check"

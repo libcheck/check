@@ -145,6 +145,31 @@ static void print_usage(void)
     printf("   then use the following mode: CK_SILENT STDOUT [NORMAL|EXIT_TEST].\n");
 }
 
+void do_the_print(const char *expr, ...)
+{
+    const char *msg;
+    va_list ap;
+    char buf[BUFSIZ];
+    printf("BUFSIZ: %d\n", BUFSIZ);
+
+    va_start(ap, expr);
+
+    vsnprintf(buf, BUFSIZ, expr, ap);
+    printf("%s\n", buf);
+
+    va_end(ap);
+}
+
+#define example_macro(X, OP, Y, TP, TM) do { \
+  TP _ck_x = (X); \
+  TP _ck_y = (Y); \
+  int MY_FLOATING_DIG = 6; \
+  do_the_print("Assertion '%s' failed: %s == %.*"TM"g, %s == %.*"TM"g", \
+  #X" "#OP" "#Y, \
+  #X, (int)MY_FLOATING_DIG, _ck_x, \
+  #Y, (int)MY_FLOATING_DIG, _ck_y); \
+} while (0)
+                
 static void run_tests(enum print_output printmode, char *log_type, int include_exit_test)
 {
     SRunner *sr;
@@ -225,6 +250,8 @@ int main(int argc, char **argv)
     enum print_output printmode;
     int include_exit_test;
 
+    example_macro((double)1/(double)3, ==, 1.5, double, "l");
+    
     if(argc != 4)
     {
         print_usage();
