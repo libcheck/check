@@ -163,7 +163,7 @@ void do_the_print(const char *expr, ...)
 
 #define MY_FLOATING_DIG 6
 
-define example_macro(X, OP, Y, TP, TM) do { \
+#define example_macro(X, OP, Y, TP, TM) do { \
   TP _ck_x = (X); \
   TP _ck_y = (Y); \
   do_the_print("Assertion '%s' failed: %s == %.*"TM"g, %s == %.*"TM"g", \
