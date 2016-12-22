@@ -250,7 +250,7 @@ int main(int argc, char **argv)
     enum print_output printmode;
     int include_exit_test;
 
-    example_macro((double)1/(double)3, ==, 1.5, double, "");
+    example_macro((double)1/(double)3, ==, 1.5, double, "l");
     
     if(argc != 4)
     {
