@@ -153,6 +153,8 @@ static void run_tests(enum print_output printmode, char *log_type, int include_e
     sr = srunner_create(make_log1_suite());
     srunner_add_suite(sr, make_log2_suite(include_exit_test));
     srunner_add_suite(sr, make_xml_esc_suite());
+    
+    printf("Example: %s, %.*lg\n", "string", 6, (double)1/(double)3);
 
     if(strcmp(log_type, "STDOUT") == 0)
     {
