@@ -153,9 +153,8 @@ void do_the_print(const char *expr, ...)
     printf("BUFSIZ: %d\n", BUFSIZ);
 
     va_start(ap, expr);
-    msg = (const char *)va_arg(ap, char *);
 
-    vsnprintf(buf, BUFSIZ, msg, ap);
+    vsnprintf(buf, BUFSIZ, expr, ap);
     printf("%s\n", buf);
 
     va_end(ap);
