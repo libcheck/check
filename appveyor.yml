@@ -36,10 +36,10 @@ clone_folder: c:\projects\check
 # scripts that are called at very beginning, before repo cloning
 init:
   - git config --global core.autocrlf input
-  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+#  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
-on_finish:
-  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+#on_finish:
+#  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 #---------------------------------#
 #       build configuration       #
@@ -81,5 +81,5 @@ test_script:
   - if %platform%==vs ctest --extra-verbose -C Release
   # Unit tests on Cygwin currently do not all pass
   #- if %platform%==cygwin bash -c "make check || cat tests/test-suite.log && false"
-  - if %platform%==mingw32 tests\check_check_export.exe
+  - if %platform%==mingw32 tests\ex_output.exe CK_NORMAL STDOUT NORMAL
   - if %platform%==mingw64msys bash -c "tests/check_check"
