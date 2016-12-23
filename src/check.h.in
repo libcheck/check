@@ -961,7 +961,7 @@ do { \
  *
  * @since 0.11.0
  */
-#define ck_assert_float_nonnan(X) _ck_assert_floating_nonnan(X, float, "l")
+#define ck_assert_float_nonnan(X) _ck_assert_floating_nonnan(X, float, "")
 
 /**
  * Check two double precision floating point numbers to determine if X == Y
@@ -975,7 +975,7 @@ do { \
  *
  * @since 0.11.0
  */
-#define ck_assert_double_eq(X, Y) _ck_assert_floating(X, ==, Y, double, "l")
+#define ck_assert_double_eq(X, Y) _ck_assert_floating(X, ==, Y, double, "")
 /**
  * Check two double precision floating point numbers to determine if X != Y
  *
@@ -988,7 +988,7 @@ do { \
  *
  * @since 0.11.0
  */
-#define ck_assert_double_ne(X, Y) _ck_assert_floating(X, !=, Y, double, "l")
+#define ck_assert_double_ne(X, Y) _ck_assert_floating(X, !=, Y, double, "")
 /**
  * Check two double precision floating point numbers to determine if X < Y
  *
@@ -1001,7 +1001,7 @@ do { \
  *
  * @since 0.11.0
  */
-#define ck_assert_double_lt(X, Y) _ck_assert_floating(X, <, Y, double, "l")
+#define ck_assert_double_lt(X, Y) _ck_assert_floating(X, <, Y, double, "")
 /**
  * Check two double precision floating point numbers to determine if X <= Y
  *
@@ -1014,7 +1014,7 @@ do { \
  *
  * @since 0.11.0
  */
-#define ck_assert_double_le(X, Y) _ck_assert_floating(X, <=, Y, double, "l")
+#define ck_assert_double_le(X, Y) _ck_assert_floating(X, <=, Y, double, "")
 /**
  * Check two double precision floating point numbers to determine if X > Y
  *
@@ -1027,7 +1027,7 @@ do { \
  *
  * @since 0.11.0
  */
-#define ck_assert_double_gt(X, Y) _ck_assert_floating(X, >, Y, double, "l")
+#define ck_assert_double_gt(X, Y) _ck_assert_floating(X, >, Y, double, "")
 /**
  * Check two double precision floating point numbers to determine if X >= Y
  *
@@ -1040,7 +1040,7 @@ do { \
  *
  * @since 0.11.0
  */
-#define ck_assert_double_ge(X, Y) _ck_assert_floating(X, >=, Y, double, "l")
+#define ck_assert_double_ge(X, Y) _ck_assert_floating(X, >=, Y, double, "")
 
 /**
  * Check two double precision floating point numbers to determine if X≈Y
@@ -1056,7 +1056,7 @@ do { \
  *
  * @since 0.11.0
  */
-#define ck_assert_double_eq_tol(X, Y, T)  _ck_assert_floating_absdiff_op_tol(X, Y, <, T, double, "l")
+#define ck_assert_double_eq_tol(X, Y, T)  _ck_assert_floating_absdiff_op_tol(X, Y, <, T, double, "")
 
 /**
  * Check two double precision floating point numbers to determine if not X≈Y
@@ -1072,7 +1072,7 @@ do { \
  *
  * @since 0.11.0
  */
-#define ck_assert_double_ne_tol(X, Y, T) _ck_assert_floating_absdiff_op_tol(X, Y, >=, T, double, "l")
+#define ck_assert_double_ne_tol(X, Y, T) _ck_assert_floating_absdiff_op_tol(X, Y, >=, T, double, "")
 
 /**
  * Check two double precision floating point numbers to determine if X>≈Y
@@ -1088,7 +1088,7 @@ do { \
  *
  * @since 0.11.0
  */
-#define ck_assert_double_ge_tol(X, Y, T) _ck_assert_floating_op_tol(X, >, Y, T, -1, double, "l")
+#define ck_assert_double_ge_tol(X, Y, T) _ck_assert_floating_op_tol(X, >, Y, T, -1, double, "")
 
 /**
  * Check two double precision floating point numbers to determine if X<≈Y
@@ -1104,7 +1104,7 @@ do { \
  *
  * @since 0.11.0
  */
-#define ck_assert_double_le_tol(X, Y, T) _ck_assert_floating_op_tol(X, <, Y, T, 1, double, "l")
+#define ck_assert_double_le_tol(X, Y, T) _ck_assert_floating_op_tol(X, <, Y, T, 1, double, "")
 
 /**
  * Check that a double precision floating point number is finite; i.e. is
@@ -1118,7 +1118,7 @@ do { \
  *
  * @since 0.11.0
  */
-#define ck_assert_double_finite(X) _ck_assert_floating_finite(X, double, "l")
+#define ck_assert_double_finite(X) _ck_assert_floating_finite(X, double, "")
 
 /**
  * Check that a double precision floating point number is infinite,
@@ -1132,7 +1132,7 @@ do { \
  *
  * @since 0.11.0
  */
-#define ck_assert_double_infinite(X) _ck_assert_floating_infinite(X, double, "l")
+#define ck_assert_double_infinite(X) _ck_assert_floating_infinite(X, double, "")
 
 /**
  * Check that a double precision floating point number
@@ -1146,7 +1146,7 @@ do { \
  *
  * @since 0.11.0
  */
-#define ck_assert_double_nan(X) _ck_assert_floating_nan(X, double, "l")
+#define ck_assert_double_nan(X) _ck_assert_floating_nan(X, double, "")
 
 /**
  * Check that a double precision floating point number is
@@ -1160,7 +1160,7 @@ do { \
  *
  * @since 0.11.0
  */
-#define ck_assert_double_nonnan(X) _ck_assert_floating_nonnan(X, double, "l")
+#define ck_assert_double_nonnan(X) _ck_assert_floating_nonnan(X, double, "")
 
 /** 
  * Check two double precision floating point numbers to determine if X == Y

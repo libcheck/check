@@ -248,9 +248,11 @@ static master_test_t master_tests[] = {
   { "Signal Tests", "test_segv", CK_ERROR,   signal_11_8_str },
   { "Signal Tests", "test_non_signal_8", CK_FAILURE, "Early exit with return value 0" },
   { "Signal Tests", "test_fail_unless", CK_FAILURE, "Early exit with return value 1" },
+#if !defined(__CYGWIN__)
   { "Signal Tests", "test_fpe", CK_ERROR,   signal_8_str },
   { "Signal Tests", "test_mark_point", CK_ERROR,   signal_8_str },
-#endif
+#endif /* !defined(__CYGWIN__) */
+#endif /* HAVE_FORK */
 
 #if TIMEOUT_TESTS_ENABLED && defined(HAVE_FORK) && HAVE_FORK==1
 #if HAVE_DECL_SETENV

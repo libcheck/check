@@ -124,7 +124,7 @@ $ git fetch github
 $ git checkout github/gh-pages -b gh-pages
 Branch gh-pages set up to track remote branch gh-pages from github.
 Switched to a new branch 'gh-pages'
-$ git rebase github/master
+$ git merge github/master
 First, rewinding head to replay your work on top of it...
 Fast-forwarded gh-pages to github/master.
 $ autoreconf -i
