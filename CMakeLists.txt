@@ -89,6 +89,7 @@ ck_check_include_file("sys/types.h" HAVE_SYS_TYPES_H)
 ck_check_include_file("errno.h" HAVE_ERRNO_H)
 ck_check_include_file("inttypes.h" HAVE_INTTYPES_H)
 ck_check_include_file("limits.h" HAVE_LIMITS_H)
+ck_check_include_file("regex.h" HAVE_REGEX_H)
 ck_check_include_file("signal.h" HAVE_SIGNAL_H)
 ck_check_include_file("stdarg.h" HAVE_STDARG_H)
 ck_check_include_file("stdint.h" HAVE_STDINT_H)
@@ -114,6 +115,10 @@ check_function_exists(strdup HAVE_DECL_STRDUP)
 check_function_exists(strsignal HAVE_DECL_STRSIGNAL)
 check_function_exists(_getpid HAVE__GETPID)
 check_function_exists(_strdup HAVE__STRDUP)
+if (HAVE_REGEX_H)
+  check_function_exists(regcomp HAVE_REGCOMP)
+  check_function_exists(regexec HAVE_REGEXEC)
+endif()
 
 # printf related checks
 check_function_exists(snprintf HAVE_SNPRINTF_FUNCTION)
@@ -148,6 +153,13 @@ else(HAVE_MKSTEMP)
     add_definitions(-DHAVE_MKSTEMP=0)
     set(HAVE_MKSTEMP 0)
 endif(HAVE_MKSTEMP)
+
+if(HAVE_REGEX_H AND HAVE_REGCOMP AND HAVE_REGEXEC)
+    add_definitions(-DHAVE_REGEX=1)
+    set(HAVE_REGEX 1)
+    add_definitions(-DENABLE_REGEX=1)
+    set(ENABLE_REGEX 1)
+endif()
 
 
 ###############################################################################
@@ -299,7 +311,6 @@ else(HAVE_SUBUNIT)
     set(ENABLE_SUBUNIT 0)
     add_definitions(-DENABLE_SUBUNIT=0)
 endif (HAVE_SUBUNIT)
-
 
 ###############################################################################
 # Generate "config.h" from "cmake/config.h.cmake"

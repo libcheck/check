@@ -115,7 +115,7 @@ Contributors:
     Jan Pokorny
         (corner case segfault fix)
     Dotsenko Andrey Nikolaevich
-        (floating point comparison macros ck_assert_floating_*)
+        (floating point comparison macros)
 
 Anybody who has contributed code to Check or Check's build system is
 considered an author.  Submit a pull request of this file or send

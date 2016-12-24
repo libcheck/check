@@ -246,6 +246,24 @@ AC_DEFINE_UNQUOTED(ENABLE_SUBUNIT, $ENABLE_SUBUNIT, [Subunit protocol result out
 
 AM_CONDITIONAL(SUBUNIT, test x"$enable_subunit" != "xfalse")
 
+# Check for POSIX regular expressions support.
+AC_CHECK_HEADERS([regex.h], HAVE_REGEX_H=1, HAVE_REGEX_H=0)
+
+if test "x$HAVE_REGEX_H" = "x1"; then
+    AC_CHECK_FUNCS([regcomp regexec], HAVE_REGEX=1, HAVE_REGEX=0)
+else
+    HAVE_REGEX=0
+fi
+AC_SUBST(HAVE_REGEX)
+AC_DEFINE_UNQUOTED(HAVE_REGEX, $HAVE_REGEX, "Regular expressions are supported")
+
+if test "x$HAVE_REGEX" = "x1"; then
+    ENABLE_REGEX="1"
+else
+    ENABLE_REGEX="0"
+fi
+AC_SUBST(ENABLE_REGEX)
+AC_DEFINE_UNQUOTED(ENABLE_REGEX, $ENABLE_REGEX, "Regular expressions are supported and enabled")
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -401,5 +419,12 @@ else
     result="no"
 fi
 echo "timeout unit tests ................... $result"
+
+if test "x0" = x"$ENABLE_REGEX"; then
+    result="no"
+else
+    result="yes"
+fi
+echo "POSIX regular expressions ............ $result"
 
 echo "=========================================="
