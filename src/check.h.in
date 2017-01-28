@@ -683,7 +683,7 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
   TP _ck_x = (X); \
   TP _ck_y = (Y); \
   ck_assert_msg(_ck_x OP _ck_y, \
-  "Assertion '%s' failed: %s == %.*"TM"g, %s == %.*"TM"g", \
+  "Assertion '%s' failed: %s == %.*" TM "g, %s == %.*" TM "g", \
   #X" "#OP" "#Y, \
   #X, (int)CK_FLOATING_DIG, _ck_x, \
   #Y, (int)CK_FLOATING_DIG, _ck_y); \
@@ -695,7 +695,7 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
 do { \
   TP _ck_x = (X); \
   ck_assert_msg(isfinite(_ck_x), \
-    "Assertion '%s' failed: %s == %.*"TM"g", \
+    "Assertion '%s' failed: %s == %.*" TM "g", \
     #X" is finite", \
     #X, (int)CK_FLOATING_DIG, _ck_x); \
 } while (0)
@@ -706,7 +706,7 @@ do { \
 do { \
   TP _ck_x = (X); \
   ck_assert_msg(isinf(_ck_x), \
-    "Assertion '%s' failed: %s == %.*"TM"g", \
+    "Assertion '%s' failed: %s == %.*" TM "g", \
     #X" is infinite", \
     #X, (int)CK_FLOATING_DIG, _ck_x); \
 } while (0)
@@ -717,7 +717,7 @@ do { \
 do { \
   TP _ck_x = (X); \
   ck_assert_msg(isnan(_ck_x), \
-    "Assertion '%s' failed: %s == %.*"TM"g", \
+    "Assertion '%s' failed: %s == %.*" TM "g", \
     #X" is NaN", \
     #X, (int)CK_FLOATING_DIG, _ck_x); \
 } while (0)
@@ -728,7 +728,7 @@ do { \
 do { \
   TP _ck_x = (X); \
   ck_assert_msg(!isnan(_ck_x), \
-    "Assertion '%s' failed: %s == %.*"TM"g", \
+    "Assertion '%s' failed: %s == %.*" TM "g", \
     #X" is not NaN", \
     #X, (int)CK_FLOATING_DIG, _ck_x); \
 } while (0)
@@ -741,7 +741,7 @@ do { \
   TP _ck_y = (Y); \
   TP _ck_t = (T); \
   ck_assert_msg((_ck_x - _ck_y) OP _ck_t * (D), \
-  "Assertion '%s' failed: %s == %.*"TM"g, %s == %.*"TM"g, %s == %.*"TM"g", \
+  "Assertion '%s' failed: %s == %.*" TM "g, %s == %.*" TM "g, %s == %.*" TM "g", \
   #X" "#OP"= "#Y", error < "#T, \
   #X, (int)CK_FLOATING_DIG, _ck_x, \
   #Y, (int)CK_FLOATING_DIG, _ck_y, \
@@ -757,7 +757,7 @@ do { \
   TP _ck_y = (Y); \
   TP _ck_t = (T); \
   ck_assert_msg(fabsl(_ck_y - _ck_x) OP _ck_t, \
-    "Assertion '%s' failed: %s == %.*"TM"g, %s == %.*"TM"g, %s == %.*"TM"g", \
+    "Assertion '%s' failed: %s == %.*" TM "g, %s == %.*" TM "g, %s == %.*" TM "g", \
     "fabsl("#Y" - "#X") "#OP" "#T, \
     #X, (int)CK_FLOATING_DIG, _ck_x, \
     #Y, (int)CK_FLOATING_DIG, _ck_y, \
