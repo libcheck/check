@@ -44,6 +44,10 @@ set(MEMORY_LEAKING_TESTS_ENABLED 1)
 set(CMAKE_BUILD_TYPE Debug)
 
 ###############################################################################
+# Option
+option(CHECK_DISABLE_TEST "Disable the compilation of test of check itself" OFF)
+
+###############################################################################
 # Check system and architecture
 if(WIN32)
   if(MSVC60)
@@ -327,32 +331,34 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/check_stdint.h DESTINATION include)
 # Subdirectories
 add_subdirectory(lib)
 add_subdirectory(src)
-add_subdirectory(tests)
 
 ###############################################################################
 # Unit tests
-enable_testing()
-add_test(NAME check_check COMMAND check_check)
-add_test(NAME check_check_export COMMAND check_check_export)
+if (NOT CHECK_DISABLE_TEST)
+  add_subdirectory(tests)
+  enable_testing()
+  add_test(NAME check_check COMMAND check_check)
+  add_test(NAME check_check_export COMMAND check_check_export)
 
-# Only offer to run shell scripts if we may have a working interpreter
-if(UNIX OR MINGW OR MSYS)
-  add_test(NAME test_output.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_output.sh)
-  add_test(NAME test_log_output.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_log_output.sh)
-  add_test(NAME test_xml_output.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_xml_output.sh)
-  add_test(NAME test_tap_output.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_tap_output.sh)
-  add_test(NAME test_check_nofork.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork.sh)
-  add_test(NAME test_check_nofork_teardown.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork_teardown.sh)
-endif(UNIX OR MINGW OR MSYS)
+  # Only offer to run shell scripts if we may have a working interpreter
+  if(UNIX OR MINGW OR MSYS)
+    add_test(NAME test_output.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_output.sh)
+    add_test(NAME test_log_output.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_log_output.sh)
+    add_test(NAME test_xml_output.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_xml_output.sh)
+    add_test(NAME test_tap_output.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_tap_output.sh)
+    add_test(NAME test_check_nofork.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork.sh)
+    add_test(NAME test_check_nofork_teardown.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork_teardown.sh)
+  endif(UNIX OR MINGW OR MSYS)
+endif()
