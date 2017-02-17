@@ -45,7 +45,8 @@ set(CMAKE_BUILD_TYPE Debug)
 
 ###############################################################################
 # Option
-option(CHECK_DISABLE_TEST "Disable the compilation of test of check itself" OFF)
+option(CHECK_ENABLE_TESTS 
+  "Enable the compilation and running of Check's unit tests" ON)
 
 ###############################################################################
 # Check system and architecture
@@ -334,7 +335,7 @@ add_subdirectory(src)
 
 ###############################################################################
 # Unit tests
-if (NOT CHECK_DISABLE_TEST)
+if (CHECK_ENABLE_TEST)
   add_subdirectory(tests)
   enable_testing()
   add_test(NAME check_check COMMAND check_check)
