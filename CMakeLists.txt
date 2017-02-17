@@ -335,7 +335,7 @@ add_subdirectory(src)
 
 ###############################################################################
 # Unit tests
-if (CHECK_ENABLE_TEST)
+if (CHECK_ENABLE_TESTS)
   add_subdirectory(tests)
   enable_testing()
   add_test(NAME check_check COMMAND check_check)
