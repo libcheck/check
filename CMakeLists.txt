@@ -299,6 +299,7 @@ unset(CMAKE_EXTRA_INCLUDE_FILES)
 check_library_exists(m floor "" HAVE_LIBM)
 if (HAVE_LIBM)
     set (LIBM "m")
+    ADD_DEFINITIONS(-DHAVE_LIBM=1)
 endif (HAVE_LIBM)
 
 check_library_exists(rt clock_gettime "" HAVE_LIBRT)
