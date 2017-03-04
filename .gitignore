@@ -9,6 +9,8 @@
 *.save
 *.autosav
 *.autosave
+*.swp
+*.swap
 
 # Generated binaries
 *.o
@@ -22,6 +24,29 @@ bin/
 build/
 release/
 debug/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+CTestTestfile.cmake
+DartConfiguration.tcl
+Testing/
+check_error_linenums_seRbql
+check_test_names__e1JTIe
+cmake_install.cmake
+lib/CMakeFiles/
+lib/cmake_install.cmake
+lib/libcompat.a
+src/CMakeFiles/
+src/cmake_install.cmake
+src/libcheck.a
+tests/CMakeFiles/
+tests/CTestTestfile.cmake
+tests/check_check
+tests/check_check_export
+tests/check_nofork
+tests/check_nofork_teardown
+tests/cmake_install.cmake
 
 build-aux
 Makefile.in
