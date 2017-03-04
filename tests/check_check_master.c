@@ -909,13 +909,13 @@ char* get_next_test_name(FILE * file)
   ssize_t written;
 
   written = getline(&line, &length, file);
-  /**
+  /*
    * getline() will leave a \n at the end of the line,
    * remove it if it is present.
    */
   if(written > 0 && line[written-1] == '\n')
   {
-	  line[written-1] = '\0';
+    line[written-1] = '\0';
   }
 
   return line;
@@ -949,7 +949,7 @@ void record_failure_line_num(int linenum)
      * If the master suite runs and does not find line numbers it will
      * fail as expected.
      */
-     fprintf(stderr, "Line number file not setup, not reporting test failure     line: %s", string);
+     fprintf(stderr, "Line number file not setup, not reporting test failure line: %s", string);
      return;
   }
 
@@ -996,7 +996,7 @@ int get_next_failure_line_num(FILE * file)
     if(value <= 0 || *end != '\0')
     {
       fprintf(stderr, "%s:%d: Failed to convert next failure line number, found '%s'\n",
-        __FILE__, __LINE__, line);
+              __FILE__, __LINE__, line);
       exit(1);
     }
   }
