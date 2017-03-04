@@ -72,4 +72,3 @@ Suite *make_log_internal_suite(void)
   
   return s;
 }
-

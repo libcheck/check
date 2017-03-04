@@ -312,4 +312,3 @@ Suite *make_log_suite(void)
 
   return s;
 }
-
