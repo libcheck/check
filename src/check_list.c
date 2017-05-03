@@ -90,8 +90,7 @@ int check_list_at_end(List * lp)
 {
     if(lp->current == -1)
         return 1;
-    else
-        return (lp->current > lp->last);
+    return (lp->current > lp->last);
 }
 
 void check_list_front(List * lp)

@@ -735,18 +735,14 @@ enum fork_status srunner_fork_status(SRunner * sr)
 #endif
         if(strcmp(env, "no") == 0)
             return CK_NOFORK;
-        else
-        {
 #if defined(HAVE_FORK) && HAVE_FORK==1
-            return CK_FORK;
+        return CK_FORK;
 #else /* HAVE_FORK */
-            /* Ignoring, as Check is not compiled with fork support. */
-            return CK_NOFORK;
+        /* Ignoring, as Check is not compiled with fork support. */
+        return CK_NOFORK;
 #endif /* HAVE_FORK */
-        }
     }
-    else
-        return sr->fstat;
+    return sr->fstat;
 }
 
 void srunner_set_fork_status(SRunner * sr, enum fork_status fstat)
