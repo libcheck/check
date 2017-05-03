@@ -45,7 +45,7 @@ set(CMAKE_BUILD_TYPE Debug)
 
 ###############################################################################
 # Option
-option(CHECK_ENABLE_TESTS 
+option(CHECK_ENABLE_TESTS
   "Enable the compilation and running of Check's unit tests" ON)
 
 ###############################################################################
