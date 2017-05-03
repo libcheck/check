@@ -106,30 +106,25 @@ char *ck_strdup_printf(const char *fmt, ...)
 
 static const char *tr_type_str(TestResult * tr)
 {
-    const char *str = NULL;
-
     if(tr->ctx == CK_CTX_TEST)
     {
         if(tr->rtype == CK_PASS)
-            str = "P";
-        else if(tr->rtype == CK_FAILURE)
-            str = "F";
-        else if(tr->rtype == CK_ERROR)
-            str = "E";
+            return "P";
+        if(tr->rtype == CK_FAILURE)
+            return "F";
+        if(tr->rtype == CK_ERROR)
+            return "E";
+        return NULL;
     }
-    else
-        str = "S";
-
-    return str;
+    return "S";
 }
 
 static int percent_passed(TestStats * t)
 {
     if(t->n_failed == 0 && t->n_errors == 0)
         return 100;
-    else if(t->n_checked == 0)
+    if(t->n_checked == 0)
         return 0;
-    else
-        return (int)((float)(t->n_checked - (t->n_failed + t->n_errors)) /
-                     (float)t->n_checked * 100);
+    return (int)((float)(t->n_checked - (t->n_failed + t->n_errors)) /
+                 (float)t->n_checked * 100);
 }
