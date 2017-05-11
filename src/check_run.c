@@ -160,6 +160,72 @@ static void srunner_run_end(SRunner * sr,
     set_fork_status(CK_FORK);
 }
 
+static int srunner_get_num_run_tests(List *slst, const char *sname,
+		const char *tcname, const char *include_tags, const char *exclude_tags)
+{
+    List *include_tag_lst;
+    List *exclude_tag_lst;
+    TCase *tc;
+    TF *tfun;
+    List *tcl, *tfl;
+
+    int count = 0;
+
+    include_tag_lst = tag_string_to_list(include_tags);
+    exclude_tag_lst = tag_string_to_list(exclude_tags);
+
+    for(check_list_front(slst); !check_list_at_end(slst);
+         check_list_advance(slst))
+    {
+		Suite *s = (Suite *)check_list_val(slst);
+
+		if(((sname != NULL) && (strcmp(sname, s->name) != 0))
+		|| ((tcname != NULL) && (!suite_tcase(s, tcname))))
+			continue;
+
+        tcl = s->tclst;
+		for(check_list_front(tcl); !check_list_at_end(tcl);
+			check_list_advance(tcl))
+		{
+			tc = (TCase *)check_list_val(tcl);
+
+			if (include_tags != NULL)
+			{
+				if (!tcase_matching_tag(tc, include_tag_lst))
+				{
+					continue;
+				}
+			}
+
+			if (exclude_tags != NULL)
+			{
+				if (tcase_matching_tag(tc, exclude_tag_lst))
+				{
+					continue;
+				}
+			}
+
+			tfl = tc->tflst;
+
+			for(check_list_front(tfl); !check_list_at_end(tfl);
+				check_list_advance(tfl))
+			{
+				int i;
+				tfun = (TF *)check_list_val(tfl);
+				for(i = tfun->loop_start; i < tfun->loop_end; i++)
+					count++;
+			}
+		}
+     }
+
+    check_list_apply(include_tag_lst, free);
+    check_list_apply(exclude_tag_lst, free);
+    check_list_free(include_tag_lst);
+    check_list_free(exclude_tag_lst);
+
+    return count;
+}
+
 static void srunner_iterate_suites(SRunner * sr,
                                    const char *sname, const char *tcname,
 				   const char *include_tags,
@@ -807,6 +873,8 @@ void srunner_run_tagged(SRunner * sr, const char *sname, const char *tcname,
     sigterm_new_action.sa_handler = sig_handler;
     sigaction(SIGTERM, &sigterm_new_action, &sigterm_old_action);
 #endif /* HAVE_SIGACTION && HAVE_FORK */
+    sr->num_current_run_tests = srunner_get_num_run_tests(sr->slst, sname,
+               tcname, include_tags, exclude_tags);
     srunner_run_init(sr, print_mode);
     srunner_iterate_suites(sr, sname, tcname, include_tags, exclude_tags,
 			   print_mode);

@@ -127,6 +127,7 @@ struct SRunner
     enum fork_status fstat;     /* controls if suites are forked or not
                                    NOTE: Don't use this value directly,
                                    instead use srunner_fork_status */
+    int num_current_run_tests;
 };
 
 

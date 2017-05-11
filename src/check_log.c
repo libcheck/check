@@ -353,12 +353,11 @@ void tap_lfun(SRunner * sr CK_ATTRIBUTE_UNUSED, FILE * file,
             num_tests_run = 0;
             break;
         case CLENDLOG_SR:
-            /* Output the test plan as the last line */
-            fprintf(file, "1..%d\n", num_tests_run);
-            fflush(file);
             break;
         case CLSTART_SR:
-            break;
+			fprintf(file, "1..%d\n", sr->num_current_run_tests);
+			fflush(file);
+			break;
         case CLSTART_S:
             break;
         case CLEND_SR:
