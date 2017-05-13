@@ -315,11 +315,19 @@ static void setup_pipe(void)
     if(send_file1 == NULL)
     {
         send_file1 = open_tmp_file(&send_file1_name);
+        if(send_file1 == NULL)
+        {
+            eprintf("Unable to create temporary file for communication; may not have permissions to do so", __FILE__, __LINE__ -3);
+        }
         return;
     }
     if(send_file2 == NULL)
     {
         send_file2 = open_tmp_file(&send_file2_name);
+        if(send_file2 == NULL)
+        {
+            eprintf("Unable to create temporary file for communication; may not have permissions to do so", __FILE__, __LINE__ -3);
+        }
         return;
     }
     eprintf("Only one nesting of suite runs supported", __FILE__, __LINE__);
