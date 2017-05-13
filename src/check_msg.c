@@ -77,7 +77,7 @@ static FILE *get_pipe(void)
         return send_file1;
     }
 
-    eprintf("No messaging setup", __FILE__, __LINE__);
+    eprintf("Unable to report test progress or a failure; was an ck_assert or ck_abort function called while not running tests?", __FILE__, __LINE__);
 
     return NULL;
 }
