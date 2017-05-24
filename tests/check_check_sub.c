@@ -226,8 +226,29 @@ START_TEST(test_ck_assert_int_eq)
   record_test_name(tcase_name());
   ck_assert_int_eq(x, y);
   y++;
+  
+  int c[6];
+  c[0] = 0;
+  c[1] = 1;
+  c[2] = 2;
+  c[3] = 3;
+  c[4] = 4;
+  c[5] = 5;
+  
+  ck_assert_int_ge(c[0], -1);
+  ck_assert_int_le(c[0], +1);
+  ck_assert_int_ge(c[1], -1);
+  ck_assert_int_le(c[1], +2);
+  ck_assert_int_ge(c[2], -1);
+  ck_assert_int_le(c[2], +3);
+  ck_assert_int_ge(c[3], -1);
+  ck_assert_int_le(c[3], +4);
+  ck_assert_int_ge(c[4], -1);
+  ck_assert_int_le(c[4], +5);
+  ck_assert_int_ge(c[5], -1);
+	
   record_failure_line_num(__LINE__);
-  ck_assert_int_eq(x, y);
+  ck_assert_int_le(c[5], -1);
 }
 END_TEST
 
