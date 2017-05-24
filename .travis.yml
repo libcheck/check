@@ -25,7 +25,9 @@ os:
 
 compiler:
   - gcc
+  - g++
   - clang
+  - clang++
 
 env:
   - USE_CMAKE=YES
