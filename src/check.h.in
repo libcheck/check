@@ -1391,10 +1391,10 @@ do { \
     (NULLEQ && (_ck_x == NULL) && (_ck_y == NULL)) || \
     (NULLNE && ((_ck_x == NULL) || (_ck_y == NULL)) && (_ck_x != _ck_y)) || \
     ((_ck_x != NULL) && (_ck_y != NULL) && (0 OP strcmp(_ck_y, _ck_x))), \
-    "Assertion '%s' failed: %s == %s%s%s, %s == %s%s%s", \
+    "Assertion '%s' failed:\n\t - : %s%s%s\n\t + : %s%s%s\n", \
     #X" "#OP" "#Y, \
-    #X, _ck_x_q, _ck_x_s, _ck_x_q, \
-    #Y, _ck_y_q, _ck_y_s, _ck_y_q); \
+    _ck_x_q, _ck_x_s, _ck_x_q, \
+    _ck_y_q, _ck_y_s, _ck_y_q); \
 } while (0)
 
 /**
