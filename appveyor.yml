@@ -57,6 +57,7 @@ before_build:
   - if %platform%==cygwin bash -c "autoreconf -i"
   - if %platform%==cygwin bash -c "./configure"
   - if %platform%==mingw32 set PATH=C:\MinGW\bin;%PATH%
+  - if %platform%==mingw32 appveyor-retry nuget install pcre -Verbosity detailed -OutputDirectory C:\pcre
   - if %platform%==mingw32 cmake -G "MinGW Makefiles" -DCMAKE_INSTALL_PREFIX=%P%
   - if %platform%==mingw64msys set PATH=C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%
   - if %platform%==mingw64msys bash -c "autoreconf -i"
