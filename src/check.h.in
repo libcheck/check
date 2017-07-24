@@ -63,6 +63,11 @@ CK_CPPSTART
 
 #include <sys/types.h>
 
+#if _MSC_VER
+/* define pid_t for Windows, as it is needed later */
+#define pid_t int
+#endif /* _MSC_VER */
+
 /*
  * Used to create the linker script for hiding lib-local symbols. Shall
  * be put directly in front of the exported symbol.
