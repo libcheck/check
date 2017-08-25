@@ -140,15 +140,15 @@ void check_list_apply(List * lp, void (*fp) (void *))
 
 }
 
-bool check_list_contains(List * lp, void *val)
+int check_list_contains(List * lp, void *val)
 {
     for(check_list_front(lp); !check_list_at_end(lp); check_list_advance(lp))
     {
         if(check_list_val(lp) == val)
         {
-            return true;
+            return 1;
         }
     }
 
-    return false;
+    return 0;
 }
