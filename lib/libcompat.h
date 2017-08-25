@@ -54,7 +54,7 @@
 #define CK_DLL_EXP
 #endif
 
-#if _MSC_VER
+#if defined(_MSC_VER)
 #include <WinSock2.h>           /* struct timeval, API used in gettimeofday implementation */
 #include <io.h>                 /* read, write */
 #include <process.h>            /* getpid */
