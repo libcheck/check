@@ -473,6 +473,13 @@ START_TEST(test_check_failure_msgs)
   int passed = 0;
   const char *got_msg;
   const char *expected_msg;
+  unsigned char not_equal = 0;
+  char emsg[MAXSTR];
+  const char *msg_type_str;
+  char *emsg_escaped;
+  regex_t re;
+  int reg_err;
+  char err_text[256];
   TestResult *tr;
 
   for (i = 0; i < sub_ntests; i++) {
@@ -489,8 +496,6 @@ START_TEST(test_check_failure_msgs)
     got_msg = tr_msg(tr);
     expected_msg = master_test->msg;
 
-    unsigned char not_equal = 0;
-
     switch (master_test->msg_type) {
     case CK_MSG_TEXT:
       if (strcmp(got_msg, expected_msg) != 0) {
@@ -499,10 +504,8 @@ START_TEST(test_check_failure_msgs)
       break;
 #if ENABLE_REGEX
     case CK_MSG_REGEXP: {
-      regex_t re;
-      int reg_err = regcomp(&re, expected_msg, REG_EXTENDED | REG_NOSUB);
-      if (reg_err) {
-        char err_text[256];
+      reg_err = regcomp(&re, expected_msg, REG_EXTENDED | REG_NOSUB);
+      if (reg_err) {        
         regerror(reg_err, &re, err_text, sizeof(err_text));
         ck_assert_msg(reg_err == 0,
                 "For test %d:%s:%s Expected regexp '%s', but regcomp returned error '%s'",
@@ -519,8 +522,7 @@ START_TEST(test_check_failure_msgs)
 #endif /* ENABLE_REGEX */
     }
     
-    if (not_equal) {
-      const char *msg_type_str;
+    if (not_equal) {      
       switch(master_test->msg_type) {
 #if ENABLE_REGEX
       case CK_MSG_REGEXP:
@@ -531,7 +533,6 @@ START_TEST(test_check_failure_msgs)
         msg_type_str = "";
       }
 
-      char emsg[MAXSTR];
       snprintf(emsg, MAXSTR - 1,"For test %d:%s:%s Expected%s '%s', got '%s'",
                i, master_test->tcname, master_test->test_name, msg_type_str,
                expected_msg, got_msg);
@@ -543,7 +544,7 @@ START_TEST(test_check_failure_msgs)
        * '%' found, else they will result in odd formatting
        * in ck_abort_msg().
        */
-      char *emsg_escaped = escape_percent(emsg, MAXSTR);
+      emsg_escaped = escape_percent(emsg, MAXSTR);
 
       ck_abort_msg(emsg_escaped);
       free(emsg_escaped);
@@ -675,8 +676,13 @@ START_TEST(test_check_all_msgs)
   const char *got_msg = tr_msg(tr_all_array[_i]);
   master_test_t *master_test = &master_tests[_i];
   const char *expected_msg = master_test->msg;
-
+  char emsg[MAXSTR];
+  const char *msg_type_str;
+  char err_text[256];
+  regex_t re;
+  int reg_err
   unsigned char not_equal = 0;
+  char *emsg_escaped;
 
   switch (master_test->msg_type) {
   case CK_MSG_TEXT:
@@ -686,10 +692,8 @@ START_TEST(test_check_all_msgs)
     break;
 #if ENABLE_REGEX
   case CK_MSG_REGEXP: {
-    regex_t re;
-    int reg_err = regcomp(&re, expected_msg, REG_EXTENDED | REG_NOSUB);
-    if (reg_err) {
-      char err_text[256];
+    reg_err = regcomp(&re, expected_msg, REG_EXTENDED | REG_NOSUB);
+    if (reg_err) {      
       regerror(reg_err, &re, err_text, sizeof(err_text));
       ck_assert_msg(reg_err == 0,
                 "For test %d:%s:%s Expected regexp '%s', but regcomp returned error '%s'",
@@ -706,8 +710,7 @@ START_TEST(test_check_all_msgs)
 #endif /* ENABLE_REGEX */
   }
 
-  if (not_equal) {
-    const char *msg_type_str;
+  if (not_equal) {    
     switch(master_test->msg_type) {
 #if ENABLE_REGEX
     case CK_MSG_REGEXP:
@@ -718,7 +721,6 @@ START_TEST(test_check_all_msgs)
       msg_type_str = "";
     }
 
-    char emsg[MAXSTR];
     snprintf(emsg, MAXSTR - 1, "For test %i:%s:%s expected%s '%s', got '%s'",
              _i, master_test->tcname, master_test->test_name, msg_type_str,
              expected_msg, got_msg);
@@ -730,7 +732,7 @@ START_TEST(test_check_all_msgs)
     * '%' found, else they will result in odd formatting
     * in ck_abort_msg().
     */
-    char *emsg_escaped = escape_percent(emsg, MAXSTR);
+    emsg_escaped = escape_percent(emsg, MAXSTR);
 
     ck_abort_msg(emsg_escaped);
     free(emsg_escaped);
