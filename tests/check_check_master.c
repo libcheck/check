@@ -477,10 +477,12 @@ START_TEST(test_check_failure_msgs)
   char emsg[MAXSTR];
   const char *msg_type_str;
   char *emsg_escaped;
-  regex_t re;
   int reg_err;
   char err_text[256];
   TestResult *tr;
+#if ENABLE_REGEX
+  regex_t re;
+#endif
 
   for (i = 0; i < sub_ntests; i++) {
     master_test_t *master_test = &master_tests[i];
@@ -679,10 +681,12 @@ START_TEST(test_check_all_msgs)
   char emsg[MAXSTR];
   const char *msg_type_str;
   char err_text[256];
-  regex_t re;
   int reg_err
   unsigned char not_equal = 0;
   char *emsg_escaped;
+#if ENABLE_REGEX
+  regex_t re;
+#endif
 
   switch (master_test->msg_type) {
   case CK_MSG_TEXT:
