@@ -681,7 +681,7 @@ START_TEST(test_check_all_msgs)
   char emsg[MAXSTR];
   const char *msg_type_str;
   char err_text[256];
-  int reg_err
+  int reg_err;
   unsigned char not_equal = 0;
   char *emsg_escaped;
 #if ENABLE_REGEX
