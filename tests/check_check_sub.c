@@ -27,6 +27,17 @@
 #include <check.h>
 #include "check_check.h"
 
+#if !defined(NAN)
+/* According to POSIX, NAN and INFINITY are defined in math.h, see
+ * http://pubs.opengroup.org/onlinepubs/009695399/basedefs/math.h.html 
+ * Hovever, older Visual Studio compilers do not define these values.
+ */
+double NAN;
+#endif
+#if !defined(INFINITY)
+double INFINITY;
+#endif
+
 START_TEST(test_lno)
 {
   record_test_name(tcase_name());
@@ -2963,6 +2974,13 @@ Suite *make_sub_suite(void)
   TCase *tc_messaging_and_fork;
   TCase *tc_errors;
   TCase *tc_exit_handlers;
+#endif
+
+#if !defined(NAN)
+  NAN /= NAN; /* division of 0 by 0 */
+#endif
+#if !defined(INFINITY)
+  INFINITY = 1.0 / INFINITY; /* division of 1 by 0 */
 #endif
 
   s = suite_create("Check Servant");
