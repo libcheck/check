@@ -1000,7 +1000,7 @@ However, some of the functions listed below can generate very large messages
 (up to 4GB allocations were seen in the wild).
 To prevent this, a limit is placed on the assertion message size.
 This limit is 4K bytes by default.
-It can be modified by setting the @code(CK_MAX_MSG_SIZE) environment variable,
+It can be modified by setting the @code{CK_MAX_MSG_SIZE} environment variable,
 or, if it is not set, by invoking the @code{check_set_max_msg_size()} function.
 If used, this function must be called, once, before the first assertion.
 
