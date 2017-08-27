@@ -28,7 +28,15 @@ noinst_PROGRAMS =		\
 	check_mem_leaks		\
 	ex_output
 
-EXTRA_DIST = test_output.sh test_check_nofork.sh test_check_nofork_teardown.sh test_log_output.sh test_vars.in test_xml_output.sh test_tap_output.sh test_mem_leaks.sh test_output_strings
+EXTRA_DIST = \
+	test_check_nofork.sh test_check_nofork_teardown.sh \
+	test_log_output.sh \
+	test_vars.in \
+	test_mem_leaks.sh \
+	test_output.sh \
+	test_output_strings \
+	test_tap_output.sh \
+	test_xml_output.sh
 
 if NO_TIMEOUT_TESTS
 check_check_CFLAGS = -DTIMEOUT_TESTS_ENABLED=0

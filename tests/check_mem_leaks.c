@@ -87,4 +87,3 @@ int main ()
     srunner_free(sr);
     return (n == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
-

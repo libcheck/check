@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Description>
+  <!--
+      Copying and distribution of this file, with or without modification,
+      are permitted in any medium without royalty provided this notice is
+      preserved.  This file is offered as-is, without any warranty.
+      Names of contributors must not be used to endorse or promote products
+      derived from this file without specific prior written permission.
+  -->
+  
+  <!-- Text -->
+  <LineLength>169</LineLength> <!-- max -->
+  <EmptyLines>2</EmptyLines> <!-- max -->
+  <EndOfFileNewLine>true</EndOfFileNewLine>
+  
+  <!-- C/C++ -->
+  <VariablePerLine>3</VariablePerLine> <!-- max -->
+  <StatementPerLine>1</StatementPerLine> <!-- max -->
+  <Functions>
+    <regex>[a-z_]</regex>
+    <length>439</length>
+  </Functions> <!-- length = number of lines -->
+  <Comments>
+   <begin>/*</begin>
+   <middle> * </middle>
+   <end> */</end>
+   <checkMissingComment>false</checkMissingComment>
+  </Comments>
+</Description>
