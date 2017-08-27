@@ -23,7 +23,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-
 #include "check.h"
 #include "check_error.h"
 #include "check_list.h"
@@ -39,6 +38,9 @@
 
 /* Maximum size for one message in the message stream. */
 static int ck_max_msg_size = 0;
+#ifndef DEFAULT_MAX_MSG_SIZE
+#define DEFAULT_MAX_MSG_SIZE 4096
+#endif
 /* This is used to implement a sliding window on the receiving
  * side. When sending messages, we assure that no single message
  * is bigger than this.
@@ -49,22 +51,22 @@ static int ck_max_msg_size = 0;
  */
 
 void check_set_max_msg_size(int max_msg_size) {
-    ck_max_msg_size = max_msg_size;
-}
-
-static int get_max_msg_size(void) {
     if (ck_max_msg_size <= 0) {
         char *env = getenv("CK_MAX_MSG_SIZE");
         if (env)
             ck_max_msg_size = atoi(env);
-
         if (ck_max_msg_size <= 0)
-            ck_max_msg_size = 4096;
+            ck_max_msg_size = max_msg_size;
+        if (ck_max_msg_size <= 0)
+            ck_max_msg_size = DEFAULT_MAX_MSG_SIZE;
     }
-    return ck_max_msg_size;
 }
 
-
+static int get_max_msg_size(void) {
+    if (ck_max_msg_size <= 0)
+        check_set_max_msg_size(0);
+    return ck_max_msg_size;
+}
 
 /* typedef an unsigned int that has at least 4 bytes */
 typedef uint32_t ck_uint32;

@@ -2271,12 +2271,11 @@ CK_DLL_EXP void CK_EXPORT check_waitpid_and_exit(pid_t pid) CK_ATTRIBUTE_NORETUR
  * (values of up to 4GB were seen in the wild).
  * The usual size for a message is less than 80 bytes.
  *
- * By default, an assertion message is restricted to 4K bytes.
- * It is possible to override this by setting the CK_MAX_MSG_SIZE environment variable,
- * or by invoking this function.
- * Specifying a non-positive argument resets the value,
- * to the value specified by the environment variable,
- * or to the default 4K bytes if the environment variable is not specified.
+ * If the environment variable CK_MAX_MSG_SIZE is defined to a positive value, it is used.
+ * Otherwise, if a maximal message size is set via this function, it is used.
+ * Otherwise, the maximal message size is one assigned at compile time (4K bytes).
+ *
+ * If used, this function must be called once before any assertion is made.
  *
  * @param max_msg_size the maximal assertion message size.
  *
