@@ -20,6 +20,7 @@
 
 #include "../lib/libcompat.h"
 
+#include <math.h>
 #include <sys/types.h>
 #include <stdlib.h>
 #include <signal.h>
