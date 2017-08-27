@@ -37,6 +37,40 @@ double NAN;
 #if !defined(INFINITY)
 double INFINITY;
 #endif
+#if !defined(isnan)
+int isnan(double d) {
+#ifdef _MSC_VER
+	unsigned __int64 *p = &d, m = 0x7FF0000000000000;
+#else
+	unsigned long long *p = &d, m = 0x7FF0000000000000;
+#endif
+	if ((*p & m) != m) return 0; /* finite */
+	*p &= 0x000FFFFFFFFFFFFF; /* mask exponent and sign */
+	return *p != 0;
+}
+#endif
+#if !defined(isinf)
+int isinf(double d) {
+#ifdef _MSC_VER
+	unsigned __int64 *p = &d, m = 0x7FF0000000000000;
+#else
+	unsigned long long *p = &d, m = 0x7FF0000000000000;
+#endif
+	*p &= 0x000FFFFFFFFFFFFF; /* mask exponent and sign */
+	return *p == 0;
+}
+#endif
+#if !defined(isfinite)
+int isfinite(double d) {
+#ifdef _MSC_VER
+	unsigned __int64 *p = &d, m = 0x7FF0000000000000;
+#else
+	unsigned long long *p = &d, m = 0x7FF0000000000000;
+#endif
+	return (*p & m) != m;
+}
+#endif
+
 
 START_TEST(test_lno)
 {
