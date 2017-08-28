@@ -86,10 +86,6 @@ set(CHECK_NOFORK_TEARDOWN_SOURCES check_nofork_teardown.c)
 add_executable(check_nofork_teardown ${CHECK_NOFORK_TEARDOWN_SOURCES})
 target_link_libraries(check_nofork_teardown check compat)
 
-set(CHECK_ENV_MAX_MSG_SIZE_SOURCES check_env_max_msg_size.c)
-add_executable(check_env_max_msg_size ${CHECK_ENV_MAX_MSG_SIZE_SOURCES})
-target_link_libraries(check_env_max_msg_size check compat)
-
 set(CHECK_SET_MAX_MSG_SIZE_SOURCES check_set_max_msg_size.c)
 add_executable(check_set_max_msg_size ${CHECK_SET_MAX_MSG_SIZE_SOURCES})
 target_link_libraries(check_set_max_msg_size check compat)

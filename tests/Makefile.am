@@ -28,7 +28,6 @@ noinst_PROGRAMS =		\
 	check_nofork		\
 	check_nofork_teardown \
 	check_mem_leaks		\
-	check_env_max_msg_size	\
 	check_set_max_msg_size	\
 	ex_output
 
@@ -78,10 +77,6 @@ check_mem_leaks_SOURCES = 	\
 	check_check_master.c
 check_mem_leaks_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
 check_mem_leaks_CFLAGS = -DTIMEOUT_TESTS_ENABLED=0 -DMEMORY_LEAKING_TESTS_ENABLED=0
-
-check_env_max_msg_size_SOURCES = 	\
-	check_env_max_msg_size.c
-check_env_max_msg_size_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
 
 check_set_max_msg_size_SOURCES = 	\
 	check_set_max_msg_size.c

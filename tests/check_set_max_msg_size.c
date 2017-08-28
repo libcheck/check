@@ -52,16 +52,21 @@ static Suite *make_set_max_msg_size_suite(void)
   return s;
 }
 
-int main (void)
+int main (int argc, char *argv[])
 {
     int n;
     SRunner *sr;
+
+    if (argc != 2) {
+        fprintf(stderr, "usage: %s max-msg-size\n", argv[0]);
+        return EXIT_FAILURE;
+    }
 
     /*
      * Run the test suite. This is intended to trigger the "Message is too long" error.
      * Actual success/failure is determined by examining the output.
      */
-    check_set_max_msg_size(32); // This will have an effect due to no environment variable.
+    check_set_max_msg_size(atoi(argv[1]));
     sr = srunner_create(make_set_max_msg_size_suite());
     srunner_run_all(sr, CK_NORMAL);
     srunner_free(sr);
