@@ -22,7 +22,6 @@ version: 1.0.{build}
 environment:
   matrix:
   - platform: msvc
-  - platform: vs2005_64
   - platform: vs2008_64
   - platform: vs2010_64
   - platform: vs2012_64
@@ -85,6 +84,7 @@ before_build:
   - if %platform%==mingw64msys bash -c "./configure"
 
 #Platforms supported by AppVeyor, as of 2017-08-28
+#see https://www.appveyor.com/docs/build-environment/
 #Generators
 #  Visual Studio 15 2017 [arch] = Generates Visual Studio 2017 project files.
 #                                 Optional [arch] can be "Win64" or "ARM".
@@ -96,50 +96,10 @@ before_build:
 #                                 Optional [arch] can be "Win64" or "ARM".
 #  Visual Studio 10 2010 [arch] = Generates Visual Studio 2010 project files.
 #                                 Optional [arch] can be "Win64" or "IA64".
-#  Visual Studio 9 2008 [arch]  = Generates Visual Studio 2008 project files.
-#                                 Optional [arch] can be "Win64" or "IA64".
-#  Visual Studio 8 2005 [arch]  = Generates Visual Studio 2005 project files.
-#                                 Optional [arch] can be "Win64".
-#  Visual Studio 7 .NET 2003    = Deprecated.  Generates Visual Studio .NET
-#                                 2003 project files.
-#  Borland Makefiles            = Generates Borland makefiles.
+#  Visual Studio 9 2008         = Generates Visual Studio 2008 project files.
 #  NMake Makefiles              = Generates NMake makefiles.
-#  NMake Makefiles JOM          = Generates JOM makefiles.
-#  Green Hills MULTI            = Generates Green Hills MULTI files
-#                                 (experimental, work-in-progress).
-#  MSYS Makefiles               = Generates MSYS makefiles.
 #  MinGW Makefiles              = Generates a make file for use with
 #                                 mingw32-make.
-#  Unix Makefiles               = Generates standard UNIX makefiles.
-#  Ninja                        = Generates build.ninja files.
-#  Watcom WMake                 = Generates Watcom WMake makefiles.
-#  CodeBlocks - MinGW Makefiles = Generates CodeBlocks project files.
-#  CodeBlocks - NMake Makefiles = Generates CodeBlocks project files.
-#  CodeBlocks - NMake Makefiles JOM
-#                               = Generates CodeBlocks project files.
-#  CodeBlocks - Ninja           = Generates CodeBlocks project files.
-#  CodeBlocks - Unix Makefiles  = Generates CodeBlocks project files.
-#  CodeLite - MinGW Makefiles   = Generates CodeLite project files.
-#  CodeLite - NMake Makefiles   = Generates CodeLite project files.
-#  CodeLite - Ninja             = Generates CodeLite project files.
-#  CodeLite - Unix Makefiles    = Generates CodeLite project files.
-#  Sublime Text 2 - MinGW Makefiles
-#                               = Generates Sublime Text 2 project files.
-#  Sublime Text 2 - NMake Makefiles
-#                               = Generates Sublime Text 2 project files.
-#  Sublime Text 2 - Ninja       = Generates Sublime Text 2 project files.
-#  Sublime Text 2 - Unix Makefiles
-#                               = Generates Sublime Text 2 project files.
-#  Kate - MinGW Makefiles       = Generates Kate project files.
-#  Kate - NMake Makefiles       = Generates Kate project files.
-#  Kate - Ninja                 = Generates Kate project files.
-#  Kate - Unix Makefiles        = Generates Kate project files.
-#  Eclipse CDT4 - NMake Makefiles
-#                               = Generates Eclipse CDT 4.0 project files.
-#  Eclipse CDT4 - MinGW Makefiles
-#                               = Generates Eclipse CDT 4.0 project files.
-#  Eclipse CDT4 - Ninja         = Generates Eclipse CDT 4.0 project files.
-#  Eclipse CDT4 - Unix Makefiles= Generates Eclipse CDT 4.0 project files.
 
 
 build_script:
