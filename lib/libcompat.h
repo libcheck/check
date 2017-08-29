@@ -72,6 +72,29 @@
 /* defines exit() */
 #include <stdlib.h>
 
+/* defines NAN, INFINITY, isnan(), isinf(), isfinite() */
+#include <math.h>
+
+/* However, some older Visual Studio Versions do not */
+#if !defined(INFINITY)
+double ZERO = 0.0;
+double INFINITY = 1.0 / ZERO;
+#endif
+#if !defined(NAN)
+double NAN = INFINITY * ZERO;
+#endif
+#if !defined(isnan) || !defined(isinf) || !defined(isfinite)
+#define FP_INFINITE (1)
+#define FP_NAN (2)
+#define FP_ZERO (4)
+#define FP_NORMAL (8)
+#define FP_SUBNORMAL (16)
+#define isnan(x) ((fpclassify((double)(x)) & FP_NAN) == FP_NAN)
+#define isnan(x) ((fpclassify((double)(x)) & FP_INFINITE) == FP_INFINITE)
+#define isfinite(x) ((fpclassify((double)(x)) & (FP_NAN|FP_INFINITE)) == 0)
+#endif
+
+
 /* provides localtime and struct tm */
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
