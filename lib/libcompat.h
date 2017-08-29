@@ -77,11 +77,12 @@
 
 /* However, some older Visual Studio Versions do not */
 #if !defined(INFINITY)
-double ZERO = 0.0;
-double INFINITY = 1.0 / ZERO;
+extern double DOUBLE_ZERO;
+#define INFINITY (1.0/DOUBLE_ZERO)
 #endif
 #if !defined(NAN)
-double NAN = INFINITY * ZERO;
+extern double DOUBLE_ZERO;
+#define NAN (DOUBLE_ZERO/DOUBLE_ZERO)
 #endif
 #if !defined(isnan) || !defined(isinf) || !defined(isfinite)
 #define FP_INFINITE (1)
@@ -90,7 +91,7 @@ double NAN = INFINITY * ZERO;
 #define FP_NORMAL (8)
 #define FP_SUBNORMAL (16)
 #define isnan(x) ((fpclassify((double)(x)) & FP_NAN) == FP_NAN)
-#define isnan(x) ((fpclassify((double)(x)) & FP_INFINITE) == FP_INFINITE)
+#define isinf(x) ((fpclassify((double)(x)) & FP_INFINITE) == FP_INFINITE)
 #define isfinite(x) ((fpclassify((double)(x)) & (FP_NAN|FP_INFINITE)) == 0)
 #endif
 

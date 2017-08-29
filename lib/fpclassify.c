@@ -18,6 +18,8 @@ typedef unsigned __int64 bitfield64;
 typedef unsigned long long bitfield64;
 #endif
 
+double DOUBLE_ZERO = 0.0;
+
 static bitfield64 ms = 0x8000000000000000;
 static bitfield64 me = 0x7FF0000000000000;
 static bitfield64 mf = 0x000FFFFFFFFFFFFF;
