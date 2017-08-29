@@ -19,16 +19,33 @@ version: 1.0.{build}
 #    environment configuration    #
 #---------------------------------#
 
+
 environment:
   matrix:
   - platform: msvc
-  - platform: vs2008_64
+  - platform: vs2008
+    arch: x86
+  - platform: vs2010
+    arch: x86
+  - platform: vs2012
+    arch: x86
+  - platform: vs2013
+    arch: x86
+  - platform: vs2015
+    arch: x86
+  - platform: vs2017
+    arch: x86
   - platform: vs2010_64
+    arch: x64
   - platform: vs2012_64
+    arch: x64
   - platform: vs2013_64
+    arch: x64
   - platform: vs2015_64
+    arch: x64
   - platform: vs2017_64
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    arch: x64
   - platform: vs2012_ARM
   - platform: vs2013_ARM
   - platform: vs2015_ARM
@@ -47,6 +64,10 @@ clone_folder: c:\projects\check
 # scripts that are called at very beginning, before repo cloning
 init:
   - git config --global core.autocrlf input
+  - STRING(SUBSTRING %platform% 1 2 compiler_id)
+  - appveyor AddMessage -Category Information "Compiler ID : '%compiler_id%'"
+  - appveyor AddMessage -Category Information "Architecture: '%arch%'"
+
 
 #---------------------------------#
 #       build configuration       #
@@ -63,8 +84,13 @@ before_build:
   - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
   - if %platform%==msvc call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat"
   - if %platform%==msvc cmake -G "NMake Makefiles" -DCMAKE_INSTALL_PREFIX=%P%
-  - if %platform%==vs2005_64 cmake -G "Visual Studio 8 2005" -DCMAKE_INSTALL_PREFIX=%P%
-  - if %platform%==vs2008_64 cmake -G "Visual Studio 9 2008" -DCMAKE_INSTALL_PREFIX=%P%
+  - if %platform%==vs2005 cmake -G "Visual Studio 8 2005" -DCMAKE_INSTALL_PREFIX=%P%
+  - if %platform%==vs2008 cmake -G "Visual Studio 9 2008" -DCMAKE_INSTALL_PREFIX=%P%
+  - if %platform%==vs2010 cmake -G "Visual Studio 10 2010" -DCMAKE_INSTALL_PREFIX=%P%
+  - if %platform%==vs2012 cmake -G "Visual Studio 11 2012" -DCMAKE_INSTALL_PREFIX=%P%
+  - if %platform%==vs2013 cmake -G "Visual Studio 12 2013" -DCMAKE_INSTALL_PREFIX=%P%
+  - if %platform%==vs2015 cmake -G "Visual Studio 14 2015" -DCMAKE_INSTALL_PREFIX=%P%
+  - if %platform%==vs2017 cmake -G "Visual Studio 15 2017" -DCMAKE_INSTALL_PREFIX=%P%
   - if %platform%==vs2010_64 cmake -G "Visual Studio 10 2010 Win64" -DCMAKE_INSTALL_PREFIX=%P%
   - if %platform%==vs2012_64 cmake -G "Visual Studio 11 2012 Win64" -DCMAKE_INSTALL_PREFIX=%P%
   - if %platform%==vs2013_64 cmake -G "Visual Studio 12 2013 Win64" -DCMAKE_INSTALL_PREFIX=%P%
@@ -105,7 +131,7 @@ before_build:
 build_script:
   # build code and unit tests
   - if %platform%==msvc nmake
-  - if %platform%==vs msbuild "ALL_BUILD.vcxproj"
+  - if %compiler_id%==vs msbuild /p:Platform=%arch% "ALL_BUILD.vcxproj"
   - if %platform%==cygwin bash -c "make"
   - if %platform%==mingw32 mingw32-make
   - if %platform%==mingw64msys bash -c "make"
@@ -114,10 +140,11 @@ test_script:
   # run unit tests
   - echo Running unit tests...
   - if %platform%==msvc nmake test VERBOSE=1 CTEST_OUTPUT_ON_FAILURE=TRUE
-  - if %platform%==vs ctest --extra-verbose -C Release
+  - if %compiler_id%==vs ctest --extra-verbose -C Release
   - if %platform%==cygwin bash -c "make check"
   - if %platform%==mingw32 tests\check_check.exe
   - if %platform%==mingw64msys bash -c "tests/check_check"
 
 on_finish:
   - if %platform%==cygwin bash -c "cat tests/test-suite.log || true"
+
