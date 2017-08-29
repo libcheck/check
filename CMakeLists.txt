@@ -361,9 +361,6 @@ if (CHECK_ENABLE_TESTS)
     add_test(NAME test_check_nofork_teardown.sh
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
       COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork_teardown.sh)
-    add_test(NAME test_env_max_msg_size.sh
-      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_env_max_msg_size.sh)
     add_test(NAME test_set_max_msg_size.sh
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
       COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_set_max_msg_size.sh)

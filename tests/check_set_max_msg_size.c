@@ -19,10 +19,8 @@
  */
 
 /**
- * The purpose of this test is to be used by valgrind to check for
- * memory leaks. Each public API that check exports is used at
- * least once. Tests which use non-public API, or leak intentionally,
- * are not included here.
+ * The purpose of this test is to reduce the maximal assertion message size
+ * in order to trigger the "Message string too long" error.
  */
 
 #include <stdlib.h>

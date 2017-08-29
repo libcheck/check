@@ -8,7 +8,6 @@ TESTS = \
 	test_check_nofork_teardown.sh    \
 	test_xml_output.sh	\
 	test_log_output.sh      \
-	test_env_max_msg_size.sh	\
 	test_set_max_msg_size.sh	\
 	test_tap_output.sh
 
@@ -31,7 +30,7 @@ noinst_PROGRAMS =		\
 	check_set_max_msg_size	\
 	ex_output
 
-EXTRA_DIST = test_output.sh test_check_nofork.sh test_check_nofork_teardown.sh test_log_output.sh test_vars.in test_xml_output.sh test_tap_output.sh test_mem_leaks.sh test_output_strings test_env_max_msg_size.sh test_set_max_msg_size.sh
+EXTRA_DIST = test_output.sh test_check_nofork.sh test_check_nofork_teardown.sh test_log_output.sh test_vars.in test_xml_output.sh test_tap_output.sh test_mem_leaks.sh test_output_strings test_set_max_msg_size.sh
 
 if NO_TIMEOUT_TESTS
 check_check_CFLAGS = -DTIMEOUT_TESTS_ENABLED=0
