@@ -21,6 +21,8 @@ version: 1.0.{build}
 
 
 environment:
+  vsversion: none
+  arch: default
   matrix:
   - platform: msvc
   - platform: vs
@@ -103,6 +105,15 @@ before_build:
   - if %platform%==vs (
       set "makecommand=Visual Studio"
     )
+  - if %platform%==vs (
+      set "vcx=true"
+    )
+  - if %vsversion%==2005 (
+      set "vcx=false"
+    )
+  - if %vsversion%==2008 (
+      set "vcx=false"
+    )
   - if %vsversion%==2005 (
       set "makecommand=%makecommand% 8 %vsversion%"
     )
@@ -162,7 +173,16 @@ before_build:
 build_script:
   # build code and unit tests
   - if %platform%==msvc nmake
-  - if %platform%==vs msbuild /p:Platform=%arch% "ALL_BUILD.vcxproj"
+  - if %platform%==vs (
+      if %vcx%==true (
+        msbuild /p:Platform=%arch% "ALL_BUILD.vcxproj"
+      )
+    )
+  - if %platform%==vs (
+      if %vcx%==false (
+        msbuild "ALL_BUILD.vcproj"
+      )
+    )
   - if %platform%==cygwin bash -c "make"
   - if %platform%==mingw32 mingw32-make
   - if %platform%==mingw64msys bash -c "make"
@@ -178,4 +198,3 @@ test_script:
 
 on_finish:
   - if %platform%==cygwin bash -c "cat tests/test-suite.log || true"
-
