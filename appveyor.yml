@@ -97,6 +97,9 @@ configuration: Release
 # scripts to run before build
 before_build:
   - cd c:\projects\check
+  - echo Directory before starting build...
+  - dir
+  - echo Starting pre-build step...
   # Remove the following from the path, as it will interfere with
   # the MinGW builds
   - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
@@ -106,13 +109,17 @@ before_build:
       set "makecommand=Visual Studio"
     )
   - set "vcx=false"
+  - set "vcs=false"
   - if %platform%==vs (
       set "vcx=true"
     )
   - if %vsversion%==2005 (
-      set "vcx=false"
+      set "vcs=true"
     )
   - if %vsversion%==2008 (
+      set "vcs=true"
+    )
+  - if %vcs%==true (
       set "vcx=false"
     )
   - if %vsversion%==2005 (
@@ -173,18 +180,25 @@ before_build:
 
 build_script:
   # build code and unit tests
+  - echo Directory before running build step...
   - dir
+  - echo Building code...
   - if %platform%==msvc nmake
   - if %platform%==cygwin bash -c "make"
   - if %platform%==mingw32 mingw32-make
   - if %platform%==mingw64msys bash -c "make"
   - if %vcx%==true msbuild /p:Platform=%arch% "ALL_BUILD.vcxproj"
-
-# TODO: msbuild does not work with .vcproj files
-
+  - if %vcs%==true msbuild "check.sln"
 
 test_script:
-  # run unit tests
+  # run unit tests (except for ARM, since we use x86/x64 build images)
+  - if %arch%==ARM (
+      exit 0
+    )
+  - echo Project directory before running test step...
+  - dir
+  - echo tests directory before running test step...
+  - dir tests
   - echo Running unit tests...
   - if %platform%==msvc nmake test VERBOSE=1 CTEST_OUTPUT_ON_FAILURE=TRUE
   - if %platform%==vs ctest --extra-verbose -C Release
