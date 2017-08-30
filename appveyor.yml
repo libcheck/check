@@ -188,23 +188,26 @@ build_script:
   - if %platform%==mingw32 mingw32-make
   - if %platform%==mingw64msys bash -c "make"
   - if %vcx%==true msbuild /p:Platform=%arch% "ALL_BUILD.vcxproj"
-  - if %vcs%==true msbuild "check.sln"
+  - if %vcs%==true msbuild /p:Configuration=Release /p:Platform=%arch% "check.sln"
 
 test_script:
   # run unit tests (except for ARM, since we use x86/x64 build images)
+  - set "testplatform=%platform%"
   - if %arch%==ARM (
-      exit 0
+      set "testplatform=none"
     )
   - echo Project directory before running test step...
   - dir
   - echo tests directory before running test step...
   - dir tests
   - echo Running unit tests...
-  - if %platform%==msvc nmake test VERBOSE=1 CTEST_OUTPUT_ON_FAILURE=TRUE
-  - if %platform%==vs ctest --extra-verbose -C Release
-  - if %platform%==cygwin bash -c "make check"
-  - if %platform%==mingw32 tests\check_check.exe
-  - if %platform%==mingw64msys bash -c "tests/check_check"
+  - if %testplatform%==msvc nmake test VERBOSE=1 CTEST_OUTPUT_ON_FAILURE=TRUE
+  - if %testplatform%==vs ctest --extra-verbose -C Release
+  - if %testplatform%==cygwin bash -c "make check"
+  - if %testplatform%==mingw32 tests\check_check.exe
+  - if %testplatform%==mingw64msys bash -c "tests/check_check"
+  - if %testplatform%==none echo Can not test for %arch% here
 
 on_finish:
   - if %platform%==cygwin bash -c "cat tests/test-suite.log || true"
+
