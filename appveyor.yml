@@ -105,6 +105,7 @@ before_build:
   - if %platform%==vs (
       set "makecommand=Visual Studio"
     )
+  - set "vcx=false"
   - if %platform%==vs (
       set "vcx=true"
     )
@@ -172,20 +173,15 @@ before_build:
 
 build_script:
   # build code and unit tests
+  - dir
   - if %platform%==msvc nmake
-  - if %platform%==vs (
-      if %vcx%==true (
-        msbuild /p:Platform=%arch% "ALL_BUILD.vcxproj"
-      )
-    )
-  - if %platform%==vs (
-      if %vcx%==false (
-        msbuild "ALL_BUILD.vcproj"
-      )
-    )
   - if %platform%==cygwin bash -c "make"
   - if %platform%==mingw32 mingw32-make
   - if %platform%==mingw64msys bash -c "make"
+  - if %vcx%==true msbuild /p:Platform=%arch% "ALL_BUILD.vcxproj"
+
+# TODO: msbuild does not work with .vcproj files
+
 
 test_script:
   # run unit tests

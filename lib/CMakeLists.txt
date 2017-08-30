@@ -21,7 +21,7 @@
 
 set(SOURCES libcompat.c)
 
-set(SOURCES fpclassify.c)
+set(SOURCES ${SOURCES} fpclassify.c)
 
 if (NOT HAVE_LIBRT)
   set(SOURCES ${SOURCES} clock_gettime.c)
