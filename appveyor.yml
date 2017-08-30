@@ -178,10 +178,9 @@ build_script:
   - if %platform%==mingw32 mingw32-make
   - if %platform%==mingw64msys bash -c "make"
   - if %vcx%==true msbuild /p:Platform=%arch% "ALL_BUILD.vcxproj"
-  # Debugging the VS2008 build
-  - if %vcs%==true type check.sln
+  # Build for VS2008 (prior to the vsxproj file format), only 32 bit
   # Options see https://msdn.microsoft.com/en-us/library/ms164311.aspx
-  - if %vcs%==true msbuild /p:Configuration="Release|Win32" /p:Platform=%arch% /nologo /v:d "check.sln"
+  - if %vcs%==true msbuild /p:Configuration=Release /p:Platform=Win32 /nologo /v:d "check.sln"
 
 
 #---------------------------------#
