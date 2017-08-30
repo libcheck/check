@@ -76,15 +76,13 @@
 #include <math.h>
 
 /* However, some older Visual Studio Versions do not */
-#if !defined(INFINITY)
+#if !defined(INFINITY) || !defined(NAN)
 extern double DOUBLE_ZERO;
 #define INFINITY (1.0/DOUBLE_ZERO)
-#endif
-#if !defined(NAN)
-extern double DOUBLE_ZERO;
 #define NAN (DOUBLE_ZERO/DOUBLE_ZERO)
 #endif
 #if !defined(isnan) || !defined(isinf) || !defined(isfinite)
+#define NEED_fpclassify
 #define FP_INFINITE (1)
 #define FP_NAN (2)
 #define FP_ZERO (4)

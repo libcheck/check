@@ -7,7 +7,9 @@
 
 #include "libcompat.h"
 
-#if !defined(isnan) || !defined(isinf) || !defined(isfinite)
+double DOUBLE_ZERO = 0.0;
+
+#if defined(NEED_fpclassify)
 
 #if defined(HAVE_STDINT_H)
 #include <stdint.h>
@@ -17,8 +19,6 @@ typedef unsigned __int64 bitfield64;
 #else
 typedef unsigned long long bitfield64;
 #endif
-
-double DOUBLE_ZERO = 0.0;
 
 static bitfield64 ms = 0x8000000000000000;
 static bitfield64 me = 0x7FF0000000000000;
