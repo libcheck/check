@@ -24,7 +24,7 @@ environment:
   vsversion: none
   arch: default
   matrix:
-  - platform: msvc
+  # Visual Studio builds
   - platform: vs
     vsversion: 2008
     arch: x86
@@ -73,6 +73,8 @@ environment:
     vsversion: 2017
     arch: ARM
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+  # Other compilers than Visual Studio
+  - platform: msvc
   - platform: cygwin
   - platform: mingw32
   - platform: mingw64msys
@@ -179,7 +181,7 @@ build_script:
   # Debugging the VS2008 build
   - if %vcs%==true type check.sln
   # Options see https://msdn.microsoft.com/en-us/library/ms164311.aspx
-  - if %vcs%==true msbuild /p:Configuration=Release /p:Platform=%arch% /nologo /v:d "check.sln"
+  - if %vcs%==true msbuild /p:Configuration="Release|Win32" /p:Platform=%arch% /nologo /v:d "check.sln"
 
 
 #---------------------------------#
