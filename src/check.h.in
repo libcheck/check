@@ -2272,16 +2272,14 @@ CK_DLL_EXP void CK_EXPORT check_waitpid_and_exit(pid_t pid) CK_ATTRIBUTE_NORETUR
  * The usual size for a message is less than 80 bytes.
  *
  * If the environment variable CK_MAX_MSG_SIZE is defined to a positive value, it is used.
- * Otherwise, if a maximal message size is set via this function, it is used.
+ * Otherwise, if a positive maximal message size is set via this function, it is used.
  * Otherwise, the maximal message size is one assigned at compile time (4K bytes).
- *
- * If used, this function must be called once before any assertion is made.
  *
  * @param max_msg_size the maximal assertion message size.
  *
  * @since 0.12.0
  */
-CK_DLL_EXP void CK_EXPORT check_set_max_msg_size(int max_msg_size);
+CK_DLL_EXP void CK_EXPORT check_set_max_msg_size(size_t max_msg_size);
 
 #ifdef __cplusplus
 CK_CPPEND

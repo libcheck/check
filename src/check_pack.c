@@ -38,7 +38,7 @@
 #endif
 
 /* Maximum size for one message in the message stream. */
-static int ck_max_msg_size = 0;
+static size_t ck_max_msg_size = 0;
 #ifndef DEFAULT_MAX_MSG_SIZE
 #define DEFAULT_MAX_MSG_SIZE 4096
 #endif
@@ -51,21 +51,22 @@ static int ck_max_msg_size = 0;
  * Problems were seen in the wild with up to 4 GB reallocations.
  */
 
-void check_set_max_msg_size(int max_msg_size) {
-    if (ck_max_msg_size <= 0) {
-        char *env = getenv("CK_MAX_MSG_SIZE");
-        if (env)
-            ck_max_msg_size = atoi(env);
-        if (ck_max_msg_size <= 0)
-            ck_max_msg_size = max_msg_size;
-        if (ck_max_msg_size <= 0)
-            ck_max_msg_size = DEFAULT_MAX_MSG_SIZE;
-    }
+void check_set_max_msg_size(size_t max_msg_size)
+{
+    ck_max_msg_size = 0;
+    char *env = getenv("CK_MAX_MSG_SIZE");
+    if (env)
+        ck_max_msg_size = (size_t)strtoul(env, NULL, 10); // Cast in case size_t != unsigned long.
+    if (ck_max_msg_size == 0)
+        ck_max_msg_size = max_msg_size;
+    if (ck_max_msg_size == 0)
+        ck_max_msg_size = DEFAULT_MAX_MSG_SIZE;
 }
 
-static int get_max_msg_size(void) {
-    if (ck_max_msg_size <= 0)
-        check_set_max_msg_size(0);
+static size_t get_max_msg_size(void)
+{
+    if (ck_max_msg_size == 0)      // If check_set_max_msg_size was not called,
+        check_set_max_msg_size(0); // initialize from the environment variable (or default).
     return ck_max_msg_size;
 }
 
