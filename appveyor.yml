@@ -16,9 +16,9 @@
 version: 1.0.{build}
 
 #---------------------------------#
-#    environment configuration    #
+#   environment configuration     #
+#   and build matrix              #
 #---------------------------------#
-
 
 environment:
   vsversion: none
@@ -41,9 +41,9 @@ environment:
     vsversion: 2015
     arch: x86
   - platform: vs
-    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
     vsversion: 2017
     arch: x86
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
   - platform: vs
     vsversion: 2010
     arch: x64
@@ -57,9 +57,9 @@ environment:
     vsversion: 2015
     arch: x64
   - platform: vs
-    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
     vsversion: 2017
     arch: x64
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
   - platform: vs
     vsversion: 2012
     arch: ARM
@@ -70,31 +70,34 @@ environment:
     vsversion: 2015
     arch: ARM
   - platform: vs
-    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
     vsversion: 2017
     arch: ARM
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
   - platform: cygwin
   - platform: mingw32
   - platform: mingw64msys
 
-# scripts that are called at very beginning, before repo cloning
-# init:
-
 # clone directory
 clone_folder: c:\projects\check
-
-# scripts that are called at very beginning, before repo cloning
-init:
-  - git config --global core.autocrlf input
-
-#---------------------------------#
-#       build configuration       #
-#---------------------------------#
 
 # build Configuration, i.e. Debug, Release, etc.
 configuration: Release
 
-# scripts to run before build
+
+#---------------------------------#
+#   scripts that are called at    #
+#   the very beginning, before    #
+#   repo cloning                  #
+#---------------------------------#
+
+init:
+  - git config --global core.autocrlf input
+
+
+#---------------------------------#
+#   scripts to run before build   #
+#---------------------------------#
+
 before_build:
   - cd c:\projects\check
   - echo Directory before starting build...
@@ -159,27 +162,12 @@ before_build:
   - if %platform%==mingw64msys bash -c "autoreconf -i"
   - if %platform%==mingw64msys bash -c "./configure"
 
-#Platforms supported by AppVeyor, as of 2017-08-28
-#see https://www.appveyor.com/docs/build-environment/
-#Generators
-#  Visual Studio 15 2017 [arch] = Generates Visual Studio 2017 project files.
-#                                 Optional [arch] can be "Win64" or "ARM".
-#  Visual Studio 14 2015 [arch] = Generates Visual Studio 2015 project files.
-#                                 Optional [arch] can be "Win64" or "ARM".
-#  Visual Studio 12 2013 [arch] = Generates Visual Studio 2013 project files.
-#                                 Optional [arch] can be "Win64" or "ARM".
-#  Visual Studio 11 2012 [arch] = Generates Visual Studio 2012 project files.
-#                                 Optional [arch] can be "Win64" or "ARM".
-#  Visual Studio 10 2010 [arch] = Generates Visual Studio 2010 project files.
-#                                 Optional [arch] can be "Win64" or "IA64".
-#  Visual Studio 9 2008         = Generates Visual Studio 2008 project files.
-#  NMake Makefiles              = Generates NMake makefiles.
-#  MinGW Makefiles              = Generates a make file for use with
-#                                 mingw32-make.
 
+#---------------------------------#
+#   build code and unit tests     #
+#---------------------------------#
 
 build_script:
-  # build code and unit tests
   - echo Directory before running build step...
   - dir
   - echo Building code...
@@ -188,11 +176,20 @@ build_script:
   - if %platform%==mingw32 mingw32-make
   - if %platform%==mingw64msys bash -c "make"
   - if %vcx%==true msbuild /p:Platform=%arch% "ALL_BUILD.vcxproj"
-  - if %vcs%==true msbuild /p:Configuration=Release /p:Platform=%arch% "check.sln"
+  # Debugging the VS2008 build
+  - if %vcs%==true type check.sln
+  # Options see https://msdn.microsoft.com/en-us/library/ms164311.aspx
+  - if %vcs%==true msbuild /p:Configuration=Release /p:Platform=%arch% /nologo /v:d "check.sln"
+
+
+#---------------------------------#
+#   run unit test for all x86     #
+#   and x64 architecture builds   #
+#---------------------------------#
 
 test_script:
-  # run unit tests (except for ARM, since we use x86/x64 build images)
   - set "testplatform=%platform%"
+  # Can not run ARM builds on x86/x64 build images
   - if %arch%==ARM (
       set "testplatform=none"
     )
@@ -208,6 +205,15 @@ test_script:
   - if %testplatform%==mingw64msys bash -c "tests/check_check"
   - if %testplatform%==none echo Can not test for %arch% here
 
+
+#---------------------------------#
+#   build and test completed      #
+#---------------------------------#
+
 on_finish:
+  - echo Project directory after running tests...
+  - dir
+  - echo tests directory after running tests...
+  - dir tests
   - if %platform%==cygwin bash -c "cat tests/test-suite.log || true"
 
