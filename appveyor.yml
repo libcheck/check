@@ -25,9 +25,9 @@ environment:
   arch: default
   matrix:
   # Visual Studio builds
-  - platform: vs
-    vsversion: 2008
-    arch: x86
+#  - platform: vs
+#    vsversion: 2008
+#    arch: x86
   - platform: vs
     vsversion: 2010
     arch: x86
