@@ -53,21 +53,20 @@ static size_t ck_max_msg_size = 0;
 
 void check_set_max_msg_size(size_t max_msg_size)
 {
-    ck_max_msg_size = 0;
-    char *env = getenv("CK_MAX_MSG_SIZE");
-    if (env)
-        ck_max_msg_size = (size_t)strtoul(env, NULL, 10); // Cast in case size_t != unsigned long.
-    if (ck_max_msg_size == 0)
-        ck_max_msg_size = max_msg_size;
-    if (ck_max_msg_size == 0)
-        ck_max_msg_size = DEFAULT_MAX_MSG_SIZE;
+    ck_max_msg_size = max_msg_size;
 }
 
 static size_t get_max_msg_size(void)
 {
-    if (ck_max_msg_size == 0)      // If check_set_max_msg_size was not called,
-        check_set_max_msg_size(0); // initialize from the environment variable (or default).
-    return ck_max_msg_size;
+    size_t value = 0;
+    char *env = getenv("CK_MAX_MSG_SIZE");
+    if (env)
+        value = (size_t)strtoul(env, NULL, 10); // Cast in case size_t != unsigned long.
+    if (value == 0)
+        value = ck_max_msg_size;
+    if (value == 0)
+        value = DEFAULT_MAX_MSG_SIZE;
+    return value;
 }
 
 /* typedef an unsigned int that has at least 4 bytes */
