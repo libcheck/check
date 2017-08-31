@@ -83,6 +83,7 @@ extern double DOUBLE_ZERO;
 #endif
 #if !defined(isnan) || !defined(isinf) || !defined(isfinite)
 #define NEED_fpclassify
+extern int fpclassify(double d);
 #define FP_INFINITE (1)
 #define FP_NAN (2)
 #define FP_ZERO (4)
