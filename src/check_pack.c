@@ -38,16 +38,36 @@
 #endif
 
 /* Maximum size for one message in the message stream. */
-#define CK_MAX_MSG_SIZE 8192
+static size_t ck_max_msg_size = 0;
+#ifndef DEFAULT_MAX_MSG_SIZE
+#define DEFAULT_MAX_MSG_SIZE 4096
+#endif
 /* This is used to implement a sliding window on the receiving
  * side. When sending messages, we assure that no single message
- * is bigger than this (actually we check against CK_MAX_MSG_SIZE/2).
+ * is bigger than this.
  * The usual size for a message is less than 80 bytes.
  * All this is done instead of the previous approach to allocate (actually
  * continuously reallocate) one big chunk for the whole message stream.
  * Problems were seen in the wild with up to 4 GB reallocations.
  */
 
+void check_set_max_msg_size(size_t max_msg_size)
+{
+    ck_max_msg_size = max_msg_size;
+}
+
+static size_t get_max_msg_size(void)
+{
+    size_t value = 0;
+    char *env = getenv("CK_MAX_MSG_SIZE");
+    if (env)
+        value = (size_t)strtoul(env, NULL, 10); // Cast in case size_t != unsigned long.
+    if (value == 0)
+        value = ck_max_msg_size;
+    if (value == 0)
+        value = DEFAULT_MAX_MSG_SIZE;
+    return value;
+}
 
 /* typedef an unsigned int that has at least 4 bytes */
 typedef uint32_t ck_uint32;
@@ -304,7 +324,7 @@ void ppack(FILE * fdes, enum ck_msg_type type, CheckMsg * msg)
 
     n = pack(type, &buf, msg);
     /* Keep it on the safe side to not send too much data. */
-    if(n > (CK_MAX_MSG_SIZE / 2))
+    if(n > get_max_msg_size())
         eprintf("Message string too long", __FILE__, __LINE__ - 2);
 
     pthread_cleanup_push(ppack_cleanup, &ck_mutex_lock);
@@ -455,9 +475,9 @@ RcvMsg *punpack(FILE * fdes)
     rmsg = rcvmsg_create();
 
     /* Allcate a buffer */
-    buf = (char *)emalloc(CK_MAX_MSG_SIZE);
+    buf = (char *)emalloc(get_max_msg_size() * 2);
     /* Fill the buffer from the file */
-    nread = read_buf(fdes, CK_MAX_MSG_SIZE, buf);
+    nread = read_buf(fdes, get_max_msg_size() * 2, buf);
     nparse = nread;
     /* While not all parsed */
     while(nparse > 0)
