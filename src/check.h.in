@@ -63,7 +63,7 @@ CK_CPPSTART
 
 #include <sys/types.h>
 
-#if _MSC_VER
+#if defined(_MSC_VER)
 /* define pid_t for Windows, as it is needed later */
 #define pid_t int
 #endif /* _MSC_VER */

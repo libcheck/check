@@ -170,15 +170,15 @@ START_TEST(test_contains)
 
     char otherData[] = "other";
     char goalData[] = "goal";
+    int index;
 
-    ck_assert_msg (check_list_contains(lp, goalData) == false,
+    ck_assert_msg (check_list_contains(lp, goalData) == 0,
                        "The goal data should not be in the list yet");
 
-    int index;
     for(index = 0; index < 10; index++)
     {
         check_list_add_end (lp, otherData);
-        ck_assert_msg (check_list_contains(lp, goalData) == false,
+        ck_assert_msg (check_list_contains(lp, goalData) == 0,
                    "The goal data should not be in the list yet");
     }
 

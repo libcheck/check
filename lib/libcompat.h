@@ -54,7 +54,7 @@
 #define CK_DLL_EXP
 #endif
 
-#if _MSC_VER
+#if defined(_MSC_VER)
 #include <WinSock2.h>           /* struct timeval, API used in gettimeofday implementation */
 #include <io.h>                 /* read, write */
 #include <process.h>            /* getpid */
@@ -71,6 +71,29 @@
 
 /* defines exit() */
 #include <stdlib.h>
+
+/* defines NAN, INFINITY, isnan(), isinf(), isfinite() */
+#include <math.h>
+
+/* However, some older Visual Studio Versions do not */
+#if !defined(INFINITY) || !defined(NAN)
+extern double DOUBLE_ZERO;
+#define INFINITY (1.0/DOUBLE_ZERO)
+#define NAN (DOUBLE_ZERO/DOUBLE_ZERO)
+#endif
+#if !defined(isnan) || !defined(isinf) || !defined(isfinite)
+#define NEED_fpclassify
+extern int fpclassify(double d);
+#define FP_INFINITE (1)
+#define FP_NAN (2)
+#define FP_ZERO (4)
+#define FP_NORMAL (8)
+#define FP_SUBNORMAL (16)
+#define isnan(x) ((fpclassify((double)(x)) & FP_NAN) == FP_NAN)
+#define isinf(x) ((fpclassify((double)(x)) & FP_INFINITE) == FP_INFINITE)
+#define isfinite(x) ((fpclassify((double)(x)) & (FP_NAN|FP_INFINITE)) == 0)
+#endif
+
 
 /* provides localtime and struct tm */
 #ifdef HAVE_SYS_TIME_H
