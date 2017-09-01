@@ -21,8 +21,6 @@
 #ifndef CHECK_LIST_H
 #define CHECK_LIST_H
 
-#include <stdbool.h>
-
 typedef struct List List;
 
 /* Create an empty list */
@@ -55,7 +53,7 @@ void check_list_free(List * lp);
 void check_list_apply(List * lp, void (*fp) (void *));
 
 /* Return true if the list contains the value, false otherwise */
-bool check_list_contains(List * lp, void *val);
+int check_list_contains(List * lp, void *val);
 
 
 #endif /* CHECK_LIST_H */
