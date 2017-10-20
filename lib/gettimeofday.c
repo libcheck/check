@@ -29,7 +29,7 @@
 
 int gettimeofday(struct timeval *tv, void *tz)
 {
-#if _MSC_VER
+#if defined(_MSC_VER)
     union
     {
         __int64 ns100;          /*time since 1 Jan 1601 in 100ns units */

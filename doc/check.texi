@@ -993,6 +993,17 @@ repetitive code that is hard to read.  For your convenience Check
 provides a set of functions (actually macros) for testing often used
 conditions.
 
+@findex check_set_max_msg_size
+@vindex CK_MAX_MSG_SIZE
+The typical size of an assertion message is less than 80 bytes.
+However, some of the functions listed below can generate very large messages
+(up to 4GB allocations were seen in the wild).
+To prevent this, a limit is placed on the assertion message size.
+This limit is 4K bytes by default.
+It can be modified by setting the @code{CK_MAX_MSG_SIZE} environment variable,
+or, if it is not set, by invoking the @code{check_set_max_msg_size()} function.
+If used, this function must be called, once, before the first assertion.
+
 @ftable @code
 @item ck_abort
 Unconditionally fails test with default message.
@@ -2273,6 +2284,8 @@ CK_LOG_FILE_NAME: Filename to write logs to.  See section @ref{Test Logging}.
 CK_XML_LOG_FILE_NAME: Filename to write XML log to. See section @ref{XML Logging}.
 
 CK_TAP_LOG_FILE_NAME: Filename to write TAP (Test Anything Protocol) output to.  See section @ref{TAP Logging}.
+
+CK_MAX_MSG_SIZE: Maximal assertion message size.
 
 
 @node Copying This Manual, Index, Environment Variable Reference, Top

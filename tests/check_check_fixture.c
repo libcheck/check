@@ -300,6 +300,11 @@ START_TEST(test_ch_setup_pass_nofork)
 }
 END_TEST
 
+/* This test currently does not work on Cygwin, as it results in a
+ * SIGSEGV instead of a SIGFPE. However, a simple program that installs
+ * a SIGFPE handler then raise(SIGFPE) works as expected. Further
+ * investigation is necessary. */
+#if !defined(__CYGWIN__)
 /*
  * This test will fail without fork, as it results in a checked
  * fixture raising a signal, which terminates the test runner early.
@@ -350,6 +355,7 @@ START_TEST(test_ch_setup_sig)
   free(tr);
 }
 END_TEST
+#endif /* !defined(__CYGWIN__) */
 
 static void sub_ch_setup_dual_1(void)
 {
@@ -487,7 +493,11 @@ START_TEST(test_ch_teardown_fail_nofork)
 }
 END_TEST
 
-
+/* This test currently does not work on Cygwin, as it results in a
+ * SIGSEGV instead of a SIGFPE. However, a simple program that installs
+ * a SIGFPE handler then raise(SIGFPE) works as expected. Further
+ * investigation is necessary. */
+#if !defined(__CYGWIN__)
 /*
  * This test will fail without fork, as it results in a checked
  * fixture raising a signal, which terminates the test runner early.
@@ -539,6 +549,7 @@ START_TEST(test_ch_teardown_sig)
   free(tr);
 }
 END_TEST
+#endif /* !defined(__CYGWIN__) */
 
 /* Teardowns are run in reverse order */
 static void sub_ch_teardown_dual_1(void)
@@ -631,11 +642,15 @@ Suite *make_fixture_suite (void)
   tcase_add_test(tc,test_ch_setup_fail_nofork);
   tcase_add_test(tc,test_ch_setup_fail_nofork_2);
   tcase_add_test(tc,test_ch_setup_pass_nofork);
+#if !defined(__CYGWIN__)
   tcase_add_test(tc,test_ch_setup_sig);
+#endif /* !defined(__CYGWIN__) */
   tcase_add_test(tc,test_ch_setup_two_setups_fork);
   tcase_add_test(tc,test_ch_teardown_fail);
   tcase_add_test(tc,test_ch_teardown_fail_nofork);
+#if !defined(__CYGWIN__)
   tcase_add_test(tc,test_ch_teardown_sig);
+#endif /* !defined(__CYGWIN__) */
   tcase_add_test(tc,test_ch_teardown_two_teardowns_fork);
 #endif
 

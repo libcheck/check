@@ -349,7 +349,7 @@ void tcase_fn_start(const char *fname, const char *file,
     current_test_name = fname;
 }
 
-const char* tcase_name()
+const char* tcase_name(void)
 {
 	return current_test_name;
 }

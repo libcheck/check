@@ -21,6 +21,8 @@
 
 set(SOURCES libcompat.c)
 
+set(SOURCES ${SOURCES} fpclassify.c)
+
 if (NOT HAVE_LIBRT)
   set(SOURCES ${SOURCES} clock_gettime.c)
   set(SOURCES ${SOURCES} timer_create.c)
@@ -70,4 +72,4 @@ install(TARGETS compat
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib) 
 
-install(FILES ${CMAKE_BINARY_DIR}/lib/libcompat.h DESTINATION include)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/libcompat.h DESTINATION include)

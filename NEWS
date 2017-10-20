@@ -1,3 +1,32 @@
+Fri Oct 20, 2017: Released Check 0.12.0
+  2017-10-20 10:00:00 +0000
+  based on hash c472c743d7c9f01ae9ea6a0e8e08132251b62abd
+
+* Fix out-of-tree builds with CMake.
+  Issue #86
+
+* Fix issue found with Clang regarding invalid suffix on a literal
+  Issue #110
+  
+* Check now responds to a few errors in a more clear way when it cannot run tests.
+  PR #122, #123
+
+* Fix missing pid_t definition in check.h on Windows
+  Issue #78
+
+* The maximum message size of check assertions is now configurable.
+  Issue #127
+
+* Check support added for Visual Studios 2010, 2012, 2013, 2015, and 2017 both for x86/64 and ARM.
+  PR #129, Issue #125
+
+* Changed license of example CMake files to BSD (was previously LGPL).
+  Issue #131
+
+* Fix issue with floating point macros on MinGW
+  Issue #101
+
+
 Sat Dec 17, 2016: Released Check 0.11.0
   2016-12-17 15:00:00 +0000
   based on hash 7c9cfb4b13124b93a63e60b3c681c2bf4f2723ce

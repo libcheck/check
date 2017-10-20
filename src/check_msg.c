@@ -77,7 +77,7 @@ static FILE *get_pipe(void)
         return send_file1;
     }
 
-    eprintf("No messaging setup", __FILE__, __LINE__);
+    eprintf("Unable to report test progress or a failure; was an ck_assert or ck_abort function called while not running tests?", __FILE__, __LINE__);
 
     return NULL;
 }
@@ -243,6 +243,13 @@ FILE *open_tmp_file(char **name)
     file = tmpfile();
     if(file == NULL)
     {
+        /*
+         * The heuristic for selecting a temporary folder is as follows:
+         * 1) If the TEMP environment variable is defined, use that directory.
+         * 2) If the P_tmpdir macro is defined, use that directory.
+         * 3) If the TMPDIR environment variable is defined, use that directory.
+         * 4) Use the platform defined temporary directory, or the current directory.
+         */
         char *tmp = getenv("TEMP");
         char *tmp_file = tempnam(tmp, "check_");
 
@@ -263,9 +270,27 @@ FILE *open_tmp_file(char **name)
         free(tmp_file);
     }
 #else
+    /*
+     * The heuristic for selecting a temporary folder is as follows:
+     * 1) If the TEMP environment variable is defined, use that directory.
+     * 2) If the P_tmpdir macro is defined, use that directory.
+     * 3) If the TMPDIR environment variable is defined, use that directory.
+     * 4) Use the current directory
+     */
+
     int fd = -1;
     const char *tmp_dir = getenv ("TEMP");
-    if (!tmp_dir)
+#ifdef P_tmpdir
+    if (tmp_dir == NULL)
+    {
+        tmp_dir = P_tmpdir;
+    }
+#endif /*P_tmpdir*/
+    if (tmp_dir == NULL)
+    {
+        tmp_dir = getenv ("TMPDIR");
+    }
+    if (tmp_dir == NULL)
     {
         tmp_dir = ".";
     }
@@ -290,11 +315,19 @@ static void setup_pipe(void)
     if(send_file1 == NULL)
     {
         send_file1 = open_tmp_file(&send_file1_name);
+        if(send_file1 == NULL)
+        {
+            eprintf("Unable to create temporary file for communication; may not have permissions to do so", __FILE__, __LINE__ -3);
+        }
         return;
     }
     if(send_file2 == NULL)
     {
         send_file2 = open_tmp_file(&send_file2_name);
+        if(send_file2 == NULL)
+        {
+            eprintf("Unable to create temporary file for communication; may not have permissions to do so", __FILE__, __LINE__ -3);
+        }
         return;
     }
     eprintf("Only one nesting of suite runs supported", __FILE__, __LINE__);

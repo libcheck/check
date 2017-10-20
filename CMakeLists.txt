@@ -44,6 +44,11 @@ set(MEMORY_LEAKING_TESTS_ENABLED 1)
 set(CMAKE_BUILD_TYPE Debug)
 
 ###############################################################################
+# Option
+option(CHECK_ENABLE_TESTS
+  "Enable the compilation and running of Check's unit tests" ON)
+
+###############################################################################
 # Check system and architecture
 if(WIN32)
   if(MSVC60)
@@ -89,6 +94,7 @@ ck_check_include_file("sys/types.h" HAVE_SYS_TYPES_H)
 ck_check_include_file("errno.h" HAVE_ERRNO_H)
 ck_check_include_file("inttypes.h" HAVE_INTTYPES_H)
 ck_check_include_file("limits.h" HAVE_LIMITS_H)
+ck_check_include_file("regex.h" HAVE_REGEX_H)
 ck_check_include_file("signal.h" HAVE_SIGNAL_H)
 ck_check_include_file("stdarg.h" HAVE_STDARG_H)
 ck_check_include_file("stdint.h" HAVE_STDINT_H)
@@ -114,6 +120,10 @@ check_function_exists(strdup HAVE_DECL_STRDUP)
 check_function_exists(strsignal HAVE_DECL_STRSIGNAL)
 check_function_exists(_getpid HAVE__GETPID)
 check_function_exists(_strdup HAVE__STRDUP)
+if (HAVE_REGEX_H)
+  check_function_exists(regcomp HAVE_REGCOMP)
+  check_function_exists(regexec HAVE_REGEXEC)
+endif()
 
 # printf related checks
 check_function_exists(snprintf HAVE_SNPRINTF_FUNCTION)
@@ -148,6 +158,13 @@ else(HAVE_MKSTEMP)
     add_definitions(-DHAVE_MKSTEMP=0)
     set(HAVE_MKSTEMP 0)
 endif(HAVE_MKSTEMP)
+
+if(HAVE_REGEX_H AND HAVE_REGCOMP AND HAVE_REGEXEC)
+    add_definitions(-DHAVE_REGEX=1)
+    set(HAVE_REGEX 1)
+    add_definitions(-DENABLE_REGEX=1)
+    set(ENABLE_REGEX 1)
+endif()
 
 
 ###############################################################################
@@ -300,7 +317,6 @@ else(HAVE_SUBUNIT)
     add_definitions(-DENABLE_SUBUNIT=0)
 endif (HAVE_SUBUNIT)
 
-
 ###############################################################################
 # Generate "config.h" from "cmake/config.h.cmake"
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in
@@ -316,32 +332,37 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/check_stdint.h DESTINATION include)
 # Subdirectories
 add_subdirectory(lib)
 add_subdirectory(src)
-add_subdirectory(tests)
 
 ###############################################################################
 # Unit tests
-enable_testing()
-add_test(NAME check_check COMMAND check_check)
-add_test(NAME check_check_export COMMAND check_check_export)
+if (CHECK_ENABLE_TESTS)
+  add_subdirectory(tests)
+  enable_testing()
+  add_test(NAME check_check COMMAND check_check)
+  add_test(NAME check_check_export COMMAND check_check_export)
 
-# Only offer to run shell scripts if we may have a working interpreter
-if(UNIX OR MINGW OR MSYS)
-  add_test(NAME test_output.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_output.sh)
-  add_test(NAME test_log_output.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_log_output.sh)
-  add_test(NAME test_xml_output.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_xml_output.sh)
-  add_test(NAME test_tap_output.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_tap_output.sh)
-  add_test(NAME test_check_nofork.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork.sh)
-  add_test(NAME test_check_nofork_teardown.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork_teardown.sh)
-endif(UNIX OR MINGW OR MSYS)
+  # Only offer to run shell scripts if we may have a working interpreter
+  if(UNIX OR MINGW OR MSYS)
+    add_test(NAME test_output.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_output.sh)
+    add_test(NAME test_log_output.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_log_output.sh)
+    add_test(NAME test_xml_output.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_xml_output.sh)
+    add_test(NAME test_tap_output.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_tap_output.sh)
+    add_test(NAME test_check_nofork.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork.sh)
+    add_test(NAME test_check_nofork_teardown.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork_teardown.sh)
+    add_test(NAME test_set_max_msg_size.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_set_max_msg_size.sh)
+  endif(UNIX OR MINGW OR MSYS)
+endif()

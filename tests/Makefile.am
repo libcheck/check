@@ -8,6 +8,7 @@ TESTS = \
 	test_check_nofork_teardown.sh    \
 	test_xml_output.sh	\
 	test_log_output.sh      \
+	test_set_max_msg_size.sh	\
 	test_tap_output.sh
 
 # check_thread_stress is kind of slow.
@@ -26,9 +27,10 @@ noinst_PROGRAMS =		\
 	check_nofork		\
 	check_nofork_teardown \
 	check_mem_leaks		\
+	check_set_max_msg_size	\
 	ex_output
 
-EXTRA_DIST = test_output.sh test_check_nofork.sh test_check_nofork_teardown.sh test_log_output.sh test_vars.in test_xml_output.sh test_tap_output.sh test_mem_leaks.sh test_output_strings
+EXTRA_DIST = test_output.sh test_check_nofork.sh test_check_nofork_teardown.sh test_log_output.sh test_vars.in test_xml_output.sh test_tap_output.sh test_mem_leaks.sh test_output_strings test_set_max_msg_size.sh
 
 if NO_TIMEOUT_TESTS
 check_check_CFLAGS = -DTIMEOUT_TESTS_ENABLED=0
@@ -74,6 +76,10 @@ check_mem_leaks_SOURCES = 	\
 	check_check_master.c
 check_mem_leaks_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
 check_mem_leaks_CFLAGS = -DTIMEOUT_TESTS_ENABLED=0 -DMEMORY_LEAKING_TESTS_ENABLED=0
+
+check_set_max_msg_size_SOURCES = 	\
+	check_set_max_msg_size.c
+check_set_max_msg_size_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
 
 check_stress_SOURCES = check_stress.c
 check_stress_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la
