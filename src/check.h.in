@@ -770,7 +770,11 @@ do { \
 } while (0)
 
 /**
- * Check two single precision floating point numbers to determine if X == Y
+ * Check two single precision floating point numbers to determine if X == Y.
+ *
+ * Note that the usefulness of this assertion is very limited. If you
+ * want to compare two floating point numbers for equality, you probably
+ * want to use ck_assert_float_eq_tol instead.
  *
  * If not X == Y, the test fails.
  *
@@ -783,7 +787,11 @@ do { \
  */
 #define ck_assert_float_eq(X, Y) _ck_assert_floating(X, ==, Y, float, "")
 /**
- * Check two single precision floating point numbers to determine if X != Y
+ * Check two single precision floating point numbers to determine if X != Y.
+ *
+ * Note that the usefulness of this assertion is very limited. If you
+ * want to compare two floating point numbers for equality, you probably
+ * want to use ck_assert_float_ne_tol instead.
  *
  * If not X != Y, the test fails.
  *
@@ -969,7 +977,11 @@ do { \
 #define ck_assert_float_nonnan(X) _ck_assert_floating_nonnan(X, float, "")
 
 /**
- * Check two double precision floating point numbers to determine if X == Y
+ * Check two double precision floating point numbers to determine if X == Y.
+ *
+ * Note that the usefulness of this assertion is very limited. If you
+ * want to compare two floating point numbers for equality, you probably
+ * want to use ck_assert_double_eq_tol instead.
  *
  * If not X == Y, the test fails.
  *
@@ -982,7 +994,11 @@ do { \
  */
 #define ck_assert_double_eq(X, Y) _ck_assert_floating(X, ==, Y, double, "")
 /**
- * Check two double precision floating point numbers to determine if X != Y
+ * Check two double precision floating point numbers to determine if X != Y.
+ *
+ * Note that the usefulness of this assertion is very limited. If you
+ * want to compare two floating point numbers for equality, you probably
+ * want to use ck_assert_double_ne_tol instead.
  *
  * If not X != Y, the test fails.
  *
@@ -1168,7 +1184,11 @@ do { \
 #define ck_assert_double_nonnan(X) _ck_assert_floating_nonnan(X, double, "")
 
 /** 
- * Check two double precision floating point numbers to determine if X == Y
+ * Check two double precision floating point numbers to determine if X == Y.
+ *
+ * Note that the usefulness of this assertion is very limited. If you
+ * want to compare two floating point numbers for equality, you probably
+ * want to use ck_assert_ldouble_eq_tol instead.
  *
  * If not X == Y, the test fails.
  *
@@ -1181,7 +1201,11 @@ do { \
  */
 #define ck_assert_ldouble_eq(X, Y) _ck_assert_floating(X, ==, Y, long double, "L")
 /**
- * Check two double precision floating point numbers to determine if X != Y
+ * Check two double precision floating point numbers to determine if X != Y.
+ *
+ * Note that the usefulness of this assertion is very limited. If you
+ * want to compare two floating point numbers for equality, you probably
+ * want to use ck_assert_ldouble_ne_tol instead.
  *
  * If not X != Y, the test fails.
  *
