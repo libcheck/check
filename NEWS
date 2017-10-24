@@ -1,3 +1,7 @@
+In Development:
+# Mentioning Check 0.12.0 for now, to fix distcheck target until next release
+
+
 Fri Oct 20, 2017: Released Check 0.12.0
   2017-10-20 10:00:00 +0000
   based on hash c472c743d7c9f01ae9ea6a0e8e08132251b62abd
