@@ -1430,7 +1430,7 @@ do { \
  * Check two strings to determine if 0==strcmp(X,Y)
  *
  * If X or Y is NULL the test failes.
- * If (0==strcmp(X,Y)), the test fails.
+ * If not 0==strcmp(X,Y), the test fails.
  *
  * @param X string
  * @param Y string to compare against X
