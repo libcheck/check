@@ -172,10 +172,10 @@ proceed cautiously and stick to the marked trails; with it, you can
 take the most direct path to where you want to go.
 
 Look at the Check homepage for the latest information on Check:
-@uref{http://check.sourceforge.net}.
+@uref{https://libcheck.github.io/check/}.
 
 The Check project page is at:
-@uref{http://sourceforge.net/projects/check/}.
+@uref{https://github.com/libcheck/check}.
 
 @node Unit Testing in C, Tutorial, Introduction, Top
 @chapter Unit Testing in C 
