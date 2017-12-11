@@ -487,6 +487,9 @@ static LDOUBLE mypow10(int);
 extern int errno;
 
 int
+#if defined(__clang__)
+__attribute__((overloadable))
+#endif
 rpl_vsnprintf(char *str, size_t size, const char *format, va_list args)
 {
 	LDOUBLE fvalue;
@@ -1452,6 +1455,9 @@ mypow10(int exponent)
 #if !HAVE_SNPRINTF
 #if HAVE_STDARG_H
 int
+#if defined(__clang__)
+__attribute__((overloadable))
+#endif
 rpl_snprintf(char *str, size_t size, const char *format, ...)
 #else
 int
