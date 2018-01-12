@@ -34,6 +34,7 @@ The versions specified may be higher than those actually needed.
     $ ./configure
     $ make
     $ make check
+    $ make install
 
 in this directory to set everything up.  autoreconf calls all of the
 necessary tools for you, like autoconf, automake, autoheader, etc.  If
