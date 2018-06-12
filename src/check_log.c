@@ -152,7 +152,7 @@ void log_test_start(SRunner * sr, TCase * tc, TF * tfun)
 {
     char buffer[100];
 
-    snprintf(buffer, 99, "%s:%s", tc->name, tfun->name);
+    snprintf(buffer, 99, "%s:%s", tc->name, tfun->ttest->name);
     srunner_send_evt(sr, buffer, CLSTART_T);
 }
 

@@ -36,10 +36,9 @@
 
 typedef struct TF
 {
-    TFun fn;
+    const TTest * ttest;
     int loop_start;
     int loop_end;
-    const char *name;
     int signal;
     signed char allowed_exit_value;
 } TF;
