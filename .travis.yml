@@ -16,7 +16,7 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 
-
+sudo: required
 language: c
 
 os:
@@ -30,11 +30,8 @@ compiler:
 env:
   - USE_CMAKE=YES
   - USE_CMAKE=NO
-
-addons:
-  apt:
-    packages:
-      - texinfo
+  - USE_CMAKE=NO EXTRA_ARGS="--disable-fork --disable-subunit --enable-snprintf-replacement --enable-timer-replacement"
+  - PRE_RELEASE_CHECK=YES
 
 matrix:
   exclude:
@@ -43,13 +40,20 @@ matrix:
   # resolved, skipping these tests.
   - os: osx
     env: USE_CMAKE=YES
+  - os: osx
+    env: PRE_RELEASE_CHECK=YES
+
+  include:
+  # Only use scan-build once, the result should be the same
+  # regardless of OS.
+  - os: linux
+    compiler: clang
+    env: SCAN_BUILD=YES
+
+before_script:
+ - if [ "$(uname)" = "Linux" ]; then sudo apt-get update; sudo apt-get install -y texlive texinfo texi2html doxygen; fi
+ - if [ "$(uname)" = "Darwin" ]; then brew update; brew cask install mactex; brew install texi2html texinfo doxygen; fi
 
 script:
-  - mkdir build
-  - cd build
-  - if [ $USE_CMAKE == 'YES' ] ; then cmake .. ; fi
-  - if [ $USE_CMAKE == 'NO' ] ; then pushd .. ; autoreconf -i ; popd; fi
-  - if [ $USE_CMAKE == 'NO' ] ; then ../configure ; fi
-  - make
-  - if [ $USE_CMAKE == 'YES' ] ; then ctest -V ; fi
-  - if [ $USE_CMAKE == 'NO' ] ; then make check ; fi
+  - chmod +x travis.sh
+  - ./travis.sh
