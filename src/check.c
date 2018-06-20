@@ -247,21 +247,21 @@ void suite_add_tcase(Suite * s, TCase * tc)
     check_list_add_end(s->tclst, tc);
 }
 
-void _tcase_add_test(TCase * tc, TFun fn, const char *name, int _signal,
-                     int allowed_exit_value, int start, int end)
+void _tcase_add_test(TCase * tc, const TTest * ttest,
+                     int _signal, int allowed_exit_value,
+                     int start, int end)
 {
     TF *tf;
 
-    if(tc == NULL || fn == NULL || name == NULL)
+    if(tc == NULL || ttest == NULL)
         return;
     tf = (TF *)emalloc(sizeof(TF));   /* freed in tcase_free */
-    tf->fn = fn;
+    tf->ttest = ttest;
     tf->loop_start = start;
     tf->loop_end = end;
     tf->signal = _signal;       /* 0 means no signal expected */
     tf->allowed_exit_value =
       (WEXITSTATUS_MASK & allowed_exit_value);   /* 0 is default successful exit */
-    tf->name = name;
     check_list_add_end(tc->tflst, tf);
 }
 
