@@ -853,8 +853,10 @@ void setup (void)
   line_num_failures = fopen(line_num_failures_file_name, "w+b");
 #else
   test_names_file_name = strdup("check_test_names__XXXXXX");
+  assert(test_names_file_name != NULL && "strdup() failed");
   test_names_file = fdopen(mkstemp(test_names_file_name), "w+b");
   line_num_failures_file_name = strdup("check_error_linenums_XXXXXX");
+  assert(line_num_failures_file_name != NULL && "strdup() failed");
   line_num_failures = fdopen(mkstemp(line_num_failures_file_name), "w+b");
 #endif
 
