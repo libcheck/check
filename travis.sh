@@ -60,6 +60,20 @@ if [ "${USE_CMAKE}" = 'NO' ] ; then
       echo "Doxygen documentation not generated";
       exit 1;
    fi
+
+   pushd doc/example
+   autoreconf -i || exit 1
+   ./configure || exit 1
+   make || exit 1
+   export LD_LIBRARY_PATH=/usr/local/lib
+   make check
+   test_result=$?
+   cat tests/test-suite.log
+   cat tests/check_money.trs
+   if [ $test_result -ne 0 ]; then
+      exit 1
+   fi
+   popd
 fi
 
 if [ "${PRE_RELEASE_CHECK}" = 'YES' ]; then
