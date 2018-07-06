@@ -32,6 +32,8 @@ env:
   - USE_CMAKE=NO
   - USE_CMAKE=NO EXTRA_ARGS="--disable-fork --disable-subunit --enable-snprintf-replacement --enable-timer-replacement"
   - PRE_RELEASE_CHECK=YES
+  global:
+    - MY_PV=0.12.0
 
 matrix:
   exclude:
@@ -53,6 +55,27 @@ matrix:
 before_script:
  - if [ "$(uname)" = "Linux" ]; then sudo apt-get update; sudo apt-get install -y texlive texinfo texi2html doxygen; fi
  - if [ "$(uname)" = "Darwin" ]; then brew update; brew cask install mactex; brew install texi2html texinfo doxygen; fi
+
+jobs:
+  include:
+    - stage: Test builds
+    - stage: Deploy
+      if: tag =~ ^v.* AND branch = master AND os = linux
+      deploy:
+        provider: releases
+        api_key:
+          secure: <REPLACE_ME_WITH_SECURE_KEY>
+        file:
+          - dist/check-${MY_PV}.x86_64.deb
+          - dist/check-${MY_PV}.x86_64.rpm
+        on:
+          repo: libcheck/check
+          branch: master
+          tags: true
+        skip_cleanup: true
+      script:
+        - cmake -D CMAKE_BUILD_TYPE=Release ./
+        - make package
 
 script:
   - chmod +x travis.sh
