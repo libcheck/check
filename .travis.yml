@@ -28,12 +28,14 @@ compiler:
   - clang
 
 env:
+  global:
+    - MY_PV=0.12.0
+
+env:
   - USE_CMAKE=YES
   - USE_CMAKE=NO
   - USE_CMAKE=NO EXTRA_ARGS="--disable-fork --disable-subunit --enable-snprintf-replacement --enable-timer-replacement"
   - PRE_RELEASE_CHECK=YES
-  global:
-    - MY_PV=0.12.0
 
 matrix:
   exclude:
