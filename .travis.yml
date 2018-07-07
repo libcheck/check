@@ -60,7 +60,6 @@ before_script:
 
 jobs:
   include:
-    - stage: Test builds
     - stage: Deploy
       if: tag =~ ^v.* AND branch = master AND os = linux
       deploy:
