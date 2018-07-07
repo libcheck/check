@@ -64,7 +64,7 @@ jobs:
       deploy:
         provider: releases
         api_key:
-          secure: <REPLACE_ME_WITH_SECURE_KEY>
+          secure: EfzyzHz8962YzufP3J7PpO9xntjCnu1proCyX2hpF4d/D3ewDM1Oj+Datlx8A9umY3glfMvBZSu9pLQXqro1d47Lc406J0ecUCCTzs6yJn6pIT0bWhagr8VhqK/GaunSUrCEUOC7QTJ1iB12KoDCAPOoKvygah4dlQSQprTfDM27cvowc02fycAeINPqkBlizw81DqSNK2BQE2RiCuGiCGu5EK7/eYwLqDt7f/Uv8pMA2p1odmNRFcVZpebKmwEdPGgd7dGcFVZDuK9oVjEsk/RTbR2aj0M+st1200BT+ALKf/iRNA3G1GXXhObT+CP1N/VAxvCUZA6SFanQtOHvdQuY2u7uCjXyom9By86HPtGOzBNTKVlvVFoDavqg4nvuxjgJvAdXVdlKRiPd7CdeTgppmr0ZKtbnzNPbYX7d/a3fcTjkIJDpKcLaGuiNZd+BeNh7IojMfYyE+rsv8ygi7kwHDSmkLOAY+UO+YBgQVL6PaV534rbR+ltI09eYKbvcWrBPZnGT7u+tecw48l2iYencEyAedEOsWVORTLMJ6bVlp/TiSheSXanlmKFH7zT31EmsBGaKRd7UDCpA9FQxjb6MzEoOtgw5NxQZ6o29X4ukAoyzPNYUJ9t7YSmdl3fY5uJpp5VUcqbiu+sOYdEMzem1J60PBfc7ywoa/yV7gw4=
         file:
           - dist/check-${MY_PV}.x86_64.deb
           - dist/check-${MY_PV}.x86_64.rpm
