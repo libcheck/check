@@ -35,12 +35,14 @@ The versions specified may be higher than those actually needed.
     $ make
     $ make check
     $ make install
+    $ sudo ldconfig
 
 in this directory to set everything up.  autoreconf calls all of the
 necessary tools for you, like autoconf, automake, autoheader, etc.  If
 you ever change something during development, run autoreconf again
 (without --install), and it will perform the minimum set of actions
-necessary.
+necessary.  Check is installed to `/usr/local/lib` by default. ldconfig rebuilds
+the linker cache so that newly installed library file is included in the cache.
 
 ## cmake
 
