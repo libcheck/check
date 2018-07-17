@@ -308,6 +308,9 @@ CK_DLL_EXP void CK_EXPORT _tcase_add_test(TCase * tc, const TTest * ttest,
                                           int _signal, int allowed_exit_value,
                                           int start, int end);
 
+CK_DLL_EXP void CK_EXPORT suite_add_unchecked_fixture(Suite * s, SFun setup,
+                                                      SFun teardown);
+
 /**
  * Add unchecked fixture setup/teardown functions to a test case
  *

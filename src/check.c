@@ -280,6 +280,22 @@ static Fixture *fixture_create(SFun fun, int ischecked)
     return f;
 }
 
+void suite_add_unchecked_fixture(Suite * s, SFun setup, SFun teardown)
+{
+    if(setup)
+    {
+        check_list_add_end(s->unch_sflst,
+                           fixture_create(setup, 0));
+    }
+
+    /* Add teardowns at front so they are run in reverse order. */
+    if(teardown)
+    {
+        check_list_add_front(s->unch_tflst,
+                             fixture_create(teardown, 0));
+    }
+}
+
 void tcase_add_unchecked_fixture(TCase * tc, SFun setup, SFun teardown)
 {
     tcase_add_fixture(tc, setup, teardown, 0);
