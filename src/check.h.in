@@ -308,6 +308,19 @@ CK_DLL_EXP void CK_EXPORT _tcase_add_test(TCase * tc, const TTest * ttest,
                                           int _signal, int allowed_exit_value,
                                           int start, int end);
 
+/**
+ * Add unchecked fixture setup/teardown functions to a suite
+ *
+ * TODO: Detailed documentation
+ * TODO: Update `@since`
+ *
+ * @param s suite to add unchecked fixture setup/teardown to
+ * @param setup function to add to be executed before the suite;
+ *               if NULL no setup function is added
+ * @param teardown function to add to be executed after the suite;
+ *               if NULL no teardown function is added
+ * @since 0.12.0
+ */
 CK_DLL_EXP void CK_EXPORT suite_add_unchecked_fixture(Suite * s, SFun setup,
                                                       SFun teardown);
 
