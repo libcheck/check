@@ -68,6 +68,8 @@ Suite *suite_create(const char *name)
     else
         s->name = name;
     s->tclst = check_list_create();
+    s->unch_sflst = check_list_create();
+    s->unch_tflst = check_list_create();
     return s;
 }
 
