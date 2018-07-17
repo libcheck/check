@@ -104,6 +104,8 @@ static void suite_free(Suite * s)
         tcase_free((TCase *)check_list_val(l));
     }
     check_list_free(s->tclst);
+    check_list_apply(s->unch_sflst, free);
+    check_list_apply(s->unch_tflst, free);
     free(s);
 }
 
