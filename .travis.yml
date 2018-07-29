@@ -69,6 +69,7 @@ jobs:
         file:
           - dist/check-${MY_PV}.x86_64.deb
           - dist/check-${MY_PV}.x86_64.rpm
+          - check-${PV}.tar.gz
         on:
           repo: libcheck/check
           branch: master
@@ -77,6 +78,9 @@ jobs:
       script:
         - cmake -D CMAKE_BUILD_TYPE=Release ./
         - make package
+        - autoreconf -i
+        - ./configure
+        - make dist
 
 script:
   - chmod +x travis.sh
