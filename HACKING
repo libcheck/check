@@ -44,7 +44,7 @@ CHECK_MICRO_VERSION=1
 
 env:
   global:
-    - MY_PV=0.12.0
+    - MY_PV=0.10.1
 
 
 4) Update the header in the NEWS file to mention the release:
@@ -56,25 +56,21 @@ Sun Aug 2, 2015: Released Check 0.10.1
 5) Update index.html mentioning the release. Look for the following:
 <!-- Update this section during a release -->
 
-6) Attempt to build the release locally
-
-$ autoreconf -i
-$ ./configure
-$ make distcheck
-
-If this passes, a tarball with the current release number will be in the current
-directory.
-
-7) Commit the changes to configure.ac, NEWS, and index.html to the Check 
+6) Commit the changes to configure.ac, NEWS, and index.html to the Check 
 project's master branch, with the commit message:
 "Update for release"
 
-8) Push the commit to Github
+7) Push the commit to Github
 
-9) If the build passes, tag the commit with the current release number 
+8) If the build passes, tag the commit with the current release number 
 and push the tag to Github.
 
-10) Log On to GitHub and navigate to:
+git tag 0.10.1
+git push --tags
+
+(Tag created is on last commit, if commits since add commit hash after version)
+
+9) Log On to GitHub and navigate to:
 
 https://github.com/libcheck/check/tags
 
@@ -91,7 +87,7 @@ Changes:
 <paste contents of NEWS here for the release>
 =====
 
-11) Use the following template to announce the release via email:
+10) Use the following template to announce the release via email:
 =====
 Subject: check-X.Y.Z released
 Hi,
@@ -107,9 +103,10 @@ Thanks,
 <paste contents of NEWS for the release here>
 =====
 
-12) Update the development header in the NEWS file and commit the result.
+11) Update the development header in the NEWS file and commit the 
+result.
 
-13) Push updated website (see section below)
+12) Push updated website (see section below)
 
 Congratulations, you are done!
 
