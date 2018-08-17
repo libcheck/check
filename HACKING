@@ -15,6 +15,14 @@ are three-fold:
 
   3) it reduces the number of decisions that must be made
 
+Doxygen Reference for Development
+================
+
+You can use `doc/doxygen-devel` target to generate a verbose doxygen reference.
+Resulting documentation will be placed into `doc/doxygen-devel`. This option
+needs graphviz installed to render call graphs. If graphviz is not found they
+won't be rendered.
+
 Release Process
 ===============
 

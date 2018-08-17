@@ -47,6 +47,9 @@ doc/check_html:
 doc/doxygen:
 	$(MAKE) -C doc doxygen
 
+doc/doxygen-devel:
+	$(MAKE) -C doc doxygen-devel
+
 # check we can do a clean build, including docs.
 # perhaps we should check for out of date (svn st -u) and modified files.
 prereleasecheck: doc/check_html doc/doxygen
