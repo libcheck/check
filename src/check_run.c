@@ -60,8 +60,8 @@ static void srunner_run_init(SRunner * sr, enum print_output print_mode);
 static void srunner_run_end(SRunner * sr, enum print_output print_mode);
 static void srunner_iterate_suites(SRunner * sr,
                                    const char *sname, const char *tcname,
-				   const char *include_tags,
-				   const char *exclude_tags,
+                                   const char *include_tags,
+                                   const char *exclude_tags,
                                    enum print_output print_mode);
 static void srunner_iterate_tcase_tfuns(SRunner * sr, TCase * tc);
 static void srunner_add_failure(SRunner * sr, TestResult * tf);
@@ -162,8 +162,8 @@ static void srunner_run_end(SRunner * sr,
 
 static void srunner_iterate_suites(SRunner * sr,
                                    const char *sname, const char *tcname,
-				   const char *include_tags,
-				   const char *exclude_tags,
+                                   const char *include_tags,
+                                   const char *exclude_tags,
                                    enum print_output CK_ATTRIBUTE_UNUSED
                                    print_mode)
 {
@@ -200,20 +200,20 @@ static void srunner_iterate_suites(SRunner * sr,
             {
                 continue;
             }
-	    if (include_tags != NULL)
-	    {
-		if (!tcase_matching_tag(tc, include_tag_lst))
-		{
-		    continue;
-		}
-	    }
-	    if (exclude_tags != NULL)
-	    {
-		if (tcase_matching_tag(tc, exclude_tag_lst))
-		{
-		    continue;
-		}
-	    }
+            if (include_tags != NULL)
+            {
+                if (!tcase_matching_tag(tc, include_tag_lst))
+                {
+                    continue;
+                }
+            }
+            if (exclude_tags != NULL)
+            {
+                if (tcase_matching_tag(tc, exclude_tag_lst))
+                {
+                    continue;
+                }
+            }
 
             srunner_run_tcase(sr, tc);
         }
@@ -768,8 +768,8 @@ void srunner_run_all(SRunner * sr, enum print_output print_mode)
 }
 
 void srunner_run_tagged(SRunner * sr, const char *sname, const char *tcname,
-			const char *include_tags, const char *exclude_tags,
-			enum print_output print_mode)
+                        const char *include_tags, const char *exclude_tags,
+                        enum print_output print_mode)
 {
 #if defined(HAVE_SIGACTION) && defined(HAVE_FORK)
     static struct sigaction sigalarm_old_action;
@@ -783,11 +783,11 @@ void srunner_run_tagged(SRunner * sr, const char *sname, const char *tcname,
     if(!tcname)
         tcname = getenv("CK_RUN_CASE");
     if(!sname)
-	sname = getenv("CK_RUN_SUITE");
+        sname = getenv("CK_RUN_SUITE");
     if(!include_tags)
-	include_tags = getenv("CK_INCLUDE_TAGS");
+        include_tags = getenv("CK_INCLUDE_TAGS");
     if(!exclude_tags)
-	exclude_tags = getenv("CK_EXCLUDE_TAGS");
+        exclude_tags = getenv("CK_EXCLUDE_TAGS");
 
     if(sr == NULL)
         return;
@@ -811,7 +811,7 @@ void srunner_run_tagged(SRunner * sr, const char *sname, const char *tcname,
 #endif /* HAVE_SIGACTION && HAVE_FORK */
     srunner_run_init(sr, print_mode);
     srunner_iterate_suites(sr, sname, tcname, include_tags, exclude_tags,
-			   print_mode);
+                           print_mode);
     srunner_run_end(sr, print_mode);
 #if defined(HAVE_SIGACTION) && defined(HAVE_FORK)
     sigaction(SIGALRM, &sigalarm_old_action, NULL);
