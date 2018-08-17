@@ -11,6 +11,7 @@
 *.autosave
 *.swp
 *.swap
+/tags
 
 # Generated binaries
 *.o
