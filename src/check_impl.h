@@ -82,6 +82,7 @@ struct TestResult
     int line;                   /* Line number where the test occurred */
     int iter;                   /* The iteration value for looping tests */
     int duration;               /* duration of this test in microseconds */
+    const char *sname;          /* Suite that generated the result */
     const char *tcname;         /* Test case that generated the result */
     const char *tname;          /* Test that generated the result */
     char *msg;                  /* Failure message */

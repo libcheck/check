@@ -531,6 +531,7 @@ static void tr_init(TestResult * tr)
     tr->rtype = CK_TEST_RESULT_INVALID;
     tr->msg = NULL;
     tr->file = NULL;
+    tr->sname = NULL;
     tr->tcname = NULL;
     tr->tname = NULL;
     tr->duration = -1;
