@@ -188,6 +188,12 @@ fi
 
 AM_CONDITIONAL(USE_FILTERDIFF, [test x"$FILTERDIFF" = x"filterdiff"])
 
+AC_CHECK_PROGS(GRAPHVIZ, dot, false)
+# If graphviz doesn't exist 'make doc/doxygen-devel' will skip rendering graphs
+# and inform the developer about it. This target is optional and it aims
+# developers of libcheck, not users.
+AM_CONDITIONAL(USE_GRAPHVIZ, [test x"$GRAPHVIZ" = x"dot"])
+
 # Checks for pthread implementation.
 ACX_PTHREAD
 CC="$PTHREAD_CC"
