@@ -70,53 +70,53 @@ exp_verbose="$suite_output
 $exp_verbose_result"
 
 if [ $HAVE_FORK -eq 1 ]; then
-exp_subunit=`printf "test: Core:test_pass
-success: Core:test_pass
-test: Core:test_fail
-failure: Core:test_fail [
+exp_subunit=`printf "test: S1:Core:test_pass
+success: S1:Core:test_pass
+test: S1:Core:test_fail
+failure: S1:Core:test_fail [
 ${SRCDIR}ex_output.c:37: Failure
 ]
-test: Core:test_exit
-error: Core:test_exit [
+test: S1:Core:test_exit
+error: S1:Core:test_exit [
 ${SRCDIR}ex_output.c:46: (after this point) Early exit with return value 1
 ]
-test: Core:test_pass2
-success: Core:test_pass2
-test: Core:test_loop
-failure: Core:test_loop [
+test: S2:Core:test_pass2
+success: S2:Core:test_pass2
+test: S2:Core:test_loop
+failure: S2:Core:test_loop [
 ${SRCDIR}ex_output.c:72: Iteration 0 failed
 ]
-test: Core:test_loop
-success: Core:test_loop
-test: Core:test_loop
-failure: Core:test_loop [
+test: S2:Core:test_loop
+success: S2:Core:test_loop
+test: S2:Core:test_loop
+failure: S2:Core:test_loop [
 ${SRCDIR}ex_output.c:72: Iteration 2 failed
 ]
-test: description \" ' < > & $tab_nl_X_bs end:test_xml_esc_fail_msg
-failure: description \" ' < > & $tab_nl_X_bs end:test_xml_esc_fail_msg [
+test: XML escape \" ' < > & $tab_nl_X_bs tests:description \" ' < > & $tab_nl_X_bs end:test_xml_esc_fail_msg
+failure: XML escape \" ' < > & $tab_nl_X_bs tests:description \" ' < > & $tab_nl_X_bs end:test_xml_esc_fail_msg [
 ${SRCDIR}ex_output.c:78: fail \" ' < > & $tab_nl_X_bs message
 ]"`
 else
-exp_subunit=`printf "test: Core:test_pass
-success: Core:test_pass
-test: Core:test_fail
-failure: Core:test_fail [
+exp_subunit=`printf "test: S1:Core:test_pass
+success: S1:Core:test_pass
+test: S1:Core:test_fail
+failure: S1:Core:test_fail [
 ${SRCDIR}ex_output.c:37: Failure
 ]
-test: Core:test_pass2
-success: Core:test_pass2
-test: Core:test_loop
-failure: Core:test_loop [
+test: S2:Core:test_pass2
+success: S2:Core:test_pass2
+test: S2:Core:test_loop
+failure: S2:Core:test_loop [
 ${SRCDIR}ex_output.c:72: Iteration 0 failed
 ]
-test: Core:test_loop
-success: Core:test_loop
-test: Core:test_loop
-failure: Core:test_loop [
+test: S2:Core:test_loop
+success: S2:Core:test_loop
+test: S2:Core:test_loop
+failure: S2:Core:test_loop [
 ${SRCDIR}ex_output.c:72: Iteration 2 failed
 ]
-test: description \" ' < > & $tab_nl_X_bs end:test_xml_esc_fail_msg
-failure: description \" ' < > & $tab_nl_X_bs end:test_xml_esc_fail_msg [
+test: XML escape \" ' < > & $tab_nl_X_bs tests:description \" ' < > & $tab_nl_X_bs end:test_xml_esc_fail_msg
+failure: XML escape \" ' < > & $tab_nl_X_bs tests:description \" ' < > & $tab_nl_X_bs end:test_xml_esc_fail_msg [
 ${SRCDIR}ex_output.c:78: fail \" ' < > & $tab_nl_X_bs message
 ]"`
 fi
