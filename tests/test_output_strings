@@ -38,7 +38,7 @@ ${SRCDIR}ex_output.c:78:F:XML escape \" ' < > & $tab_nl_X_bs tests:description \
 else
 exp_normal_result=`printf "42%%: Checks: 7, Failures: 4, Errors: 0
 ${SRCDIR}ex_output.c:37:F:S1:Core:test_fail:0: Failure
-${SRCDIR}ex_output.c:72:F:S1:Core:test_loop:0: Iteration 0 failed
+${SRCDIR}ex_output.c:72:F:S2:Core:test_loop:0: Iteration 0 failed
 ${SRCDIR}ex_output.c:72:F:S2:Core:test_loop:2: Iteration 2 failed
 ${SRCDIR}ex_output.c:78:F:XML escape \" ' < > & $tab_nl_X_bs tests:description \" ' < > & $tab_nl_X_bs end:test_xml_esc_fail_msg:0: fail \" ' < > & $tab_nl_X_bs message"`
 fi
