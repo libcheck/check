@@ -371,9 +371,9 @@ void tap_lfun(SRunner * sr CK_ATTRIBUTE_UNUSED, FILE * file,
             /* Print the test result to the tap file */
             num_tests_run += 1;
             tr = (TestResult *)obj;
-            fprintf(file, "%s %d - %s:%s:%s: %s\n",
+            fprintf(file, "%s %d - %s:%s:%s:%s: %s\n",
                     tr->rtype == CK_PASS ? "ok" : "not ok", num_tests_run,
-                    tr->file, tr->tcname, tr->tname, tr->msg);
+                    tr->file, tr->sname, tr->tcname, tr->tname, tr->msg);
             fflush(file);
             break;
         default:
