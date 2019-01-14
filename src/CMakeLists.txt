@@ -45,11 +45,17 @@ set(HEADERS
 
 configure_file(check.h.in check.h)
 
-# Enable finding check.h
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-
 add_library(check STATIC ${SOURCES} ${HEADERS})
 target_link_libraries(check ${LIBM} ${LIBRT} ${SUBUNIT})
+# Enable finding check.h
+if(CMAKE_VERISON VERSION_LESS 2.8.12)
+  include_directories(${CMAKE_CURRENT_BINARY_DIR})
+else()
+  target_include_directories(check
+    PUBLIC
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+      $<INSTALL_INTERFACE:include>)
+endif()
 
 if(MSVC)
   add_definitions(-DCK_DLL_EXP=_declspec\(dllexport\))
