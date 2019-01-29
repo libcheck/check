@@ -48,36 +48,41 @@ CHECK_MICRO_VERSION=1
 
 (Remember to update both the AC_INIT line and each of the CHECK_*_VERSION fields).
 
-3) Update the header in the NEWS file to mention the release:
+4) Update version in .travs.yml:
+
+env:
+  global:
+    - MY_PV=0.10.1
+
+
+4) Update the header in the NEWS file to mention the release:
 
 Sun Aug 2, 2015: Released Check 0.10.1
   2015-08-02 19:21:14 +0000
   based on hash f399542eeceb97703bca496b68bb39044e8baa01
 
-4) Update index.html mentioning the release. Look for the following:
+5) Update index.html mentioning the release. Look for the following:
 <!-- Update this section during a release -->
 
-5) Attempt to build the release locally
-
-$ autoreconf -i
-$ ./configure
-$ make distcheck
-
-If this passes, a tarball with the current release number will be in the current
-directory. Make note of this, as it will be uploaded to GitHub later.
-
-6) Commit the changes to configure.ac, NEWS, and index.html to the Check project's
-master branch, with the commit message:
+6) Commit the changes to configure.ac, NEWS, and index.html to the Check 
+project's master branch, with the commit message:
 "Update for release"
 
-7) Log On to GitHub and navigate to:
+7) Push the commit to Github
 
-https://github.com/libcheck/check/releases
+8) If the build passes, tag the commit with the current release number 
+and push the tag to Github.
 
-Click "Draft a New Release".
+git tag 0.10.1
+git push --tags
 
-Enter the release version to the Tag Version box, and enter the
-git hash into the Target selector.
+(Tag created is on last commit, if commits since add commit hash after version)
+
+9) Log On to GitHub and navigate to:
+
+https://github.com/libcheck/check/tags
+
+Click "Add Release Notes", next to the recently created tag.
 
 Fill in the Release Title field.
 
@@ -90,9 +95,7 @@ Changes:
 <paste contents of NEWS here for the release>
 =====
 
-Attach the tarball for the release, then publish the release.
-
-8) Use the following template to announce the release via email:
+10) Use the following template to announce the release via email:
 =====
 Subject: check-X.Y.Z released
 Hi,
@@ -108,9 +111,10 @@ Thanks,
 <paste contents of NEWS for the release here>
 =====
 
-9) Update the development header in the NEWS file and commit the result.
+11) Update the development header in the NEWS file and commit the 
+result.
 
-10) Push updated website (see section below)
+12) Push updated website (see section below)
 
 Congratulations, you are done!
 
