@@ -62,10 +62,11 @@ if(MSVC)
 endif (MSVC)
 
 install(TARGETS check 
-  EXPORT check
+  EXPORT check-targets
+  INCLUDES DESTINATION include
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib)
 
 install(FILES ${CMAKE_BINARY_DIR}/src/check.h DESTINATION include)
-install(EXPORT check DESTINATION cmake)
+
