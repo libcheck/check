@@ -44,6 +44,12 @@ set(MEMORY_LEAKING_TESTS_ENABLED 1)
 set(CMAKE_BUILD_TYPE Debug)
 
 ###############################################################################
+# Adhere strictly to old ANSI C89 / ISO C90 standard
+set(CMAKE_C_STANDARD 90)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS ON)          # Use GNU extensions and POSIX standard
+
+###############################################################################
 # Option
 option(CHECK_ENABLE_TESTS
   "Enable the compilation and running of Check's unit tests" ON)
