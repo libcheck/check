@@ -156,12 +156,16 @@ before_build:
   - if %arch%==ARM (
       set "makecommand=%makecommand% ARM"
     )
-  - if %platform%==vs cmake -G "%makecommand%" -DCMAKE_INSTALL_PREFIX=%P%
+  - if %platform%==vs mkdir build
+  - if %platform%==vs chdir build
+  - if %platform%==vs cmake -G "%makecommand%" -DCMAKE_INSTALL_PREFIX=%P% -DCMAKE_BUILD_TYPE=Debug ..
   - if %platform%==cygwin set PATH=C:\cygwin\bin;%PATH%
   - if %platform%==cygwin bash -c "autoreconf -i"
   - if %platform%==cygwin bash -c "./configure"
   - if %platform%==mingw32 set PATH=C:\MinGW\bin;%PATH%
-  - if %platform%==mingw32 cmake -G "MinGW Makefiles" -DCMAKE_INSTALL_PREFIX=%P%
+  - if %platform%==mingw32 mkdir build
+  - if %platform%==mingw32 chdir build
+  - if %platform%==mingw32 cmake -G "MinGW Makefiles" -DCMAKE_INSTALL_PREFIX=%P% -DCMAKE_BUILD_TYPE=Debug ..
   - if %platform%==mingw64msys set PATH=C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%
   - if %platform%==mingw64msys bash -c "autoreconf -i"
   - if %platform%==mingw64msys bash -c "./configure"
