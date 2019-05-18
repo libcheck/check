@@ -48,7 +48,7 @@ configure_file(check.h.in check.h)
 add_library(check STATIC ${SOURCES} ${HEADERS})
 target_link_libraries(check ${LIBM} ${LIBRT} ${SUBUNIT})
 # Enable finding check.h
-if(CMAKE_VERISON VERSION_LESS 2.8.12)
+if(CMAKE_VERSION VERSION_LESS 2.8.12)
   include_directories(${CMAKE_CURRENT_BINARY_DIR})
 else()
   target_include_directories(check
