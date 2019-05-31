@@ -1,6 +1,11 @@
 #!/usr/bin/env sh
 
-UNIT_TEST=./check_mem_leaks
+SCRIPT_PATH="$(dirname "$(readlink -f "$0")")"
+if test -z "${1}"; then
+    UNIT_TEST="${SCRIPT_PATH}/check_mem_leaks"
+else
+    UNIT_TEST="${1}"
+fi
 VALGRIND_LOG_FILE=${UNIT_TEST}.valgrind
 LEAK_MESSAGE="are definitely lost"
 
