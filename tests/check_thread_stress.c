@@ -76,7 +76,7 @@ END_TEST
 int
 main (void)
 {
-  int nf;
+  int number_failed;
   s = suite_create ("ForkThreadStress");
   tc = tcase_create ("ForkThreadStress");
   sr = srunner_create (s);
@@ -91,13 +91,13 @@ main (void)
 #endif /* HAVE_FORK */
 
   srunner_run_all (sr, CK_VERBOSE);
-  nf = srunner_ntests_failed (sr);
+  number_failed = srunner_ntests_failed (sr);
   srunner_free (sr);
 
   /* hack to give us XFAIL on non-posix platforms */
 #ifndef HAVE_FORK
-  nf++;
+  number_failed++;
 #endif /* !HAVE_FORK */
 
-  return nf ? EXIT_FAILURE : EXIT_SUCCESS;
+  return number_failed ? EXIT_FAILURE : EXIT_SUCCESS;
 }
