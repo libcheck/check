@@ -34,7 +34,7 @@ extract_version(configure.ac CHECK_MAJOR_VERSION)
 extract_version(configure.ac CHECK_MINOR_VERSION)
 extract_version(configure.ac CHECK_MICRO_VERSION)
 
-set(CHECK_VERSION
+set(check_VERSION
   "${CHECK_MAJOR_VERSION}.${CHECK_MINOR_VERSION}.${CHECK_MICRO_VERSION}")
 
 set(MEMORY_LEAKING_TESTS_ENABLED 1)
@@ -42,6 +42,12 @@ set(MEMORY_LEAKING_TESTS_ENABLED 1)
 ###############################################################################
 # Set build features
 set(CMAKE_BUILD_TYPE Debug)
+
+###############################################################################
+# Adhere strictly to old ANSI C89 / ISO C90 standard
+set(CMAKE_C_STANDARD 90)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS ON)          # Use GNU extensions and POSIX standard
 
 ###############################################################################
 # Option
@@ -318,7 +324,7 @@ else(HAVE_SUBUNIT)
 endif (HAVE_SUBUNIT)
 
 ###############################################################################
-# Generate "config.h" from "cmake/config.h.cmake"
+# Generate "config.h" from "cmake/config.h.in"
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in
   ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 include_directories(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
@@ -366,3 +372,37 @@ if (CHECK_ENABLE_TESTS)
       COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_set_max_msg_size.sh)
   endif(UNIX OR MINGW OR MSYS)
 endif()
+
+###############################################################################
+# Export project, prepare a config and config-version files
+set(LIB_INSTALL_DIR lib CACHE FILEPATH "lib INSTALL DIR")
+set(EXPORT_NAME ${CMAKE_PROJECT_NAME})
+include(CMakePackageConfigHelpers)
+configure_package_config_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${EXPORT_NAME}-config.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-config.cmake
+    INSTALL_DESTINATION ${LIB_INSTALL_DIR}/${EXPORT_NAME}/cmake
+)
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-config-version.cmake
+    VERSION ${check_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+
+export(EXPORT check-targets
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/check-targets.cmake"
+    NAMESPACE Check::
+)
+
+install(EXPORT check-targets
+    NAMESPACE Check::
+    FILE check-targets.cmake
+    DESTINATION lib/cmake/${EXPORT_NAME}
+)
+install(
+    FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-config.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-config-version.cmake"
+    DESTINATION lib/cmake/${EXPORT_NAME}
+)
+

@@ -2241,6 +2241,30 @@ Officially CMake is supported only for Windows.
 Documentation for using CMake is forthcoming. In the meantime, look
 at the example CMake project in Check's @file{doc/examples} directory.
 
+If you are using CMake version 3 or above, importing Check into your project
+is easier than in earlier versions. If you have installed Check
+as a CMake library, you should have the following files:
+
+@verbatim
+${INSTALL_PREFIX}/lib/cmake/check/check-config.cmake and
+${INSTALL_PREFIX}/lib/cmake/check/check-config-version.cmake and
+@end verbatim
+
+If you haven't installed Check into a system directory, you have to tell
+your CMake build how to find it:
+
+@verbatim
+cmake -Dcheck_ROOT=${INSTALL_PREFIX}
+
+Then use Check in your @file{CMakeLists.txt} like this:
+
+@verbatim
+find_package(check <check_version if wanted> REQUIRED CONFIG)
+
+add_executable(myproj.test myproj.test.c)
+target_link_libraries(myproj.test Check::check)
+add_test(NAME MyProj COMMAND myproj.test)
+@end verbatim
 
 
 @node Conclusion and References, Environment Variable Reference, Supported Build Systems, Top
