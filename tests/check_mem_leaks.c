@@ -32,7 +32,7 @@
 #include "config.h"
 #include "check_check.h"
 
-int main ()
+int main (void)
 {
     int n;
     SRunner *sr;
