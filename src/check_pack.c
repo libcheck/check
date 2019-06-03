@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <stddef.h>
 
 #include "check.h"
 #include "check_error.h"
@@ -319,8 +320,7 @@ static void ppack_cleanup(void *mutex)
 void ppack(FILE * fdes, enum ck_msg_type type, CheckMsg * msg)
 {
     char *buf = NULL;
-    int n;
-    ssize_t r;
+    size_t n, r;
 
     n = pack(type, &buf, msg);
     /* Keep it on the safe side to not send too much data. */
