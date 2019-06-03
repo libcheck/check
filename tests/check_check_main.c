@@ -27,7 +27,7 @@
 
 int main (void)
 {
-  int n;
+  int number_failed;
   SRunner *sr;
 
   fork_setup();
@@ -56,7 +56,7 @@ int main (void)
   cleanup();
   fork_teardown();
   teardown_fixture();
-  n = srunner_ntests_failed(sr);
+  number_failed = srunner_ntests_failed(sr);
   srunner_free(sr);
-  return (n == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
+  return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
