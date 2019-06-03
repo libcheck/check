@@ -59,7 +59,7 @@ Build issues:
 Check source code:
 ============
 
-[     ] * Eliminate abbreviations like nf for number_failed
+[0.13.0] * Eliminate abbreviations like nf for number_failed
 [0.9.13] * Run indent on everything, make sure it works well.
 [0.13.0] * Fix START_TEST/END_TEST to look like valid C code.
 [     ] * Document things way more.
