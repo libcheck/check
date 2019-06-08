@@ -19,9 +19,9 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 #
+cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
 project(check C)
 
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 macro(extract_version file setting_name)
