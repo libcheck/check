@@ -111,6 +111,7 @@ before_build:
   - if %platform%==msvc call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat"
   - if %platform%==msvc mkdir build
   - if %platform%==msvc chdir build
+  - if %platform%==msvc cmake --version
   - if %platform%==msvc cmake -G "NMake Makefiles" -DCMAKE_INSTALL_PREFIX=%P% -DCMAKE_BUILD_TYPE=Debug ..
   - if %platform%==vs (
       set "makecommand=Visual Studio"
@@ -158,6 +159,7 @@ before_build:
     )
   - if %platform%==vs mkdir build
   - if %platform%==vs chdir build
+  - if %platform%==vs cmake --version
   - if %platform%==vs cmake -G "%makecommand%" -DCMAKE_INSTALL_PREFIX=%P% -DCMAKE_BUILD_TYPE=Debug ..
   - if %platform%==cygwin set PATH=C:\cygwin\bin;%PATH%
   - if %platform%==cygwin bash -c "autoreconf -i"
@@ -165,6 +167,7 @@ before_build:
   - if %platform%==mingw32 set PATH=C:\MinGW\bin;%PATH%
   - if %platform%==mingw32 mkdir build
   - if %platform%==mingw32 chdir build
+  - if %platform%==mingw32 cmake --version
   - if %platform%==mingw32 cmake -G "MinGW Makefiles" -DCMAKE_INSTALL_PREFIX=%P% -DCMAKE_BUILD_TYPE=Debug ..
   - if %platform%==mingw64msys set PATH=C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%
   - if %platform%==mingw64msys bash -c "autoreconf -i"
