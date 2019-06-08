@@ -376,7 +376,7 @@ endif()
 ###############################################################################
 # Export project, prepare a config and config-version files
 set(LIB_INSTALL_DIR lib CACHE FILEPATH "lib INSTALL DIR")
-set(EXPORT_NAME ${CMAKE_PROJECT_NAME})
+set(EXPORT_NAME ${PROJECT_NAME})
 include(CMakePackageConfigHelpers)
 configure_package_config_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${EXPORT_NAME}-config.cmake.in
