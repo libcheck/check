@@ -109,6 +109,7 @@ ck_check_include_file("string.h" HAVE_STRING_H)
 ck_check_include_file("strings.h" HAVE_STRINGS_H)
 ck_check_include_file("sys/time.h" HAVE_SYS_TIME_H)
 ck_check_include_file("time.h" HAVE_TIME_H)
+ck_check_include_file("unistd.h" HAVE_UNISTD_H)
 
 ###############################################################################
 # Check functions
