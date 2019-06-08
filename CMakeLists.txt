@@ -20,7 +20,9 @@
 # Boston, MA 02111-1307, USA.
 #
 cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
-project(check C)
+project(check
+    DESCRIPTION "Unit Testing Framework for C"
+    LANGUAGES C)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
