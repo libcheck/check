@@ -7,6 +7,26 @@ https://github.com/libcheck/check/pulls
 Bug fixing is considered more important than feature requests at this
 point. Please check the GitHub issue tracker before submitting.
 
+CMake Conversion
+================
+
+* Rename project to Check, not check.
+*** New project() tag with language.
+* Include tests with BUILD_TESTING, not CHECK_ENABLE_TESTS.
+* Enable submissions to a CDash server.
+* CMAKE_BUILD_TYPE, copy from rubik.
+* CheckFunctionExists -> CheckSymbolExists.
+
+* Remove libcompat from the install.
+* Move lib dir to src/libcompat.
+*** Add checkmk to the build and install to bin.
+*** Add manual page to the build and install to share/man.
+* Add example to the build and install to share/doc
+* Add doc/check.info to the build, compile and install.
+* Install pkg-config info.
+
+* Replace example: FindCheck.cmake with from rubik.
+
 Documentation
 =============
 
