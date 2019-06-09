@@ -32,7 +32,7 @@ set(SOURCES
 
 set(HEADERS 
   ${CONFIG_HEADER}
-  ${CMAKE_CURRENT_BINARY_DIR}/check.h
+  # ${CMAKE_CURRENT_BINARY_DIR}/check.h
   check.h.in
   check_error.h
   check_impl.h
@@ -43,26 +43,65 @@ set(HEADERS
   check_print.h
   check_str.h)
 
-configure_file(check.h.in check.h)
+configure_file(check.h.in check.h @ONLY)
 
-add_library(check STATIC ${SOURCES} ${HEADERS})
-target_link_libraries(check ${LIBM} ${LIBRT} ${SUBUNIT})
+add_library(check OBJECT ${SOURCES} ${HEADERS})
+set_target_properties(check PROPERTIES POSITION_INDEPENDENT_CODE 1)
+if (HAVE_LIBM)
+    target_link_libraries(check PRIVATE m)
+endif (HAVE_LIBM)
+if (HAVE_LIBRT)
+    target_link_libraries(check PRIVATE rt)
+    # target_compile_definitions(check PUBLIC HAVE_LIBRT 1)
+    # FIXME Remove global setting in main CMakeLists.txt
+endif (HAVE_LIBRT)
+if (HAVE_SUBUNIT)
+    target_link_libraries(check PUBLIC subunit)
+    # target_compile_definitions(check PUBLIC ENABLE_SUBUNIT 1)
+else(HAVE_SUBUNIT)
+    # target_compile_definitions(check PUBLIC ENABLE_SUBUNIT 0)
+endif (HAVE_SUBUNIT)
+# target_link_libraries(check PRIVATE compat)
+
 # Enable finding check.h
 target_include_directories(check
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
     $<INSTALL_INTERFACE:include>)
-
 if(MSVC)
-  add_definitions(-DCK_DLL_EXP=_declspec\(dllexport\))
+  target_compile_definitions(check PRIVATE CK_DLL_EXP _declspec\(dllexport\))
 endif (MSVC)
 
-install(TARGETS check 
-  EXPORT check-targets
-  INCLUDES DESTINATION include
-  RUNTIME DESTINATION bin
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib)
+get_target_property(INTERFACES check INTERFACE_LINK_LIBRARIES)
+get_target_property(check_link_libs check LINK_LIBRARIES)
+message(STATUS "INTERFACES:${INTERFACES}")
+message(STATUS "check_link_libs:${check_link_libs}")
 
-install(FILES ${CMAKE_BINARY_DIR}/src/check.h DESTINATION include)
+# Installable libraries
+add_library(checkShared SHARED $<TARGET_OBJECTS:check>)
+target_link_libraries(checkShared PUBLIC ${check_link_libs})
+set_target_properties(checkShared PROPERTIES
+  OUTPUT_NAME check
+  VERSION ${PROJECT_VERSION}
+  SOVERSION ${PROJECT_VERSION_MAJOR}
+  PUBLIC_HEADER ${CMAKE_CURRENT_BINARY_DIR}/check.h
+)
+add_library(checkStatic STATIC $<TARGET_OBJECTS:check>)
+target_link_libraries(checkStatic PUBLIC ${check_link_libs})
+set_target_properties(checkStatic PROPERTIES
+  OUTPUT_NAME check
+  VERSION ${PROJECT_VERSION}
+  SOVERSION ${PROJECT_VERSION_MAJOR}
+  PUBLIC_HEADER ${CMAKE_CURRENT_BINARY_DIR}/check.h
+)
+
+include(GNUInstallDirs)
+install(TARGETS checkShared checkStatic 
+  EXPORT check-targets
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+# install(FILES ${CMAKE_CURRENT_BINARY_DIR}/check.h
+#     TYPE INCLUDE)
 
