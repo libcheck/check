@@ -99,20 +99,9 @@ if(MSVC)
 endif (MSVC)
 
 include(GNUInstallDirs)
-if(NOT "${CMAKE_INSTALL_LIBDIR}" STREQUAL "")
-    set(THIS_INSTALL_LIBDIR "${CMAKE_INSTALL_LIBDIR}")
-else()
-    set(THIS_INSTALL_LIBDIR "lib")
-endif()
-if(NOT "${CMAKE_INSTALL_INCLUDEDIR}" STREQUAL "")
-    set(THIS_INSTALL_INCLUDEDIR "${CMAKE_INSTALL_INCLUDEDIR}")
-else()
-    set(THIS_INSTALL_INCLUDEDIR "lib")
-endif()
 
-install(TARGETS check checkStatic 
+install(
+  TARGETS check checkStatic 
   EXPORT check-targets
-  LIBRARY DESTINATION ${THIS_INSTALL_LIBDIR}
-  PUBLIC_HEADER DESTINATION ${THIS_INSTALL_INCLUDEDIR}
 )
 
