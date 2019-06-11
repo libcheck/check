@@ -98,10 +98,12 @@ if(MSVC)
   target_compile_definitions(checkStatic PRIVATE CK_DLL_EXP _declspec\(dllexport\))
 endif (MSVC)
 
-include(GNUInstallDirs)
-
 install(
   TARGETS check checkStatic 
   EXPORT check-targets
+  INCLUDES DESTINATION include
+  RUNTIME DESTINATION bin
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
 )
 
