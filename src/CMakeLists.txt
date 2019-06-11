@@ -71,6 +71,11 @@ if(NOT HAVE_DECL_LOCALTIME_R)
   target_sources(checkStatic PRIVATE ../lib/localtime_r.c)
 endif(NOT HAVE_DECL_LOCALTIME_R)
 
+if(NOT HAVE_DECL_ALARM)
+  target_sources(check PRIVATE ../lib/alarm.c)
+  target_sources(checkStatic PRIVATE ../lib/alarm.c)
+endif(NOT HAVE_DECL_ALARM)
+
 if (NOT HAVE_LIBRT)
   target_sources(check PRIVATE ../lib/clock_gettime.c)
   target_sources(check PRIVATE ../lib/timer_create.c)
