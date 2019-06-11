@@ -32,7 +32,7 @@ set(SOURCES
 
 set(HEADERS 
   ${CONFIG_HEADER}
-  # ${CMAKE_CURRENT_BINARY_DIR}/check.h
+  ${CMAKE_CURRENT_BINARY_DIR}/check.h
   check.h.in
   check_error.h
   check_impl.h
@@ -94,8 +94,7 @@ target_include_directories(checkStatic
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
     $<INSTALL_INTERFACE:include>)
 if(MSVC)
-  target_compile_definitions(check PRIVATE CK_DLL_EXP _declspec\(dllexport\))
-  target_compile_definitions(checkStatic PRIVATE CK_DLL_EXP _declspec\(dllexport\))
+  add_definitions(-DCK_DLL_EXP=_declspec\(dllexport\))
 endif (MSVC)
 
 install(
@@ -105,5 +104,7 @@ install(
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
+  PUBLIC_HEADER DESTINATION include
+  PRIVATE_HEADER DESTINATION include
 )
 
