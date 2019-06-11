@@ -51,9 +51,38 @@ configure_file(check.h.in check.h @ONLY)
 # https://stackoverflow.com/questions/38832528/transitive-target-include-directories-on-object-libraries
 # So we instead do the work twice.
 
-# The shared library is also for internal use.
+# The shared library is also for internal use (tests)
 add_library(check SHARED ${SOURCES} ${HEADERS})
 add_library(checkStatic STATIC ${SOURCES} ${HEADERS})
+
+# Add needed parts of libcompat
+if(NOT HAVE_SNPRINTF)
+    target_sources(check ../lib/snprintf.c)
+    target_sources(checkStatic ../lib/snprintf.c)
+endif(NOT HAVE_SNPRINTF)
+
+if(NOT HAVE_GETTIMEOFDAY)
+  target_sources(check ../lib/gettimeofday.c)
+  target_sources(checkStatic ../lib/gettimeofday.c)
+endif(NOT HAVE_GETTIMEOFDAY)
+
+if(NOT HAVE_DECL_LOCALTIME_R)
+  target_sources(check ../lib/localtime_r.c)
+  target_sources(checkStatic ../lib/localtime_r.c)
+endif(NOT HAVE_DECL_LOCALTIME_R)
+
+if (NOT HAVE_LIBRT)
+    target_sources(check PRIVATE ../lib/clock_gettime.c)
+  target_sources(check PRIVATE ../lib/timer_create.c)
+  target_sources(check PRIVATE ../lib/timer_delete.c)
+  target_sources(check PRIVATE ../lib/timer_settime.c)
+  target_sources(checkStatic PRIVATE ../lib/clock_gettime.c)
+  target_sources(checkStatic PRIVATE ../lib/timer_create.c)
+  target_sources(checkStatic PRIVATE ../lib/timer_delete.c)
+  target_sources(checkStatic PRIVATE ../lib/timer_settime.c)
+endif(NOT HAVE_LIBRT)
+
+# Include libraries if available
 if (HAVE_LIBM)
     target_link_libraries(check PRIVATE m)
     target_link_libraries(checkStatic PRIVATE m)
@@ -71,7 +100,7 @@ if (HAVE_SUBUNIT)
 else(HAVE_SUBUNIT)
     # target_compile_definitions(check PUBLIC ENABLE_SUBUNIT 0)
 endif (HAVE_SUBUNIT)
-target_link_libraries(check PRIVATE compat)
+# target_link_libraries(check PRIVATE compat)
 # target_link_libraries(checkStatic PUBLIC compat)
 set_target_properties(check PROPERTIES
   OUTPUT_NAME check
