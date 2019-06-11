@@ -25,6 +25,7 @@ CMake Conversion
 * Add doc/check.info to the build, compile and install.
 * Install pkg-config info.
 
+* Check that all new files have Check License info.
 * Replace example: FindCheck.cmake with from rubik.
 
 Documentation
