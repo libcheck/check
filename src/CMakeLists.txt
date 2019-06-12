@@ -135,8 +135,6 @@ if (HAVE_SUBUNIT)
 else(HAVE_SUBUNIT)
   # target_compile_definitions(check PUBLIC ENABLE_SUBUNIT 0)
 endif (HAVE_SUBUNIT)
-# target_link_libraries(check PRIVATE compat)
-# target_link_libraries(checkStatic PUBLIC compat)
 set_target_properties(check PROPERTIES
   OUTPUT_NAME check
   VERSION ${PROJECT_VERSION}

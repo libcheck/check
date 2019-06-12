@@ -62,10 +62,8 @@ if(NOT HAVE_DECL_STRSIGNAL)
   set(SOURCES ${SOURCES} strsignal.c)
 endif(NOT HAVE_DECL_STRSIGNAL)
 
-
 set(HEADERS libcompat.h)
 
 add_library(compat STATIC ${SOURCES} ${HEADERS})
 set_target_properties(compat PROPERTIES POSITION_INDEPENDENT_CODE 1)
-# install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/libcompat.h DESTINATION include)
 
