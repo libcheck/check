@@ -55,21 +55,11 @@ configure_file(check.h.in check.h @ONLY)
 add_library(check SHARED ${SOURCES} ${HEADERS})
 add_library(checkStatic STATIC ${SOURCES} ${HEADERS})
 
-# Add needed parts of libcompat
-if(NOT HAVE_SNPRINTF)
-    target_sources(check PRIVATE ../lib/snprintf.c)
-    target_sources(checkStatic PRIVATE ../lib/snprintf.c)
-endif(NOT HAVE_SNPRINTF)
-
-if(NOT HAVE_GETTIMEOFDAY)
-  target_sources(check PRIVATE ../lib/gettimeofday.c)
-  target_sources(checkStatic PRIVATE ../lib/gettimeofday.c)
-endif(NOT HAVE_GETTIMEOFDAY)
-
-if(NOT HAVE_DECL_LOCALTIME_R)
-  target_sources(check PRIVATE ../lib/localtime_r.c)
-  target_sources(checkStatic PRIVATE ../lib/localtime_r.c)
-endif(NOT HAVE_DECL_LOCALTIME_R)
+# Add mandatory and needed parts of libcompat
+target_sources(check PRIVATE ../lib/libcompat.c)
+target_sources(checkStatic PRIVATE ../lib/libcompat.c)
+target_sources(check PRIVATE ../lib/fpclassify.c)
+target_sources(checkStatic PRIVATE ../lib/fpclassify.c)
 
 if(NOT HAVE_DECL_ALARM)
   target_sources(check PRIVATE ../lib/alarm.c)
@@ -86,6 +76,46 @@ if (NOT HAVE_LIBRT)
   target_sources(checkStatic PRIVATE ../lib/timer_delete.c)
   target_sources(checkStatic PRIVATE ../lib/timer_settime.c)
 endif(NOT HAVE_LIBRT)
+
+if(NOT HAVE_GETLINE)
+  target_sources(check PRIVATE ../lib/getline.c)
+  target_sources(checkStatic PRIVATE ../lib/getline.c)
+endif(NOT HAVE_GETLINE)
+
+if(NOT HAVE_GETTIMEOFDAY)
+  target_sources(check PRIVATE ../lib/gettimeofday.c)
+  target_sources(checkStatic PRIVATE ../lib/gettimeofday.c)
+endif(NOT HAVE_GETTIMEOFDAY)
+
+if(NOT HAVE_DECL_LOCALTIME_R)
+  target_sources(check PRIVATE ../lib/localtime_r.c)
+  target_sources(checkStatic PRIVATE ../lib/localtime_r.c)
+endif(NOT HAVE_DECL_LOCALTIME_R)
+
+if(NOT HAVE_MALLOC)
+  target_sources(check PRIVATE ../lib/malloc.c)
+  target_sources(checkStatic PRIVATE ../lib/malloc.c)
+endif(NOT HAVE_MALLOC)
+
+if(NOT HAVE_REALLOC)
+  target_sources(check PRIVATE ../lib/realloc.c)
+  target_sources(checkStatic PRIVATE ../lib/realloc.c)
+endif(NOT HAVE_REALLOC)
+
+if(NOT HAVE_SNPRINTF)
+    target_sources(check PRIVATE ../lib/snprintf.c)
+    target_sources(checkStatic PRIVATE ../lib/snprintf.c)
+endif(NOT HAVE_SNPRINTF)
+
+if(NOT HAVE_DECL_STRDUP AND NOT HAVE__STRDUP)
+  target_sources(check PRIVATE ../lib/strdup.c)
+  target_sources(checkStatic PRIVATE ../lib/strdup.c)
+endif(NOT HAVE_DECL_STRDUP AND NOT HAVE__STRDUP)
+
+if(NOT HAVE_DECL_STRSIGNAL)
+  target_sources(check PRIVATE ../lib/strsignal.c)
+  target_sources(checkStatic PRIVATE ../lib/strsignal.c)
+endif(NOT HAVE_DECL_STRSIGNAL)
 
 # Include libraries if available
 if (HAVE_LIBM)
