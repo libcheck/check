@@ -20,6 +20,11 @@
 # Boston, MA 02111-1307, USA.
 #
 
+# https://ci.appveyor.com/project/brarcher46583/check/builds/25221619/job/uh5by4a0objl0aks
+# Problem with Appveyor:
+# https://github.com/fmtlib/fmt/issues/355
+# https://help.appveyor.com/discussions/problems/5011-executables-built-with-mingw-toolchain-fail-to-run
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
 # Enable finding check.h
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/../src)
