@@ -226,4 +226,5 @@ on_finish:
   - echo tests directory after running tests...
   - dir tests
   - if %platform%==cygwin bash -c "cat tests/test-suite.log || true"
-  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+    # - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
