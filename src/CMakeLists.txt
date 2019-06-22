@@ -121,12 +121,14 @@ if(MSVC)
   add_definitions(-DCK_DLL_EXP=_declspec\(dllexport\))
 endif (MSVC)
 
+include(GNUInstallDirs)
 install(TARGETS check 
   EXPORT check-targets
-  INCLUDES DESTINATION include
-  RUNTIME DESTINATION bin
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib)
+  ARCHIVE DESTINATION ${LIBDIR}
+  LIBRARY DESTINATION ${LIBDIR}
+  RUNTIME DESTINATION ${BINDIR}
+  PUBLIC_HEADER DESTINATION ${INCLUDEDIR} 
+)
 
-install(FILES ${CMAKE_BINARY_DIR}/src/check.h DESTINATION include)
+# install(FILES ${CMAKE_BINARY_DIR}/src/check.h DESTINATION include)
 
