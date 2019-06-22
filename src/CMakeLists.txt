@@ -46,12 +46,76 @@ set(HEADERS
 configure_file(check.h.in check.h @ONLY)
 
 add_library(check STATIC ${SOURCES} ${HEADERS})
-target_link_libraries(check ${LIBM} ${LIBRT} ${SUBUNIT})
-# Enable finding check.h
+
+# Add parts of libcompat as required
+target_sources(check PRIVATE ../lib/fpclassify.c)
+
+if (NOT HAVE_LIBRT)
+  target_sources(check PRIVATE ../lib/clock_gettime.c)
+  target_sources(check PRIVATE ../lib/timer_create.c)
+  target_sources(check PRIVATE ../lib/timer_delete.c)
+  target_sources(check PRIVATE ../lib/timer_settime.c)
+endif(NOT HAVE_LIBRT)
+
+if(NOT HAVE_GETLINE)
+  target_sources(check PRIVATE ../lib/getline.c)
+endif(NOT HAVE_GETLINE)
+
+if(NOT HAVE_GETTIMEOFDAY)
+  target_sources(check PRIVATE ../lib/gettimeofday.c)
+endif(NOT HAVE_GETTIMEOFDAY)
+
+if(NOT HAVE_DECL_LOCALTIME_R)
+  target_sources(check PRIVATE ../lib/localtime_r.c)
+endif(NOT HAVE_DECL_LOCALTIME_R)
+
+if(NOT HAVE_MALLOC)
+  target_sources(check PRIVATE ../lib/malloc.c)
+endif(NOT HAVE_MALLOC)
+
+if(NOT HAVE_REALLOC)
+  target_sources(check PRIVATE ../lib/realloc.c)
+endif(NOT HAVE_REALLOC)
+
+if(NOT HAVE_SNPRINTF)
+  target_sources(check PRIVATE ../lib/snprintf.c)
+endif(NOT HAVE_SNPRINTF)
+
+if(NOT HAVE_DECL_STRDUP AND NOT HAVE__STRDUP)
+  target_sources(check PRIVATE ../lib/strdup.c)
+endif(NOT HAVE_DECL_STRDUP AND NOT HAVE__STRDUP)
+
+if(NOT HAVE_DECL_STRSIGNAL)
+  target_sources(check PRIVATE ../lib/strsignal.c)
+endif(NOT HAVE_DECL_STRSIGNAL)
+
+if(NOT HAVE_DECL_ALARM)
+  target_sources(check PRIVATE ../lib/alarm.c)
+endif(NOT HAVE_DECL_ALARM)
+
+# Include libraries if available
+if (HAVE_LIBM)
+  target_link_libraries(check PUBLIC m)
+endif (HAVE_LIBM)
+if (HAVE_LIBRT)
+  target_link_libraries(check PUBLIC rt)
+endif (HAVE_LIBRT)
+if (HAVE_SUBUNIT)
+  target_link_libraries(check PUBLIC subunit)
+endif (HAVE_SUBUNIT)
+
+# More configuration for exporting
+set_target_properties(check PROPERTIES
+  OUTPUT_NAME check
+  VERSION ${PROJECT_VERSION}
+  SOVERSION ${PROJECT_VERSION_MAJOR}
+  PUBLIC_HEADER ${CMAKE_CURRENT_BINARY_DIR}/check.h
+)
 target_include_directories(check
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-    $<INSTALL_INTERFACE:include>)
+    $<INSTALL_INTERFACE:include>
+)
 
 if(MSVC)
   add_definitions(-DCK_DLL_EXP=_declspec\(dllexport\))

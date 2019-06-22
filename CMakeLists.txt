@@ -20,6 +20,7 @@
 # Boston, MA 02111-1307, USA.
 #
 cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
+cmake_policy(SET CMP0076 OLD) # target_sources() leaves relative source file paths unmodified. (OLD)
 project(check
     DESCRIPTION "Unit Testing Framework for C"
     LANGUAGES C)
