@@ -53,17 +53,17 @@ configure_file(check.h.in check.h @ONLY)
 
 # The shared library is also for internal use (tests)
 add_library(check SHARED ${SOURCES} ${HEADERS})
-add_library(checkStatic STATIC ${SOURCES} ${HEADERS})
+# add_library(checkstatic STATIC ${SOURCES} ${HEADERS})
 
 # Add mandatory and needed parts of libcompat
 target_sources(check PRIVATE ../lib/libcompat.c)
-target_sources(checkStatic PRIVATE ../lib/libcompat.c)
+# target_sources(checkstatic PRIVATE ../lib/libcompat.c)
 target_sources(check PRIVATE ../lib/fpclassify.c)
-target_sources(checkStatic PRIVATE ../lib/fpclassify.c)
+# target_sources(checkstatic PRIVATE ../lib/fpclassify.c)
 
 if(NOT HAVE_DECL_ALARM)
   target_sources(check PRIVATE ../lib/alarm.c)
-  target_sources(checkStatic PRIVATE ../lib/alarm.c)
+#   target_sources(checkstatic PRIVATE ../lib/alarm.c)
 endif(NOT HAVE_DECL_ALARM)
 
 if (NOT HAVE_LIBRT)
@@ -71,66 +71,66 @@ if (NOT HAVE_LIBRT)
   target_sources(check PRIVATE ../lib/timer_create.c)
   target_sources(check PRIVATE ../lib/timer_delete.c)
   target_sources(check PRIVATE ../lib/timer_settime.c)
-  target_sources(checkStatic PRIVATE ../lib/clock_gettime.c)
-  target_sources(checkStatic PRIVATE ../lib/timer_create.c)
-  target_sources(checkStatic PRIVATE ../lib/timer_delete.c)
-  target_sources(checkStatic PRIVATE ../lib/timer_settime.c)
+#   target_sources(checkstatic PRIVATE ../lib/clock_gettime.c)
+#   target_sources(checkstatic PRIVATE ../lib/timer_create.c)
+#   target_sources(checkstatic PRIVATE ../lib/timer_delete.c)
+#   target_sources(checkstatic PRIVATE ../lib/timer_settime.c)
 endif(NOT HAVE_LIBRT)
 
 if(NOT HAVE_GETLINE)
   target_sources(check PRIVATE ../lib/getline.c)
-  target_sources(checkStatic PRIVATE ../lib/getline.c)
+#   target_sources(checkstatic PRIVATE ../lib/getline.c)
 endif(NOT HAVE_GETLINE)
 
 if(NOT HAVE_GETTIMEOFDAY)
   target_sources(check PRIVATE ../lib/gettimeofday.c)
-  target_sources(checkStatic PRIVATE ../lib/gettimeofday.c)
+#   target_sources(checkstatic PRIVATE ../lib/gettimeofday.c)
 endif(NOT HAVE_GETTIMEOFDAY)
 
 if(NOT HAVE_DECL_LOCALTIME_R)
   target_sources(check PRIVATE ../lib/localtime_r.c)
-  target_sources(checkStatic PRIVATE ../lib/localtime_r.c)
+#   target_sources(checkstatic PRIVATE ../lib/localtime_r.c)
 endif(NOT HAVE_DECL_LOCALTIME_R)
 
 if(NOT HAVE_MALLOC)
   target_sources(check PRIVATE ../lib/malloc.c)
-  target_sources(checkStatic PRIVATE ../lib/malloc.c)
+#   target_sources(checkstatic PRIVATE ../lib/malloc.c)
 endif(NOT HAVE_MALLOC)
 
 if(NOT HAVE_REALLOC)
   target_sources(check PRIVATE ../lib/realloc.c)
-  target_sources(checkStatic PRIVATE ../lib/realloc.c)
+#   target_sources(checkstatic PRIVATE ../lib/realloc.c)
 endif(NOT HAVE_REALLOC)
 
 if(NOT HAVE_SNPRINTF)
     target_sources(check PRIVATE ../lib/snprintf.c)
-    target_sources(checkStatic PRIVATE ../lib/snprintf.c)
+#     target_sources(checkstatic PRIVATE ../lib/snprintf.c)
 endif(NOT HAVE_SNPRINTF)
 
 if(NOT HAVE_DECL_STRDUP AND NOT HAVE__STRDUP)
   target_sources(check PRIVATE ../lib/strdup.c)
-  target_sources(checkStatic PRIVATE ../lib/strdup.c)
+#   target_sources(checkstatic PRIVATE ../lib/strdup.c)
 endif(NOT HAVE_DECL_STRDUP AND NOT HAVE__STRDUP)
 
 if(NOT HAVE_DECL_STRSIGNAL)
   target_sources(check PRIVATE ../lib/strsignal.c)
-  target_sources(checkStatic PRIVATE ../lib/strsignal.c)
+#   target_sources(checkstatic PRIVATE ../lib/strsignal.c)
 endif(NOT HAVE_DECL_STRSIGNAL)
 
 # Include libraries if available
 if (HAVE_LIBM)
   target_link_libraries(check PRIVATE m)
-  target_link_libraries(checkStatic PRIVATE m)
+#   target_link_libraries(checkstatic PRIVATE m)
 endif (HAVE_LIBM)
 if (HAVE_LIBRT)
   target_link_libraries(check PRIVATE rt)
-  target_link_libraries(checkStatic PRIVATE rt)
+#   target_link_libraries(checkstatic PRIVATE rt)
   # target_compile_definitions(check PUBLIC HAVE_LIBRT 1)
   # FIXME Remove global setting in main CMakeLists.txt
 endif (HAVE_LIBRT)
 if (HAVE_SUBUNIT)
   target_link_libraries(check PUBLIC subunit)
-  target_link_libraries(checkStatic PUBLIC subunit)
+#   target_link_libraries(checkstatic PUBLIC subunit)
   # target_compile_definitions(check PUBLIC ENABLE_SUBUNIT 1)
 else(HAVE_SUBUNIT)
   # target_compile_definitions(check PUBLIC ENABLE_SUBUNIT 0)
@@ -141,26 +141,26 @@ set_target_properties(check PROPERTIES
   SOVERSION ${PROJECT_VERSION_MAJOR}
   PUBLIC_HEADER ${CMAKE_CURRENT_BINARY_DIR}/check.h
 )
-set_target_properties(checkStatic PROPERTIES
-  OUTPUT_NAME check
-  PUBLIC_HEADER ${CMAKE_CURRENT_BINARY_DIR}/check.h
-)
+# set_target_properties(checkstatic PROPERTIES
+  # OUTPUT_NAME check
+#   PUBLIC_HEADER ${CMAKE_CURRENT_BINARY_DIR}/check.h
+# )
 
 # Enable finding check.h
 target_include_directories(check
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
     $<INSTALL_INTERFACE:include>)
-target_include_directories(checkStatic
-  PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-    $<INSTALL_INTERFACE:include>)
+# target_include_directories(checkstatic
+#   PUBLIC
+#     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+#     $<INSTALL_INTERFACE:include>)
 if(MSVC)
   add_definitions(-DCK_DLL_EXP=_declspec\(dllexport\))
 endif (MSVC)
 
 install(
-  TARGETS check checkStatic 
+  TARGETS check # checkstatic 
   EXPORT check-targets
   INCLUDES DESTINATION include
   RUNTIME DESTINATION bin
