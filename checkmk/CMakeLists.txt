@@ -16,7 +16,8 @@ if(INSTALL_CHECKMK)
   )
   install(
     DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/man/man1
-    DESTINATION share/man
+    # DESTINATION share/man
+    DESTINATION ${CMAKE_INSTALL_MANDIR}
   )
 endif(INSTALL_CHECKMK)
 

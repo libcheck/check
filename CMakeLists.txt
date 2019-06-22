@@ -343,6 +343,10 @@ else(HAVE_SUBUNIT)
 endif (HAVE_SUBUNIT)
 
 ###############################################################################
+# Follow portable GNU standards in installing
+include(GNUInstallDirs)
+
+###############################################################################
 # Generate "config.h" from "cmake/config.h.in"
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in
   ${CMAKE_CURRENT_BINARY_DIR}/config.h)
@@ -351,7 +355,10 @@ add_definitions(-DHAVE_CONFIG_H)
 set(CONFIG_HEADER ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_stdint.h.in
   ${CMAKE_CURRENT_BINARY_DIR}/check_stdint.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/check_stdint.h DESTINATION include)
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/check_stdint.h
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
 
 ###############################################################################
 # Subdirectories
@@ -417,12 +424,12 @@ export(EXPORT check-targets
 install(EXPORT check-targets
     NAMESPACE Check::
     FILE check-targets.cmake
-    DESTINATION lib/cmake/${EXPORT_NAME}
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${EXPORT_NAME}
 )
 install(
     FILES
         "${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-config.cmake"
         "${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-config-version.cmake"
-    DESTINATION lib/cmake/${EXPORT_NAME}
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${EXPORT_NAME}
 )
 
