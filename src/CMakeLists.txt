@@ -151,7 +151,7 @@ target_include_directories(checkShared
 )
 
 if(MSVC)
-  add_definitions(-DCK_DLL_EXP=_declspec\(dllexport\))
+  target_compile_definitions(check PUBLIC CK_DLL_EXP=_declspec\(dllexport\))
 endif (MSVC)
 
 include(GNUInstallDirs)
