@@ -30,6 +30,7 @@ if [ -d doc/doxygen ]; then
 fi
 
 if [ "${USE_CMAKE}" = 'YES' ] ; then
+   cmake --version
    cmake . || exit 1
    make || exit 1
    ctest -V || exit 1
@@ -82,6 +83,7 @@ if [ "${PRE_RELEASE_CHECK}" = 'YES' ]; then
    make prereleasecheck || exit 1
    tar xf check-*.tar.gz
    cd check-*
+   cmake --version
    cmake . || exit 1
    make || exit 1
 fi
