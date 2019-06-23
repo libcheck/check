@@ -30,7 +30,7 @@ set(SOURCES
   check_run.c
   check_str.c)
 
-set(HEADERS 
+set(HEADERS
   ${CONFIG_HEADER}
   ${CMAKE_CURRENT_BINARY_DIR}/check.h
   check.h.in
@@ -46,66 +46,114 @@ set(HEADERS
 configure_file(check.h.in check.h @ONLY)
 
 add_library(check STATIC ${SOURCES} ${HEADERS})
+
+# We would like to create an OBJECT library but currently they are
+# too unreliable and cumbersome,
+# especially with target_link_libraries and install(EXPORT...
+# https://stackoverflow.com/questions/38832528/transitive-target-include-directories-on-object-libraries
+# So we instead do the work twice.
+add_library(checkShared SHARED ${SOURCES} ${HEADERS})
+
 # Add parts of libcompat as required
 target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/fpclassify.c)
+target_sources(checkShared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/fpclassify.c)
 
 if (NOT HAVE_LIBRT)
   target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/clock_gettime.c)
   target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/timer_create.c)
   target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/timer_delete.c)
   target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/timer_settime.c)
+  target_sources(checkShared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/clock_gettime.c)
+  target_sources(checkShared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/timer_create.c)
+  target_sources(checkShared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/timer_delete.c)
+  target_sources(checkShared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/timer_settime.c)
 endif(NOT HAVE_LIBRT)
 
 if(NOT HAVE_GETLINE)
   target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/getline.c)
+  target_sources(checkShared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/getline.c)
 endif(NOT HAVE_GETLINE)
 
 if(NOT HAVE_GETTIMEOFDAY)
   target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/gettimeofday.c)
+  target_sources(checkShared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/gettimeofday.c)
 endif(NOT HAVE_GETTIMEOFDAY)
 
 if(NOT HAVE_DECL_LOCALTIME_R)
   target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/localtime_r.c)
+  target_sources(checkShared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/localtime_r.c)
 endif(NOT HAVE_DECL_LOCALTIME_R)
 
 if(NOT HAVE_MALLOC)
   target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/malloc.c)
+  target_sources(checkShared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/malloc.c)
 endif(NOT HAVE_MALLOC)
 
 if(NOT HAVE_REALLOC)
   target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/realloc.c)
+  target_sources(checkShared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/realloc.c)
 endif(NOT HAVE_REALLOC)
 
 if(NOT HAVE_SNPRINTF)
   target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/snprintf.c)
+  target_sources(checkShared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/snprintf.c)
 endif(NOT HAVE_SNPRINTF)
 
 if(NOT HAVE_DECL_STRDUP AND NOT HAVE__STRDUP)
   target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/strdup.c)
+  target_sources(checkShared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/snprintf.c)
 endif(NOT HAVE_DECL_STRDUP AND NOT HAVE__STRDUP)
 
 if(NOT HAVE_DECL_STRSIGNAL)
   target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/strsignal.c)
+  target_sources(checkShared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/strsignal.c)
 endif(NOT HAVE_DECL_STRSIGNAL)
 
 if(NOT HAVE_DECL_ALARM)
   target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/alarm.c)
+  target_sources(checkShared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/alarm.c)
 endif(NOT HAVE_DECL_ALARM)
 
 # Include libraries if available
 if (HAVE_LIBM)
   target_link_libraries(check PUBLIC m)
+  target_link_libraries(checkShared PUBLIC m)
 endif (HAVE_LIBM)
 if (HAVE_LIBRT)
   target_link_libraries(check PUBLIC rt)
+  target_link_libraries(checkShared PUBLIC rt)
 endif (HAVE_LIBRT)
 if (HAVE_SUBUNIT)
   target_link_libraries(check PUBLIC subunit)
+  target_link_libraries(checkShared PUBLIC subunit)
 endif (HAVE_SUBUNIT)
 
+if(MSVC)
+  target_compile_definitions(checkShared
+    PRIVATE "CK_DLL_EXP=_declspec(dllexport)"
+    INTERFACE "CK_DLL_EXP=_declspec(dllimport)"
+  )
+endif (MSVC)
+
 # More configuration for exporting
+
+set(LIBRARY_OUTPUT_NAME "check")
+
 set_target_properties(check PROPERTIES
-  OUTPUT_NAME check
+  OUTPUT_NAME ${LIBRARY_OUTPUT_NAME}
+  PUBLIC_HEADER ${CMAKE_CURRENT_BINARY_DIR}/check.h
+)
+
+if (MSVC)
+  # "On Windows you should probably give each library a different name,
+  # since there is a ".lib" file for both shared and static".
+  # https://stackoverflow.com/a/2152157/4716395
+  set(LIBRARY_OUTPUT_NAME "checkStatic")
+endif (MSVC)
+set_target_properties(checkShared PROPERTIES
+  OUTPUT_NAME ${LIBRARY_OUTPUT_NAME}
+  VERSION ${PROJECT_VERSION}
+  SOVERSION ${PROJECT_VERSION_MAJOR}
   PUBLIC_HEADER ${CMAKE_CURRENT_BINARY_DIR}/check.h
 )
 target_include_directories(check
@@ -113,8 +161,14 @@ target_include_directories(check
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
     $<INSTALL_INTERFACE:include>
 )
+target_include_directories(checkShared
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+    $<INSTALL_INTERFACE:include>
+)
 
-install(TARGETS check 
+include(GNUInstallDirs)
+install(TARGETS check checkShared
   EXPORT check-targets
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
