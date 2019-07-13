@@ -338,6 +338,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/check_stdint.h DESTINATION include)
 # Subdirectories
 add_subdirectory(lib)
 add_subdirectory(src)
+add_subdirectory(checkmk)
 
 ###############################################################################
 # Unit tests

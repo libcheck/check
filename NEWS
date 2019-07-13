@@ -1,5 +1,9 @@
-In Development:
-# Mentioning Check 0.12.0 for now, to fix distcheck target until next release
+Planned Release Check 0.13.0
+
+* missing <unistd.h> in some files
+  Issue #196 and Issue #186 (GitHub)
+
+* Add checkmk to CMake build.
 
 
 Fri Oct 20, 2017: Released Check 0.12.0

@@ -20,6 +20,7 @@ include_HEADERS = check_stdint.h
 
 EXTRA_DIST = check.pc.in $(m4data_DATA) xml/check_unittest.xslt \
 	CMakeLists.txt src/CMakeLists.txt tests/CMakeLists.txt lib/CMakeLists.txt \
+	checkmk/CMakeLists.txt \
 	cmake
 
 ## install docs
