@@ -26,6 +26,10 @@
 #include <stdarg.h>
 #include <math.h>
 
+#if defined(HAVE_FORK) && HAVE_FORK==1
+#include <unistd.h>
+#endif /* HAVE_FORK */
+
 #include "check.h"
 #include "check_error.h"
 #include "check_list.h"
