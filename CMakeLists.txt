@@ -21,8 +21,8 @@
 #
 cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
 project(check
-    DESCRIPTION "Unit Testing Framework for C"
-    LANGUAGES C)
+  DESCRIPTION "Unit Testing Framework for C"
+  LANGUAGES C)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -66,9 +66,9 @@ option(CHECK_ENABLE_TESTS
 # Check system and architecture
 if(WIN32)
   if(MSVC60)
-    set(WINVER 0x0400)
+  set(WINVER 0x0400)
   else()
-    set(WINVER 0x0500)
+  set(WINVER 0x0500)
   endif()
   set(_WIN32_WINNT ${WINVER})
 endif(WIN32)
@@ -148,46 +148,46 @@ check_symbol_exists(snprintf stdio.h HAVE_SNPRINTF_SYMBOL)
 check_symbol_exists(vsnprintf stdio.h HAVE_VSNPRINTF_SYMBOL)
 
 if(NOT HAVE_SNPRINTF_FUNCTION AND NOT HAVE_SNPRINTF_SYMBOL)
-    add_definitions(-Dsnprintf=rpl_snprintf)
-    set(snprintf rpl_snprintf)
-    add_definitions(-Dvsnprintf=rpl_vsnprintf)
-    set(vsnprintf rpl_vsnprintf)
+  add_definitions(-Dsnprintf=rpl_snprintf)
+  set(snprintf rpl_snprintf)
+  add_definitions(-Dvsnprintf=rpl_vsnprintf)
+  set(vsnprintf rpl_vsnprintf)
 else(NOT HAVE_SNPRINTF_FUNCTION AND NOT HAVE_SNPRINTF_SYMBOL)
-    set(HAVE_SNPRINTF 1)
-    add_definitions(-DHAVE_SNPRINTF=1)
-    set(HAVE_VSNPRINTF 1)
-    add_definitions(-DHAVE_VSNPRINTF=1)
+  set(HAVE_SNPRINTF 1)
+  add_definitions(-DHAVE_SNPRINTF=1)
+  set(HAVE_VSNPRINTF 1)
+  add_definitions(-DHAVE_VSNPRINTF=1)
 endif(NOT HAVE_SNPRINTF_FUNCTION AND NOT HAVE_SNPRINTF_SYMBOL)
 
 if(HAVE_FORK)
-    add_definitions(-DHAVE_FORK=1)
-    set(HAVE_FORK 1)
+  add_definitions(-DHAVE_FORK=1)
+  set(HAVE_FORK 1)
 else(HAVE_FORK)
-    add_definitions(-DHAVE_FORK=0)
-    set(HAVE_FORK 0)
+  add_definitions(-DHAVE_FORK=0)
+  set(HAVE_FORK 0)
 endif(HAVE_FORK)
 
 if(HAVE_MKSTEMP)
-    add_definitions(-DHAVE_MKSTEMP=1)
-    set(HAVE_MKSTEMP 1)
+  add_definitions(-DHAVE_MKSTEMP=1)
+  set(HAVE_MKSTEMP 1)
 else(HAVE_MKSTEMP)
-    add_definitions(-DHAVE_MKSTEMP=0)
-    set(HAVE_MKSTEMP 0)
+  add_definitions(-DHAVE_MKSTEMP=0)
+  set(HAVE_MKSTEMP 0)
 endif(HAVE_MKSTEMP)
 
 if(HAVE_DECL_ALARM)
-    add_definitions(-DHAVE_DECL_ALARM=1)
-    set(HAVE_DECL_ALARM 1)
+  add_definitions(-DHAVE_DECL_ALARM=1)
+  set(HAVE_DECL_ALARM 1)
 else(HAVE_DECL_ALARM)
-    add_definitions(-DHAVE_DECL_ALARM=0)
-    set(HAVE_DECL_ALARM 0)
+  add_definitions(-DHAVE_DECL_ALARM=0)
+  set(HAVE_DECL_ALARM 0)
 endif(HAVE_DECL_ALARM)
 
 if(HAVE_REGEX_H AND HAVE_REGCOMP AND HAVE_REGEXEC)
-    add_definitions(-DHAVE_REGEX=1)
-    set(HAVE_REGEX 1)
-    add_definitions(-DENABLE_REGEX=1)
-    set(ENABLE_REGEX 1)
+  add_definitions(-DHAVE_REGEX=1)
+  set(HAVE_REGEX 1)
+  add_definitions(-DENABLE_REGEX=1)
+  set(ENABLE_REGEX 1)
 endif()
 
 
@@ -208,39 +208,39 @@ check_symbol_exists(INT64_MIN "${headers}" HAVE_INT64_MIN)
 check_symbol_exists(UINT32_MAX "${headers}" HAVE_UINT32_MAX)
 check_symbol_exists(UINT64_MAX "${headers}" HAVE_UINT64_MAX)
 check_symbol_exists(SIZE_MAX "${headers}" HAVE_SIZE_MAX)
-check_symbol_exists(SSIZE_MAX "limits.h"   HAVE_SSIZE_MAX)
+check_symbol_exists(SSIZE_MAX "limits.h" HAVE_SSIZE_MAX)
 
 ###############################################################################
 # Check struct members
 
 # Check for  tv_sec in struct timeval
 if(NOT HAVE_SYS_TIME_H)
-    if(MSVC)
-        check_struct_member("struct timeval" tv_sec "Winsock2.h" HAVE_STRUCT_TIMEVAL_TV_SEC)
-        check_struct_member("struct timeval" tv_usec "Winsock2.h" HAVE_STRUCT_TIMEVAL_TV_USEC)
-        check_struct_member("struct timespec" tv_sec "Winsock2.h" HAVE_WINSOCK2_H_STRUCT_TIMESPEC_TV_SEC)
-        check_struct_member("struct timespec" tv_sec "time.h" HAVE_TIME_H_STRUCT_TIMESPEC_TV_SEC)
-        check_struct_member("struct itimerspec" it_value "Winsock2.h" HAVE_STRUCT_ITIMERSPEC_IT_VALUE)
+  if(MSVC)
+    check_struct_member("struct timeval" tv_sec "Winsock2.h" HAVE_STRUCT_TIMEVAL_TV_SEC)
+    check_struct_member("struct timeval" tv_usec "Winsock2.h" HAVE_STRUCT_TIMEVAL_TV_USEC)
+    check_struct_member("struct timespec" tv_sec "Winsock2.h" HAVE_WINSOCK2_H_STRUCT_TIMESPEC_TV_SEC)
+    check_struct_member("struct timespec" tv_sec "time.h" HAVE_TIME_H_STRUCT_TIMESPEC_TV_SEC)
+    check_struct_member("struct itimerspec" it_value "Winsock2.h" HAVE_STRUCT_ITIMERSPEC_IT_VALUE)
 
-        if(NOT HAVE_WINSOCK2_H_STRUCT_TIMESPEC_TV_SEC AND NOT HAVE_TIME_H_STRUCT_TIMESPEC_TV_SEC)
-            add_definitions(-DSTRUCT_TIMESPEC_DEFINITION_MISSING=1)
-            set(STRUCT_TIMESPEC_DEFINITION_MISSING 1)
-        endif(NOT HAVE_WINSOCK2_H_STRUCT_TIMESPEC_TV_SEC AND NOT HAVE_TIME_H_STRUCT_TIMESPEC_TV_SEC)
+    if(NOT HAVE_WINSOCK2_H_STRUCT_TIMESPEC_TV_SEC AND NOT HAVE_TIME_H_STRUCT_TIMESPEC_TV_SEC)
+      add_definitions(-DSTRUCT_TIMESPEC_DEFINITION_MISSING=1)
+      set(STRUCT_TIMESPEC_DEFINITION_MISSING 1)
+    endif(NOT HAVE_WINSOCK2_H_STRUCT_TIMESPEC_TV_SEC AND NOT HAVE_TIME_H_STRUCT_TIMESPEC_TV_SEC)
 
-        if(NOT HAVE_STRUCT_ITIMERSPEC_IT_VALUE)
-            add_definitions(-DSTRUCT_ITIMERSPEC_DEFINITION_MISSING=1)
-            set(STRUCT_ITIMERSPEC_DEFINITION_MISSING 1)
-        endif(NOT HAVE_STRUCT_ITIMERSPEC_IT_VALUE)
-    endif(MSVC)
+    if(NOT HAVE_STRUCT_ITIMERSPEC_IT_VALUE)
+      add_definitions(-DSTRUCT_ITIMERSPEC_DEFINITION_MISSING=1)
+      set(STRUCT_ITIMERSPEC_DEFINITION_MISSING 1)
+    endif(NOT HAVE_STRUCT_ITIMERSPEC_IT_VALUE)
+  endif(MSVC)
 endif(NOT HAVE_SYS_TIME_H)
 
 # OSX has sys/time.h, but it still lacks itimerspec
 if(HAVE_SYS_TIME_H)
-    check_struct_member("struct itimerspec" it_value "sys/time.h" HAVE_STRUCT_ITIMERSPEC_IT_VALUE)
-    if(NOT HAVE_STRUCT_ITIMERSPEC_IT_VALUE)
-        add_definitions(-DSTRUCT_ITIMERSPEC_DEFINITION_MISSING=1)
-        set(STRUCT_ITIMERSPEC_DEFINITION_MISSING 1)
-    endif(NOT HAVE_STRUCT_ITIMERSPEC_IT_VALUE)
+  check_struct_member("struct itimerspec" it_value "sys/time.h" HAVE_STRUCT_ITIMERSPEC_IT_VALUE)
+  if(NOT HAVE_STRUCT_ITIMERSPEC_IT_VALUE)
+    add_definitions(-DSTRUCT_ITIMERSPEC_DEFINITION_MISSING=1)
+    set(STRUCT_ITIMERSPEC_DEFINITION_MISSING 1)
+  endif(NOT HAVE_STRUCT_ITIMERSPEC_IT_VALUE)
 endif(HAVE_SYS_TIME_H)
 
 ###############################################################################
@@ -322,23 +322,23 @@ unset(CMAKE_EXTRA_INCLUDE_FILES)
 
 check_library_exists(m floor "" HAVE_LIBM)
 if (HAVE_LIBM)
-    set (LIBM "m")
+  set (LIBM "m")
 endif (HAVE_LIBM)
 
 check_library_exists(rt clock_gettime "" HAVE_LIBRT)
 if (HAVE_LIBRT)
-    set(LIBRT "rt")
-    ADD_DEFINITIONS(-DHAVE_LIBRT=1)
+  set(LIBRT "rt")
+  ADD_DEFINITIONS(-DHAVE_LIBRT=1)
 endif (HAVE_LIBRT)
 
 check_library_exists(subunit subunit_test_start "" HAVE_SUBUNIT)
 if (HAVE_SUBUNIT)
-    set(SUBUNIT "subunit")
-    set(ENABLE_SUBUNIT 1)
-    add_definitions(-DENABLE_SUBUNIT=1)
+  set(SUBUNIT "subunit")
+  set(ENABLE_SUBUNIT 1)
+  add_definitions(-DENABLE_SUBUNIT=1)
 else(HAVE_SUBUNIT)
-    set(ENABLE_SUBUNIT 0)
-    add_definitions(-DENABLE_SUBUNIT=0)
+  set(ENABLE_SUBUNIT 0)
+  add_definitions(-DENABLE_SUBUNIT=0)
 endif (HAVE_SUBUNIT)
 
 ###############################################################################
@@ -368,27 +368,27 @@ if (CHECK_ENABLE_TESTS)
 
   # Only offer to run shell scripts if we may have a working interpreter
   if(UNIX OR MINGW OR MSYS)
-    add_test(NAME test_output.sh
-      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_output.sh)
-    add_test(NAME test_log_output.sh
-      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_log_output.sh)
-    add_test(NAME test_xml_output.sh
-      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_xml_output.sh)
-    add_test(NAME test_tap_output.sh
-      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_tap_output.sh)
-    add_test(NAME test_check_nofork.sh
-      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork.sh)
-    add_test(NAME test_check_nofork_teardown.sh
-      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork_teardown.sh)
-    add_test(NAME test_set_max_msg_size.sh
-      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_set_max_msg_size.sh)
+  add_test(NAME test_output.sh
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_output.sh)
+  add_test(NAME test_log_output.sh
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_log_output.sh)
+  add_test(NAME test_xml_output.sh
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_xml_output.sh)
+  add_test(NAME test_tap_output.sh
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_tap_output.sh)
+  add_test(NAME test_check_nofork.sh
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork.sh)
+  add_test(NAME test_check_nofork_teardown.sh
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork_teardown.sh)
+  add_test(NAME test_set_max_msg_size.sh
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_set_max_msg_size.sh)
   endif(UNIX OR MINGW OR MSYS)
 endif()
 
@@ -398,30 +398,30 @@ set(LIB_INSTALL_DIR lib CACHE FILEPATH "lib INSTALL DIR")
 set(EXPORT_NAME ${PROJECT_NAME})
 include(CMakePackageConfigHelpers)
 configure_package_config_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${EXPORT_NAME}-config.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-config.cmake
-    INSTALL_DESTINATION ${LIB_INSTALL_DIR}/${EXPORT_NAME}/cmake
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${EXPORT_NAME}-config.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-config.cmake
+  INSTALL_DESTINATION ${LIB_INSTALL_DIR}/${EXPORT_NAME}/cmake
 )
 write_basic_package_version_file(
-    ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-config-version.cmake
-    VERSION ${check_VERSION}
-    COMPATIBILITY AnyNewerVersion
+  ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-config-version.cmake
+  VERSION ${check_VERSION}
+  COMPATIBILITY AnyNewerVersion
 )
 
 export(EXPORT check-targets
-    FILE "${CMAKE_CURRENT_BINARY_DIR}/check-targets.cmake"
-    NAMESPACE Check::
+  FILE "${CMAKE_CURRENT_BINARY_DIR}/check-targets.cmake"
+  NAMESPACE Check::
 )
 
 install(EXPORT check-targets
-    NAMESPACE Check::
-    FILE check-targets.cmake
-    DESTINATION lib/cmake/${EXPORT_NAME}
+  NAMESPACE Check::
+  FILE check-targets.cmake
+  DESTINATION lib/cmake/${EXPORT_NAME}
 )
 install(
-    FILES
-        "${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-config.cmake"
-        "${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-config-version.cmake"
-    DESTINATION lib/cmake/${EXPORT_NAME}
+  FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-config.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-config-version.cmake"
+  DESTINATION lib/cmake/${EXPORT_NAME}
 )
 
