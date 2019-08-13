@@ -522,6 +522,9 @@ START_TEST(test_check_failure_msgs)
       break;
     }
 #endif /* ENABLE_REGEX */
+    default:
+      /* Program should not reach here */
+      break;
     }
     
     if (not_equal) {      
@@ -712,6 +715,9 @@ START_TEST(test_check_all_msgs)
     break;
   }
 #endif /* ENABLE_REGEX */
+  default:
+    /* Program should not reach here */
+    break;
   }
 
   if (not_equal) {    

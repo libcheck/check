@@ -128,6 +128,9 @@ void fprint_xml_esc(FILE * file, const char *str)
                 case '&':
                     fputs("&amp;", file);
                     break;
+                default:
+                    /* Program cannot reach here */
+                    break;
             }
         }
         /* printable ASCII */
