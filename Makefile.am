@@ -2,7 +2,13 @@
 
 ## run tests after everything else
 
-SUBDIRS = lib src doc . checkmk tests
+if MAKE_DOCS
+OPTIONAL_DOC_TARGET = doc
+else
+OPTIONAL_DOC_TARGET =
+endif
+
+SUBDIRS = lib src $(OPTIONAL_DOC_TARGET) . checkmk tests
 
 ## FIXME: maybe we don't need this line
 
