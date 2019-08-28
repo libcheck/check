@@ -601,8 +601,6 @@ clockid_t check_get_clockid()
 {
     static clockid_t clockid = -1;
 
-    if(clockid == -1)
-    {
 /*
  * Only check if we have librt available. Otherwise, the clockid
  * will be ignored anyway, as the clock_gettime() and
