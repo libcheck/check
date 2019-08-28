@@ -609,21 +609,20 @@ clockid_t check_get_clockid()
  * will result in an assert(0).
  */
 #ifdef HAVE_LIBRT
-        timer_t timerid;
+    timer_t timerid;
 
-        if(timer_create(CLOCK_MONOTONIC, NULL, &timerid) == 0)
-        {
-            timer_delete(timerid);
-            clockid = CLOCK_MONOTONIC;
-        }
-        else
-        {
-            clockid = CLOCK_REALTIME;
-        }
-#else
+    if(timer_create(CLOCK_MONOTONIC, NULL, &timerid) == 0)
+    {
+        timer_delete(timerid);
         clockid = CLOCK_MONOTONIC;
-#endif
     }
+    else
+    {
+        clockid = CLOCK_REALTIME;
+    }
+#else
+    clockid = CLOCK_MONOTONIC;
+#endif
 
     return clockid;
 }
