@@ -38,11 +38,11 @@ fi
 
 if [ "${USE_CMAKE}" = 'NO' ] ; then
    autoreconf -i || exit 1
-   ./configure ${EXTRA_ARGS} || exit 1
+   ./configure ${EXTRA_ARGS} --disable-build-docs || exit 1
    make || exit 1
 
-   if [ ! -f doc/version.texi ]; then
-      echo "version.texi not generated";
+   if [ -f doc/version.texi ]; then
+      echo "Documentation was generated (doc/version.texi), though disabled";
       exit 1;
    fi
 
