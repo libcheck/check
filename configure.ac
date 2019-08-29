@@ -449,4 +449,11 @@ else
 fi
 echo "POSIX regular expressions ............ $result"
 
+if test "xtrue" = x"$enable_build_docs"; then
+    result="yes"
+else
+    result="no"
+fi
+echo "build docs ........................... $result"
+
 echo "=========================================="
