@@ -122,7 +122,7 @@ Contributors:
          substitution functions for floating point functions missing
          in older C standard libraries)
     Mikko Koivunalho
-        (Improved CMake build)
+        (Improved CMake build, bug fixes in libcheck and libcompat)
 
 Anybody who has contributed code to Check or Check's build system is
 considered an author.  Submit a pull request of this file or send

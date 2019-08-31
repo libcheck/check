@@ -499,29 +499,32 @@ START_TEST(test_check_failure_msgs)
     expected_msg = master_test->msg;
 
     switch (master_test->msg_type) {
-    case CK_MSG_TEXT:
-      if (strcmp(got_msg, expected_msg) != 0) {
-        not_equal = 1;
-      }
-      break;
+      case CK_MSG_TEXT:
+        if (strcmp(got_msg, expected_msg) != 0) {
+          not_equal = 1;
+        }
+        break;
 #if ENABLE_REGEX
-    case CK_MSG_REGEXP: {
-      reg_err = regcomp(&re, expected_msg, REG_EXTENDED | REG_NOSUB);
-      if (reg_err) {        
-        regerror(reg_err, &re, err_text, sizeof(err_text));
-        ck_assert_msg(reg_err == 0,
-                "For test %d:%s:%s Expected regexp '%s', but regcomp returned error '%s'",
-                i, master_test->tcname, master_test->test_name, expected_msg,
-                err_text);
+      case CK_MSG_REGEXP: {
+        reg_err = regcomp(&re, expected_msg, REG_EXTENDED | REG_NOSUB);
+        if (reg_err) {        
+          regerror(reg_err, &re, err_text, sizeof(err_text));
+          ck_assert_msg(reg_err == 0,
+                  "For test %d:%s:%s Expected regexp '%s', but regcomp returned error '%s'",
+                  i, master_test->tcname, master_test->test_name, expected_msg,
+                  err_text);
+        }
+        reg_err = regexec(&re, got_msg, 0, NULL, 0);
+        regfree(&re);
+        if (reg_err) {
+          not_equal = 1;
+        }
+        break;
       }
-      reg_err = regexec(&re, got_msg, 0, NULL, 0);
-      regfree(&re);
-      if (reg_err) {
-        not_equal = 1;
-      }
-      break;
-    }
 #endif /* ENABLE_REGEX */
+      default:
+        /* Program should not reach here */
+        break;
     }
     
     if (not_equal) {      
@@ -689,29 +692,32 @@ START_TEST(test_check_all_msgs)
 #endif
 
   switch (master_test->msg_type) {
-  case CK_MSG_TEXT:
-    if (strcmp(got_msg, expected_msg) != 0) {
-      not_equal = 1;
-    }
-    break;
+    case CK_MSG_TEXT:
+      if (strcmp(got_msg, expected_msg) != 0) {
+        not_equal = 1;
+      }
+      break;
 #if ENABLE_REGEX
-  case CK_MSG_REGEXP: {
-    reg_err = regcomp(&re, expected_msg, REG_EXTENDED | REG_NOSUB);
-    if (reg_err) {      
-      regerror(reg_err, &re, err_text, sizeof(err_text));
-      ck_assert_msg(reg_err == 0,
-                "For test %d:%s:%s Expected regexp '%s', but regcomp returned error '%s'",
-                _i, master_test->tcname, master_test->test_name, expected_msg,
-                err_text);
+    case CK_MSG_REGEXP: {
+      reg_err = regcomp(&re, expected_msg, REG_EXTENDED | REG_NOSUB);
+      if (reg_err) {      
+        regerror(reg_err, &re, err_text, sizeof(err_text));
+        ck_assert_msg(reg_err == 0,
+                  "For test %d:%s:%s Expected regexp '%s', but regcomp returned error '%s'",
+                  _i, master_test->tcname, master_test->test_name, expected_msg,
+                  err_text);
+      }
+      reg_err = regexec(&re, got_msg, 0, NULL, 0);
+      regfree(&re);
+      if (reg_err) {
+        not_equal = 1;
+      }
+      break;
     }
-    reg_err = regexec(&re, got_msg, 0, NULL, 0);
-    regfree(&re);
-    if (reg_err) {
-      not_equal = 1;
-    }
-    break;
-  }
 #endif /* ENABLE_REGEX */
+    default:
+      /* Program should not reach here */
+      break;
   }
 
   if (not_equal) {    
