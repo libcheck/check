@@ -170,7 +170,6 @@
 
 #if TEST_SNPRINTF
 #include <math.h>	/* For pow(3), NAN, and INFINITY. */
-#include <string.h>	/* For strcmp(3). */
 #if defined(__NetBSD__) || \
     defined(__FreeBSD__) || \
     defined(__OpenBSD__) || \
@@ -263,6 +262,7 @@
 
 #if !HAVE_SNPRINTF || !HAVE_VSNPRINTF
 #include <stdio.h>	/* For NULL, size_t, vsnprintf(3), and vasprintf(3). */
+#include <string.h>	/* For strcmp(3) and memset(3). */
 #ifdef VA_START
 #undef VA_START
 #endif	/* defined(VA_START) */
@@ -484,7 +484,12 @@ static UINTMAX_T cast(LDOUBLE);
 static UINTMAX_T myround(LDOUBLE);
 static LDOUBLE mypow10(int);
 
+#if HAVE_VSNPRINTF
+/* errno is imported from <errno.h> when available.
+ * Otherwise we declare it ourselves.
+ **/
 extern int errno;
+#endif
 
 int
 rpl_vsnprintf(char *str, size_t size, const char *format, va_list args)
@@ -1070,6 +1075,10 @@ fmtflt(char *str, size_t *len, size_t size, LDOUBLE fvalue, int width,
 #if HAVE_LOCALECONV && HAVE_LCONV_DECIMAL_POINT
 	struct lconv *lc = localeconv();
 #endif	/* HAVE_LOCALECONV && HAVE_LCONV_DECIMAL_POINT */
+
+	/* Initialize with memset because `var[n]={0}` is not supported by C90. */
+	memset(iconvert, '\0', MAX_CONVERT_LENGTH);
+	memset(fconvert, '\0', MAX_CONVERT_LENGTH);
 
 	/*
 	 * AIX' man page says the default is 0, but C99 and at least Solaris'
