@@ -74,6 +74,8 @@ CK_CPPSTART
 #define CK_ATTRIBUTE_NORETURN
 #endif /* GCC 2.5 */
 
+#undef GCC_VERSION_AT_LEAST
+
 #include <sys/types.h>
 
 #if defined(_MSC_VER)
