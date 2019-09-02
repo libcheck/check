@@ -24,6 +24,10 @@ project(check
   DESCRIPTION "Unit Testing Framework for C"
   LANGUAGES C)
 
+###############################################################################
+# Configure a project for testing with CTest/CDash
+include(CTest)
+
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 macro(extract_version file setting_name)
@@ -60,7 +64,11 @@ set(CMAKE_C_EXTENSIONS ON)          # Use GNU extensions and POSIX standard
 ###############################################################################
 # Option
 option(CHECK_ENABLE_TESTS
-  "Enable the compilation and running of Check's unit tests" ON)
+  "Deprecated: Enable the compilation and running of Check's unit tests" ON)
+if(NOT CHECK_ENABLE_TESTS)
+  message(DEPRECATION "The option CHECK_ENABLE_TESTS is deprecated. Use option BUILD_TESTING.")
+  # TODO Remove this option by Check 0.15.0!
+endif(NOT CHECK_ENABLE_TESTS)
 option(CHECK_ENABLE_GCOV
   "Turn on test coverage" OFF)
 if (CHECK_ENABLE_GCOV AND NOT ${CMAKE_C_COMPILER_ID} MATCHES "GNU")
@@ -415,9 +423,8 @@ add_subdirectory(checkmk)
 
 ###############################################################################
 # Unit tests
-if (CHECK_ENABLE_TESTS)
+if (BUILD_TESTING)
   add_subdirectory(tests)
-  enable_testing()
   add_test(NAME check_check COMMAND check_check)
   add_test(NAME check_check_export COMMAND check_check_export)
 
@@ -445,7 +452,7 @@ if (CHECK_ENABLE_TESTS)
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
     COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_set_max_msg_size.sh)
   endif(UNIX OR MINGW OR MSYS)
-endif()
+endif (BUILD_TESTING)
 
 ###############################################################################
 # Export project, prepare a config and config-version files
