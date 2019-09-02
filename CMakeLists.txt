@@ -61,6 +61,11 @@ set(CMAKE_C_EXTENSIONS ON)          # Use GNU extensions and POSIX standard
 # Option
 option(CHECK_ENABLE_TESTS
   "Enable the compilation and running of Check's unit tests" ON)
+option(CHECK_ENABLE_GCOV
+  "Turn on test coverage" OFF)
+if (CHECK_ENABLE_GCOV AND NOT ${CMAKE_C_COMPILER_ID} MATCHES "GNU")
+  message(FATAL_ERROR "Code Coverage (gcov) only works if GNU compiler is used!")
+endif (CHECK_ENABLE_GCOV AND NOT ${CMAKE_C_COMPILER_ID} MATCHES "GNU")
 
 ###############################################################################
 # Check system and architecture
@@ -351,6 +356,56 @@ set(CONFIG_HEADER ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_stdint.h.in
   ${CMAKE_CURRENT_BINARY_DIR}/check_stdint.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/check_stdint.h DESTINATION include)
+
+###############################################################################
+# Generate "check.pc", the package config (pkgconfig) file for libtool
+set(prefix_save "${PREFIX}")
+set(prefix "${CMAKE_INSTALL_PREFIX}")
+set(exec_prefix "\${prefix}")
+set(libdir "\${exec_prefix}/lib")
+set(includedir "\${prefix}/include")
+
+if (HAVE_SUBUNIT)
+  set(LIBSUBUNIT_PC "libsubunit")
+else (HAVE_SUBINIT)
+  set(LIBSUBUNIT_PC "")
+endif (HAVE_SUBUNIT)
+
+if (CHECK_ENABLE_GCOV)
+  set(GCOV_LIBS "-lgcov")
+else (CHECK_ENABLE_GCOV)
+  set(GCOV_LIBS "")
+endif (CHECK_ENABLE_GCOV)
+
+set(PTHREAD_LIBS "")
+set(LIBS "")
+
+if (HAVE_LIBM)
+  set(LIBS "${LIBS} -lm")
+endif (HAVE_LIBM)
+
+if (HAVE_LIBRT)
+  set(LIBS "${LIBS} -lrt")
+endif (HAVE_LIBRT)
+
+set(PTHREAD_CFLAGS "-pthread")
+
+configure_file(check.pc.in check.pc @ONLY)
+
+unset(PTHREAD_CFLAGS)
+unset(LIBS)
+unset(PTHREAD_LIBS)
+unset(GCOV_LIBS)
+unset(LIBSUBUNIT_PC)
+unset(includedir)
+unset(libdir)
+unset(exec_prefix)
+set(PREFIX "${prefix_save}")
+
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/check.pc
+  DESTINATION lib/pkgconfig
+)
 
 ###############################################################################
 # Subdirectories
