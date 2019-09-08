@@ -46,8 +46,68 @@ set(HEADERS
 configure_file(check.h.in check.h @ONLY)
 
 add_library(check STATIC ${SOURCES} ${HEADERS})
-target_link_libraries(check ${LIBM} ${LIBRT} ${SUBUNIT})
-# Enable finding check.h
+# Add parts of libcompat as required
+target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/fpclassify.c)
+
+if (NOT HAVE_LIBRT)
+  target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/clock_gettime.c)
+  target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/timer_create.c)
+  target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/timer_delete.c)
+  target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/timer_settime.c)
+endif(NOT HAVE_LIBRT)
+
+if(NOT HAVE_GETLINE)
+  target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/getline.c)
+endif(NOT HAVE_GETLINE)
+
+if(NOT HAVE_GETTIMEOFDAY)
+  target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/gettimeofday.c)
+endif(NOT HAVE_GETTIMEOFDAY)
+
+if(NOT HAVE_DECL_LOCALTIME_R)
+  target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/localtime_r.c)
+endif(NOT HAVE_DECL_LOCALTIME_R)
+
+if(NOT HAVE_MALLOC)
+  target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/malloc.c)
+endif(NOT HAVE_MALLOC)
+
+if(NOT HAVE_REALLOC)
+  target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/realloc.c)
+endif(NOT HAVE_REALLOC)
+
+if(NOT HAVE_SNPRINTF)
+  target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/snprintf.c)
+endif(NOT HAVE_SNPRINTF)
+
+if(NOT HAVE_DECL_STRDUP AND NOT HAVE__STRDUP)
+  target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/strdup.c)
+endif(NOT HAVE_DECL_STRDUP AND NOT HAVE__STRDUP)
+
+if(NOT HAVE_DECL_STRSIGNAL)
+  target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/strsignal.c)
+endif(NOT HAVE_DECL_STRSIGNAL)
+
+if(NOT HAVE_DECL_ALARM)
+  target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/alarm.c)
+endif(NOT HAVE_DECL_ALARM)
+
+# Include libraries if available
+if (HAVE_LIBM)
+  target_link_libraries(check PUBLIC m)
+endif (HAVE_LIBM)
+if (HAVE_LIBRT)
+  target_link_libraries(check PUBLIC rt)
+endif (HAVE_LIBRT)
+if (HAVE_SUBUNIT)
+  target_link_libraries(check PUBLIC subunit)
+endif (HAVE_SUBUNIT)
+
+# More configuration for exporting
+set_target_properties(check PROPERTIES
+  OUTPUT_NAME check
+  PUBLIC_HEADER ${CMAKE_CURRENT_BINARY_DIR}/check.h
+)
 target_include_directories(check
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
