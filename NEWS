@@ -1,5 +1,8 @@
 Planned Release Check 0.13.0
 
+* configure: optional build documentation
+  Issue #206 (GitHub)
+
 * missing <unistd.h> in some files
   Issue #196 and Issue #186 (GitHub)
 
