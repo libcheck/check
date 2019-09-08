@@ -72,6 +72,15 @@ AC_HELP_STRING([--enable-timeout-tests],
   *)   AC_MSG_ERROR(bad value ${enableval} for --enable-timeout-tests) ;;
 esac], [enable_timeout_tests=true ])
 
+AC_ARG_ENABLE(build-docs,
+AC_HELP_STRING([--enable-build-docs],
+           [turn on building documentation @<:@default=yes@:>@]),
+[case "${enableval}" in
+  yes) enable_build_docs=true ;;
+  no)  enable_build_docs=false ;;
+  *)   AC_MSG_ERROR(bad value ${enableval} for --enable-build-docs) ;;
+esac], [enable_build_docs=true ])
+
 AM_CONDITIONAL(NO_TIMEOUT_TESTS, test x"$enable_timeout_tests" = "xfalse")
 
 AC_ARG_ENABLE(subunit,
@@ -171,12 +180,19 @@ esac
 AC_CHECK_PROGS(GCOV, gcov, false)
 AC_CHECK_PROGS(LCOV, lcov, false)
 AC_CHECK_PROGS(GENHTML, genhtml, false)
-AC_CHECK_PROGS(TEX, tex, false)
-if test "$TEX" = "false"; then
-    # Make it [somewhat] clear to maintainers that tex is missing. Not an error
-    # though because 'make install' (which users need) does not build the docs
-    # anyway.
-    AC_MSG_WARN(tex not installed: cannot rebuild HTML documentation.)
+
+if test "xtrue" = x"$enable_build_docs"; then
+    AC_CHECK_PROGS(TEX, tex, false)
+    if test "$TEX" = "false"; then
+        # Make it [somewhat] clear to maintainers that tex is missing. Not an error
+        # though because 'make install' (which users need) does not build the docs
+        # anyway.
+        AC_MSG_WARN(tex not installed: cannot rebuild HTML documentation.)
+    fi
+
+    AM_CONDITIONAL(MAKE_DOCS, [test x"$TEX" != "xfalse"])
+else
+   AM_CONDITIONAL(MAKE_DOCS, [false])
 fi
 AC_CHECK_PROGS(FILTERDIFF, filterdiff, false)
 if test "$FILTERDIFF" = "false"; then
@@ -432,5 +448,12 @@ else
     result="yes"
 fi
 echo "POSIX regular expressions ............ $result"
+
+if test "xtrue" = x"$enable_build_docs"; then
+    result="yes"
+else
+    result="no"
+fi
+echo "build docs ........................... $result"
 
 echo "=========================================="
