@@ -43,7 +43,7 @@ set(HEADERS
   check_print.h
   check_str.h)
 
-configure_file(check.h.in check.h)
+configure_file(check.h.in check.h @ONLY)
 
 add_library(check STATIC ${SOURCES} ${HEADERS})
 target_link_libraries(check ${LIBM} ${LIBRT} ${SUBUNIT})
