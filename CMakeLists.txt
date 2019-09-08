@@ -56,6 +56,10 @@ set(MEMORY_LEAKING_TESTS_ENABLED 1)
 set(CMAKE_BUILD_TYPE Debug)
 
 ###############################################################################
+# Provides install directory variables as defined by the GNU Coding Standards.
+include(GNUInstallDirs)
+
+###############################################################################
 # Adhere strictly to old ANSI C89 / ISO C90 standard
 set(CMAKE_C_STANDARD 90)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -379,7 +383,10 @@ set(CONFIG_HEADER ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 set(PROJECT_VERSION "${check_VERSION}")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_stdint.h.in
   ${CMAKE_CURRENT_BINARY_DIR}/check_stdint.h @ONLY)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/check_stdint.h DESTINATION include)
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/check_stdint.h
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
 
 ###############################################################################
 # Generate "check.pc", the package config (pkgconfig) file for libtool
@@ -428,7 +435,7 @@ set(PREFIX "${prefix_save}")
 
 install(
   FILES ${CMAKE_CURRENT_BINARY_DIR}/check.pc
-  DESTINATION lib/pkgconfig
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
 )
 
 ###############################################################################
@@ -494,12 +501,12 @@ export(EXPORT check-targets
 install(EXPORT check-targets
   NAMESPACE Check::
   FILE check-targets.cmake
-  DESTINATION lib/cmake/${EXPORT_NAME}
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${EXPORT_NAME}
 )
 install(
   FILES
     "${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-config.cmake"
     "${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-config-version.cmake"
-  DESTINATION lib/cmake/${EXPORT_NAME}
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${EXPORT_NAME}
 )
 

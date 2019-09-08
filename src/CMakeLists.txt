@@ -51,7 +51,8 @@ target_link_libraries(check ${LIBM} ${LIBRT} ${SUBUNIT})
 target_include_directories(check
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-    $<INSTALL_INTERFACE:include>)
+    $<INSTALL_INTERFACE:include>
+)
 
 if(MSVC)
   add_definitions(-DCK_DLL_EXP=_declspec\(dllexport\))
@@ -59,10 +60,9 @@ endif (MSVC)
 
 install(TARGETS check 
   EXPORT check-targets
-  INCLUDES DESTINATION include
-  RUNTIME DESTINATION bin
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib)
-
-install(FILES ${CMAKE_BINARY_DIR}/src/check.h DESTINATION include)
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
 
