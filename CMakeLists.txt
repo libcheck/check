@@ -362,6 +362,21 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in
 include_directories(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
 add_definitions(-DHAVE_CONFIG_H)
 set(CONFIG_HEADER ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+
+###############################################################################
+# Generate "check_stdint.h" from "cmake/check_stdint.h.in"
+#
+# The corresponding GNU Autotools build of this project
+# has m4 macro `m4/ax_create_stdint_h.m4` to create
+# the file `check_stdint.h` from scratch.
+# Include file `stdint.h` was introduced in C99 ANSI standard but
+# many compilers were lacking behind or still are and
+# have not implemented C99 or their `stdint.h` is not compatible.
+# Therefore the m4 macro was needed to create the required datatypes.
+#
+# When converting to CMake we also want to abandon the m4 macros.
+#
+set(PROJECT_VERSION "${check_VERSION}")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_stdint.h.in
   ${CMAKE_CURRENT_BINARY_DIR}/check_stdint.h @ONLY)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/check_stdint.h DESTINATION include)
