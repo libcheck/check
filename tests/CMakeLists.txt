@@ -38,9 +38,7 @@ if(WIN32)
 endif(WIN32)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/test_vars.in
-  ${CMAKE_CURRENT_BINARY_DIR}/test_vars)
-
-include(CTest)
+  ${CMAKE_CURRENT_BINARY_DIR}/test_vars @ONLY)
 
 set(CHECK_CHECK_SOURCES
   check_check_exit.c
