@@ -114,10 +114,6 @@ target_include_directories(check
     $<INSTALL_INTERFACE:include>
 )
 
-if(MSVC)
-  target_compile_definitions(check PUBLIC CK_DLL_EXP=_declspec\(dllexport\))
-endif (MSVC)
-
 install(TARGETS check 
   EXPORT check-targets
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
