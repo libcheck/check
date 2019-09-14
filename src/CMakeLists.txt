@@ -167,7 +167,6 @@ target_include_directories(checkShared
     $<INSTALL_INTERFACE:include>
 )
 
-include(GNUInstallDirs)
 install(TARGETS check checkShared
   EXPORT check-targets
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
