@@ -49,8 +49,6 @@ set(PROJECT_VERSION_MINOR ${CHECK_MINOR_VERSION})
 set(PROJECT_VERSION_PATCH ${CHECK_MICRO_VERSION})
 set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
 
-set(MEMORY_LEAKING_TESTS_ENABLED 1)
-
 ###############################################################################
 # Set build features
 set(CMAKE_BUILD_TYPE Debug)
@@ -73,11 +71,15 @@ if(NOT CHECK_ENABLE_TESTS)
   message(DEPRECATION "The option CHECK_ENABLE_TESTS is deprecated. Use option BUILD_TESTING.")
   # TODO Remove this option by Check 0.15.0!
 endif(NOT CHECK_ENABLE_TESTS)
+
 option(CHECK_ENABLE_GCOV
   "Turn on test coverage" OFF)
 if (CHECK_ENABLE_GCOV AND NOT ${CMAKE_C_COMPILER_ID} MATCHES "GNU")
   message(FATAL_ERROR "Code Coverage (gcov) only works if GNU compiler is used!")
 endif (CHECK_ENABLE_GCOV AND NOT ${CMAKE_C_COMPILER_ID} MATCHES "GNU")
+
+option(ENABLE_MEMORY_LEAKING_TESTS
+  "Enable certain memory leaking tests only if valgrind is not used in testing" ON)
 
 ###############################################################################
 # Check system and architecture

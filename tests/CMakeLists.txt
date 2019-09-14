@@ -40,6 +40,12 @@ endif(WIN32)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/test_vars.in
   ${CMAKE_CURRENT_BINARY_DIR}/test_vars @ONLY)
 
+if(ENABLE_MEMORY_LEAKING_TESTS)
+  add_definitions(-DMEMORY_LEAKING_TESTS_ENABLED=1)
+else(ENABLE_MEMORY_LEAKING_TESTS)
+  add_definitions(-DMEMORY_LEAKING_TESTS_ENABLED=0)
+endif(ENABLE_MEMORY_LEAKING_TESTS)
+
 set(CHECK_CHECK_SOURCES
   check_check_exit.c
   check_check_fixture.c
