@@ -454,27 +454,27 @@ if (BUILD_TESTING)
 
   # Only offer to run shell scripts if we may have a working interpreter
   if(UNIX OR MINGW OR MSYS)
-  add_test(NAME test_output.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_output.sh)
-  add_test(NAME test_log_output.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_log_output.sh)
-  add_test(NAME test_xml_output.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_xml_output.sh)
-  add_test(NAME test_tap_output.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_tap_output.sh)
-  add_test(NAME test_check_nofork.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork.sh)
-  add_test(NAME test_check_nofork_teardown.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork_teardown.sh)
-  add_test(NAME test_set_max_msg_size.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_set_max_msg_size.sh)
+    add_test(NAME test_output.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_output.sh)
+    add_test(NAME test_log_output.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_log_output.sh)
+    add_test(NAME test_xml_output.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_xml_output.sh)
+    add_test(NAME test_tap_output.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_tap_output.sh)
+    add_test(NAME test_check_nofork.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork.sh)
+    add_test(NAME test_check_nofork_teardown.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork_teardown.sh)
+    add_test(NAME test_set_max_msg_size.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_set_max_msg_size.sh)
   endif(UNIX OR MINGW OR MSYS)
 endif (BUILD_TESTING)
 
