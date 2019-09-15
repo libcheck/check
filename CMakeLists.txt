@@ -20,6 +20,10 @@
 # Boston, MA 02111-1307, USA.
 #
 cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
+if(POLICY CMP0076)
+  # target_sources() leaves relative source file paths unmodified. (OLD)
+  cmake_policy(SET CMP0076 OLD)
+endif()
 project(check
   DESCRIPTION "Unit Testing Framework for C"
   LANGUAGES C)
@@ -43,17 +47,15 @@ extract_version(configure.ac CHECK_MICRO_VERSION)
 set(PROJECT_VERSION_MAJOR ${CHECK_MAJOR_VERSION})
 set(PROJECT_VERSION_MINOR ${CHECK_MINOR_VERSION})
 set(PROJECT_VERSION_PATCH ${CHECK_MICRO_VERSION})
-set(PROJECT_VERSION_TWEAK 0)
-set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}.${PROJECT_VERSION_TWEAK}")
-
-set(check_VERSION
-  "${CHECK_MAJOR_VERSION}.${CHECK_MINOR_VERSION}.${CHECK_MICRO_VERSION}")
-
-set(MEMORY_LEAKING_TESTS_ENABLED 1)
+set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
 
 ###############################################################################
 # Set build features
 set(CMAKE_BUILD_TYPE Debug)
+
+###############################################################################
+# Provides install directory variables as defined by the GNU Coding Standards.
+include(GNUInstallDirs)
 
 ###############################################################################
 # Adhere strictly to old ANSI C89 / ISO C90 standard
@@ -69,11 +71,15 @@ if(NOT CHECK_ENABLE_TESTS)
   message(DEPRECATION "The option CHECK_ENABLE_TESTS is deprecated. Use option BUILD_TESTING.")
   # TODO Remove this option by Check 0.15.0!
 endif(NOT CHECK_ENABLE_TESTS)
+
 option(CHECK_ENABLE_GCOV
   "Turn on test coverage" OFF)
 if (CHECK_ENABLE_GCOV AND NOT ${CMAKE_C_COMPILER_ID} MATCHES "GNU")
   message(FATAL_ERROR "Code Coverage (gcov) only works if GNU compiler is used!")
 endif (CHECK_ENABLE_GCOV AND NOT ${CMAKE_C_COMPILER_ID} MATCHES "GNU")
+
+option(ENABLE_MEMORY_LEAKING_TESTS
+  "Enable certain memory leaking tests only if valgrind is not used in testing" ON)
 
 ###############################################################################
 # Check system and architecture
@@ -376,10 +382,12 @@ set(CONFIG_HEADER ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 #
 # When converting to CMake we also want to abandon the m4 macros.
 #
-set(PROJECT_VERSION "${check_VERSION}")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_stdint.h.in
   ${CMAKE_CURRENT_BINARY_DIR}/check_stdint.h @ONLY)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/check_stdint.h DESTINATION include)
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/check_stdint.h
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
 
 ###############################################################################
 # Generate "check.pc", the package config (pkgconfig) file for libtool
@@ -388,6 +396,7 @@ set(prefix "${CMAKE_INSTALL_PREFIX}")
 set(exec_prefix "\${prefix}")
 set(libdir "\${exec_prefix}/lib")
 set(includedir "\${prefix}/include")
+set(VERSION "${PROJECT_VERSION}")
 
 if (HAVE_SUBUNIT)
   set(LIBSUBUNIT_PC "libsubunit")
@@ -421,6 +430,7 @@ unset(LIBS)
 unset(PTHREAD_LIBS)
 unset(GCOV_LIBS)
 unset(LIBSUBUNIT_PC)
+unset(VERSION)
 unset(includedir)
 unset(libdir)
 unset(exec_prefix)
@@ -428,7 +438,7 @@ set(PREFIX "${prefix_save}")
 
 install(
   FILES ${CMAKE_CURRENT_BINARY_DIR}/check.pc
-  DESTINATION lib/pkgconfig
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
 )
 
 ###############################################################################
@@ -446,27 +456,27 @@ if (BUILD_TESTING)
 
   # Only offer to run shell scripts if we may have a working interpreter
   if(UNIX OR MINGW OR MSYS)
-  add_test(NAME test_output.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_output.sh)
-  add_test(NAME test_log_output.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_log_output.sh)
-  add_test(NAME test_xml_output.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_xml_output.sh)
-  add_test(NAME test_tap_output.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_tap_output.sh)
-  add_test(NAME test_check_nofork.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork.sh)
-  add_test(NAME test_check_nofork_teardown.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork_teardown.sh)
-  add_test(NAME test_set_max_msg_size.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_set_max_msg_size.sh)
+    add_test(NAME test_output.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_output.sh)
+    add_test(NAME test_log_output.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_log_output.sh)
+    add_test(NAME test_xml_output.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_xml_output.sh)
+    add_test(NAME test_tap_output.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_tap_output.sh)
+    add_test(NAME test_check_nofork.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork.sh)
+    add_test(NAME test_check_nofork_teardown.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork_teardown.sh)
+    add_test(NAME test_set_max_msg_size.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_set_max_msg_size.sh)
   endif(UNIX OR MINGW OR MSYS)
 endif (BUILD_TESTING)
 
@@ -482,7 +492,7 @@ configure_package_config_file(
 )
 write_basic_package_version_file(
   ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-config-version.cmake
-  VERSION ${check_VERSION}
+  VERSION ${PROJECT_VERSION}
   COMPATIBILITY AnyNewerVersion
 )
 
@@ -494,12 +504,12 @@ export(EXPORT check-targets
 install(EXPORT check-targets
   NAMESPACE Check::
   FILE check-targets.cmake
-  DESTINATION lib/cmake/${EXPORT_NAME}
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${EXPORT_NAME}
 )
 install(
   FILES
     "${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-config.cmake"
     "${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-config-version.cmake"
-  DESTINATION lib/cmake/${EXPORT_NAME}
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${EXPORT_NAME}
 )
 

@@ -93,6 +93,15 @@ CK_CPPSTART
  * Used for MSVC to create the export attribute
  * CK_DLL_EXP is defined during the compilation of the library
  * on the command line.
+ *
+ * This definition is only used when building or linking to
+ * the shared library, i.e. libcheck.so. When building the library
+ * the value must be "_declspec(dllexport)".
+ * When linking with the library, the value must be "_declspec(dllimport)"
+ *
+ * This is only used with Microsoft Visual C. In other systems
+ * the value is empty. In MSVC the value is empty when linking with
+ * a static library.
  */
 #ifndef CK_DLL_EXP
 #define CK_DLL_EXP
