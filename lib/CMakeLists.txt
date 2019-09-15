@@ -70,9 +70,3 @@ set(HEADERS libcompat.h)
 
 add_library(compat STATIC ${SOURCES} ${HEADERS})
 
-install(TARGETS compat
-  RUNTIME DESTINATION bin
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib) 
-
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/libcompat.h DESTINATION include)
