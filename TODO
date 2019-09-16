@@ -20,6 +20,7 @@ Documentation
 [     ] * Document pkg-config usage, note that old macro usage is not recommended.
 [0.9.9] * Document selective running of tests with CK_RUN_SUITE and CK_RUN_CASE
           environment variables.
+[     ] * Update tutorial to match with the API changes: TTest* instead of TFun.
 
 Interface
 =========
@@ -55,6 +56,9 @@ Build issues:
 [     ] * use stricter CFLAGS for compiling Check
 [     ] * use ax_cflags_gcc_option to add to CFLAGS to Check
 [     ] * prune unused checks from configure.ac
+[     ] * Add option BUILD_DOCUMENTATION to CMake (Github #217).
+[     ] * Missing function check in CMake creates def HAVE_FOO=0.
+          There should be no HAVE_FOO (Github #195).
 
 Check source code:
 ============
@@ -89,6 +93,10 @@ Packaging
 [0.7.2] * Debian packaging 
 [0.9.2] * Get Check into Debian Sid
 [0.9.4] * Eliminate .deb and .rpm packaging for vendors --- not necessary
+
+Website
+=======
+[     ] * Fix: NEWS tab causes download (Github #1)
 
 
 
