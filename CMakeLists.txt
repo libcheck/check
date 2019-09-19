@@ -445,6 +445,32 @@ install(
 )
 
 ###############################################################################
+# CMake enabled static analysis
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  # Different tests are only executed when the corresponding
+  # tools are available. Presence in the system is checked individually.
+  #
+  # Run analysis only when the build type is Debug,
+  # not any of the Release variants.
+  # In the future Cppcheck and other tools will improve
+  # and find new faults in our code.
+  # We do not want to create headache for the future admins and packagers,
+  # only for the future programmers.
+
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.10")
+    # CMAKE_<LANG>_CPPCHECK only supported in 3.10 and upwards.
+    # E.g. CMAKE_<LANG>_CPPLINT already since CMake 3.8.
+    find_package(Cppcheck)
+    if(Cppcheck_FOUND)
+      set(CMAKE_C_CPPCHECK
+        "${Cppcheck_EXECUTABLE};--quiet;--std=c89;--enable=warning,style,performance,portability")
+    endif(Cppcheck_FOUND)
+  endif(CMAKE_VERSION VERSION_GREATER_EQUAL "3.10")
+
+endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
+
+###############################################################################
 # Subdirectories
 add_subdirectory(lib)
 add_subdirectory(src)
