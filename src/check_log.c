@@ -148,11 +148,11 @@ void log_suite_end(SRunner * sr, Suite * s)
     srunner_send_evt(sr, s, CLEND_S);
 }
 
-void log_test_start(SRunner * sr, TCase * tc, TF * tfun)
+void log_test_start(SRunner * sr, Suite * s, TCase * tc, TF * tfun)
 {
     char buffer[100];
 
-    snprintf(buffer, 99, "%s:%s", tc->name, tfun->ttest->name);
+    snprintf(buffer, 99, "%s:%s:%s", s->name, tc->name, tfun->ttest->name);
     srunner_send_evt(sr, buffer, CLSTART_T);
 }
 
@@ -371,9 +371,9 @@ void tap_lfun(SRunner * sr CK_ATTRIBUTE_UNUSED, FILE * file,
             /* Print the test result to the tap file */
             num_tests_run += 1;
             tr = (TestResult *)obj;
-            fprintf(file, "%s %d - %s:%s:%s: %s\n",
+            fprintf(file, "%s %d - %s:%s:%s:%s: %s\n",
                     tr->rtype == CK_PASS ? "ok" : "not ok", num_tests_run,
-                    tr->file, tr->tcname, tr->tname, tr->msg);
+                    tr->file, tr->sname, tr->tcname, tr->tname, tr->msg);
             fflush(file);
             break;
         default:
@@ -417,7 +417,8 @@ void subunit_lfun(SRunner * sr, FILE * file, enum print_output printmode,
         case CLEND_T:
             tr = (TestResult *)obj;
             {
-                char *name = ck_strdup_printf("%s:%s", tr->tcname, tr->tname);
+                char *name = ck_strdup_printf("%s:%s:%s",
+                                              tr->sname, tr->tcname, tr->tname);
                 char *msg = tr_short_str(tr);
 
                 switch (tr->rtype)
