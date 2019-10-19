@@ -28,11 +28,18 @@ project(check
   DESCRIPTION "Unit Testing Framework for C"
   LANGUAGES C)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
+###############################################################################
+# Set build features
+
+# Set CMAKE_BUILD_TYPE to Debug if source directory is a Git repository
+# or user does not override on the command line
+include(BuildType)
+
 ###############################################################################
 # Configure a project for testing with CTest/CDash
 include(CTest)
-
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 macro(extract_version file setting_name)
   file(STRINGS ${file} VERSION_NUMBER REGEX "^${setting_name}")
@@ -48,10 +55,6 @@ set(PROJECT_VERSION_MAJOR ${CHECK_MAJOR_VERSION})
 set(PROJECT_VERSION_MINOR ${CHECK_MINOR_VERSION})
 set(PROJECT_VERSION_PATCH ${CHECK_MICRO_VERSION})
 set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
-
-###############################################################################
-# Set build features
-set(CMAKE_BUILD_TYPE Debug)
 
 ###############################################################################
 # Provides install directory variables as defined by the GNU Coding Standards.
