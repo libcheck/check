@@ -45,6 +45,11 @@ set(HEADERS
 
 configure_file(check.h.in check.h @ONLY)
 
+# To maintain compatibility with the Autotools installation
+# we specifically create both shared and static libraries
+# as that is what Autotools script has been doing.
+# Normally CMake would create the system's native default library type.
+
 add_library(check STATIC ${SOURCES} ${HEADERS})
 
 # We would like to create an OBJECT library but currently they are
