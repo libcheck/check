@@ -490,29 +490,43 @@ set(EXPORT_NAME ${PROJECT_NAME})
 include(CMakePackageConfigHelpers)
 configure_package_config_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${EXPORT_NAME}-config.cmake.in
-  ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-config.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-config.cmake
   INSTALL_DESTINATION ${LIB_INSTALL_DIR}/${EXPORT_NAME}/cmake
 )
 write_basic_package_version_file(
-  ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-config-version.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-config-version.cmake
   VERSION ${PROJECT_VERSION}
   COMPATIBILITY AnyNewerVersion
 )
 
 export(EXPORT check-targets
-  FILE "${CMAKE_CURRENT_BINARY_DIR}/check-targets.cmake"
+  FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-targets.cmake"
   NAMESPACE Check::
 )
 
 install(EXPORT check-targets
   NAMESPACE Check::
-  FILE check-targets.cmake
+  FILE "${EXPORT_NAME}-targets.cmake"
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${EXPORT_NAME}
 )
 install(
   FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-config.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-config-version.cmake"
+    "${CMAKE_BINARY_DIR}/cmake/${EXPORT_NAME}-config.cmake"
+    "${CMAKE_BINARY_DIR}/cmake/${EXPORT_NAME}-config-version.cmake"
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${EXPORT_NAME}
 )
+
+# Store the current build directory in the CMake user package registry.
+# This helps dependent projects use a package from the current
+# project’s build tree, i.e. without installing it.
+
+# In CMake 3.14 and below the export(PACKAGE) command populated
+# the user package registry by default and users needed to set
+# the CMAKE_EXPORT_NO_PACKAGE_REGISTRY to disable it,
+# e.g. in automated build and packaging environments. Since
+# the user package registry is stored outside the build tree,
+# this side effect should not be enabled by default.
+# Therefore CMake 3.15 and above prefer that export(PACKAGE) does nothing
+# unless an explicit CMAKE_EXPORT_PACKAGE_REGISTRY variable is set.
+export(PACKAGE "${PROJECT_NAME}")
 
