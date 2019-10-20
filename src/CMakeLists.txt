@@ -143,10 +143,12 @@ endif (MSVC)
 # More configuration for exporting
 
 set(LIBRARY_OUTPUT_NAME "check")
+list(APPEND public_headers "${CMAKE_CURRENT_BINARY_DIR}/check.h")
+list(APPEND public_headers "${CMAKE_BINARY_DIR}/check_stdint.h")
 
 set_target_properties(check PROPERTIES
   OUTPUT_NAME ${LIBRARY_OUTPUT_NAME}
-  PUBLIC_HEADER ${CMAKE_CURRENT_BINARY_DIR}/check.h
+  PUBLIC_HEADER "${public_headers}"
 )
 
 if (MSVC)
@@ -161,16 +163,18 @@ set_target_properties(checkShared PROPERTIES
   OUTPUT_NAME ${LIBRARY_OUTPUT_NAME}
   VERSION ${PROJECT_VERSION}
   SOVERSION ${PROJECT_VERSION_MAJOR}
-  PUBLIC_HEADER ${CMAKE_CURRENT_BINARY_DIR}/check.h
+  PUBLIC_HEADER "${public_headers}"
 )
 target_include_directories(check
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>
     $<INSTALL_INTERFACE:include>
 )
 target_include_directories(checkShared
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>
     $<INSTALL_INTERFACE:include>
 )
 
