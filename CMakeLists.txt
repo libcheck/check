@@ -78,6 +78,55 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS ON)          # Use GNU extensions and POSIX standard
 
+# #############################################################################
+# Static analysis and code quality
+
+# Run analysis only when the build type is Debug,
+# not any of the Release variants.
+# Different tests are only executed when the corresponding
+# tools are available. Presence in the system is checked individually.
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+
+    # Compiler based code analysis
+    # Add other compilers if they are compatible
+    # or create another if().
+    if(
+        CMAKE_C_COMPILER_ID STREQUAL "GNU"
+        OR CMAKE_C_COMPILER_ID STREQUAL "Clang"
+        OR CMAKE_C_COMPILER_ID STREQUAL "AppleClang")
+
+        string(APPEND WARNING_COMPILER_FLAGS
+            " -Wall"
+            " -Wextra"
+            " -pedantic"
+            " -Wconversion"
+            " -Wsign-conversion"
+            " -Wpedantic"
+            " -fno-omit-frame-pointer"
+            " -Wpointer-arith -Wstrict-prototypes"
+
+            # " -Wlogical-op"
+            #" -fsanitize=address" # Disable sanitizers to activate libasan for valgrind.
+            # " -static-libasan"
+
+            # https://dwheeler.com/secure-programs/Secure-Programs-HOWTO.html#C-CPP
+            " -Wmissing-prototypes -Wmissing-declarations"
+            " -Wstrict-prototypes -Wpointer-arith"
+            " -Wwrite-strings -Wcast-qual -Wcast-align"
+            " -Wbad-function-cast"
+            " -Wformat-security  -Wformat-nonliteral"
+            " -Wmissing-format-attribute"
+            " -Winline"
+
+            " -funsigned-char"
+            )
+        string(APPEND CMAKE_C_FLAGS ${WARNING_COMPILER_FLAGS})
+        string(APPEND CMAKE_CXX_FLAGS ${WARNING_COMPILER_FLAGS})
+
+    endif()
+endif()
+
 ###############################################################################
 # Option
 option(CHECK_ENABLE_TESTS
