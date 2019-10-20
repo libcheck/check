@@ -936,7 +936,7 @@ START_TEST(test_ck_assert_float_finite)
   record_test_name(tcase_name());
 
   ck_assert_float_finite(x);
-  // MS VS doesn't allow explicit division by zero
+  /* MS VS doesn't allow explicit division by zero */
   x = 1.0f / (1.0f - t);
   record_failure_line_num(__LINE__);
   ck_assert_float_finite(x);
@@ -1452,7 +1452,7 @@ START_TEST(test_ck_assert_double_finite)
   record_test_name(tcase_name());
 
   ck_assert_double_finite(x);
-  // MS VS doesn't allow explicit division by zero
+  /* MS VS doesn't allow explicit division by zero */
   x = 1.0 / (1.0 - t);
   record_failure_line_num(__LINE__);
   ck_assert_double_finite(x);
@@ -1970,7 +1970,7 @@ START_TEST(test_ck_assert_ldouble_finite)
   record_test_name(tcase_name());
 
   ck_assert_ldouble_finite(x);
-  // MS VS doesn't allow explicit division by zero
+  /* MS VS doesn't allow explicit division by zero */
   x = 1.0l / (1.0l - t);
   record_failure_line_num(__LINE__);
   ck_assert_ldouble_finite(x);
