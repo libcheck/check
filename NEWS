@@ -1,4 +1,5 @@
-Planned Release Check 0.13.0
+Sat Oct 19, 2019: Released Check 0.13.0
+  based on hash 0b80af232b9d899f876faf3930093d0a3b19f378
 
 * configure: optional build documentation
   Issue #206 (GitHub)
@@ -7,6 +8,17 @@ Planned Release Check 0.13.0
   Issue #196 and Issue #186 (GitHub)
 
 * Add checkmk to CMake build.
+
+* Varous documentation improvements
+
+* END_TEST is now optional, as how START_TEST works has been redone
+  Issue #158
+
+* Support exporting Check to other projects with CMake 3
+  Issue #185
+
+* Shared library support for Visual Studio
+  Issue #220
 
 
 Fri Oct 20, 2017: Released Check 0.12.0
