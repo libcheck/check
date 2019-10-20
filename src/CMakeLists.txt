@@ -45,6 +45,11 @@ set(HEADERS
 
 configure_file(check.h.in check.h @ONLY)
 
+# To maintain compatibility with the Autotools installation
+# we specifically create both shared and static libraries
+# as that is what Autotools script has been doing.
+# Normally CMake would create the system's native default library type.
+
 add_library(check STATIC ${SOURCES} ${HEADERS})
 
 # We would like to create an OBJECT library but currently they are
@@ -150,7 +155,9 @@ if (MSVC)
   # "On Windows you should probably give each library a different name,
   # since there is a ".lib" file for both shared and static".
   # https://stackoverflow.com/a/2152157/4716395
-  set(LIBRARY_OUTPUT_NAME "checkStatic")
+  # "Dynamic-Link Library" (DLL) is Microsoft terminology.
+  # So we call it this:
+  set(LIBRARY_OUTPUT_NAME "checkDynamic")
 endif (MSVC)
 set_target_properties(checkShared PROPERTIES
   OUTPUT_NAME ${LIBRARY_OUTPUT_NAME}
