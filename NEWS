@@ -11,7 +11,7 @@ Sat Oct 20, 2019: Released Check 0.13.0
 * missing <unistd.h> in some files
   Issue #196 and Issue #186 (GitHub)
 
-* Varous documentation improvements
+* Various documentation improvements
 
 * END_TEST is now optional, as how START_TEST works has been redone
   Issue #158
