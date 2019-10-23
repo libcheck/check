@@ -1,33 +1,39 @@
 var indexSectionsWithContent =
 {
-  0: "cefmpst",
-  1: "c",
-  2: "cst",
-  3: "st",
-  4: "cfpt",
-  5: "c",
-  6: "cemst"
+  0: "ceflmnpst",
+  1: "t",
+  2: "c",
+  3: "cst",
+  4: "fln",
+  5: "st",
+  6: "cfpt",
+  7: "c",
+  8: "cemst"
 };
 
 var indexSectionNames =
 {
   0: "all",
-  1: "files",
-  2: "functions",
-  3: "typedefs",
-  4: "enums",
-  5: "enumvalues",
-  6: "defines"
+  1: "classes",
+  2: "files",
+  3: "functions",
+  4: "variables",
+  5: "typedefs",
+  6: "enums",
+  7: "enumvalues",
+  8: "defines"
 };
 
 var indexSectionLabels =
 {
   0: "All",
-  1: "Files",
-  2: "Functions",
-  3: "Typedefs",
-  4: "Enumerations",
-  5: "Enumerator",
-  6: "Macros"
+  1: "Data Structures",
+  2: "Files",
+  3: "Functions",
+  4: "Variables",
+  5: "Typedefs",
+  6: "Enumerations",
+  7: "Enumerator",
+  8: "Macros"
 };
 

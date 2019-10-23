@@ -64,6 +64,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
@@ -81,23 +82,28 @@ $(function() {
 </div>
 <p><a href="check_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTTest.html">TTest</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:acd859ab25e64e8227bdc8ef27be81784"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#acd859ab25e64e8227bdc8ef27be81784">tcase_add_test</a>(tc,  tf)&#160;&#160;&#160;<a class="el" href="check_8h.html#a5bee959c746a315a6ac360d6516c2119">tcase_add_test_raise_signal</a>(tc,tf,0)</td></tr>
+<tr class="memitem:acd859ab25e64e8227bdc8ef27be81784"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#acd859ab25e64e8227bdc8ef27be81784">tcase_add_test</a>(tc,  tf)&#160;&#160;&#160;<a class="el" href="check_8h.html#a17e3616cb6353f2298a27786a660c94b">tcase_add_test_raise_signal</a>(tc,tf,0)</td></tr>
 <tr class="separator:acd859ab25e64e8227bdc8ef27be81784"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5bee959c746a315a6ac360d6516c2119"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#a5bee959c746a315a6ac360d6516c2119">tcase_add_test_raise_signal</a>(tc,  tf,  signal)&#160;&#160;&#160;_tcase_add_test((tc),(tf),&quot;&quot; # tf &quot;&quot;,(signal), 0, 0, 1)</td></tr>
-<tr class="separator:a5bee959c746a315a6ac360d6516c2119"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ec93787cea72694e56e2f42f3b1430d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#a1ec93787cea72694e56e2f42f3b1430d">tcase_add_exit_test</a>(tc,  tf,  expected_exit_value)&#160;&#160;&#160;_tcase_add_test((tc),(tf),&quot;&quot; # tf &quot;&quot;,0,(expected_exit_value),0,1)</td></tr>
-<tr class="separator:a1ec93787cea72694e56e2f42f3b1430d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef9249759cf9efe4fcb432630a7c356c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#aef9249759cf9efe4fcb432630a7c356c">tcase_add_loop_test</a>(tc,  tf,  s,  e)&#160;&#160;&#160;_tcase_add_test((tc),(tf),&quot;&quot; # tf &quot;&quot;,0,0,(s),(e))</td></tr>
-<tr class="separator:aef9249759cf9efe4fcb432630a7c356c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae3c8c58931ee366e63c64a58486ca35a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#ae3c8c58931ee366e63c64a58486ca35a">tcase_add_loop_test_raise_signal</a>(tc,  tf,  signal,  s,  e)&#160;&#160;&#160;_tcase_add_test((tc),(tf),&quot;&quot; # tf &quot;&quot;,(signal),0,(s),(e))</td></tr>
-<tr class="separator:ae3c8c58931ee366e63c64a58486ca35a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2668e413387c88c3bd578268944fd986"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#a2668e413387c88c3bd578268944fd986">tcase_add_loop_exit_test</a>(tc,  tf,  expected_exit_value,  s,  e)&#160;&#160;&#160;_tcase_add_test((tc),(tf),&quot;&quot; # tf &quot;&quot;,0,(expected_exit_value),(s),(e))</td></tr>
-<tr class="separator:a2668e413387c88c3bd578268944fd986"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a17e3616cb6353f2298a27786a660c94b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#a17e3616cb6353f2298a27786a660c94b">tcase_add_test_raise_signal</a>(tc,  ttest,  signal)&#160;&#160;&#160;_tcase_add_test((tc),(ttest),(signal), 0, 0, 1)</td></tr>
+<tr class="separator:a17e3616cb6353f2298a27786a660c94b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0615998f320717304b26ec2f293b1ee"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#ac0615998f320717304b26ec2f293b1ee">tcase_add_exit_test</a>(tc,  ttest,  expected_exit_value)&#160;&#160;&#160;_tcase_add_test((tc),(ttest),0,(expected_exit_value),0,1)</td></tr>
+<tr class="separator:ac0615998f320717304b26ec2f293b1ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6f2a5b5756b085d0c0c3287487a7d6a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#ac6f2a5b5756b085d0c0c3287487a7d6a">tcase_add_loop_test</a>(tc,  ttest,  s,  e)&#160;&#160;&#160;_tcase_add_test((tc),(ttest),0,0,(s),(e))</td></tr>
+<tr class="separator:ac6f2a5b5756b085d0c0c3287487a7d6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af08ed9856a3c1db6514da038de8d6ba2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#af08ed9856a3c1db6514da038de8d6ba2">tcase_add_loop_test_raise_signal</a>(tc,  ttest,  signal,  s,  e)&#160;&#160;&#160;_tcase_add_test((tc),(ttest),(signal),0,(s),(e))</td></tr>
+<tr class="separator:af08ed9856a3c1db6514da038de8d6ba2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4aca12968d46d9b54203e9be0942c9d1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#a4aca12968d46d9b54203e9be0942c9d1">tcase_add_loop_exit_test</a>(tc,  ttest,  expected_exit_value,  s,  e)&#160;&#160;&#160;_tcase_add_test((tc),(ttest),0,(expected_exit_value),(s),(e))</td></tr>
+<tr class="separator:a4aca12968d46d9b54203e9be0942c9d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada970b54a25120448a9a685fa92ce462"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#ada970b54a25120448a9a685fa92ce462">START_TEST</a>(__testname)</td></tr>
 <tr class="separator:ada970b54a25120448a9a685fa92ce462"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aefcd1ca1799d2395f7bbe3c50bcc8ff8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#aefcd1ca1799d2395f7bbe3c50bcc8ff8">END_TEST</a>&#160;&#160;&#160;}</td></tr>
+<tr class="memitem:aefcd1ca1799d2395f7bbe3c50bcc8ff8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#aefcd1ca1799d2395f7bbe3c50bcc8ff8">END_TEST</a></td></tr>
 <tr class="separator:aefcd1ca1799d2395f7bbe3c50bcc8ff8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c81944cfa7f13953a95a904e1be7c77"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#a4c81944cfa7f13953a95a904e1be7c77">ck_assert</a>(expr)&#160;&#160;&#160;<a class="el" href="check_8h.html#a09cf259baeb2284c386e50b3eedb8d4e">ck_assert_msg</a>(expr, NULL)</td></tr>
 <tr class="separator:a4c81944cfa7f13953a95a904e1be7c77"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -268,6 +274,8 @@ Typedefs</h2></td></tr>
 <tr class="separator:a3124df1d6ac61335a6af5872c92e893f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4653c8984fd7e6f6846b47531492a71e"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="check_8h.html#a4653c8984fd7e6f6846b47531492a71e">Suite</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#a4653c8984fd7e6f6846b47531492a71e">Suite</a></td></tr>
 <tr class="separator:a4653c8984fd7e6f6846b47531492a71e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ee0cd9a4b90db258158c66f65fb6ace"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structTTest.html">TTest</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#a1ee0cd9a4b90db258158c66f65fb6ace">TTest</a></td></tr>
+<tr class="separator:a1ee0cd9a4b90db258158c66f65fb6ace"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada3ee3ad7a218b780bc5a97d3a94e679"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="check_8h.html#ada3ee3ad7a218b780bc5a97d3a94e679">SRunner</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#ada3ee3ad7a218b780bc5a97d3a94e679">SRunner</a></td></tr>
 <tr class="separator:ada3ee3ad7a218b780bc5a97d3a94e679"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6628729b8194e11c8c1531362a1fb1cc"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="check_8h.html#a6628729b8194e11c8c1531362a1fb1cc">TestResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#a6628729b8194e11c8c1531362a1fb1cc">TestResult</a></td></tr>
@@ -489,7 +497,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Check two double precision floating point numbers to determine if X == Y</p>
+<p>Check two double precision floating point numbers to determine if X == Y.</p>
+<p>Note that the usefulness of this assertion is very limited. If you want to compare two floating point numbers for equality, you probably want to use ck_assert_double_eq_tol instead.</p>
 <p>If not X == Y, the test fails.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -906,7 +915,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Check two double precision floating point numbers to determine if X != Y</p>
+<p>Check two double precision floating point numbers to determine if X != Y.</p>
+<p>Note that the usefulness of this assertion is very limited. If you want to compare two floating point numbers for equality, you probably want to use ck_assert_double_ne_tol instead.</p>
 <p>If not X != Y, the test fails.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -1019,7 +1029,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Check two single precision floating point numbers to determine if X == Y</p>
+<p>Check two single precision floating point numbers to determine if X == Y.</p>
+<p>Note that the usefulness of this assertion is very limited. If you want to compare two floating point numbers for equality, you probably want to use ck_assert_float_eq_tol instead.</p>
 <p>If not X == Y, the test fails.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -1436,7 +1447,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Check two single precision floating point numbers to determine if X != Y</p>
+<p>Check two single precision floating point numbers to determine if X != Y.</p>
+<p>Note that the usefulness of this assertion is very limited. If you want to compare two floating point numbers for equality, you probably want to use ck_assert_float_ne_tol instead.</p>
 <p>If not X != Y, the test fails.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -1783,7 +1795,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Check two double precision floating point numbers to determine if X == Y</p>
+<p>Check two double precision floating point numbers to determine if X == Y.</p>
+<p>Note that the usefulness of this assertion is very limited. If you want to compare two floating point numbers for equality, you probably want to use ck_assert_ldouble_eq_tol instead.</p>
 <p>If not X == Y, the test fails.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -2200,7 +2213,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Check two double precision floating point numbers to determine if X != Y</p>
+<p>Check two double precision floating point numbers to determine if X != Y.</p>
+<p>Note that the usefulness of this assertion is very limited. If you want to compare two floating point numbers for equality, you probably want to use ck_assert_ldouble_ne_tol instead.</p>
 <p>If not X != Y, the test fails.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -2833,7 +2847,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Check two strings to determine if 0==strcmp(X,Y)</p>
-<p>If X or Y is NULL the test failes. If not 0==strcmp(X,Y), the test fails.</p>
+<p>If X or Y is NULL the test fails. If not 0==strcmp(X,Y), the test fails.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">X</td><td>string </td></tr>
@@ -3310,7 +3324,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define END_TEST&#160;&#160;&#160;}</td>
+          <td class="memname">#define END_TEST</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -3354,14 +3368,15 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> __testname (<span class="keywordtype">int</span> _i CK_ATTRIBUTE_UNUSED)\</div><div class="line">{\</div><div class="line">  tcase_fn_start (<span class="stringliteral">&quot;&quot;</span># __testname, __FILE__, __LINE__);</div></div><!-- fragment --><p>Start a unit test with <a class="el" href="check_8h.html#ada970b54a25120448a9a685fa92ce462">START_TEST(unit_name)</a>, end with END_TEST.</p>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> __testname ## _fn (<span class="keywordtype">int</span> _i CK_ATTRIBUTE_UNUSED);\</div><div class="line">static <span class="keyword">const</span> <a class="code" href="structTTest.html">TTest</a> __testname ## _ttest = {<span class="stringliteral">&quot;&quot;</span># __testname, __testname ## _fn, __FILE__, __LINE__};\</div><div class="line">static <span class="keyword">const</span> <a class="code" href="structTTest.html">TTest</a> * __testname = &amp; __testname ## _ttest;\</div><div class="line">static <span class="keywordtype">void</span> __testname ## _fn (<span class="keywordtype">int</span> _i CK_ATTRIBUTE_UNUSED)</div><div class="ttc" id="structTTest_html"><div class="ttname"><a href="structTTest.html">TTest</a></div><div class="ttdef"><b>Definition:</b> check.h:151</div></div>
+</div><!-- fragment --><p>Start a unit test with <a class="el" href="check_8h.html#ada970b54a25120448a9a685fa92ce462">START_TEST(unit_name)</a>, end with END_TEST.</p>
 <p>One must use braces within a START_/END_ pair to declare new variables</p>
 <dl class="section since"><dt>Since</dt><dd>0.6.0 </dd></dl>
 
 </div>
 </div>
-<a id="a1ec93787cea72694e56e2f42f3b1430d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1ec93787cea72694e56e2f42f3b1430d">&sect;&nbsp;</a></span>tcase_add_exit_test</h2>
+<a id="ac0615998f320717304b26ec2f293b1ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0615998f320717304b26ec2f293b1ee">&sect;&nbsp;</a></span>tcase_add_exit_test</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3376,7 +3391,7 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname">tf, </td>
+          <td class="paramname">ttest, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -3387,7 +3402,7 @@ Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;_tcase_add_test((tc),(tf),&quot;&quot; # tf &quot;&quot;,0,(expected_exit_value),0,1)</td>
+          <td></td><td>&#160;&#160;&#160;_tcase_add_test((tc),(ttest),0,(expected_exit_value),0,1)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -3405,8 +3420,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a2668e413387c88c3bd578268944fd986"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2668e413387c88c3bd578268944fd986">&sect;&nbsp;</a></span>tcase_add_loop_exit_test</h2>
+<a id="a4aca12968d46d9b54203e9be0942c9d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4aca12968d46d9b54203e9be0942c9d1">&sect;&nbsp;</a></span>tcase_add_loop_exit_test</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3421,7 +3436,7 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname">tf, </td>
+          <td class="paramname">ttest, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -3444,7 +3459,7 @@ Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;_tcase_add_test((tc),(tf),&quot;&quot; # tf &quot;&quot;,0,(expected_exit_value),(s),(e))</td>
+          <td></td><td>&#160;&#160;&#160;_tcase_add_test((tc),(ttest),0,(expected_exit_value),(s),(e))</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -3465,8 +3480,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aef9249759cf9efe4fcb432630a7c356c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aef9249759cf9efe4fcb432630a7c356c">&sect;&nbsp;</a></span>tcase_add_loop_test</h2>
+<a id="ac6f2a5b5756b085d0c0c3287487a7d6a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6f2a5b5756b085d0c0c3287487a7d6a">&sect;&nbsp;</a></span>tcase_add_loop_test</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3481,7 +3496,7 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname">tf, </td>
+          <td class="paramname">ttest, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -3498,7 +3513,7 @@ Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;_tcase_add_test((tc),(tf),&quot;&quot; # tf &quot;&quot;,0,0,(s),(e))</td>
+          <td></td><td>&#160;&#160;&#160;_tcase_add_test((tc),(ttest),0,0,(s),(e))</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -3517,8 +3532,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ae3c8c58931ee366e63c64a58486ca35a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae3c8c58931ee366e63c64a58486ca35a">&sect;&nbsp;</a></span>tcase_add_loop_test_raise_signal</h2>
+<a id="af08ed9856a3c1db6514da038de8d6ba2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af08ed9856a3c1db6514da038de8d6ba2">&sect;&nbsp;</a></span>tcase_add_loop_test_raise_signal</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3533,7 +3548,7 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname">tf, </td>
+          <td class="paramname">ttest, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -3556,7 +3571,7 @@ Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;_tcase_add_test((tc),(tf),&quot;&quot; # tf &quot;&quot;,(signal),0,(s),(e))</td>
+          <td></td><td>&#160;&#160;&#160;_tcase_add_test((tc),(ttest),(signal),0,(s),(e))</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -3598,7 +3613,7 @@ Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;<a class="el" href="check_8h.html#a5bee959c746a315a6ac360d6516c2119">tcase_add_test_raise_signal</a>(tc,tf,0)</td>
+          <td></td><td>&#160;&#160;&#160;<a class="el" href="check_8h.html#a17e3616cb6353f2298a27786a660c94b">tcase_add_test_raise_signal</a>(tc,tf,0)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -3614,8 +3629,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a5bee959c746a315a6ac360d6516c2119"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5bee959c746a315a6ac360d6516c2119">&sect;&nbsp;</a></span>tcase_add_test_raise_signal</h2>
+<a id="a17e3616cb6353f2298a27786a660c94b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a17e3616cb6353f2298a27786a660c94b">&sect;&nbsp;</a></span>tcase_add_test_raise_signal</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3630,7 +3645,7 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname">tf, </td>
+          <td class="paramname">ttest, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -3641,7 +3656,7 @@ Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;_tcase_add_test((tc),(tf),&quot;&quot; # tf &quot;&quot;,(signal), 0, 0, 1)</td>
+          <td></td><td>&#160;&#160;&#160;_tcase_add_test((tc),(ttest),(signal), 0, 0, 1)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -3748,6 +3763,21 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Type for a test function </p>
+
+</div>
+</div>
+<a id="a1ee0cd9a4b90db258158c66f65fb6ace"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ee0cd9a4b90db258158c66f65fb6ace">&sect;&nbsp;</a></span>TTest</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct <a class="el" href="structTTest.html">TTest</a>  <a class="el" href="structTTest.html">TTest</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Type for a test, which wraps a test function </p>
 
 </div>
 </div>
@@ -5169,7 +5199,7 @@ case". </td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Oct 20 2017 16:25:31 for Check by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 23 2019 07:53:08 for Check by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.12
 </small></address>
