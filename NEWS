@@ -1,3 +1,35 @@
+In Development:
+# Mentioning Check 0.13.0 for now, to fix distcheck target until next release
+
+
+Sat Oct 20, 2019: Released Check 0.13.0
+  based on hash 2b18886a9a9d3bab44917a550d12128ad7e2c197
+
+* configure: optional build documentation
+  Issue #206 (GitHub)
+
+* missing <unistd.h> in some files
+  Issue #196 and Issue #186 (GitHub)
+
+* Various documentation improvements
+
+* END_TEST is now optional, as how START_TEST works has been redone
+  Issue #158
+  
+* Various CMake related changes:
+  - Support exporting Check to other projects with CMake 3
+    Issue #185
+  - Shared library support for Visual Studio
+    Issue #220
+  - Fix wrong library filename
+    Issue #226
+  - Add support for CMake package registry 
+    Issue #227
+  - CMake build type can now be debug or release
+    Issue #228
+  - Add checkmk to CMake build.
+
+
 Fri Oct 20, 2017: Released Check 0.12.0
   2017-10-20 10:00:00 +0000
   based on hash c472c743d7c9f01ae9ea6a0e8e08132251b62abd

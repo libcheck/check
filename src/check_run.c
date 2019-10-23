@@ -415,11 +415,12 @@ static TestResult *tcase_run_tfun_nofork(SRunner * sr, TCase * tc, TF * tfun,
         clock_gettime(check_get_clockid(), &ts_start);
         if(0 == setjmp(error_jmp_buffer))
         {
-            tfun->fn(i);
+            tcase_fn_start(tfun->ttest->name, tfun->ttest->file, tfun->ttest->line);
+            tfun->ttest->fn(i);
         }
         clock_gettime(check_get_clockid(), &ts_end);
         tcase_run_checked_teardown(tc);
-        return receive_result_info_nofork(tc->name, tfun->name, i,
+        return receive_result_info_nofork(tc->name, tfun->ttest->name, i,
                                           DIFF_IN_USEC(ts_start, ts_end));
     }
 
@@ -491,7 +492,8 @@ static TestResult *tcase_run_tfun_fork(SRunner * sr, TCase * tc, TF * tfun,
         tr = tcase_run_checked_setup(sr, tc);
         free(tr);
         clock_gettime(check_get_clockid(), &ts_start);
-        tfun->fn(i);
+        tcase_fn_start(tfun->ttest->name, tfun->ttest->file, tfun->ttest->line);
+        tfun->ttest->fn(i);
         clock_gettime(check_get_clockid(), &ts_end);
         tcase_run_checked_teardown(tc);
         send_duration_info(DIFF_IN_USEC(ts_start, ts_end));
@@ -535,7 +537,7 @@ static TestResult *tcase_run_tfun_fork(SRunner * sr, TCase * tc, TF * tfun,
 
     killpg(pid, SIGKILL);       /* Kill remaining processes. */
 
-    return receive_result_info_fork(tc->name, tfun->name, i, status,
+    return receive_result_info_fork(tc->name, tfun->ttest->name, i, status,
                                     tfun->signal, tfun->allowed_exit_value);
 }
 

@@ -416,16 +416,16 @@ static int nr_of_master_tests = sizeof master_tests /sizeof master_tests[0];
 START_TEST(test_check_nfailures)
 {
   int i;
-  int failed = 0;
+  int number_failed = 0;
   
   for (i = 0; i < nr_of_master_tests; i++) {
     if (master_tests[i].failure_type != CK_PASS) {
-      failed++;
+      number_failed++;
     }
   }
-  ck_assert_msg (sub_nfailed == failed,
+  ck_assert_msg (sub_nfailed == number_failed,
                "Unexpected number of failures received, %d, expected %d.",
-               sub_nfailed, failed);
+               sub_nfailed, number_failed);
 }
 END_TEST
 
@@ -499,29 +499,32 @@ START_TEST(test_check_failure_msgs)
     expected_msg = master_test->msg;
 
     switch (master_test->msg_type) {
-    case CK_MSG_TEXT:
-      if (strcmp(got_msg, expected_msg) != 0) {
-        not_equal = 1;
-      }
-      break;
+      case CK_MSG_TEXT:
+        if (strcmp(got_msg, expected_msg) != 0) {
+          not_equal = 1;
+        }
+        break;
 #if ENABLE_REGEX
-    case CK_MSG_REGEXP: {
-      reg_err = regcomp(&re, expected_msg, REG_EXTENDED | REG_NOSUB);
-      if (reg_err) {        
-        regerror(reg_err, &re, err_text, sizeof(err_text));
-        ck_assert_msg(reg_err == 0,
-                "For test %d:%s:%s Expected regexp '%s', but regcomp returned error '%s'",
-                i, master_test->tcname, master_test->test_name, expected_msg,
-                err_text);
+      case CK_MSG_REGEXP: {
+        reg_err = regcomp(&re, expected_msg, REG_EXTENDED | REG_NOSUB);
+        if (reg_err) {        
+          regerror(reg_err, &re, err_text, sizeof(err_text));
+          ck_assert_msg(reg_err == 0,
+                  "For test %d:%s:%s Expected regexp '%s', but regcomp returned error '%s'",
+                  i, master_test->tcname, master_test->test_name, expected_msg,
+                  err_text);
+        }
+        reg_err = regexec(&re, got_msg, 0, NULL, 0);
+        regfree(&re);
+        if (reg_err) {
+          not_equal = 1;
+        }
+        break;
       }
-      reg_err = regexec(&re, got_msg, 0, NULL, 0);
-      regfree(&re);
-      if (reg_err) {
-        not_equal = 1;
-      }
-      break;
-    }
 #endif /* ENABLE_REGEX */
+      default:
+        /* Program should not reach here */
+        break;
     }
     
     if (not_equal) {      
@@ -560,7 +563,7 @@ START_TEST(test_check_failure_lnos)
   int i;
   int line_no;
   int passed = 0;
-  int failed;
+  int number_failed;
   TestResult *tr;
   
   /* Create list of line numbers where failures occurred */
@@ -572,22 +575,22 @@ START_TEST(test_check_failure_lnos)
       continue;
     }
 
-    failed = i - passed;
+    number_failed = i - passed;
 
     ck_assert_msg(i - passed <= sub_nfailed, NULL);
-    tr = tr_fail_array[failed];
+    tr = tr_fail_array[number_failed];
     ck_assert_msg(tr != NULL, NULL);
     line_no = get_next_failure_line_num(line_num_failures);
 
     if(line_no == -1)
     {
       ck_abort_msg("Did not find the %dth failure line number for suite %s, msg %s",
-        (failed+1), tr_tcname(tr), tr_msg(tr));
+        (number_failed+1), tr_tcname(tr), tr_msg(tr));
     }
 
     if (line_no > 0 && tr_lno(tr) != line_no) {
       ck_abort_msg("For test %d (failure %d): Expected lno %d, got %d for suite %s, msg %s",
-               i, failed, line_no, tr_lno(tr), tr_tcname(tr), tr_msg(tr));
+               i, number_failed, line_no, tr_lno(tr), tr_tcname(tr), tr_msg(tr));
     }    
   }
 
@@ -651,7 +654,7 @@ START_TEST(test_check_test_names)
   int i;
   int line_no;
   int passed = 0;
-  int failed;
+  int number_failed;
   TestResult *tr;
 
   rewind(test_names_file);
@@ -689,29 +692,32 @@ START_TEST(test_check_all_msgs)
 #endif
 
   switch (master_test->msg_type) {
-  case CK_MSG_TEXT:
-    if (strcmp(got_msg, expected_msg) != 0) {
-      not_equal = 1;
-    }
-    break;
+    case CK_MSG_TEXT:
+      if (strcmp(got_msg, expected_msg) != 0) {
+        not_equal = 1;
+      }
+      break;
 #if ENABLE_REGEX
-  case CK_MSG_REGEXP: {
-    reg_err = regcomp(&re, expected_msg, REG_EXTENDED | REG_NOSUB);
-    if (reg_err) {      
-      regerror(reg_err, &re, err_text, sizeof(err_text));
-      ck_assert_msg(reg_err == 0,
-                "For test %d:%s:%s Expected regexp '%s', but regcomp returned error '%s'",
-                _i, master_test->tcname, master_test->test_name, expected_msg,
-                err_text);
+    case CK_MSG_REGEXP: {
+      reg_err = regcomp(&re, expected_msg, REG_EXTENDED | REG_NOSUB);
+      if (reg_err) {      
+        regerror(reg_err, &re, err_text, sizeof(err_text));
+        ck_assert_msg(reg_err == 0,
+                  "For test %d:%s:%s Expected regexp '%s', but regcomp returned error '%s'",
+                  _i, master_test->tcname, master_test->test_name, expected_msg,
+                  err_text);
+      }
+      reg_err = regexec(&re, got_msg, 0, NULL, 0);
+      regfree(&re);
+      if (reg_err) {
+        not_equal = 1;
+      }
+      break;
     }
-    reg_err = regexec(&re, got_msg, 0, NULL, 0);
-    regfree(&re);
-    if (reg_err) {
-      not_equal = 1;
-    }
-    break;
-  }
 #endif /* ENABLE_REGEX */
+    default:
+      /* Program should not reach here */
+      break;
   }
 
   if (not_equal) {    
@@ -853,8 +859,10 @@ void setup (void)
   line_num_failures = fopen(line_num_failures_file_name, "w+b");
 #else
   test_names_file_name = strdup("check_test_names__XXXXXX");
+  assert(test_names_file_name != NULL && "strdup() failed");
   test_names_file = fdopen(mkstemp(test_names_file_name), "w+b");
   line_num_failures_file_name = strdup("check_error_linenums_XXXXXX");
+  assert(line_num_failures_file_name != NULL && "strdup() failed");
   line_num_failures = fdopen(mkstemp(line_num_failures_file_name), "w+b");
 #endif
 

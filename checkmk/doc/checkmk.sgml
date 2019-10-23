@@ -36,7 +36,7 @@
 
     <para>The Check framework, along with information regarding it, is
     available at <ulink
-    url="http://check.sourceforge.net/">http://check.sourceforge.net/</ulink>.</para>
+    url="https://libcheck.github.io/check/">https://libcheck.github.io/check/</ulink>.</para>
 
     <para>The <replaceable>input-file</replaceable> argument to
     <command>checkmk</command> uses a simple, C-preprocessor-like

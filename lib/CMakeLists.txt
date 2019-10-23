@@ -62,14 +62,11 @@ if(NOT HAVE_DECL_STRSIGNAL)
   set(SOURCES ${SOURCES} strsignal.c)
 endif(NOT HAVE_DECL_STRSIGNAL)
 
+if(NOT HAVE_DECL_ALARM)
+  set(SOURCES ${SOURCES} alarm.c)
+endif(NOT HAVE_DECL_ALARM)
 
 set(HEADERS libcompat.h)
 
 add_library(compat STATIC ${SOURCES} ${HEADERS})
 
-install(TARGETS compat
-  RUNTIME DESTINATION bin
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib) 
-
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/libcompat.h DESTINATION include)

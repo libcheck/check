@@ -2,7 +2,13 @@
 
 ## run tests after everything else
 
-SUBDIRS = lib src doc . checkmk tests
+if MAKE_DOCS
+OPTIONAL_DOC_TARGET = doc
+else
+OPTIONAL_DOC_TARGET =
+endif
+
+SUBDIRS = lib src $(OPTIONAL_DOC_TARGET) . checkmk tests
 
 ## FIXME: maybe we don't need this line
 
@@ -20,6 +26,7 @@ include_HEADERS = check_stdint.h
 
 EXTRA_DIST = check.pc.in $(m4data_DATA) xml/check_unittest.xslt \
 	CMakeLists.txt src/CMakeLists.txt tests/CMakeLists.txt lib/CMakeLists.txt \
+	checkmk/CMakeLists.txt \
 	cmake
 
 ## install docs
@@ -46,6 +53,9 @@ doc/check_html:
 
 doc/doxygen:
 	$(MAKE) -C doc doxygen
+
+doc/doxygen-devel:
+	$(MAKE) -C doc doxygen-devel
 
 # check we can do a clean build, including docs.
 # perhaps we should check for out of date (svn st -u) and modified files.

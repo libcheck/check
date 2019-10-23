@@ -9,6 +9,16 @@ check_html: $(srcdir)/check.texi
 doxygen:
 	doxygen $(srcdir)/doxygen.conf
 
+## if graphviz does not exist disable graph generation
+if USE_GRAPHVIZ
+doxygen-devel:
+	doxygen $(srcdir)/doxygen-devel.conf
+else
+doxygen-devel:
+	( cat $(srcdir)/doxygen-devel.conf; echo "HAVE_DOT = NO" ) | doxygen -
+	@ >&2 echo "graphviz not found, graphs will not be rendered."
+endif
+
 ## we need to include several diffs as we evolve the example in the
 ## tutorial.  this means we'll generate them from the example source.
 

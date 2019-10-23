@@ -1,11 +1,11 @@
 TODO
 ====
 
-The following are considered bugs in Check.  If you have a fix, please
-post it in the patch tracker on http://sourceforge.net/projects/check
-or send it to <check-devel at lists dot sourceforge dot net>.  Bug
-fixing is considered more important than feature requests at this
-point. Please check the Sourceforge trackers before submitting.
+The following are considered bugs in Check. If you have a fix, please
+post it as a pull request on GitHub at
+https://github.com/libcheck/check/pulls
+Bug fixing is considered more important than feature requests at this
+point. Please check the GitHub issue tracker before submitting.
 
 Documentation
 =============
@@ -20,14 +20,15 @@ Documentation
 [     ] * Document pkg-config usage, note that old macro usage is not recommended.
 [0.9.9] * Document selective running of tests with CK_RUN_SUITE and CK_RUN_CASE
           environment variables.
+[     ] * Update tutorial to match with the API changes: TTest* instead of TFun.
 
 Interface
 =========
 
 [     ] * Change check not to clobber things in the global namespace.
           Prepend CHECK_ to all constants, check_ to all exported symbols, 
-  	  and _check to all internal functions.  Currently fail() is
-	  causing a problem.  Deprecate the old API in a nice way.
+          and _check to all internal functions.  Currently fail() is
+          causing a problem.  Deprecate the old API in a nice way.
 
 Build issues:
 =============
@@ -38,9 +39,9 @@ Build issues:
 [0.9.4] * Convert Check to use Libtool 
 [     ] * Figure out if we need stamp-h.in or not
 [     ] * use AC_CONFIG_MACRO_DIR([m4]) and create an m4/ dir for check.m4
-	    aclocaldir = $(datadir)/aclocal
-	    aclocal_DATA = mymacro.m4 myothermacro.m4
-	    ACLOCAL_AMFLAGS = -I m4  # put in top-level Makefile.am
+            aclocaldir = $(datadir)/aclocal
+            aclocal_DATA = mymacro.m4 myothermacro.m4
+            ACLOCAL_AMFLAGS = -I m4  # put in top-level Makefile.am
 [     ] * Fix overriding CFLAGS in configure.ac
 [     ] * Use AC_DEFINE to define version number stuff?
 [     ] * Change MICRO to ALPHA? probably not
@@ -55,13 +56,16 @@ Build issues:
 [     ] * use stricter CFLAGS for compiling Check
 [     ] * use ax_cflags_gcc_option to add to CFLAGS to Check
 [     ] * prune unused checks from configure.ac
+[     ] * Add option BUILD_DOCUMENTATION to CMake (Github #217).
+[     ] * Missing function check in CMake creates def HAVE_FOO=0.
+          There should be no HAVE_FOO (Github #195).
 
 Check source code:
 ============
 
-[     ] * Eliminate abbreviations like nf for number_failed
+[0.13.0] * Eliminate abbreviations like nf for number_failed
 [0.9.13] * Run indent on everything, make sure it works well.
-[     ] * Fix START_TEST/END_TEST to look like valid C code.
+[0.13.0] * Fix START_TEST/END_TEST to look like valid C code.
 [     ] * Document things way more.
 [     ] * Create check.h automatically using makeheaders.c (not sure)
 [     ] * Eliminate check_ prefix from files in src/ ... not needed
@@ -89,6 +93,10 @@ Packaging
 [0.7.2] * Debian packaging 
 [0.9.2] * Get Check into Debian Sid
 [0.9.4] * Eliminate .deb and .rpm packaging for vendors --- not necessary
+
+Website
+=======
+[     ] * Fix: NEWS tab causes download (Github #1)
 
 
 
@@ -119,20 +127,20 @@ Unit test writing
 [     ] * Autoproduce unit testing framework from header files
 [     ] * Count the number of START_TEST macros and check that each function
           is added to some suite; issue a warning message otherwise.  Maybe the
-	  best way to do this is to put each function onto a list or
+          best way to do this is to put each function onto a list or
           table as its defined, and then remove it once its added
           somewhere.  Then, when finished, print out what remains on the list /
           in the table.  This might require some ugly macro hackery...
 [     ] * Better macro for START_TEST.  It would be nice to pass in
-	  three separate arguments, something like: 
+          three separate arguments, something like: 
             1) a numeric ID for the tests function
             2) the exact name of the function being tested
             3) the name of the feature in (2) being tested for                       
 [     ] * Find a way to create setup/teardown macros such that global
-	  variables aren't necessary, and they're really just blocks
-	  that get added at the beginning and ending of tests.
+          variables aren't necessary, and they're really just blocks
+          that get added at the beginning and ending of tests.
 [     ] * Some mechanism to profile execution times, and assert that the time
-	  a test takes to complete scales according to some big-O notation.
+          a test takes to complete scales according to some big-O notation.
 [     ] * Fork entire test cases, and then fork individual tests from
           within each test case, so that unchecked fixtures can in
           fact do unsafe things without bringing down the entire test

@@ -4,9 +4,9 @@
 # Prelude.
 AC_PREREQ([2.59])
 
-AC_INIT([Check], [0.12.0], [check-devel at lists dot sourceforge dot net])
+AC_INIT([Check], [0.13.0], [check-devel at lists dot sourceforge dot net])
 CHECK_MAJOR_VERSION=0
-CHECK_MINOR_VERSION=12
+CHECK_MINOR_VERSION=13
 CHECK_MICRO_VERSION=0
 CHECK_VERSION=$CHECK_MAJOR_VERSION.$CHECK_MINOR_VERSION.$CHECK_MICRO_VERSION
 
@@ -71,6 +71,15 @@ AC_HELP_STRING([--enable-timeout-tests],
   no)  enable_timeout_tests=false ;;
   *)   AC_MSG_ERROR(bad value ${enableval} for --enable-timeout-tests) ;;
 esac], [enable_timeout_tests=true ])
+
+AC_ARG_ENABLE(build-docs,
+AC_HELP_STRING([--enable-build-docs],
+           [turn on building documentation @<:@default=yes@:>@]),
+[case "${enableval}" in
+  yes) enable_build_docs=true ;;
+  no)  enable_build_docs=false ;;
+  *)   AC_MSG_ERROR(bad value ${enableval} for --enable-build-docs) ;;
+esac], [enable_build_docs=true ])
 
 AM_CONDITIONAL(NO_TIMEOUT_TESTS, test x"$enable_timeout_tests" = "xfalse")
 
@@ -171,12 +180,19 @@ esac
 AC_CHECK_PROGS(GCOV, gcov, false)
 AC_CHECK_PROGS(LCOV, lcov, false)
 AC_CHECK_PROGS(GENHTML, genhtml, false)
-AC_CHECK_PROGS(TEX, tex, false)
-if test "$TEX" = "false"; then
-    # Make it [somewhat] clear to maintainers that tex is missing. Not an error
-    # though because 'make install' (which users need) does not build the docs
-    # anyway.
-    AC_MSG_WARN(tex not installed: cannot rebuild HTML documentation.)
+
+if test "xtrue" = x"$enable_build_docs"; then
+    AC_CHECK_PROGS(TEX, tex, false)
+    if test "$TEX" = "false"; then
+        # Make it [somewhat] clear to maintainers that tex is missing. Not an error
+        # though because 'make install' (which users need) does not build the docs
+        # anyway.
+        AC_MSG_WARN(tex not installed: cannot rebuild HTML documentation.)
+    fi
+
+    AM_CONDITIONAL(MAKE_DOCS, [test x"$TEX" != "xfalse"])
+else
+   AM_CONDITIONAL(MAKE_DOCS, [false])
 fi
 AC_CHECK_PROGS(FILTERDIFF, filterdiff, false)
 if test "$FILTERDIFF" = "false"; then
@@ -187,6 +203,12 @@ if test "$FILTERDIFF" = "false"; then
 fi
 
 AM_CONDITIONAL(USE_FILTERDIFF, [test x"$FILTERDIFF" = x"filterdiff"])
+
+AC_CHECK_PROGS(GRAPHVIZ, dot, false)
+# If graphviz doesn't exist 'make doc/doxygen-devel' will skip rendering graphs
+# and inform the developer about it. This target is optional and it aims
+# developers of libcheck, not users.
+AM_CONDITIONAL(USE_GRAPHVIZ, [test x"$GRAPHVIZ" = x"dot"])
 
 # Checks for pthread implementation.
 ACX_PTHREAD
@@ -426,5 +448,12 @@ else
     result="yes"
 fi
 echo "POSIX regular expressions ............ $result"
+
+if test "xtrue" = x"$enable_build_docs"; then
+    result="yes"
+else
+    result="no"
+fi
+echo "build docs ........................... $result"
 
 echo "=========================================="
