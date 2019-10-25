@@ -29,6 +29,10 @@
 #include <signal.h>
 #include <setjmp.h>
 
+#if defined(HAVE_FORK) && HAVE_FORK==1
+# include <sys/wait.h>
+#endif
+
 #include "check.h"
 #include "check_error.h"
 #include "check_list.h"

@@ -62,7 +62,7 @@ static size_t get_max_msg_size(void)
     size_t value = 0;
     char *env = getenv("CK_MAX_MSG_SIZE");
     if (env)
-        value = (size_t)strtoul(env, NULL, 10); // Cast in case size_t != unsigned long.
+        value = (size_t)strtoul(env, NULL, 10); /* Cast in case size_t != unsigned long. */
     if (value == 0)
         value = ck_max_msg_size;
     if (value == 0)

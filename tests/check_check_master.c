@@ -43,10 +43,10 @@ char * line_num_failures_file_name = NULL;
 
 enum ck_test_msg_type_t {
 #if ENABLE_REGEX
-  // For tests with different output on different platforms
+  /* For tests with different output on different platforms */
   CK_MSG_REGEXP,
 #endif
-  // Simple text
+  /* Simple text */
   CK_MSG_TEXT
 };
 
