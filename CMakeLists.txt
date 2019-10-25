@@ -485,13 +485,12 @@ endif (BUILD_TESTING)
 
 ###############################################################################
 # Export project, prepare a config and config-version files
-set(LIB_INSTALL_DIR lib CACHE FILEPATH "lib INSTALL DIR")
 string(TOLOWER ${PROJECT_NAME} EXPORT_NAME)
 include(CMakePackageConfigHelpers)
 configure_package_config_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${EXPORT_NAME}-config.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-config.cmake
-  INSTALL_DESTINATION ${LIB_INSTALL_DIR}/${EXPORT_NAME}/cmake
+  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/${EXPORT_NAME}/cmake
 )
 write_basic_package_version_file(
   ${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-config-version.cmake
