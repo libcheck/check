@@ -468,7 +468,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         set(cppcheck_c_standard "c89")
       endif()
       set(CMAKE_C_CPPCHECK
-        "${Cppcheck_EXECUTABLE};--quiet;--std=${cppcheck_c_standard};--enable=warning,style,performance,portability")
+        "${Cppcheck_EXECUTABLE};--quiet;--error-exitcode=0;--std=${cppcheck_c_standard};--enable=warning,style,performance,portability")
     endif(Cppcheck_FOUND)
   endif(CMAKE_VERSION VERSION_GREATER_EQUAL "3.10")
 
