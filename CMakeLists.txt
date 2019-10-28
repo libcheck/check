@@ -463,8 +463,12 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     # E.g. CMAKE_<LANG>_CPPLINT already since CMake 3.8.
     find_package(Cppcheck)
     if(Cppcheck_FOUND)
+      set(cppcheck_c_standard "c${CMAKE_C_STANDARD}")
+      if("${cppcheck_c_standard}" STREQUAL "c90")
+        set(cppcheck_c_standard "c89")
+      endif()
       set(CMAKE_C_CPPCHECK
-        "${Cppcheck_EXECUTABLE};--quiet;--std=c89;--enable=warning,style,performance,portability")
+        "${Cppcheck_EXECUTABLE};--quiet;--std=${cppcheck_c_standard};--enable=warning,style,performance,portability")
     endif(Cppcheck_FOUND)
   endif(CMAKE_VERSION VERSION_GREATER_EQUAL "3.10")
 
