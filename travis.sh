@@ -31,7 +31,7 @@ fi
 
 if [ "${USE_CMAKE}" = 'YES' ] ; then
    cmake --version
-   cmake . || exit 1
+   cmake . -DENABLE_TREAT_WARNINGS_AS_ERRORS=ON || exit 1
    make || exit 1
    ctest -V || exit 1
    sudo make install || exit 1
@@ -84,7 +84,7 @@ if [ "${PRE_RELEASE_CHECK}" = 'YES' ]; then
    tar xf check-*.tar.gz
    cd check-*
    cmake --version
-   cmake . || exit 1
+   cmake . -DENABLE_TREAT_WARNINGS_AS_ERRORS=ON || exit 1
    make || exit 1
 fi
 
