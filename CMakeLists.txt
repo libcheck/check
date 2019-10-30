@@ -75,6 +75,9 @@ if(NOT CHECK_ENABLE_TESTS)
   # TODO Remove this option by Check 0.15.0!
 endif(NOT CHECK_ENABLE_TESTS)
 
+option(ENABLE_TREAT_WARNINGS_AS_ERRORS
+  "Fail build if compiler, linker, static analysis tools or other QA tool finds faults" OFF)
+
 option(CHECK_ENABLE_GCOV
   "Turn on test coverage" OFF)
 if (CHECK_ENABLE_GCOV AND NOT ${CMAKE_C_COMPILER_ID} MATCHES "GNU")
