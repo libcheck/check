@@ -470,8 +470,12 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
       if("${cppcheck_c_standard}" STREQUAL "c90")
         set(cppcheck_c_standard "c89")
       endif()
+      set(cppcheck_error_exitcode "0")
+      if(ENABLE_TREAT_WARNINGS_AS_ERRORS)
+        set(cppcheck_error_exitcode "1")
+      endif()
       set(CMAKE_C_CPPCHECK
-        "${Cppcheck_EXECUTABLE};--quiet;--error-exitcode=0;--std=${cppcheck_c_standard};--enable=warning,style,performance,portability")
+        "${Cppcheck_EXECUTABLE};--quiet;--error-exitcode=${cppcheck_error_exitcode};--std=${cppcheck_c_standard};--enable=warning,style,performance,portability")
     endif(Cppcheck_FOUND)
   endif(CMAKE_VERSION VERSION_GREATER_EQUAL "3.10")
 
