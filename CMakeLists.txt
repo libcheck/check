@@ -474,8 +474,11 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
       if(ENABLE_TREAT_WARNINGS_AS_ERRORS)
         set(cppcheck_error_exitcode "1")
       endif()
-      set(CMAKE_C_CPPCHECK
-        "${Cppcheck_EXECUTABLE};--quiet;--error-exitcode=${cppcheck_error_exitcode};--std=${cppcheck_c_standard};--enable=warning,style,performance,portability")
+      list(APPEND CMAKE_C_CPPCHECK "${Cppcheck_EXECUTABLE}")
+      list(APPEND CMAKE_C_CPPCHECK "--quiet")
+      list(APPEND CMAKE_C_CPPCHECK "--error-exitcode=${cppcheck_error_exitcode}")
+      list(APPEND CMAKE_C_CPPCHECK "--std=${cppcheck_c_standard}")
+      list(APPEND CMAKE_C_CPPCHECK "--enable=warning,style,performance,portability")
     endif(Cppcheck_FOUND)
   endif(CMAKE_VERSION VERSION_GREATER_EQUAL "3.10")
 
