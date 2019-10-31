@@ -24,7 +24,7 @@ if(POLICY CMP0076)
   # target_sources() leaves relative source file paths unmodified. (OLD)
   cmake_policy(SET CMP0076 OLD)
 endif()
-project(check
+project(Check
   DESCRIPTION "Unit Testing Framework for C"
   LANGUAGES C)
 
@@ -485,13 +485,12 @@ endif (BUILD_TESTING)
 
 ###############################################################################
 # Export project, prepare a config and config-version files
-set(LIB_INSTALL_DIR lib CACHE FILEPATH "lib INSTALL DIR")
-set(EXPORT_NAME ${PROJECT_NAME})
+string(TOLOWER ${PROJECT_NAME} EXPORT_NAME)
 include(CMakePackageConfigHelpers)
 configure_package_config_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${EXPORT_NAME}-config.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-config.cmake
-  INSTALL_DESTINATION ${LIB_INSTALL_DIR}/${EXPORT_NAME}/cmake
+  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/${EXPORT_NAME}/cmake
 )
 write_basic_package_version_file(
   ${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-config-version.cmake
@@ -501,11 +500,11 @@ write_basic_package_version_file(
 
 export(EXPORT check-targets
   FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-targets.cmake"
-  NAMESPACE Check::
+  NAMESPACE "${PROJECT_NAME}::"
 )
 
 install(EXPORT check-targets
-  NAMESPACE Check::
+  NAMESPACE "${PROJECT_NAME}::"
   FILE "${EXPORT_NAME}-targets.cmake"
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${EXPORT_NAME}
 )
