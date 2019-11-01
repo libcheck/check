@@ -24,6 +24,9 @@ if(POLICY CMP0076)
   # target_sources() leaves relative source file paths unmodified. (OLD)
   cmake_policy(SET CMP0076 OLD)
 endif()
+if(POLICY CMP0074)
+    cmake_policy(SET CMP0074 NEW) # Use <PackageName>_ROOT variables
+endif()
 project(Check
   DESCRIPTION "Unit Testing Framework for C"
   LANGUAGES C)
