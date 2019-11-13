@@ -94,11 +94,6 @@ void srunner_set_tap(SRunner * sr, const char *fname)
     sr->tap_fname = fname;
 }
 
-int srunner_has_tap(SRunner * sr)
-{
-    return srunner_tap_fname(sr) != NULL;
-}
-
 const char *srunner_tap_fname(SRunner * sr)
 {
     /* check if tap log filename have been set explicitly */
@@ -108,6 +103,11 @@ const char *srunner_tap_fname(SRunner * sr)
     }
 
     return getenv("CK_TAP_LOG_FILE_NAME");
+}
+
+int srunner_has_tap(SRunner * sr)
+{
+    return srunner_tap_fname(sr) != NULL;
 }
 
 void srunner_register_lfun(SRunner * sr, FILE * lfile, int close,
@@ -344,7 +344,7 @@ void tap_lfun(SRunner * sr CK_ATTRIBUTE_UNUSED, FILE * file,
 {
     TestResult *tr;
 
-    static int num_tests_run = 0;
+    static unsigned int num_tests_run = 0;
 
     switch (evt)
     {
@@ -354,7 +354,7 @@ void tap_lfun(SRunner * sr CK_ATTRIBUTE_UNUSED, FILE * file,
             break;
         case CLENDLOG_SR:
             /* Output the test plan as the last line */
-            fprintf(file, "1..%d\n", num_tests_run);
+            fprintf(file, "1..%u\n", num_tests_run);
             fflush(file);
             break;
         case CLSTART_SR:
@@ -371,7 +371,7 @@ void tap_lfun(SRunner * sr CK_ATTRIBUTE_UNUSED, FILE * file,
             /* Print the test result to the tap file */
             num_tests_run += 1;
             tr = (TestResult *)obj;
-            fprintf(file, "%s %d - %s:%s:%s: %s\n",
+            fprintf(file, "%s %u - %s:%s:%s: %s\n",
                     tr->rtype == CK_PASS ? "ok" : "not ok", num_tests_run,
                     tr->file, tr->tcname, tr->tname, tr->msg);
             fflush(file);
@@ -404,7 +404,7 @@ void subunit_lfun(SRunner * sr, FILE * file, enum print_output printmode,
         case CLEND_SR:
             if(printmode > CK_SILENT)
             {
-                fprintf(file, "\n");
+                putc('\n', file);
                 srunner_fprint(file, sr, printmode);
             }
             break;

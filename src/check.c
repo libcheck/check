@@ -219,7 +219,6 @@ static void tcase_free(TCase * tc)
 
 unsigned int tcase_matching_tag(TCase *tc, List *check_for)
 {
-
     if (NULL == check_for)
     {
 	return 0;

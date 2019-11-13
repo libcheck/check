@@ -24,6 +24,10 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <stdio.h>
+#if !defined(_WIN32) && (defined(__unix__) || defined(__unix) ||	\
+                         (defined(__APPLE__) && defined(__MACH__)))
+#include <unistd.h>
+#endif
 
 #include "check_error.h"
 #include "check.h"
