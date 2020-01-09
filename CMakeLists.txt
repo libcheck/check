@@ -20,6 +20,10 @@
 # Boston, MA 02111-1307, USA.
 #
 cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
+if(POLICY CMP0090)
+  # export(PACKAGE) does not populate package registry by default. (NEW)
+  cmake_policy(SET CMP0090 NEW)
+endif()
 if(POLICY CMP0076)
   # target_sources() leaves relative source file paths unmodified. (OLD)
   cmake_policy(SET CMP0076 OLD)
