@@ -51,6 +51,8 @@ configure_file(check.h.in check.h @ONLY)
 # Normally CMake would create the system's native default library type.
 
 add_library(check STATIC ${SOURCES} ${HEADERS})
+add_library(Check::check ALIAS check)
+
 
 # We would like to create an OBJECT library but currently they are
 # too unreliable and cumbersome,
@@ -58,6 +60,7 @@ add_library(check STATIC ${SOURCES} ${HEADERS})
 # https://stackoverflow.com/questions/38832528/transitive-target-include-directories-on-object-libraries
 # So we instead do the work twice.
 add_library(checkShared SHARED ${SOURCES} ${HEADERS})
+add_library(Check::checkShared ALIAS checkShared)
 
 # Add parts of libcompat as required
 target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/fpclassify.c)
