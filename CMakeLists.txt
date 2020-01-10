@@ -510,8 +510,8 @@ install(EXPORT check-targets
 )
 install(
   FILES
-    "${CMAKE_BINARY_DIR}/cmake/${EXPORT_NAME}-config.cmake"
-    "${CMAKE_BINARY_DIR}/cmake/${EXPORT_NAME}-config-version.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-config.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-config-version.cmake"
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${EXPORT_NAME}
 )
 

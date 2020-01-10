@@ -144,7 +144,7 @@ endif (MSVC)
 
 set(LIBRARY_OUTPUT_NAME "check")
 list(APPEND public_headers "${CMAKE_CURRENT_BINARY_DIR}/check.h")
-list(APPEND public_headers "${CMAKE_BINARY_DIR}/check_stdint.h")
+list(APPEND public_headers "${CMAKE_CURRENT_BINARY_DIR}/../check_stdint.h")
 
 set_target_properties(check PROPERTIES
   OUTPUT_NAME ${LIBRARY_OUTPUT_NAME}
@@ -168,13 +168,13 @@ set_target_properties(checkShared PROPERTIES
 target_include_directories(check
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/..>
     $<INSTALL_INTERFACE:include>
 )
 target_include_directories(checkShared
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/..>
     $<INSTALL_INTERFACE:include>
 )
 
