@@ -164,12 +164,11 @@ void log_test_end(SRunner * sr, TestResult * tr)
 static void srunner_send_evt(SRunner * sr, void *obj, enum cl_event evt)
 {
     List *l;
-    Log *lg;
 
     l = sr->loglst;
     for(check_list_front(l); !check_list_at_end(l); check_list_advance(l))
     {
-        lg = (Log *)check_list_val(l);
+        Log *lg = (Log *)check_list_val(l);
         fflush(lg->lfile);
         lg->lfun(sr, lg->lfile, lg->mode, obj, evt);
         fflush(lg->lfile);

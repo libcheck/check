@@ -78,7 +78,6 @@ Suite *suite_create(const char *name)
 int suite_tcase(Suite * s, const char *tcname)
 {
     List *l;
-    TCase *tc;
 
     if(s == NULL)
         return 0;
@@ -86,7 +85,7 @@ int suite_tcase(Suite * s, const char *tcname)
     l = s->tclst;
     for(check_list_front(l); !check_list_at_end(l); check_list_advance(l))
     {
-        tc = (TCase *)check_list_val(l);
+        TCase *tc = (TCase *)check_list_val(l);
         if(strcmp(tcname, tc->name) == 0)
             return 1;
     }
@@ -442,7 +441,6 @@ void srunner_add_suite(SRunner * sr, Suite * s)
 void srunner_free(SRunner * sr)
 {
     List *l;
-    TestResult *tr;
 
     if(sr == NULL)
         return;
@@ -458,7 +456,7 @@ void srunner_free(SRunner * sr)
     l = sr->resultlst;
     for(check_list_front(l); !check_list_at_end(l); check_list_advance(l))
     {
-        tr = (TestResult *)check_list_val(l);
+        TestResult *tr = (TestResult *)check_list_val(l);
         tr_free(tr);
     }
     check_list_free(sr->resultlst);

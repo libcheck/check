@@ -681,12 +681,7 @@ START_TEST(test_check_all_msgs)
   const char *got_msg = tr_msg(tr_all_array[_i]);
   master_test_t *master_test = &master_tests[_i];
   const char *expected_msg = master_test->msg;
-  char emsg[MAXSTR];
-  const char *msg_type_str;
-  char err_text[256];
-  int reg_err;
   unsigned char not_equal = 0;
-  char *emsg_escaped;
 #if ENABLE_REGEX
   regex_t re;
 #endif
@@ -699,8 +694,9 @@ START_TEST(test_check_all_msgs)
       break;
 #if ENABLE_REGEX
     case CK_MSG_REGEXP: {
-      reg_err = regcomp(&re, expected_msg, REG_EXTENDED | REG_NOSUB);
+      int reg_err = regcomp(&re, expected_msg, REG_EXTENDED | REG_NOSUB);
       if (reg_err) {      
+        char err_text[256];
         regerror(reg_err, &re, err_text, sizeof(err_text));
         ck_assert_msg(reg_err == 0,
                   "For test %d:%s:%s Expected regexp '%s', but regcomp returned error '%s'",
@@ -721,6 +717,9 @@ START_TEST(test_check_all_msgs)
   }
 
   if (not_equal) {    
+    const char *msg_type_str;
+    char emsg[MAXSTR];
+    char *emsg_escaped;
     switch(master_test->msg_type) {
 #if ENABLE_REGEX
     case CK_MSG_REGEXP:

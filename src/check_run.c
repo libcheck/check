@@ -291,7 +291,6 @@ static TestResult * srunner_run_setup(List * fixture_list, enum fork_status fork
     const char * test_name, const char * setup_name)
 {
     TestResult *tr = NULL;
-    Fixture *setup_fixture;
 
     if(fork_usage == CK_FORK)
     {
@@ -301,7 +300,7 @@ static TestResult * srunner_run_setup(List * fixture_list, enum fork_status fork
     for(check_list_front(fixture_list); !check_list_at_end(fixture_list);
         check_list_advance(fixture_list))
     {
-        setup_fixture = (Fixture *)check_list_val(fixture_list);
+        Fixture *setup_fixture = (Fixture *)check_list_val(fixture_list);
 
         if(fork_usage == CK_NOFORK)
         {
@@ -361,12 +360,10 @@ static TestResult *tcase_run_checked_setup(SRunner * sr, TCase * tc)
 
 static void srunner_run_teardown(List * fixture_list, enum fork_status fork_usage)
 {
-    Fixture * fixture;
-
     for(check_list_front(fixture_list); !check_list_at_end(fixture_list);
         check_list_advance(fixture_list))
     {
-        fixture = (Fixture *)check_list_val(fixture_list);
+        Fixture *fixture = (Fixture *)check_list_val(fixture_list);
         send_ctx_info(CK_CTX_TEARDOWN);
 
         if(fork_usage == CK_NOFORK)
@@ -483,7 +480,6 @@ static TestResult *tcase_run_tfun_fork(SRunner * sr, TCase * tc, TF * tfun,
 
     timer_t timerid;
     struct itimerspec timer_spec;
-    TestResult *tr;
 
 
     pid = fork();
@@ -491,6 +487,7 @@ static TestResult *tcase_run_tfun_fork(SRunner * sr, TCase * tc, TF * tfun,
         eprintf("Error in call to fork:", __FILE__, __LINE__ - 2);
     if(pid == 0)
     {
+        TestResult *tr;
         setpgid(0, 0);
         group_pid = getpgrp();
         tr = tcase_run_checked_setup(sr, tc);
