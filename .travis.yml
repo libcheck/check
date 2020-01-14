@@ -1,5 +1,6 @@
 # Copyright (C) 2016 Branden Archer <b.m.archer4@gmail.com>
 # Copyright (C) 2016 Joshua D. Boyd <jdboyd@jdboyd.net>
+# Copyright (C) 2020 Mikko Koivunalho <mikko.koivunalho@iki.fi>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -49,6 +50,11 @@ matrix:
   - os: linux
     compiler: clang
     env: SCAN_BUILD=YES
+
+  include:
+  - os: linux
+    compiler: clang
+    env: CMAKE_PROJECT_USAGE_TEST=YES
 
 before_script:
  - if [ "$(uname)" = "Linux" ]; then sudo apt-get update; sudo apt-get install -y texlive texinfo texi2html doxygen; fi

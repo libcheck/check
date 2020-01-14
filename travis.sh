@@ -1,6 +1,7 @@
 #!/bin/bash
 # Copyright (C) 2016 Branden Archer <b.m.archer4@gmail.com>
 # Copyright (C) 2016 Joshua D. Boyd <jdboyd@jdboyd.net>
+# Copyright (C) 2020 Mikko Koivunalho <mikko.koivunalho@iki.fi>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -97,5 +98,37 @@ if [ "${SCAN_BUILD}" = 'YES' ]; then
       find clang -type f -print -exec cat \{} \;
       exit 1
    fi
+fi
+
+if [ "${CMAKE_PROJECT_USAGE_TEST}" = 'YES' ] ; then
+   cmake --version || exit 1
+   project_dir="project_cmake"
+   install_dir="${PWD}/install_cmake"
+   build_dir="${PWD}/build_cmake"
+
+   # For FetchContent we copy everything to a subdir.
+   # Otherwise the copying would be recursive and forever.
+   mkdir "$project_dir" || exit 1
+   find . -maxdepth 1 -print | grep -v -E "^(\.|\./${project_dir})\$" | grep -v '^\./\.git.*$' | xargs cp -R -t "$project_dir" || exit 1
+
+   # For find_package we need the project built and installed
+   mkdir "$build_dir" && cd "$build_dir" || exit 1
+   cmake -D BUILD_TESTING=OFF -D CMAKE_INSTALL_PREFIX="${install_dir}" ../project_cmake || exit 1
+   make && make install || exit 1
+   cd .. || exit 1
+
+   cp -R tests/cmake_project_usage_test . || exit 1
+   proj_dir="$PWD/${project_dir}"
+   build_dir="build_fetch_content"
+   mkdir $build_dir && cd $build_dir || exit 1
+   INCLUDE_CHECK_WITH='FetchContent' INCLUDE_CHECK_FROM="file://${proj_dir}" cmake -D CMAKE_BUILD_TYPE=Debug ../cmake_project_usage_test || exit 1
+   make && src/tests.test || exit 1
+   cd .. || exit 1
+
+   build_dir='build_find_package_config'
+   mkdir $build_dir && cd $build_dir || exit 1
+   INCLUDE_CHECK_WITH='find_package_config' Check_ROOT="${install_dir}" cmake -D CMAKE_BUILD_TYPE=Debug ../cmake_project_usage_test || exit 1
+   make && src/tests.test || exit 1
+   cd .. || exit 1
 fi
 
