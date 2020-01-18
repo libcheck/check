@@ -1,0 +1,3 @@
+This project is used from :travis.sh to verify Check can be used in a CMake project in the right way.
+
+Attn. Do not use this as an example of how to use Check in your own project. Consult official documentation.

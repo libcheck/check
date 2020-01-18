@@ -20,6 +20,18 @@
 # Boston, MA 02111-1307, USA.
 #
 cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
+
+# Detect if Check is being used in another build as a subproject
+# probably with command FetchContent*().
+set(THIS_IS_MAIN_PROJECT TRUE)
+if(DEFINED PROJECT_NAME)
+    set(THIS_IS_MAIN_PROJECT FALSE)
+endif()
+
+if(POLICY CMP0090)
+  # export(PACKAGE) does not populate package registry by default. (NEW)
+  cmake_policy(SET CMP0090 NEW)
+endif()
 if(POLICY CMP0076)
   # target_sources() leaves relative source file paths unmodified. (OLD)
   cmake_policy(SET CMP0076 OLD)
@@ -452,7 +464,7 @@ add_subdirectory(checkmk)
 
 ###############################################################################
 # Unit tests
-if (BUILD_TESTING)
+if (BUILD_TESTING AND THIS_IS_MAIN_PROJECT)
   add_subdirectory(tests)
   add_test(NAME check_check COMMAND check_check)
   add_test(NAME check_check_export COMMAND check_check_export)
@@ -481,7 +493,7 @@ if (BUILD_TESTING)
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
       COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_set_max_msg_size.sh)
   endif(UNIX OR MINGW OR MSYS)
-endif (BUILD_TESTING)
+endif (BUILD_TESTING AND THIS_IS_MAIN_PROJECT)
 
 ###############################################################################
 # Export project, prepare a config and config-version files
@@ -510,8 +522,8 @@ install(EXPORT check-targets
 )
 install(
   FILES
-    "${CMAKE_BINARY_DIR}/cmake/${EXPORT_NAME}-config.cmake"
-    "${CMAKE_BINARY_DIR}/cmake/${EXPORT_NAME}-config-version.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-config.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-config-version.cmake"
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${EXPORT_NAME}
 )
 

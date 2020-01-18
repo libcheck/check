@@ -468,7 +468,7 @@ static void rcvmsg_update_loc(RcvMsg * rmsg, const char *file, int line)
 
 RcvMsg *punpack(FILE * fdes)
 {
-    int nread, nparse, n;
+    int nread, nparse;
     char *buf;
     RcvMsg *rmsg;
 
@@ -483,7 +483,7 @@ RcvMsg *punpack(FILE * fdes)
     while(nparse > 0)
     {
         /* Parse one message */
-        n = get_result(buf, rmsg);
+        int n = get_result(buf, rmsg);
         nparse -= n;
         if (nparse < 0)
             eprintf("Error in call to get_result", __FILE__, __LINE__ - 3);
