@@ -58,3 +58,10 @@ Check uses variadic macros in check.h, and the strict C90 options for
 gcc will complain about this.  In gcc 4.0 and above you can turn this
 off explicitly with `-Wno-variadic-macros`.  In a future API it would be
 nice to eliminate these macros.
+
+# Packaging
+
+Check is available packaged for the following operating systems:
+
+[![Packaging status](https://repology.org/badge/vertical-allrepos/check.svg)](https://repology.org/project/check/versions)
+
