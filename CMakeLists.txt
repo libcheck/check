@@ -541,3 +541,5 @@ install(
 # unless an explicit CMAKE_EXPORT_PACKAGE_REGISTRY variable is set.
 export(PACKAGE "${PROJECT_NAME}")
 
+# vim: shiftwidth=2:softtabstop=2:tabstop=2:expandtab:autoindent
+

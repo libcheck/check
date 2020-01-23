@@ -19,4 +19,5 @@ if(INSTALL_CHECKMK)
   )
 endif(INSTALL_CHECKMK)
 
+# vim: shiftwidth=2:softtabstop=2:tabstop=2:expandtab:autoindent
 

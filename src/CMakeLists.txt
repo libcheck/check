@@ -189,3 +189,5 @@ install(TARGETS check checkShared
   PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
+# vim: shiftwidth=2:softtabstop=2:tabstop=2:expandtab:autoindent
+
