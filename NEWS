@@ -1,5 +1,17 @@
-In Development:
-# Mentioning Check 0.13.0 for now, to fix distcheck target until next release
+Sat Jan 25, 2020: Released Check 0.13.1
+  based on hash 688039040025c411bb7a71e0aa705e0d32c80807
+
+* Add support for FetchContent in CMake
+  Issue #238
+
+* Rename CMake project from 'check' to 'Check'
+  Issue #232
+
+* Fix for checking for wrong tool when building docs in Autotools
+  Issue #231
+
+* Fix compiler warning with printf format
+  Issue #233 
 
 
 Sat Oct 20, 2019: Released Check 0.13.0
