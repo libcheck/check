@@ -20,11 +20,23 @@
 # Boston, MA 02111-1307, USA.
 #
 cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
+
+# Detect if Check is being used in another build as a subproject
+# probably with command FetchContent*().
+set(THIS_IS_MAIN_PROJECT TRUE)
+if(DEFINED PROJECT_NAME)
+    set(THIS_IS_MAIN_PROJECT FALSE)
+endif()
+
+if(POLICY CMP0090)
+  # export(PACKAGE) does not populate package registry by default. (NEW)
+  cmake_policy(SET CMP0090 NEW)
+endif()
 if(POLICY CMP0076)
   # target_sources() leaves relative source file paths unmodified. (OLD)
   cmake_policy(SET CMP0076 OLD)
 endif()
-project(check
+project(Check
   DESCRIPTION "Unit Testing Framework for C"
   LANGUAGES C)
 
@@ -61,8 +73,8 @@ set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT
 include(GNUInstallDirs)
 
 ###############################################################################
-# Adhere strictly to old ANSI C89 / ISO C90 standard
-set(CMAKE_C_STANDARD 90)
+# Follow ISO C99 standard
+set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS ON)          # Use GNU extensions and POSIX standard
 
@@ -452,7 +464,7 @@ add_subdirectory(checkmk)
 
 ###############################################################################
 # Unit tests
-if (BUILD_TESTING)
+if (BUILD_TESTING AND THIS_IS_MAIN_PROJECT)
   add_subdirectory(tests)
   add_test(NAME check_check COMMAND check_check)
   add_test(NAME check_check_export COMMAND check_check_export)
@@ -481,17 +493,16 @@ if (BUILD_TESTING)
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
       COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_set_max_msg_size.sh)
   endif(UNIX OR MINGW OR MSYS)
-endif (BUILD_TESTING)
+endif (BUILD_TESTING AND THIS_IS_MAIN_PROJECT)
 
 ###############################################################################
 # Export project, prepare a config and config-version files
-set(LIB_INSTALL_DIR lib CACHE FILEPATH "lib INSTALL DIR")
-set(EXPORT_NAME ${PROJECT_NAME})
+string(TOLOWER ${PROJECT_NAME} EXPORT_NAME)
 include(CMakePackageConfigHelpers)
 configure_package_config_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${EXPORT_NAME}-config.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-config.cmake
-  INSTALL_DESTINATION ${LIB_INSTALL_DIR}/${EXPORT_NAME}/cmake
+  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/${EXPORT_NAME}/cmake
 )
 write_basic_package_version_file(
   ${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-config-version.cmake
@@ -501,18 +512,18 @@ write_basic_package_version_file(
 
 export(EXPORT check-targets
   FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-targets.cmake"
-  NAMESPACE Check::
+  NAMESPACE "${PROJECT_NAME}::"
 )
 
 install(EXPORT check-targets
-  NAMESPACE Check::
+  NAMESPACE "${PROJECT_NAME}::"
   FILE "${EXPORT_NAME}-targets.cmake"
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${EXPORT_NAME}
 )
 install(
   FILES
-    "${CMAKE_BINARY_DIR}/cmake/${EXPORT_NAME}-config.cmake"
-    "${CMAKE_BINARY_DIR}/cmake/${EXPORT_NAME}-config-version.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-config.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-config-version.cmake"
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${EXPORT_NAME}
 )
 

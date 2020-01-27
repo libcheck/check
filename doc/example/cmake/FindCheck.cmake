@@ -20,12 +20,12 @@
 INCLUDE( FindPkgConfig )
 
 # Take care about check.pc settings
-PKG_SEARCH_MODULE( CHECK check )
+PKG_SEARCH_MODULE( CHECK Check )
 
 # Look for CHECK include dir and libraries
 IF( NOT CHECK_FOUND )
 	IF ( CHECK_INSTALL_DIR )
-		MESSAGE ( STATUS "Using override CHECK_INSTALL_DIR to find check" )
+		MESSAGE ( STATUS "Using override CHECK_INSTALL_DIR to find Check" )
 		SET ( CHECK_INCLUDE_DIR  "${CHECK_INSTALL_DIR}/include" )
 		SET ( CHECK_INCLUDE_DIRS "${CHECK_INCLUDE_DIR}" )
 		FIND_LIBRARY( CHECK_LIBRARY NAMES check PATHS "${CHECK_INSTALL_DIR}/lib" )

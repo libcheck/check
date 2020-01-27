@@ -43,10 +43,10 @@ char * line_num_failures_file_name = NULL;
 
 enum ck_test_msg_type_t {
 #if ENABLE_REGEX
-  // For tests with different output on different platforms
+  /* For tests with different output on different platforms */
   CK_MSG_REGEXP,
 #endif
-  // Simple text
+  /* Simple text */
   CK_MSG_TEXT
 };
 
@@ -618,7 +618,7 @@ START_TEST(test_check_failure_ftypes)
     ck_assert_msg(tr != NULL, NULL);
     ck_assert_msg(master_tests[i].failure_type == tr_rtype(tr),
                 "Failure type wrong for test %d:%s:%s",
-				i, master_tests[i].tcname, master_tests[i].test_name);
+                i, master_tests[i].tcname, master_tests[i].test_name);
   }
 }
 END_TEST
@@ -632,7 +632,7 @@ START_TEST(test_check_failure_lfiles)
     ck_assert_msg(tr_lfile(tr) != NULL, "Bad file name for test %d", i);
     ck_assert_msg(strstr(tr_lfile(tr), "check_check_sub.c") != 0,
                 "Bad file name for test %d:%s:%s",
-				i, master_tests[i].tcname, master_tests[i].test_name);
+                i, master_tests[i].tcname, master_tests[i].test_name);
   }
 }
 END_TEST
@@ -644,7 +644,7 @@ START_TEST(test_check_tcnames)
   if (strcmp(tcname, master_tests[_i].tcname) != 0) {
     ck_abort_msg("Expected '%s', got '%s' for test %d:%s",
          master_tests[_i].tcname, tcname,
-	     _i, master_tests[_i].test_name);
+         _i, master_tests[_i].test_name);
   } 
 }
 END_TEST
@@ -661,17 +661,17 @@ START_TEST(test_check_test_names)
 
   for (i = 0; i < sub_ntests; i++)
   {
-	  char* test_name = get_next_test_name(test_names_file);
+      char* test_name = get_next_test_name(test_names_file);
 
-	  if(test_name == NULL || strcmp(master_tests[i].test_name, test_name) != 0)
-	  {
-		  ck_abort_msg("Expected test name '%s' but found '%s' for test %d:%s",
-				  master_tests[i].test_name,
-				  (test_name == NULL ? "(null)" : test_name),
-				  i, master_tests[i].tcname);
-	  }
+      if(test_name == NULL || strcmp(master_tests[i].test_name, test_name) != 0)
+      {
+          ck_abort_msg("Expected test name '%s' but found '%s' for test %d:%s",
+                  master_tests[i].test_name,
+                  (test_name == NULL ? "(null)" : test_name),
+                  i, master_tests[i].tcname);
+      }
 
-	  free(test_name);
+      free(test_name);
   }
 }
 END_TEST
@@ -681,12 +681,7 @@ START_TEST(test_check_all_msgs)
   const char *got_msg = tr_msg(tr_all_array[_i]);
   master_test_t *master_test = &master_tests[_i];
   const char *expected_msg = master_test->msg;
-  char emsg[MAXSTR];
-  const char *msg_type_str;
-  char err_text[256];
-  int reg_err;
   unsigned char not_equal = 0;
-  char *emsg_escaped;
 #if ENABLE_REGEX
   regex_t re;
 #endif
@@ -699,8 +694,9 @@ START_TEST(test_check_all_msgs)
       break;
 #if ENABLE_REGEX
     case CK_MSG_REGEXP: {
-      reg_err = regcomp(&re, expected_msg, REG_EXTENDED | REG_NOSUB);
+      int reg_err = regcomp(&re, expected_msg, REG_EXTENDED | REG_NOSUB);
       if (reg_err) {      
+        char err_text[256];
         regerror(reg_err, &re, err_text, sizeof(err_text));
         ck_assert_msg(reg_err == 0,
                   "For test %d:%s:%s Expected regexp '%s', but regcomp returned error '%s'",
@@ -721,6 +717,9 @@ START_TEST(test_check_all_msgs)
   }
 
   if (not_equal) {    
+    const char *msg_type_str;
+    char emsg[MAXSTR];
+    char *emsg_escaped;
     switch(master_test->msg_type) {
 #if ENABLE_REGEX
     case CK_MSG_REGEXP:
@@ -754,8 +753,8 @@ START_TEST(test_check_all_ftypes)
 {
   ck_assert_msg(master_tests[_i].failure_type == tr_rtype(tr_all_array[_i]),
               "For test %d:%s:%s failure type wrong, expected %d but got %d",
-			  _i, master_tests[_i].tcname, master_tests[_i].test_name,
-			  master_tests[_i].failure_type, tr_rtype(tr_all_array[_i]));
+              _i, master_tests[_i].tcname, master_tests[_i].test_name,
+              master_tests[_i].failure_type, tr_rtype(tr_all_array[_i]));
 }
 END_TEST
 
@@ -768,7 +767,7 @@ static void test_fixture_setup(void)
 START_TEST(test_setup)
 {
   ck_assert_msg (test_fixture_val == 1,
-	       "Value not setup or changed across tests correctly");
+               "Value not setup or changed across tests correctly");
   test_fixture_val = 2;
 }
 END_TEST
@@ -781,7 +780,7 @@ static void test_fixture_teardown (void)
 START_TEST(test_teardown)
 {
   ck_assert_msg (test_fixture_val == 3,
-	       "Value not changed correctly in teardown");
+                "Value not changed correctly in teardown");
 }
 END_TEST  
 
@@ -808,7 +807,7 @@ Suite *make_master_suite (void)
   tcase_add_loop_test (tc_core, test_check_all_msgs, 0, sub_ntests);
   tcase_add_loop_test (tc_core, test_check_all_ftypes, 0, nr_of_master_tests);
   tcase_add_unchecked_fixture(tc_fixture, test_fixture_setup,
-			      test_fixture_teardown);
+                              test_fixture_teardown);
   /* add the test 3 times to make sure we adequately test
      preservation of fixture values across tests, regardless
      of the order in which tests are added to the test case */
@@ -929,7 +928,7 @@ char* get_next_test_name(FILE * file)
    */
   if(written > 0 && line[written-1] == '\n')
   {
-	  line[written-1] = '\0';
+      line[written-1] = '\0';
   }
 
   return line;
@@ -970,7 +969,7 @@ void record_failure_line_num(int linenum)
   written = fwrite(string, 1, to_write, line_num_failures);
   if(written != to_write)
   {
-    fprintf(stderr, "%s:%d: Error in call to fwrite, wrote %ld instead of %d:", __FILE__, __LINE__, written, to_write);
+    fprintf(stderr, "%s:%d: Error in call to fwrite, wrote %zd instead of %d:", __FILE__, __LINE__, written, to_write);
     exit(1);
   }
 

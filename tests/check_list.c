@@ -142,12 +142,11 @@ END_TEST
 
 START_TEST(test_add_a_bunch)
 {
-  List *lp;
   int i, j;
   char tval1[] = "abc";
   char tval2[] = "123";
   for (i = 0; i < 3; i++) {
-    lp = check_list_create();
+    List *lp = check_list_create();
     for (j = 0; j < 1000; j++) {
       check_list_add_end (lp, tval1);
       check_list_add_front (lp, tval2);

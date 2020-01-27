@@ -77,7 +77,6 @@ char *sr_stat_str(SRunner * sr)
 char *ck_strdup_printf(const char *fmt, ...)
 {
     /* Guess we need no more than 100 bytes. */
-    int n;
     size_t size = 100;
     char *p;
     va_list ap;
@@ -86,6 +85,7 @@ char *ck_strdup_printf(const char *fmt, ...)
 
     while(1)
     {
+        int n;
         /* Try to print in the allocated space. */
         va_start(ap, fmt);
         n = vsnprintf(p, size, fmt, ap);

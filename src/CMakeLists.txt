@@ -51,6 +51,8 @@ configure_file(check.h.in check.h @ONLY)
 # Normally CMake would create the system's native default library type.
 
 add_library(check STATIC ${SOURCES} ${HEADERS})
+add_library(Check::check ALIAS check)
+
 
 # We would like to create an OBJECT library but currently they are
 # too unreliable and cumbersome,
@@ -58,6 +60,7 @@ add_library(check STATIC ${SOURCES} ${HEADERS})
 # https://stackoverflow.com/questions/38832528/transitive-target-include-directories-on-object-libraries
 # So we instead do the work twice.
 add_library(checkShared SHARED ${SOURCES} ${HEADERS})
+add_library(Check::checkShared ALIAS checkShared)
 
 # Add parts of libcompat as required
 target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/fpclassify.c)
@@ -144,7 +147,7 @@ endif (MSVC)
 
 set(LIBRARY_OUTPUT_NAME "check")
 list(APPEND public_headers "${CMAKE_CURRENT_BINARY_DIR}/check.h")
-list(APPEND public_headers "${CMAKE_BINARY_DIR}/check_stdint.h")
+list(APPEND public_headers "${CMAKE_CURRENT_BINARY_DIR}/../check_stdint.h")
 
 set_target_properties(check PROPERTIES
   OUTPUT_NAME ${LIBRARY_OUTPUT_NAME}
@@ -168,13 +171,13 @@ set_target_properties(checkShared PROPERTIES
 target_include_directories(check
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/..>
     $<INSTALL_INTERFACE:include>
 )
 target_include_directories(checkShared
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/..>
     $<INSTALL_INTERFACE:include>
 )
 

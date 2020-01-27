@@ -4,9 +4,9 @@
 # Prelude.
 AC_PREREQ([2.59])
 
-AC_INIT([Check], [0.13.0], [check-devel at lists dot sourceforge dot net])
+AC_INIT([Check], [0.14.0], [check-devel at lists dot sourceforge dot net])
 CHECK_MAJOR_VERSION=0
-CHECK_MINOR_VERSION=13
+CHECK_MINOR_VERSION=14
 CHECK_MICRO_VERSION=0
 CHECK_VERSION=$CHECK_MAJOR_VERSION.$CHECK_MINOR_VERSION.$CHECK_MICRO_VERSION
 
@@ -182,15 +182,15 @@ AC_CHECK_PROGS(LCOV, lcov, false)
 AC_CHECK_PROGS(GENHTML, genhtml, false)
 
 if test "xtrue" = x"$enable_build_docs"; then
-    AC_CHECK_PROGS(TEX, tex, false)
-    if test "$TEX" = "false"; then
-        # Make it [somewhat] clear to maintainers that tex is missing. Not an error
+    AC_CHECK_PROGS(MAKEINFO, makeinfo, false)
+    if test "$MAKEINFO" = "false"; then
+        # Make it [somewhat] clear to maintainers that makeinfo is missing. Not an error
         # though because 'make install' (which users need) does not build the docs
         # anyway.
-        AC_MSG_WARN(tex not installed: cannot rebuild HTML documentation.)
+        AC_MSG_WARN(makeinfo not installed: cannot rebuild HTML documentation.)
     fi
 
-    AM_CONDITIONAL(MAKE_DOCS, [test x"$TEX" != "xfalse"])
+    AM_CONDITIONAL(MAKE_DOCS, [test x"$MAKEINFO" != "xfalse"])
 else
    AM_CONDITIONAL(MAKE_DOCS, [false])
 fi

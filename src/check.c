@@ -78,7 +78,6 @@ Suite *suite_create(const char *name)
 int suite_tcase(Suite * s, const char *tcname)
 {
     List *l;
-    TCase *tc;
 
     if(s == NULL)
         return 0;
@@ -86,7 +85,7 @@ int suite_tcase(Suite * s, const char *tcname)
     l = s->tclst;
     for(check_list_front(l); !check_list_at_end(l); check_list_advance(l))
     {
-        tc = (TCase *)check_list_val(l);
+        TCase *tc = (TCase *)check_list_val(l);
         if(strcmp(tcname, tc->name) == 0)
             return 1;
     }
@@ -175,15 +174,15 @@ List *tag_string_to_list(const char *tags_string)
 
     if (NULL == tags_string)
     {
-	return list;
+        return list;
     }
 
     tags = strdup(tags_string);
     tag = strtok(tags, " ");
     while (tag)
     {
-	check_list_add_end(list, strdup(tag));
-	tag = strtok(NULL, " ");
+        check_list_add_end(list, strdup(tag));
+        tag = strtok(NULL, " ");
     }
     free(tags);
     return list;
@@ -194,8 +193,8 @@ void tcase_set_tags(TCase * tc, const char *tags_orig)
     /* replace any pre-existing list */
     if (tc->tags)
     {
-	check_list_apply(tc->tags, free);
-	check_list_free(tc->tags);
+        check_list_apply(tc->tags, free);
+        check_list_free(tc->tags);
     }
     tc->tags = tag_string_to_list(tags_orig);
 }
@@ -222,21 +221,21 @@ unsigned int tcase_matching_tag(TCase *tc, List *check_for)
 
     if (NULL == check_for)
     {
-	return 0;
+        return 0;
     }
 
     for(check_list_front(check_for); !check_list_at_end(check_for);
         check_list_advance(check_for))
     {
-	for(check_list_front(tc->tags); !check_list_at_end(tc->tags);
-	    check_list_advance(tc->tags))
-	{
-	    if (0 == strcmp((const char *)check_list_val(tc->tags),
-			    (const char *)check_list_val(check_for)))
-	    {
-		return 1;
-	    }
-	}
+        for(check_list_front(tc->tags); !check_list_at_end(tc->tags);
+            check_list_advance(tc->tags))
+        {
+            if (0 == strcmp((const char *)check_list_val(tc->tags),
+                    (const char *)check_list_val(check_for)))
+            {
+            return 1;
+            }
+        }
     }
     return 0;
 }
@@ -355,7 +354,7 @@ void tcase_fn_start(const char *fname, const char *file,
 
 const char* tcase_name(void)
 {
-	return current_test_name;
+    return current_test_name;
 }
 
 void _mark_point(const char *file, int line)
@@ -442,7 +441,6 @@ void srunner_add_suite(SRunner * sr, Suite * s)
 void srunner_free(SRunner * sr)
 {
     List *l;
-    TestResult *tr;
 
     if(sr == NULL)
         return;
@@ -458,7 +456,7 @@ void srunner_free(SRunner * sr)
     l = sr->resultlst;
     for(check_list_front(l); !check_list_at_end(l); check_list_advance(l))
     {
-        tr = (TestResult *)check_list_val(l);
+        TestResult *tr = (TestResult *)check_list_val(l);
         tr_free(tr);
     }
     check_list_free(sr->resultlst);

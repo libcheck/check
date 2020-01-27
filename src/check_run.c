@@ -29,6 +29,10 @@
 #include <signal.h>
 #include <setjmp.h>
 
+#if defined(HAVE_FORK) && HAVE_FORK==1
+# include <sys/wait.h>
+#endif
+
 #include "check.h"
 #include "check_error.h"
 #include "check_list.h"
@@ -60,8 +64,8 @@ static void srunner_run_init(SRunner * sr, enum print_output print_mode);
 static void srunner_run_end(SRunner * sr, enum print_output print_mode);
 static void srunner_iterate_suites(SRunner * sr,
                                    const char *sname, const char *tcname,
-				   const char *include_tags,
-				   const char *exclude_tags,
+                                   const char *include_tags,
+                                   const char *exclude_tags,
                                    enum print_output print_mode);
 static void srunner_iterate_tcase_tfuns(SRunner * sr, TCase * tc);
 static void srunner_add_failure(SRunner * sr, TestResult * tf);
@@ -162,8 +166,8 @@ static void srunner_run_end(SRunner * sr,
 
 static void srunner_iterate_suites(SRunner * sr,
                                    const char *sname, const char *tcname,
-				   const char *include_tags,
-				   const char *exclude_tags,
+                                   const char *include_tags,
+                                   const char *exclude_tags,
                                    enum print_output CK_ATTRIBUTE_UNUSED
                                    print_mode)
 {
@@ -200,20 +204,20 @@ static void srunner_iterate_suites(SRunner * sr,
             {
                 continue;
             }
-	    if (include_tags != NULL)
-	    {
-		if (!tcase_matching_tag(tc, include_tag_lst))
-		{
-		    continue;
-		}
-	    }
-	    if (exclude_tags != NULL)
-	    {
-		if (tcase_matching_tag(tc, exclude_tag_lst))
-		{
-		    continue;
-		}
-	    }
+            if (include_tags != NULL)
+            {
+                if (!tcase_matching_tag(tc, include_tag_lst))
+                {
+                    continue;
+                }
+            }
+            if (exclude_tags != NULL)
+            {
+                if (tcase_matching_tag(tc, exclude_tag_lst))
+                {
+                    continue;
+                }
+            }
 
             srunner_run_tcase(sr, tc);
         }
@@ -287,7 +291,6 @@ static TestResult * srunner_run_setup(List * fixture_list, enum fork_status fork
     const char * test_name, const char * setup_name)
 {
     TestResult *tr = NULL;
-    Fixture *setup_fixture;
 
     if(fork_usage == CK_FORK)
     {
@@ -297,7 +300,7 @@ static TestResult * srunner_run_setup(List * fixture_list, enum fork_status fork
     for(check_list_front(fixture_list); !check_list_at_end(fixture_list);
         check_list_advance(fixture_list))
     {
-        setup_fixture = (Fixture *)check_list_val(fixture_list);
+        Fixture *setup_fixture = (Fixture *)check_list_val(fixture_list);
 
         if(fork_usage == CK_NOFORK)
         {
@@ -357,12 +360,10 @@ static TestResult *tcase_run_checked_setup(SRunner * sr, TCase * tc)
 
 static void srunner_run_teardown(List * fixture_list, enum fork_status fork_usage)
 {
-    Fixture * fixture;
-
     for(check_list_front(fixture_list); !check_list_at_end(fixture_list);
         check_list_advance(fixture_list))
     {
-        fixture = (Fixture *)check_list_val(fixture_list);
+        Fixture *fixture = (Fixture *)check_list_val(fixture_list);
         send_ctx_info(CK_CTX_TEARDOWN);
 
         if(fork_usage == CK_NOFORK)
@@ -479,7 +480,6 @@ static TestResult *tcase_run_tfun_fork(SRunner * sr, TCase * tc, TF * tfun,
 
     timer_t timerid;
     struct itimerspec timer_spec;
-    TestResult *tr;
 
 
     pid = fork();
@@ -487,6 +487,7 @@ static TestResult *tcase_run_tfun_fork(SRunner * sr, TCase * tc, TF * tfun,
         eprintf("Error in call to fork:", __FILE__, __LINE__ - 2);
     if(pid == 0)
     {
+        TestResult *tr;
         setpgid(0, 0);
         group_pid = getpgrp();
         tr = tcase_run_checked_setup(sr, tc);
@@ -768,8 +769,8 @@ void srunner_run_all(SRunner * sr, enum print_output print_mode)
 }
 
 void srunner_run_tagged(SRunner * sr, const char *sname, const char *tcname,
-			const char *include_tags, const char *exclude_tags,
-			enum print_output print_mode)
+                        const char *include_tags, const char *exclude_tags,
+                        enum print_output print_mode)
 {
 #if defined(HAVE_SIGACTION) && defined(HAVE_FORK)
     static struct sigaction sigalarm_old_action;
@@ -783,11 +784,11 @@ void srunner_run_tagged(SRunner * sr, const char *sname, const char *tcname,
     if(!tcname)
         tcname = getenv("CK_RUN_CASE");
     if(!sname)
-	sname = getenv("CK_RUN_SUITE");
+        sname = getenv("CK_RUN_SUITE");
     if(!include_tags)
-	include_tags = getenv("CK_INCLUDE_TAGS");
+        include_tags = getenv("CK_INCLUDE_TAGS");
     if(!exclude_tags)
-	exclude_tags = getenv("CK_EXCLUDE_TAGS");
+        exclude_tags = getenv("CK_EXCLUDE_TAGS");
 
     if(sr == NULL)
         return;
@@ -811,7 +812,7 @@ void srunner_run_tagged(SRunner * sr, const char *sname, const char *tcname,
 #endif /* HAVE_SIGACTION && HAVE_FORK */
     srunner_run_init(sr, print_mode);
     srunner_iterate_suites(sr, sname, tcname, include_tags, exclude_tags,
-			   print_mode);
+                           print_mode);
     srunner_run_end(sr, print_mode);
 #if defined(HAVE_SIGACTION) && defined(HAVE_FORK)
     sigaction(SIGALRM, &sigalarm_old_action, NULL);

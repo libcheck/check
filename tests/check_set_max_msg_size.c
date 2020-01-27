@@ -64,8 +64,8 @@ int main (int argc, char *argv[])
      * Run the test suite. This is intended to trigger the "Message is too long" error.
      * Actual success/failure is determined by examining the output.
      */
-    check_set_max_msg_size(32);            // 1st call has no effect since
-    check_set_max_msg_size(atoi(argv[1])); // the 2nd call will override it.
+    check_set_max_msg_size(32);            /* 1st call has no effect since   */
+    check_set_max_msg_size(atoi(argv[1])); /* the 2nd call will override it. */
     sr = srunner_create(make_set_max_msg_size_suite());
     srunner_run_all(sr, CK_NORMAL);
     srunner_free(sr);
