@@ -27,7 +27,7 @@ configure_file(checkmk.in checkmk @ONLY)
 file(COPY doc/checkmk.1 DESTINATION man/man1)
 
 option(INSTALL_CHECKMK "Install checkmk" ON)
-if(INSTALL_CHECKMK)
+if(INSTALL_CHECKMK AND NOT THIS_IS_SUBPROJECT)
   install(
     FILES ${CMAKE_CURRENT_BINARY_DIR}/checkmk
     DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -37,7 +37,7 @@ if(INSTALL_CHECKMK)
     DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/man
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}
   )
-endif(INSTALL_CHECKMK)
+endif()
 
 # vim: shiftwidth=2:softtabstop=2:tabstop=2:expandtab:autoindent
 
