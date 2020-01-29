@@ -2,6 +2,7 @@
 # Check: a unit test framework for C
 # Copyright (C) 2011 Mateusz Loskot
 # Copyright (C) 2001, 2002 Arien Malec
+# Copyright (C) 2020 Mikko Koivunalho
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
