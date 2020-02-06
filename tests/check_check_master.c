@@ -652,10 +652,6 @@ END_TEST
 START_TEST(test_check_test_names)
 {
   int i;
-  int line_no;
-  int passed = 0;
-  int number_failed;
-  TestResult *tr;
 
   rewind(test_names_file);
 

@@ -52,7 +52,6 @@ static Suite *make_set_max_msg_size_suite(void)
 
 int main (int argc, char *argv[])
 {
-    int n;
     SRunner *sr;
 
     if (argc != 2) {
