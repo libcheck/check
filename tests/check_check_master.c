@@ -932,7 +932,7 @@ char* get_next_test_name(FILE * file)
 
 void record_failure_line_num(int linenum)
 {
-  int to_write;
+  size_t to_write;
   ssize_t written;
   int result;
   char string[16];
@@ -944,7 +944,7 @@ void record_failure_line_num(int linenum)
    linenum += 1;
 
   to_write = snprintf(string, sizeof(string), "%d\n", linenum);
-  if(to_write <= 0)
+  if(to_write == 0)
   {
     fprintf(stderr, "%s:%d: Error in call to snprintf:", __FILE__, __LINE__);
     exit(1);
@@ -965,7 +965,7 @@ void record_failure_line_num(int linenum)
   written = fwrite(string, 1, to_write, line_num_failures);
   if(written != to_write)
   {
-    fprintf(stderr, "%s:%d: Error in call to fwrite, wrote %zd instead of %d:", __FILE__, __LINE__, written, to_write);
+    fprintf(stderr, "%s:%d: Error in call to fwrite, wrote %zd instead of %zu:", __FILE__, __LINE__, written, to_write);
     exit(1);
   }
 
