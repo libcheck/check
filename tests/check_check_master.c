@@ -933,7 +933,7 @@ char* get_next_test_name(FILE * file)
 void record_failure_line_num(int linenum)
 {
   size_t to_write;
-  ssize_t written;
+  size_t written;
   int result;
   char string[16];
 
