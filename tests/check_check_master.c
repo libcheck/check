@@ -561,7 +561,7 @@ END_TEST
 START_TEST(test_check_failure_lnos)
 {
   int i;
-  int line_no;
+  long line_no;
   int passed = 0;
   int number_failed;
   TestResult *tr;
@@ -977,13 +977,13 @@ void record_failure_line_num(int linenum)
   }
 }
 
-int get_next_failure_line_num(FILE * file)
+long get_next_failure_line_num(FILE * file)
 {
   char * line = NULL;
   char * end = NULL;
   size_t length;
   ssize_t written;
-  int value = -1;
+  long value = -1;
 
   written = getline(&line, &length, file);
 
