@@ -48,8 +48,10 @@
 
 #if GCC_VERSION_AT_LEAST(2,95,3)
 #define CK_ATTRIBUTE_UNUSED __attribute__ ((unused))
+#define CK_ATTRIBUTE_FORMAT(a, b, c) __attribute__ ((format (a, b, c)))
 #else
 #define CK_ATTRIBUTE_UNUSED
+#define CK_ATTRIBUTE_FORMAT(a, b, c)
 #endif /* GCC 2.95 */
 
 #if GCC_VERSION_AT_LEAST(2,5,0)
