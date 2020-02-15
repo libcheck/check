@@ -934,7 +934,7 @@ void record_failure_line_num(int linenum)
 {
   size_t to_write;
   size_t written;
-  int result;
+  int result, chars_printed;
   char string[16];
 
   /*
@@ -943,12 +943,13 @@ void record_failure_line_num(int linenum)
    */
    linenum += 1;
 
-  to_write = snprintf(string, sizeof(string), "%d\n", linenum);
-  if(to_write == 0)
+  chars_printed = snprintf(string, sizeof(string), "%d\n", linenum);
+  if(chars_printed <= 0 || (size_t) chars_printed >= sizeof(string))
   {
     fprintf(stderr, "%s:%d: Error in call to snprintf:", __FILE__, __LINE__);
     exit(1);
   }
+  to_write = (size_t) chars_printed;
 
   if(line_num_failures == NULL)
   {
