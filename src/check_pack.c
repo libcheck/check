@@ -82,10 +82,10 @@ static ck_uint32 upack_int(char **buf);
 static void pack_str(char **buf, const char *str);
 static char *upack_str(char **buf);
 
-static int pack_ctx(char **buf, CtxMsg * cmsg);
-static int pack_loc(char **buf, LocMsg * lmsg);
-static int pack_fail(char **buf, FailMsg * fmsg);
-static int pack_duration(char **buf, DurationMsg * fmsg);
+static size_t pack_ctx(char **buf, CtxMsg * cmsg);
+static size_t pack_loc(char **buf, LocMsg * lmsg);
+static size_t pack_fail(char **buf, FailMsg * fmsg);
+static size_t pack_duration(char **buf, DurationMsg * fmsg);
 static void upack_ctx(char **buf, CtxMsg * cmsg);
 static void upack_loc(char **buf, LocMsg * lmsg);
 static void upack_fail(char **buf, FailMsg * fmsg);
@@ -102,7 +102,7 @@ static void rcvmsg_update_loc(RcvMsg * rmsg, const char *file, int line);
 static RcvMsg *rcvmsg_create(void);
 void rcvmsg_free(RcvMsg * rmsg);
 
-typedef int (*pfun) (char **, CheckMsg *);
+typedef size_t (*pfun) (char **, CheckMsg *);
 typedef void (*upfun) (char **, CheckMsg *);
 
 static pfun pftab[] = {
@@ -121,6 +121,8 @@ static upfun upftab[] = {
 
 int pack(enum ck_msg_type type, char **buf, CheckMsg * msg)
 {
+    size_t len;
+
     if(buf == NULL)
         return -1;
     if(msg == NULL)
@@ -128,12 +130,17 @@ int pack(enum ck_msg_type type, char **buf, CheckMsg * msg)
 
     check_type(type, __FILE__, __LINE__);
 
-    return pftab[type] (buf, msg);
+    len = pftab[type] (buf, msg);
+    if(len > (size_t) INT_MAX)
+        eprintf("Value of len (%d) too big, max allowed %u\n",
+                __FILE__, __LINE__ - 3, len, INT_MAX);
+    return (int) len;
 }
 
 int upack(char *buf, CheckMsg * msg, enum ck_msg_type *type)
 {
     char *obuf;
+    ptrdiff_t diff;
 
     if(buf == NULL)
         return -1;
@@ -146,7 +153,14 @@ int upack(char *buf, CheckMsg * msg, enum ck_msg_type *type)
 
     upftab[*type] (&buf, msg);
 
-    return buf - obuf;
+    diff = buf - obuf;
+    if(diff > (ptrdiff_t) INT_MAX)
+        eprintf("Value of diff (%t) too big, max allowed %u\n",
+                __FILE__, __LINE__ - 3, diff, INT_MAX);
+    if(diff > (ptrdiff_t) INT_MAX || diff < (ptrdiff_t) INT_MIN)
+        eprintf("Value of diff (%t) too small, min allowed %u\n",
+                __FILE__, __LINE__ - 6, diff, INT_MIN);
+    return (int) diff;
 }
 
 static void pack_int(char **buf, ck_uint32 val)
@@ -235,10 +249,10 @@ static enum ck_msg_type upack_type(char **buf)
 }
 
 
-static int pack_ctx(char **buf, CtxMsg * cmsg)
+static size_t pack_ctx(char **buf, CtxMsg * cmsg)
 {
     char *ptr;
-    int len;
+    size_t len;
 
     len = 4 + 4;
     *buf = ptr = (char *)emalloc(len);
@@ -254,10 +268,10 @@ static void upack_ctx(char **buf, CtxMsg * cmsg)
     cmsg->ctx = (enum ck_result_ctx)upack_int(buf);
 }
 
-static int pack_duration(char **buf, DurationMsg * cmsg)
+static size_t pack_duration(char **buf, DurationMsg * cmsg)
 {
     char *ptr;
-    int len;
+    size_t len;
 
     len = 4 + 4;
     *buf = ptr = (char *)emalloc(len);
@@ -280,10 +294,10 @@ static void upack_duration(char **buf, DurationMsg * cmsg)
     cmsg->duration = (int) duration;
 }
 
-static int pack_loc(char **buf, LocMsg * lmsg)
+static size_t pack_loc(char **buf, LocMsg * lmsg)
 {
     char *ptr;
-    int len;
+    size_t len;
 
     len = 4 + 4 + (lmsg->file ? strlen(lmsg->file) : 0) + 4;
     *buf = ptr = (char *)emalloc(len);
@@ -300,18 +314,19 @@ static int pack_loc(char **buf, LocMsg * lmsg)
 
 static void upack_loc(char **buf, LocMsg * lmsg)
 {
+    ck_uint32 line;
     lmsg->file = upack_str(buf);
-    ck_uint32 line = upack_int(buf);
+    line = upack_int(buf);
     if(line > INT_MAX)
         eprintf("Unpacked value (%u) too big for lmsg->line, max allowed %d\n",
                 __FILE__, __LINE__ - 3, line, INT_MAX);
     lmsg->line = (int) line;
 }
 
-static int pack_fail(char **buf, FailMsg * fmsg)
+static size_t pack_fail(char **buf, FailMsg * fmsg)
 {
     char *ptr;
-    int len;
+    size_t len;
 
     len = 4 + 4 + (fmsg->msg ? strlen(fmsg->msg) : 0);
     *buf = ptr = (char *)emalloc(len);
