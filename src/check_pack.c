@@ -24,6 +24,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <stddef.h>
+#include <limits.h>
+#include "check_stdint.h"        /* Need SIZE_MAX */
 
 #include "check.h"
 #include "check_error.h"
@@ -70,12 +72,13 @@ static size_t get_max_msg_size(void)
     return value;
 }
 
-/* typedef an unsigned int that has at least 4 bytes */
+/* typedef an unsigned int that has exactly 4 bytes, as required by pack_int() */
 typedef uint32_t ck_uint32;
+#define CK_UINT32_MAX UINT32_MAX
 
 
-static void pack_int(char **buf, int val);
-static int upack_int(char **buf);
+static void pack_int(char **buf, ck_uint32 val);
+static ck_uint32 upack_int(char **buf);
 static void pack_str(char **buf, const char *str);
 static char *upack_str(char **buf);
 
@@ -146,7 +149,7 @@ int upack(char *buf, CheckMsg * msg, enum ck_msg_type *type)
     return buf - obuf;
 }
 
-static void pack_int(char **buf, int val)
+static void pack_int(char **buf, ck_uint32 val)
 {
     unsigned char *ubuf = (unsigned char *)*buf;
     ck_uint32 uval = val;
@@ -159,7 +162,7 @@ static void pack_int(char **buf, int val)
     *buf += 4;
 }
 
-static int upack_int(char **buf)
+static ck_uint32 upack_int(char **buf)
 {
     unsigned char *ubuf = (unsigned char *)*buf;
     ck_uint32 uval;
@@ -170,19 +173,22 @@ static int upack_int(char **buf)
 
     *buf += 4;
 
-    return (int)uval;
+    return uval;
 }
 
 static void pack_str(char **buf, const char *val)
 {
-    int strsz;
+    size_t strsz;
 
     if(val == NULL)
         strsz = 0;
     else
         strsz = strlen(val);
+    if(strsz > CK_UINT32_MAX)
+        eprintf("Value of strsz (%zu) too big, max allowed %u\n",
+                __FILE__, __LINE__, strsz, CK_UINT32_MAX);
 
-    pack_int(buf, strsz);
+    pack_int(buf, (ck_uint32) strsz);
 
     if(strsz > 0)
     {
@@ -196,7 +202,11 @@ static char *upack_str(char **buf)
     char *val;
     int strsz;
 
-    strsz = upack_int(buf);
+    ck_uint32 str_sz = upack_int(buf);
+    if(str_sz > INT_MAX)
+        eprintf("Unpacked value (%d) too big for strsz, max allowed %u\n",
+                __FILE__, __LINE__ - 3, str_sz, INT_MAX);
+    strsz = (int) str_sz;
 
     if(strsz > 0)
     {
@@ -216,7 +226,7 @@ static char *upack_str(char **buf)
 
 static void pack_type(char **buf, enum ck_msg_type type)
 {
-    pack_int(buf, (int)type);
+    pack_int(buf, (ck_uint32) type);
 }
 
 static enum ck_msg_type upack_type(char **buf)
@@ -234,7 +244,7 @@ static int pack_ctx(char **buf, CtxMsg * cmsg)
     *buf = ptr = (char *)emalloc(len);
 
     pack_type(&ptr, CK_MSG_CTX);
-    pack_int(&ptr, (int)cmsg->ctx);
+    pack_int(&ptr, (ck_uint32) cmsg->ctx);
 
     return len;
 }
@@ -253,14 +263,21 @@ static int pack_duration(char **buf, DurationMsg * cmsg)
     *buf = ptr = (char *)emalloc(len);
 
     pack_type(&ptr, CK_MSG_DURATION);
-    pack_int(&ptr, cmsg->duration);
+    if((size_t) cmsg->duration > (size_t) CK_UINT32_MAX)
+        eprintf("Value of cmsg->duration (%d) too big to pack, max allowed %u\n",
+                __FILE__, __LINE__, cmsg->duration, CK_UINT32_MAX);
+    pack_int(&ptr, (ck_uint32) cmsg->duration);
 
     return len;
 }
 
 static void upack_duration(char **buf, DurationMsg * cmsg)
 {
-    cmsg->duration = upack_int(buf);
+    ck_uint32 duration = upack_int(buf);
+    if(duration > INT_MAX)
+        eprintf("Unpacked value (%u) too big for cmsg->duration, max allowed %d\n",
+                __FILE__, __LINE__ - 3, duration, INT_MAX);
+    cmsg->duration = (int) duration;
 }
 
 static int pack_loc(char **buf, LocMsg * lmsg)
@@ -273,7 +290,10 @@ static int pack_loc(char **buf, LocMsg * lmsg)
 
     pack_type(&ptr, CK_MSG_LOC);
     pack_str(&ptr, lmsg->file);
-    pack_int(&ptr, lmsg->line);
+    if((size_t) lmsg->line > (size_t) CK_UINT32_MAX)
+        eprintf("Value of lmsg->line (%d) too big, max allowed %u\n",
+                __FILE__, __LINE__, lmsg->line, CK_UINT32_MAX);
+    pack_int(&ptr, (ck_uint32) lmsg->line);
 
     return len;
 }
@@ -281,7 +301,11 @@ static int pack_loc(char **buf, LocMsg * lmsg)
 static void upack_loc(char **buf, LocMsg * lmsg)
 {
     lmsg->file = upack_str(buf);
-    lmsg->line = upack_int(buf);
+    ck_uint32 line = upack_int(buf);
+    if(line > INT_MAX)
+        eprintf("Unpacked value (%u) too big for lmsg->line, max allowed %d\n",
+                __FILE__, __LINE__ - 3, line, INT_MAX);
+    lmsg->line = (int) line;
 }
 
 static int pack_fail(char **buf, FailMsg * fmsg)
