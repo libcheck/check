@@ -95,8 +95,8 @@ static void check_type(int type, const char *file, int line);
 static enum ck_msg_type upack_type(char **buf);
 static void pack_type(char **buf, enum ck_msg_type type);
 
-static int read_buf(FILE * fdes, int size, char *buf);
-static int get_result(char *buf, RcvMsg * rmsg);
+static size_t read_buf(FILE * fdes, size_t size, char *buf);
+static size_t get_result(char *buf, RcvMsg * rmsg);
 static void rcvmsg_update_ctx(RcvMsg * rmsg, enum ck_result_ctx ctx);
 static void rcvmsg_update_loc(RcvMsg * rmsg, const char *file, int line);
 static RcvMsg *rcvmsg_create(void);
@@ -214,13 +214,9 @@ static void pack_str(char **buf, const char *val)
 static char *upack_str(char **buf)
 {
     char *val;
-    int strsz;
+    size_t strsz;
 
-    ck_uint32 str_sz = upack_int(buf);
-    if(str_sz > INT_MAX)
-        eprintf("Unpacked value (%d) too big for strsz, max allowed %u\n",
-                __FILE__, __LINE__ - 3, str_sz, INT_MAX);
-    strsz = (int) str_sz;
+    strsz = (size_t) upack_int(buf);
 
     if(strsz > 0)
     {
@@ -363,28 +359,31 @@ static void ppack_cleanup(void *mutex)
 void ppack(FILE * fdes, enum ck_msg_type type, CheckMsg * msg)
 {
     char *buf = NULL;
-    size_t n, r;
+    int n;
+    size_t r;
 
     n = pack(type, &buf, msg);
+    if(n < 0)
+        eprintf("pack failed", __FILE__, __LINE__ - 2);
     /* Keep it on the safe side to not send too much data. */
-    if(n > get_max_msg_size())
-        eprintf("Message string too long", __FILE__, __LINE__ - 2);
+    if((size_t) n > get_max_msg_size())
+        eprintf("Message string too long", __FILE__, __LINE__ - 5);
 
     pthread_cleanup_push(ppack_cleanup, &ck_mutex_lock);
     pthread_mutex_lock(&ck_mutex_lock);
-    r = fwrite(buf, 1, n, fdes);
+    r = fwrite(buf, 1, (size_t) n, fdes);
     fflush(fdes);
     pthread_mutex_unlock(&ck_mutex_lock);
     pthread_cleanup_pop(0);
-    if(r != n)
-        eprintf("Error in call to fwrite:", __FILE__, __LINE__ - 2);
+    if(r != (size_t) n)
+        eprintf("Error in call to fwrite:", __FILE__, __LINE__ - 5);
 
     free(buf);
 }
 
-static int read_buf(FILE * fdes, int size, char *buf)
+static size_t read_buf(FILE * fdes, size_t size, char *buf)
 {
-    int n;
+    size_t n;
 
     n = fread(buf, 1, size, fdes);
 
@@ -396,15 +395,17 @@ static int read_buf(FILE * fdes, int size, char *buf)
     return n;
 }
 
-static int get_result(char *buf, RcvMsg * rmsg)
+static size_t get_result(char *buf, RcvMsg * rmsg)
 {
     enum ck_msg_type type;
     CheckMsg msg;
-    int n;
+    ptrdiff_t n;
+    size_t msgsz;
 
     n = upack(buf, &msg, &type);
-    if(n == -1)
+    if(n < 0)
         eprintf("Error in call to upack", __FILE__, __LINE__ - 2);
+    msgsz = (size_t) n;
 
     if(type == CK_MSG_CTX)
     {
@@ -446,7 +447,7 @@ static int get_result(char *buf, RcvMsg * rmsg)
     else
         check_type(type, __FILE__, __LINE__);
 
-    return n;
+    return msgsz;
 }
 
 static void reset_rcv_test(RcvMsg * rmsg)
@@ -511,7 +512,7 @@ static void rcvmsg_update_loc(RcvMsg * rmsg, const char *file, int line)
 
 RcvMsg *punpack(FILE * fdes)
 {
-    int nread, nparse;
+    size_t nread, nparse;
     char *buf;
     RcvMsg *rmsg;
 
@@ -526,17 +527,17 @@ RcvMsg *punpack(FILE * fdes)
     while(nparse > 0)
     {
         /* Parse one message */
-        int n = get_result(buf, rmsg);
+        size_t n = get_result(buf, rmsg);
+        if ( ((ssize_t) nparse - (ssize_t) n) < 0)    /* casting necessary to be able to get proper negative integers */
+            eprintf("Error in call to get_result", __FILE__, __LINE__ - 5);
         nparse -= n;
-        if (nparse < 0)
-            eprintf("Error in call to get_result", __FILE__, __LINE__ - 3);
         /* Move remaining data in buffer to the beginning */
         memmove(buf, buf + n, nparse);
         /* If EOF has not been seen */
         if(nread > 0)
         {
             /* Read more data into empty space at end of the buffer */
-            nread = read_buf(fdes, n, buf + nparse);
+            nread = read_buf(fdes, (size_t) n, buf + nparse);
             nparse += nread;
         }
     }
