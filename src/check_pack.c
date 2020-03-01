@@ -245,7 +245,9 @@ static void pack_type(char **buf, enum ck_msg_type type)
 
 static enum ck_msg_type upack_type(char **buf)
 {
+CK_DIAGNOSTIC_PUSH_IGNORE(-Wbad-function-cast)
     return (enum ck_msg_type)upack_int(buf);
+CK_DIAGNOSTIC_POP()
 }
 
 
@@ -265,7 +267,9 @@ static size_t pack_ctx(char **buf, CtxMsg * cmsg)
 
 static void upack_ctx(char **buf, CtxMsg * cmsg)
 {
+CK_DIAGNOSTIC_PUSH_IGNORE(-Wbad-function-cast)
     cmsg->ctx = (enum ck_result_ctx)upack_int(buf);
+CK_DIAGNOSTIC_POP()
 }
 
 static size_t pack_duration(char **buf, DurationMsg * cmsg)
