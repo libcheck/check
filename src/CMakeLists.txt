@@ -2,6 +2,7 @@
 # Check: a unit test framework for C
 # Copyright (C) 2011 Mateusz Loskot
 # Copyright (C) 2001, 2002 Arien Malec
+# Copyright (C) 2020 Mikko Koivunalho
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -181,11 +182,15 @@ target_include_directories(checkShared
     $<INSTALL_INTERFACE:include>
 )
 
-install(TARGETS check checkShared
-  EXPORT check-targets
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
+if(NOT THIS_IS_SUBPROJECT)
+  install(TARGETS check checkShared
+    EXPORT check-targets
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  )
+endif()
+
+# vim: shiftwidth=2:softtabstop=2:tabstop=2:expandtab:autoindent
 
