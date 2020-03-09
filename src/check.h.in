@@ -74,6 +74,20 @@ CK_CPPSTART
 #define CK_ATTRIBUTE_NORETURN
 #endif /* GCC 2.5 */
 
+#if GCC_VERSION_AT_LEAST(4,7,4) && (__STDC_VERSION__ >= 199901L)
+/* Operator _Pragma introduced in C99 */
+#define CK_DIAGNOSTIC_STRINGIFY(x) #x
+#define CK_DIAGNOSTIC_HELPER1(y) CK_DIAGNOSTIC_STRINGIFY(GCC diagnostic ignored y)
+#define CK_DIAGNOSTIC_HELPER2(z) CK_DIAGNOSTIC_HELPER1(#z)
+#define CK_DIAGNOSTIC_PUSH_IGNORE(w) \
+    _Pragma("GCC diagnostic push") \
+    _Pragma(CK_DIAGNOSTIC_HELPER2(w))
+#define CK_DIAGNOSTIC_POP(w) _Pragma ("GCC diagnostic pop")
+#else
+#define CK_DIAGNOSTIC_PUSH_IGNORE(w)
+#define CK_DIAGNOSTIC_POP(w)
+#endif /* GCC 4.7.4 */
+
 #undef GCC_VERSION_AT_LEAST
 
 #include <sys/types.h>
