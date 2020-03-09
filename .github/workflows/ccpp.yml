@@ -1,0 +1,104 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build_linux_autotools:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: create confiogure
+      run: autoreconf -i
+    - name: configure default
+      run: ./configure
+    - name: make
+      run: make
+    - name: make install
+      run: make install
+    - name: make check
+      run: make check
+    - name: make docs
+      run: make doc/check_html
+    - name: make doxygen 
+      run: make doc/doxygen
+    - name: make prereleasecheck
+      run: make prereleasecheck
+    - name: configure with args
+      run: ./configure --disable-fork --disable-subunit --enable-snprintf-replacement --enable-timer-replacement
+    - name: make
+      run: make
+    - name: make check
+      run: make check
+    
+  build_linux_cmake:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: cmake cversion
+      run: cmake --version
+    - name: configure default
+      run: ./configure
+    - name: create configs
+      run: cmake .
+    - name: make
+      run: make
+    - name: unit tests
+      run: ctest -V
+    - name: make install 
+      run: make install
+
+  build_osx_autotools:
+
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: create confiogure
+      run: autoreconf -i
+    - name: configure default
+      run: ./configure
+    - name: make
+      run: make
+    - name: make install
+      run: make install
+    - name: make check
+      run: make check
+    - name: make docs
+      run: make doc/check_html
+    - name: make doxygen 
+      run: make doc/doxygen
+    - name: make prereleasecheck
+      run: make prereleasecheck
+    - name: configure with args
+      run: ./configure --disable-fork --disable-subunit --enable-snprintf-replacement --enable-timer-replacement
+    - name: make
+      run: make
+    - name: make check
+      run: make check
+    
+  build_osx_cmake:
+
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: cmake cversion
+      run: cmake --version
+    - name: configure default
+      run: ./configure
+    - name: create configs
+      run: cmake .
+    - name: make
+      run: make
+    - name: unit tests
+      run: ctest -V
+    - name: make install 
+      run: make install
