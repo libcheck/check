@@ -59,6 +59,10 @@ Build issues:
 [     ] * Add option BUILD_DOCUMENTATION to CMake (Github #217).
 [     ] * Missing function check in CMake creates def HAVE_FOO=0.
           There should be no HAVE_FOO (Github #195).
+[     ] * CMake and Autotools should check if compiler supports __attribute__ ((format (a, b, c)))
+          to decide if CK_ATTRIBUTE_FORMAT can be defined
+          https://www.gnu.org/software/autoconf-archive/ax_gcc_func_attribute.html
+
 
 Check source code:
 ============
