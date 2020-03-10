@@ -65,6 +65,8 @@ jobs:
       run: brew cask install mactex
     - name: install doc programs
       run: brew install texi2html texinfo doxygen
+    - name: install automake
+      run: brew install automake
     - name: create configure
       run: autoreconf -i
     - name: configure default
