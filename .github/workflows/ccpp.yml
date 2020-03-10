@@ -13,7 +13,9 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
-    - name: create confiogure
+    - name: Install doc packages
+      run: sudo apt-get install -y texlive texinfo texi2html doxygen
+    - name: create configure
       run: autoreconf -i
     - name: configure default
       run: ./configure
@@ -44,8 +46,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: cmake cversion
       run: cmake --version
-    - name: configure default
-      run: ./configure
     - name: create configs
       run: cmake .
     - name: make
@@ -61,7 +61,11 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
-    - name: create confiogure
+    - name: install maxtex
+      run: brew cask install mactex
+    - name: install doc programs
+      run: brew install texi2html texinfo doxygen
+    - name: create configure
       run: autoreconf -i
     - name: configure default
       run: ./configure
@@ -92,8 +96,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: cmake cversion
       run: cmake --version
-    - name: configure default
-      run: ./configure
     - name: create configs
       run: cmake .
     - name: make
