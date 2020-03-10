@@ -22,7 +22,7 @@ jobs:
     - name: make
       run: make
     - name: make install
-      run: make install
+      run: sudo make install
     - name: make check
       run: make check
     - name: make docs
@@ -53,7 +53,7 @@ jobs:
     - name: unit tests
       run: ctest -V
     - name: make install 
-      run: make install
+      run: sudo make install
 
   build_osx_autotools:
 
@@ -72,7 +72,7 @@ jobs:
     - name: make
       run: make
     - name: make install
-      run: make install
+      run: sudo make install
     - name: make check
       run: make check
     - name: make docs
@@ -103,4 +103,4 @@ jobs:
     - name: unit tests
       run: ctest -V
     - name: make install 
-      run: make install
+      run: sudo make install
