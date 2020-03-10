@@ -67,6 +67,8 @@ jobs:
       run: brew install texi2html texinfo doxygen
     - name: install automake
       run: brew install automake
+    - name: install pkg-config
+      run: brew install pkgconfig
     - name: create configure
       run: autoreconf -i
     - name: configure default
