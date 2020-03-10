@@ -83,8 +83,6 @@ jobs:
       run: make doc/check_html
     - name: make doxygen 
       run: make doc/doxygen
-    - name: make prereleasecheck
-      run: make prereleasecheck
     - name: configure with args
       run: ./configure --disable-fork --disable-subunit --enable-snprintf-replacement --enable-timer-replacement
     - name: make
