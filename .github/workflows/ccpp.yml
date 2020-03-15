@@ -71,7 +71,7 @@ jobs:
       run: brew install pkgconfig
     - name: create configure
       run: autoreconf -i
-    - name: configure default
+    - name: configure
       run: ./configure --disable-timeout-tests
     - name: make
       run: make
@@ -84,7 +84,7 @@ jobs:
     - name: make doxygen 
       run: make doc/doxygen
     - name: configure with args
-      run: ./configure --disable-fork --disable-subunit --enable-snprintf-replacement --enable-timer-replacement
+      run: ./configure --disable-fork --disable-subunit --enable-snprintf-replacement --enable-timer-replacement --disable-timeout-tests 
     - name: make
       run: make
     - name: make check
