@@ -37,6 +37,18 @@ jobs:
       run: make
     - name: make check
       run: make check
+    - name: create configure example
+      working-directory: doc/example
+      run: autoreconf -i
+    - name: configure example
+      working-directory: doc/example
+      run: ./configure
+    - name: build example
+      working-directory: doc/example
+      run: make 
+    - name: test example
+      working-directory: doc/example
+      run: make check
     
   build_linux_cmake:
 
