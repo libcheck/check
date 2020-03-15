@@ -72,7 +72,7 @@ jobs:
     - name: create configure
       run: autoreconf -i
     - name: configure default
-      run: ./configure
+      run: ./configure --disable-timeout-tests
     - name: make
       run: make
     - name: make install
@@ -99,7 +99,7 @@ jobs:
     - name: cmake cversion
       run: cmake --version
     - name: create configs
-      run: cmake .
+      run: cmake . -D CHECK_ENABLE_TIMEOUT_TESTS=0
     - name: make
       run: make
     - name: unit tests
