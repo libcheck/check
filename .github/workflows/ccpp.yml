@@ -101,10 +101,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: install scan-build
-      shell: bash
-      run: |
-        brew tap mgrebenets/scan-build
-        brew install scan-build
+      run: sudo apt install clang-tools
     - name: create configure
       run: autoreconf -i
     - name: scan-build configure
