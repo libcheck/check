@@ -65,3 +65,6 @@ Check is available packaged for the following operating systems:
 
 [![Packaging status](https://repology.org/badge/vertical-allrepos/check.svg)](https://repology.org/project/check/versions)
 
+# See Also
+
+- [Check Generator](https://gitlab.com/oxr463/check-generator) - Generate unit tests for c projects via libcheck
