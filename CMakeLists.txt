@@ -39,6 +39,9 @@ if(POLICY CMP0076)
   # target_sources() leaves relative source file paths unmodified. (OLD)
   cmake_policy(SET CMP0076 OLD)
 endif()
+if(POLICY CMP0074)
+    cmake_policy(SET CMP0074 NEW) # Use <PackageName>_ROOT variables
+endif()
 project(Check
   DESCRIPTION "Unit Testing Framework for C"
   LANGUAGES C)
@@ -89,6 +92,9 @@ if(NOT CHECK_ENABLE_TESTS)
   message(DEPRECATION "The option CHECK_ENABLE_TESTS is deprecated. Use option BUILD_TESTING.")
   # TODO Remove this option by Check 0.15.0!
 endif(NOT CHECK_ENABLE_TESTS)
+
+option(ENABLE_TREAT_WARNINGS_AS_ERRORS
+  "Fail build if compiler, linker, static analysis tools or other QA tool finds faults" OFF)
 
 option(CHECK_ENABLE_GCOV
   "Turn on test coverage" OFF)
@@ -461,6 +467,43 @@ if(NOT THIS_IS_SUBPROJECT)
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
   )
 endif()
+
+###############################################################################
+# CMake enabled static analysis
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  # Different tests are only executed when the corresponding
+  # tools are available. Presence in the system is checked individually.
+  #
+  # Run analysis only when the build type is Debug,
+  # not any of the Release variants.
+  # In the future Cppcheck and other tools will improve
+  # and find new faults in our code.
+  # We do not want to create headache for the future admins and packagers,
+  # only for the future programmers.
+
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.10")
+    # CMAKE_<LANG>_CPPCHECK only supported in 3.10 and upwards.
+    # E.g. CMAKE_<LANG>_CPPLINT already since CMake 3.8.
+    find_package(Cppcheck)
+    if(Cppcheck_FOUND)
+      set(cppcheck_c_standard "c${CMAKE_C_STANDARD}")
+      if("${cppcheck_c_standard}" STREQUAL "c90")
+        set(cppcheck_c_standard "c89")
+      endif()
+      set(cppcheck_error_exitcode "0")
+      if(ENABLE_TREAT_WARNINGS_AS_ERRORS)
+        set(cppcheck_error_exitcode "1")
+      endif()
+      list(APPEND CMAKE_C_CPPCHECK "${Cppcheck_EXECUTABLE}")
+      list(APPEND CMAKE_C_CPPCHECK "--quiet")
+      list(APPEND CMAKE_C_CPPCHECK "--error-exitcode=${cppcheck_error_exitcode}")
+      list(APPEND CMAKE_C_CPPCHECK "--std=${cppcheck_c_standard}")
+      list(APPEND CMAKE_C_CPPCHECK "--enable=warning,style,performance,portability")
+    endif(Cppcheck_FOUND)
+  endif(CMAKE_VERSION VERSION_GREATER_EQUAL "3.10")
+
+endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 ###############################################################################
 # Subdirectories

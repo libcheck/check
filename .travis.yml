@@ -50,6 +50,8 @@ matrix:
   - os: linux
     compiler: clang
     env: SCAN_BUILD=YES
+    before_install:
+      - sudo apt-get install -y cppcheck
 
   include:
   - os: linux
@@ -57,8 +59,8 @@ matrix:
     env: CMAKE_PROJECT_USAGE_TEST=YES
 
 before_script:
- - if [ "$(uname)" = "Linux" ]; then sudo apt-get update; sudo apt-get install -y texlive texinfo texi2html doxygen; fi
- - if [ "$(uname)" = "Darwin" ]; then brew update; brew cask install mactex; brew install texi2html texinfo doxygen; fi
+ - if [ "$(uname)" = "Linux" ]; then sudo apt-get update; sudo apt-get install -y texlive texinfo texi2html doxygen cppcheck; fi
+ - if [ "$(uname)" = "Darwin" ]; then brew update; brew cask install mactex; brew install texi2html texinfo doxygen cppcheck; fi
 
 script:
   - chmod +x travis.sh
