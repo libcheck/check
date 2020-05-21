@@ -19,6 +19,7 @@
  */
 
 #include "../lib/libcompat.h"
+#include "config.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -34,10 +35,13 @@
 #include "check_pack.h"
 
 #ifndef HAVE_PTHREAD
-#define pthread_mutex_lock(arg)
-#define pthread_mutex_unlock(arg)
 #define pthread_cleanup_push(f, a) {
 #define pthread_cleanup_pop(e) }
+#endif
+
+#ifndef PTHREAD_MUTEX_INITIALIZER
+#define pthread_mutex_lock(mutex)
+#define pthread_mutex_unlock(mutex)
 #endif
 
 /* Maximum size for one message in the message stream. */
@@ -348,12 +352,15 @@ static void check_type(int type, const char *file, int line)
         eprintf("Bad message type arg %d", file, line, type);
 }
 
-#ifdef HAVE_PTHREAD
+#ifdef PTHREAD_MUTEX_INITIALIZER
 static pthread_mutex_t ck_mutex_lock = PTHREAD_MUTEX_INITIALIZER;
+
 static void ppack_cleanup(void *mutex)
 {
     pthread_mutex_unlock((pthread_mutex_t *)mutex);
 }
+#else
+#define ppack_cleanup(mutex)
 #endif
 
 void ppack(FILE * fdes, enum ck_msg_type type, CheckMsg * msg)

@@ -140,9 +140,31 @@ extern int fpclassify(double d);
 #include <sys/wait.h>
 #endif
 
+#if defined(HAVE_INIT_ONCE_BEGIN_INITIALIZE) && defined(HAVE_INIT_ONCE_COMPLETE)
+#define HAVE_WIN32_INIT_ONCE 1
+#endif
+
 /* declares pthread_create and friends */
-#ifdef HAVE_PTHREAD
+#if defined HAVE_PTHREAD
 #include <pthread.h>
+#elif defined HAVE_WIN32_INIT_ONCE
+typedef void pthread_mutexattr_t;
+
+typedef struct
+{
+    INIT_ONCE init;
+    HANDLE mutex;
+} pthread_mutex_t;
+
+#define PTHREAD_MUTEX_INITIALIZER { \
+    INIT_ONCE_STATIC_INIT, \
+    NULL, \
+}
+
+int pthread_mutex_init(pthread_mutex_t *mutex, pthread_mutexattr_t *attr);
+int pthread_mutex_destroy(pthread_mutex_t *mutex);
+int pthread_mutex_lock(pthread_mutex_t *mutex);
+int pthread_mutex_unlock(pthread_mutex_t *mutex);
 #endif
 
 #ifdef HAVE_STDINT_H
