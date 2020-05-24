@@ -24,6 +24,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <stddef.h>
+#include <limits.h>
+#include "check_stdint.h"        /* Need SIZE_MAX */
 
 #include "check.h"
 #include "check_error.h"
@@ -70,19 +72,20 @@ static size_t get_max_msg_size(void)
     return value;
 }
 
-/* typedef an unsigned int that has at least 4 bytes */
+/* typedef an unsigned int that has exactly 4 bytes, as required by pack_int() */
 typedef uint32_t ck_uint32;
+#define CK_UINT32_MAX UINT32_MAX
 
 
-static void pack_int(char **buf, int val);
-static int upack_int(char **buf);
+static void pack_int(char **buf, ck_uint32 val);
+static ck_uint32 upack_int(char **buf);
 static void pack_str(char **buf, const char *str);
 static char *upack_str(char **buf);
 
-static int pack_ctx(char **buf, CtxMsg * cmsg);
-static int pack_loc(char **buf, LocMsg * lmsg);
-static int pack_fail(char **buf, FailMsg * fmsg);
-static int pack_duration(char **buf, DurationMsg * fmsg);
+static size_t pack_ctx(char **buf, CtxMsg * cmsg);
+static size_t pack_loc(char **buf, LocMsg * lmsg);
+static size_t pack_fail(char **buf, FailMsg * fmsg);
+static size_t pack_duration(char **buf, DurationMsg * fmsg);
 static void upack_ctx(char **buf, CtxMsg * cmsg);
 static void upack_loc(char **buf, LocMsg * lmsg);
 static void upack_fail(char **buf, FailMsg * fmsg);
@@ -92,14 +95,14 @@ static void check_type(int type, const char *file, int line);
 static enum ck_msg_type upack_type(char **buf);
 static void pack_type(char **buf, enum ck_msg_type type);
 
-static int read_buf(FILE * fdes, int size, char *buf);
-static int get_result(char *buf, RcvMsg * rmsg);
+static size_t read_buf(FILE * fdes, size_t size, char *buf);
+static size_t get_result(char *buf, RcvMsg * rmsg);
 static void rcvmsg_update_ctx(RcvMsg * rmsg, enum ck_result_ctx ctx);
 static void rcvmsg_update_loc(RcvMsg * rmsg, const char *file, int line);
 static RcvMsg *rcvmsg_create(void);
 void rcvmsg_free(RcvMsg * rmsg);
 
-typedef int (*pfun) (char **, CheckMsg *);
+typedef size_t (*pfun) (char **, CheckMsg *);
 typedef void (*upfun) (char **, CheckMsg *);
 
 static pfun pftab[] = {
@@ -118,6 +121,8 @@ static upfun upftab[] = {
 
 int pack(enum ck_msg_type type, char **buf, CheckMsg * msg)
 {
+    size_t len;
+
     if(buf == NULL)
         return -1;
     if(msg == NULL)
@@ -125,12 +130,17 @@ int pack(enum ck_msg_type type, char **buf, CheckMsg * msg)
 
     check_type(type, __FILE__, __LINE__);
 
-    return pftab[type] (buf, msg);
+    len = pftab[type] (buf, msg);
+    if(len > (size_t) INT_MAX)
+        eprintf("Value of len (%d) too big, max allowed %u\n",
+                __FILE__, __LINE__ - 3, len, INT_MAX);
+    return (int) len;
 }
 
 int upack(char *buf, CheckMsg * msg, enum ck_msg_type *type)
 {
     char *obuf;
+    ptrdiff_t diff;
 
     if(buf == NULL)
         return -1;
@@ -143,10 +153,17 @@ int upack(char *buf, CheckMsg * msg, enum ck_msg_type *type)
 
     upftab[*type] (&buf, msg);
 
-    return buf - obuf;
+    diff = buf - obuf;
+    if(diff > (ptrdiff_t) INT_MAX)
+        eprintf("Value of diff (%t) too big, max allowed %u\n",
+                __FILE__, __LINE__ - 3, diff, INT_MAX);
+    if(diff > (ptrdiff_t) INT_MAX || diff < (ptrdiff_t) INT_MIN)
+        eprintf("Value of diff (%t) too small, min allowed %u\n",
+                __FILE__, __LINE__ - 6, diff, INT_MIN);
+    return (int) diff;
 }
 
-static void pack_int(char **buf, int val)
+static void pack_int(char **buf, ck_uint32 val)
 {
     unsigned char *ubuf = (unsigned char *)*buf;
     ck_uint32 uval = val;
@@ -159,7 +176,7 @@ static void pack_int(char **buf, int val)
     *buf += 4;
 }
 
-static int upack_int(char **buf)
+static ck_uint32 upack_int(char **buf)
 {
     unsigned char *ubuf = (unsigned char *)*buf;
     ck_uint32 uval;
@@ -170,19 +187,22 @@ static int upack_int(char **buf)
 
     *buf += 4;
 
-    return (int)uval;
+    return uval;
 }
 
 static void pack_str(char **buf, const char *val)
 {
-    int strsz;
+    size_t strsz;
 
     if(val == NULL)
         strsz = 0;
     else
         strsz = strlen(val);
+    if(strsz > CK_UINT32_MAX)
+        eprintf("Value of strsz (%zu) too big, max allowed %u\n",
+                __FILE__, __LINE__, strsz, CK_UINT32_MAX);
 
-    pack_int(buf, strsz);
+    pack_int(buf, (ck_uint32) strsz);
 
     if(strsz > 0)
     {
@@ -194,9 +214,9 @@ static void pack_str(char **buf, const char *val)
 static char *upack_str(char **buf)
 {
     char *val;
-    int strsz;
+    size_t strsz;
 
-    strsz = upack_int(buf);
+    strsz = (size_t) upack_int(buf);
 
     if(strsz > 0)
     {
@@ -216,78 +236,97 @@ static char *upack_str(char **buf)
 
 static void pack_type(char **buf, enum ck_msg_type type)
 {
-    pack_int(buf, (int)type);
+    pack_int(buf, (ck_uint32) type);
 }
 
 static enum ck_msg_type upack_type(char **buf)
 {
+CK_DIAGNOSTIC_PUSH_IGNORE(-Wbad-function-cast)
     return (enum ck_msg_type)upack_int(buf);
+CK_DIAGNOSTIC_POP()
 }
 
 
-static int pack_ctx(char **buf, CtxMsg * cmsg)
+static size_t pack_ctx(char **buf, CtxMsg * cmsg)
 {
     char *ptr;
-    int len;
+    size_t len;
 
     len = 4 + 4;
     *buf = ptr = (char *)emalloc(len);
 
     pack_type(&ptr, CK_MSG_CTX);
-    pack_int(&ptr, (int)cmsg->ctx);
+    pack_int(&ptr, (ck_uint32) cmsg->ctx);
 
     return len;
 }
 
 static void upack_ctx(char **buf, CtxMsg * cmsg)
 {
+CK_DIAGNOSTIC_PUSH_IGNORE(-Wbad-function-cast)
     cmsg->ctx = (enum ck_result_ctx)upack_int(buf);
+CK_DIAGNOSTIC_POP()
 }
 
-static int pack_duration(char **buf, DurationMsg * cmsg)
+static size_t pack_duration(char **buf, DurationMsg * cmsg)
 {
     char *ptr;
-    int len;
+    size_t len;
 
     len = 4 + 4;
     *buf = ptr = (char *)emalloc(len);
 
     pack_type(&ptr, CK_MSG_DURATION);
-    pack_int(&ptr, cmsg->duration);
+    if((size_t) cmsg->duration > (size_t) CK_UINT32_MAX)
+        eprintf("Value of cmsg->duration (%d) too big to pack, max allowed %u\n",
+                __FILE__, __LINE__, cmsg->duration, CK_UINT32_MAX);
+    pack_int(&ptr, (ck_uint32) cmsg->duration);
 
     return len;
 }
 
 static void upack_duration(char **buf, DurationMsg * cmsg)
 {
-    cmsg->duration = upack_int(buf);
+    ck_uint32 duration = upack_int(buf);
+    if(duration > INT_MAX)
+        eprintf("Unpacked value (%u) too big for cmsg->duration, max allowed %d\n",
+                __FILE__, __LINE__ - 3, duration, INT_MAX);
+    cmsg->duration = (int) duration;
 }
 
-static int pack_loc(char **buf, LocMsg * lmsg)
+static size_t pack_loc(char **buf, LocMsg * lmsg)
 {
     char *ptr;
-    int len;
+    size_t len;
 
     len = 4 + 4 + (lmsg->file ? strlen(lmsg->file) : 0) + 4;
     *buf = ptr = (char *)emalloc(len);
 
     pack_type(&ptr, CK_MSG_LOC);
     pack_str(&ptr, lmsg->file);
-    pack_int(&ptr, lmsg->line);
+    if((size_t) lmsg->line > (size_t) CK_UINT32_MAX)
+        eprintf("Value of lmsg->line (%d) too big, max allowed %u\n",
+                __FILE__, __LINE__, lmsg->line, CK_UINT32_MAX);
+    pack_int(&ptr, (ck_uint32) lmsg->line);
 
     return len;
 }
 
 static void upack_loc(char **buf, LocMsg * lmsg)
 {
+    ck_uint32 line;
     lmsg->file = upack_str(buf);
-    lmsg->line = upack_int(buf);
+    line = upack_int(buf);
+    if(line > INT_MAX)
+        eprintf("Unpacked value (%u) too big for lmsg->line, max allowed %d\n",
+                __FILE__, __LINE__ - 3, line, INT_MAX);
+    lmsg->line = (int) line;
 }
 
-static int pack_fail(char **buf, FailMsg * fmsg)
+static size_t pack_fail(char **buf, FailMsg * fmsg)
 {
     char *ptr;
-    int len;
+    size_t len;
 
     len = 4 + 4 + (fmsg->msg ? strlen(fmsg->msg) : 0);
     *buf = ptr = (char *)emalloc(len);
@@ -320,28 +359,31 @@ static void ppack_cleanup(void *mutex)
 void ppack(FILE * fdes, enum ck_msg_type type, CheckMsg * msg)
 {
     char *buf = NULL;
-    size_t n, r;
+    int n;
+    size_t r;
 
     n = pack(type, &buf, msg);
+    if(n < 0)
+        eprintf("pack failed", __FILE__, __LINE__ - 2);
     /* Keep it on the safe side to not send too much data. */
-    if(n > get_max_msg_size())
-        eprintf("Message string too long", __FILE__, __LINE__ - 2);
+    if((size_t) n > get_max_msg_size())
+        eprintf("Message string too long", __FILE__, __LINE__ - 5);
 
     pthread_cleanup_push(ppack_cleanup, &ck_mutex_lock);
     pthread_mutex_lock(&ck_mutex_lock);
-    r = fwrite(buf, 1, n, fdes);
+    r = fwrite(buf, 1, (size_t) n, fdes);
     fflush(fdes);
     pthread_mutex_unlock(&ck_mutex_lock);
     pthread_cleanup_pop(0);
-    if(r != n)
-        eprintf("Error in call to fwrite:", __FILE__, __LINE__ - 2);
+    if(r != (size_t) n)
+        eprintf("Error in call to fwrite:", __FILE__, __LINE__ - 5);
 
     free(buf);
 }
 
-static int read_buf(FILE * fdes, int size, char *buf)
+static size_t read_buf(FILE * fdes, size_t size, char *buf)
 {
-    int n;
+    size_t n;
 
     n = fread(buf, 1, size, fdes);
 
@@ -353,15 +395,17 @@ static int read_buf(FILE * fdes, int size, char *buf)
     return n;
 }
 
-static int get_result(char *buf, RcvMsg * rmsg)
+static size_t get_result(char *buf, RcvMsg * rmsg)
 {
     enum ck_msg_type type;
     CheckMsg msg;
-    int n;
+    ptrdiff_t n;
+    size_t msgsz;
 
     n = upack(buf, &msg, &type);
-    if(n == -1)
+    if(n < 0)
         eprintf("Error in call to upack", __FILE__, __LINE__ - 2);
+    msgsz = (size_t) n;
 
     if(type == CK_MSG_CTX)
     {
@@ -403,7 +447,7 @@ static int get_result(char *buf, RcvMsg * rmsg)
     else
         check_type(type, __FILE__, __LINE__);
 
-    return n;
+    return msgsz;
 }
 
 static void reset_rcv_test(RcvMsg * rmsg)
@@ -468,7 +512,7 @@ static void rcvmsg_update_loc(RcvMsg * rmsg, const char *file, int line)
 
 RcvMsg *punpack(FILE * fdes)
 {
-    int nread, nparse;
+    size_t nread, nparse;
     char *buf;
     RcvMsg *rmsg;
 
@@ -483,17 +527,17 @@ RcvMsg *punpack(FILE * fdes)
     while(nparse > 0)
     {
         /* Parse one message */
-        int n = get_result(buf, rmsg);
+        size_t n = get_result(buf, rmsg);
+        if ( ((ssize_t) nparse - (ssize_t) n) < 0)    /* casting necessary to be able to get proper negative integers */
+            eprintf("Error in call to get_result", __FILE__, __LINE__ - 5);
         nparse -= n;
-        if (nparse < 0)
-            eprintf("Error in call to get_result", __FILE__, __LINE__ - 3);
         /* Move remaining data in buffer to the beginning */
         memmove(buf, buf + n, nparse);
         /* If EOF has not been seen */
         if(nread > 0)
         {
             /* Read more data into empty space at end of the buffer */
-            nread = read_buf(fdes, n, buf + nparse);
+            nread = read_buf(fdes, (size_t) n, buf + nparse);
             nparse += nread;
         }
     }
