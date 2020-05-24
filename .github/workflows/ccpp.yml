@@ -96,25 +96,6 @@ jobs:
       working-directory: doc/example
       run: make check
     
-  build_linux_autotools_scan_build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: create configure
-      run: autoreconf -i
-    - name: scan-build configure
-      run: scan-build ./configure --enable-snprintf-replacement --enable-timer-replacement
-    - name: scan-build make
-      run: scan-build -o clang make
-    - name: check scan-build for issues
-      shell: bash
-      run: |
-        if [ -n "$(find clang -type f)" ]; then
-          echo "scan-build found potential issues"
-          find clang -type f -print -exec cat \{} \;
-          exit 1
-        fi
-    
   build_linux_cmake:
     runs-on: ubuntu-latest
     steps:
