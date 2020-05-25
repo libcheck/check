@@ -130,3 +130,43 @@ jobs:
           find clang -type f -print -exec cat \{} \;
           exit 1
         fi
+        
+  build_linux_cmake_project_usage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: run test
+        run: |
+          cmake --version || exit 1
+          project_dir="project_cmake"
+          install_dir="${PWD}/install_cmake"
+          build_dir="${PWD}/build_cmake"
+
+          # For FetchContent we copy everything to a subdir.
+          # Otherwise the copying would be recursive and forever.
+          echo "setup project dir"
+          mkdir "$project_dir" || exit 1
+          find . -maxdepth 1 -print | grep -v -E "^(\.|\./${project_dir})\$" | grep -v '^\./\.git.*$' | xargs cp -R -t "$project_dir" || exit 1
+
+          # For find_package we need the project built and installed
+          echo "build and install"
+          mkdir "$build_dir" && cd "$build_dir" || exit 1
+          cmake -D BUILD_TESTING=OFF -D CMAKE_INSTALL_PREFIX="${install_dir}" ../project_cmake || exit 1
+          make && make install || exit 1
+          cd .. || exit 1
+
+          echo "test fetch content"
+          cp -R tests/cmake_project_usage_test . || exit 1
+          proj_dir="$PWD/${project_dir}"
+          build_dir="build_fetch_content"
+          mkdir $build_dir && cd $build_dir || exit 1
+          INCLUDE_CHECK_WITH='FetchContent' INCLUDE_CHECK_FROM="file://${proj_dir}" cmake -D CMAKE_BUILD_TYPE=Debug ../cmake_project_usage_test || exit 1
+          make && src/tests.test || exit 1
+          cd .. || exit 1
+
+          echo "test find package"
+          build_dir='build_find_package_config'
+          mkdir $build_dir && cd $build_dir || exit 1
+          INCLUDE_CHECK_WITH='find_package_config' Check_ROOT="${install_dir}" cmake -D CMAKE_BUILD_TYPE=Debug ../cmake_project_usage_test || exit 1
+          make && src/tests.test || exit 1
+          cd .. || exit 1
