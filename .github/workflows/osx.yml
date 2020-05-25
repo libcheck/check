@@ -1,0 +1,123 @@
+name: osx
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build_osx_autotools_default_args:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: install maxtex
+      run: brew cask install mactex
+    - name: install doc programs
+      run: brew install texi2html texinfo doxygen
+    - name: install automake
+      run: brew install automake
+    - name: install pkg-config
+      run: brew install pkgconfig
+    - name: create configure
+      run: autoreconf -i
+    - name: configure
+      run: ./configure --disable-timeout-tests
+    - name: make
+      run: make
+    - name: make check
+      run: make check
+    - name: make install
+      run: sudo make install
+    
+  build_osx_autotools_other_args:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: install maxtex
+      run: brew cask install mactex
+    - name: install doc programs
+      run: brew install texi2html texinfo doxygen
+    - name: install automake
+      run: brew install automake
+    - name: install pkg-config
+      run: brew install pkgconfig
+    - name: create configure
+      run: autoreconf -i
+    - name: configure with args
+      run: ./configure --disable-fork --disable-subunit --enable-snprintf-replacement --enable-timer-replacement --disable-timeout-tests 
+    - name: make
+      run: make
+    - name: make check
+      run: make check
+    - name: make install
+      run: sudo make install
+  
+  build_osx_autotools_docs:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: install maxtex
+      run: brew cask install mactex
+    - name: install doc programs
+      run: brew install texi2html texinfo doxygen
+    - name: install automake
+      run: brew install automake
+    - name: install pkg-config
+      run: brew install pkgconfig
+    - name: create configure
+      run: autoreconf -i
+    - name: configure
+      run: ./configure
+    - name: make docs
+      run: make doc/check_html
+    - name: make doxygen 
+      run: make doc/doxygen
+      
+  build_osx_autotools_example:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: install maxtex
+      run: brew cask install mactex
+    - name: install doc programs
+      run: brew install texi2html texinfo doxygen
+    - name: install automake
+      run: brew install automake
+    - name: install pkg-config
+      run: brew install pkgconfig
+    - name: create configure
+      run: autoreconf -i
+    - name: configure
+      run: ./configure
+    - name: make
+      run: make
+    - name: make install
+      run: sudo make install
+    - name: create configure example
+      working-directory: doc/example
+      run: autoreconf -i
+    - name: configure example
+      working-directory: doc/example
+      run: ./configure
+    - name: build example
+      working-directory: doc/example
+      run: make 
+    - name: test example
+      working-directory: doc/example
+      run: make check
+    
+  build_osx_cmake:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: cmake cversion
+      run: cmake --version
+    - name: create configs
+      run: cmake . -D CHECK_ENABLE_TIMEOUT_TESTS=0
+    - name: make
+      run: make
+    - name: unit tests
+      run: ctest -V
+    - name: make install 
+      run: sudo make install
