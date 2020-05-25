@@ -110,3 +110,23 @@ jobs:
       run: ctest -V
     - name: make install 
       run: sudo make install
+  
+  build_linux_scanbuild:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install scan-build packages
+      run: sudo apt-get install -y clang-tools
+    - name: create configure
+      run: autoreconf -i
+    - name: configure
+      run: scan-build ./configure --enable-snprintf-replacement --enable-timer-replacement --disable-build-docs
+    - name: make
+      run: scan-build -o clang make 
+    - name: check for issues
+      run: |
+        if [ -n "$(find clang -type f)" ]; then
+          echo "scan-build found potential issues"
+          find clang -type f -print -exec cat \{} \;
+          exit 1
+        fi
