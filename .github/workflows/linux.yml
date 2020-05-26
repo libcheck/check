@@ -1,0 +1,172 @@
+name: linux
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build_linux_autotools_default_args:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install doc packages
+      run: sudo apt-get install -y texlive texinfo texi2html doxygen
+    - name: create configure
+      run: autoreconf -i
+    - name: configure default
+      run: ./configure
+    - name: make
+      run: make
+    - name: make check
+      run: make check
+    - name: make install
+      run: sudo make install
+
+  build_linux_autotools_other_args:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install doc packages
+      run: sudo apt-get install -y texlive texinfo texi2html doxygen
+    - name: create configure
+      run: autoreconf -i
+    - name: configure default
+      run: ./configure --disable-fork --disable-subunit --enable-snprintf-replacement --enable-timer-replacement
+    - name: make
+      run: make
+    - name: make check
+      run: make check
+    - name: make install
+      run: sudo make install
+
+  build_linux_autotools_prereleasecheck:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install doc packages
+      run: sudo apt-get install -y texlive texinfo texi2html doxygen
+    - name: create configure
+      run: autoreconf -i
+    - name: configure default
+      run: ./configure
+    - name: make prereleasecheck
+      run: make prereleasecheck
+
+  build_linux_autotools_docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install doc packages
+      run: sudo apt-get install -y texlive texinfo texi2html doxygen
+    - name: create configure
+      run: autoreconf -i
+    - name: configure default
+      run: ./configure
+    - name: make docs
+      run: make doc/check_html
+    - name: make doxygen 
+      run: make doc/doxygen
+
+  build_linux_autotools_example:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install doc packages
+      run: sudo apt-get install -y texlive texinfo texi2html doxygen
+    - name: create configure
+      run: autoreconf -i
+    - name: configure default
+      run: ./configure
+    - name: make
+      run: make
+    - name: make install
+      run: sudo make install
+    - name: create configure example
+      working-directory: doc/example
+      run: autoreconf -i
+    - name: configure example
+      working-directory: doc/example
+      run: ./configure
+    - name: build example
+      working-directory: doc/example
+      run: make 
+    - name: test example
+      working-directory: doc/example
+      run: make check
+    
+  build_linux_cmake:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: cmake cversion
+      run: cmake --version
+    - name: create configs
+      run: cmake .
+    - name: make
+      run: make
+    - name: unit tests
+      run: ctest -V
+    - name: make install 
+      run: sudo make install
+  
+  build_linux_scanbuild:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install scan-build packages
+      run: sudo apt-get install -y clang-tools
+    - name: create configure
+      run: autoreconf -i
+    - name: configure
+      run: scan-build ./configure --enable-snprintf-replacement --enable-timer-replacement --disable-build-docs
+    - name: make
+      run: scan-build -o clang make 
+    - name: check for issues
+      run: |
+        if [ -n "$(find clang -type f)" ]; then
+          echo "scan-build found potential issues"
+          find clang -type f -print -exec cat \{} \;
+          exit 1
+        fi
+        
+  build_linux_cmake_project_usage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: run test
+        run: |
+          cmake --version || exit 1
+          project_dir="project_cmake"
+          install_dir="${PWD}/install_cmake"
+          build_dir="${PWD}/build_cmake"
+
+          # For FetchContent we copy everything to a subdir.
+          # Otherwise the copying would be recursive and forever.
+          echo "setup project dir"
+          mkdir "$project_dir" || exit 1
+          find . -maxdepth 1 -print | grep -v -E "^(\.|\./${project_dir})\$" | grep -v '^\./\.git.*$' | xargs cp -R -t "$project_dir" || exit 1
+
+          # For find_package we need the project built and installed
+          echo "build and install"
+          mkdir "$build_dir" && cd "$build_dir" || exit 1
+          cmake -D BUILD_TESTING=OFF -D CMAKE_INSTALL_PREFIX="${install_dir}" ../project_cmake || exit 1
+          make && make install || exit 1
+          cd .. || exit 1
+
+          echo "test fetch content"
+          cp -R tests/cmake_project_usage_test . || exit 1
+          proj_dir="$PWD/${project_dir}"
+          build_dir="build_fetch_content"
+          mkdir $build_dir && cd $build_dir || exit 1
+          INCLUDE_CHECK_WITH='FetchContent' INCLUDE_CHECK_FROM="file://${proj_dir}" cmake -D CMAKE_BUILD_TYPE=Debug ../cmake_project_usage_test || exit 1
+          make && src/tests.test || exit 1
+          cd .. || exit 1
+
+          echo "test find package"
+          build_dir='build_find_package_config'
+          mkdir $build_dir && cd $build_dir || exit 1
+          INCLUDE_CHECK_WITH='find_package_config' Check_ROOT="${install_dir}" cmake -D CMAKE_BUILD_TYPE=Debug ../cmake_project_usage_test || exit 1
+          make && src/tests.test || exit 1
+          cd .. || exit 1

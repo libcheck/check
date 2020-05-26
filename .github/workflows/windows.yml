@@ -1,0 +1,80 @@
+name: windows
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build_windows_vs16_cmake:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: microsoft/setup-msbuild@v1.0.0
+    - name: echo MSBuild
+      run: msbuild -version
+    - name: mkdir build
+      run: mkdir build
+    - name: cmake configure
+      working-directory: build
+      run: cmake -G "Visual Studio 16 2019" -DCMAKE_INSTALL_PREFIX=%P% -DCMAKE_BUILD_TYPE=Debug ..
+    - name: vs build
+      working-directory: build
+      run: msbuild /p:Platform=x64 "ALL_BUILD.vcxproj"
+    - name: vs test
+      working-directory: build
+      run: msbuild /p:Platform=x64 "RUN_TESTS.vcxproj"
+
+  build_windows_msvc_cmake:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ilammy/msvc-dev-cmd@v1
+    - name: mkdir build
+      run: mkdir build
+    - name: cmake configure
+      working-directory: build
+      run: cmake -G "NMake Makefiles" -DCMAKE_INSTALL_PREFIX=%P% -DCMAKE_BUILD_TYPE=Debug ..
+    - name: nmake
+      working-directory: build
+      run: nmake
+    - name: nmake test
+      working-directory: build
+      run: nmake test VERBOSE=1 CTEST_OUTPUT_ON_FAILURE=TRUE
+      
+  build_windows_mingw32_cmake:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: mkdir build
+      run: mkdir build
+    - name: cmake configure
+      working-directory: build
+      run: cmake -G "MinGW Makefiles" -DCMAKE_INSTALL_PREFIX=%P% -DCMAKE_BUILD_TYPE=Debug ..
+    - name: mingw32-make
+      working-directory: build
+      run: mingw32-make
+# TODO(#259): The floating point tests currently fail because the expected
+# formatting for some floating values is wrong. When Check's tests are fixed
+# to be more flexible enable this.
+#    - name: test
+#      working-directory: build
+#      run: tests\check_check.exe
+  
+  build_windows_mingw64msys_autotools:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: add mingw to path
+      run: echo "::add-path::C:\msys64\mingw64\bin"
+    - name: add mingw to path
+      run: echo "::add-path::C:\msys64\usr\bin"
+    - name: autoreconf
+      run: bash -c "autoreconf -i"
+    - name: configure
+      run: bash -c "./configure"
+    - name: make
+      run: bash -c "make"
+    - name: test
+      run: bash -c "tests/check_check"

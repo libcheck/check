@@ -99,6 +99,13 @@ endif (CHECK_ENABLE_GCOV AND NOT ${CMAKE_C_COMPILER_ID} MATCHES "GNU")
 option(ENABLE_MEMORY_LEAKING_TESTS
   "Enable certain memory leaking tests only if valgrind is not used in testing" ON)
 
+option(CHECK_ENABLE_TIMEOUT_TESTS
+  "Enable Check's timeout related unit tests" ON)
+if(CHECK_ENABLE_TIMEOUT_TESTS)
+  add_definitions(-DTIMEOUT_TESTS_ENABLED=1)
+else(CHECK_ENABLE_TIMEOUT_TESTS)
+  add_definitions(-DTIMEOUT_TESTS_ENABLED=0)
+endif(CHECK_ENABLE_TIMEOUT_TESTS)
 ###############################################################################
 # Check system and architecture
 if(WIN32)
