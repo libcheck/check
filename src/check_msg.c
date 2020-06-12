@@ -82,11 +82,12 @@ static FILE *get_pipe(void)
     return NULL;
 }
 
-void send_failure_info(const char *msg)
+void send_failure_info(const char *msg, int wasskipped)
 {
     FailMsg fmsg;
 
     fmsg.msg = strdup(msg);
+    fmsg.wasskipped = wasskipped;
     ppack(get_pipe(), CK_MSG_FAIL, (CheckMsg *) & fmsg);
     free(fmsg.msg);
 }
@@ -184,6 +185,7 @@ static TestResult *construct_test_result(RcvMsg * rmsg, int waserror)
             tr->ctx = rmsg->lastctx;
         }
 
+        tr->wasskipped = rmsg->wasskipped;
         tr->msg = rmsg->msg;
         rmsg->msg = NULL;
         tr_set_loc_by_ctx(tr, tr->ctx, rmsg);

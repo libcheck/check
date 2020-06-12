@@ -67,9 +67,15 @@ char *sr_stat_str(SRunner * sr)
 
     ts = sr->stats;
 
-    str = ck_strdup_printf("%d%%: Checks: %d, Failures: %d, Errors: %d",
-                           percent_passed(ts), ts->n_checked, ts->n_failed,
-                           ts->n_errors);
+    if (ts->n_skipped <= 0) {
+        str = ck_strdup_printf("%d%%: Checks: %d, Failures: %d, Errors: %d",
+                               percent_passed(ts), ts->n_checked, ts->n_failed,
+                               ts->n_errors);
+    } else {
+        str = ck_strdup_printf("%d%%: Checks: %d, Failures: %d, Errors: %d, Skipped: %d",
+                               percent_passed(ts), ts->n_checked, ts->n_failed,
+                               ts->n_errors, ts->n_skipped);
+    }
 
     return str;
 }
@@ -114,6 +120,8 @@ static const char *tr_type_str(TestResult * tr)
             return "F";
         if(tr->rtype == CK_ERROR)
             return "E";
+        if(tr->rtype == CK_SKIP)
+            return "K";
         return NULL;
     }
     return "S";
@@ -125,6 +133,6 @@ static int percent_passed(TestStats * t)
         return 100;
     if(t->n_checked == 0)
         return 0;
-    return (int)((float)(t->n_checked - (t->n_failed + t->n_errors)) /
-                 (float)t->n_checked * 100);
+    return (int)((float)(t->n_checked - t->n_skipped - (t->n_failed + t->n_errors)) /
+                 (float)(t->n_checked - t->n_skipped) * 100);
 }

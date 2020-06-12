@@ -489,20 +489,25 @@ static void __testname ## _fn (int _i CK_ATTRIBUTE_UNUSED)
 #define fail ck_abort_msg
 
 /*
- * This is called whenever an assertion fails.
- * Note that it only has the noreturn modifier when
- * using fork. If fork is unavailable, the function
- * calls longjmp() when a test assertion fails. Marking
- * the function as noreturn causes gcc to make assumptions
+ * These are called whenever an assertion fails or a test is skipped.
+ * Note that they only have the noreturn modifier when
+ * using fork. If fork is unavailable, the functions
+ * call longjmp() when a test assertion fails. Marking
+ * the functions as noreturn causes gcc to make assumptions
  * which are not valid, as longjmp() is like a return.
  */
 #if @HAVE_FORK@
 CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
                                             const char *expr,
                                             ...) CK_ATTRIBUTE_NORETURN;
+CK_DLL_EXP void CK_EXPORT _ck_skip(const char *file, int line,
+                                   const char *expr,
+                                   ...) CK_ATTRIBUTE_NORETURN;
 #else
 CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
                                             const char *expr, ...);
+CK_DLL_EXP void CK_EXPORT _ck_skip(const char *file, int line,
+                                   const char *expr, ...);
 #endif
 
 /**
@@ -552,6 +557,21 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
  * @since 0.9.6
  */
 #define ck_abort_msg(...) _ck_assert_failed(__FILE__, __LINE__, "Failed" , ## __VA_ARGS__, NULL)
+
+/**
+ * Unconditionally mark the test as skipped
+ *
+ * @note Once called, the remaining of the test is aborted
+ */
+#define ck_skip() ck_skip_msg(NULL)
+/**
+ * Unconditionally mark the test as skipped; print a message
+ *
+ * @param ... message to print (in printf format)
+ *
+ * @note Once called, the remaining of the test is aborted
+ */
+#define ck_skip_msg(...) _ck_skip(__FILE__, __LINE__, "Skipped" , ## __VA_ARGS__, NULL)
 
 /* Signed and unsigned integer comparison macros with improved output compared to ck_assert(). */
 /* OP may be any comparison operator. */
@@ -1812,8 +1832,9 @@ enum test_result
     CK_TEST_RESULT_INVALID,     /**< Default value; should not encounter this */
     CK_PASS,                    /**< Test passed */
     CK_FAILURE,                 /**< Test completed but failed */
-    CK_ERROR                    /**< Test failed to complete
+    CK_ERROR,                   /**< Test failed to complete
                                    (unexpected signal or non-zero early exit) */
+    CK_SKIP                     /**< Test marked as skipped */
 };
 
 /**

@@ -269,6 +269,8 @@ static master_test_t master_tests[] = {
   { "Simple Tests", "test_ck_assert_mem_zerolen", CK_PASS, CK_MSG_TEXT,    "Passed" },
   { "Simple Tests", "test_ck_assert_mem_eq_exact", CK_FAILURE, CK_MSG_TEXT, "Assertion 't == s' failed: t == \"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001\", s == \"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002\"" },
   { "Simple Tests", "test_ck_assert_mem_eq_longer", CK_FAILURE, CK_MSG_TEXT, "Assertion 't == s' failed: t == \"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000..\", s == \"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000..\"" },
+  { "Simple Tests", "test_ck_skip", CK_SKIP, CK_MSG_TEXT, "Skipped" },
+  { "Simple Tests", "test_ck_skip_msg", CK_SKIP, CK_MSG_TEXT, "this is why we skipped: 0" },
   
 #if defined(HAVE_FORK) && HAVE_FORK==1
   { "Signal Tests", "test_segv", CK_ERROR, CK_MSG_TEXT,   signal_11_str },
@@ -419,7 +421,7 @@ START_TEST(test_check_nfailures)
   int number_failed = 0;
   
   for (i = 0; i < nr_of_master_tests; i++) {
-    if (master_tests[i].failure_type != CK_PASS) {
+    if (master_tests[i].failure_type != CK_PASS && master_tests[i].failure_type != CK_SKIP) {
       number_failed++;
     }
   }
@@ -487,7 +489,7 @@ START_TEST(test_check_failure_msgs)
   for (i = 0; i < sub_ntests; i++) {
     master_test_t *master_test = &master_tests[i];
 
-    if (master_test->failure_type == CK_PASS) {
+    if (master_test->failure_type == CK_PASS || master_tests[i].failure_type == CK_SKIP) {
       passed++;
       continue;
     }
@@ -573,6 +575,10 @@ START_TEST(test_check_failure_lnos)
     if (master_tests[i].failure_type == CK_PASS) {
       passed++;
       continue;
+    } else if (master_tests[i].failure_type == CK_SKIP) {
+      (void) get_next_failure_line_num(line_num_failures);
+      passed++;
+      continue;
     }
 
     number_failed = i - passed;
@@ -608,7 +614,7 @@ START_TEST(test_check_failure_ftypes)
   TestResult *tr;
   
   for (i = 0; i < sub_ntests; i++) {
-    if (master_tests[i].failure_type == CK_PASS) {
+    if (master_tests[i].failure_type == CK_PASS || master_tests[i].failure_type == CK_SKIP) {
       passed++;
       continue;
     }

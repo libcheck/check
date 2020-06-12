@@ -42,9 +42,11 @@ START_TEST(test_pack_fmsg)
   fmsg = (FailMsg *)emalloc (sizeof (FailMsg));
 
   fmsg->msg = (char *) "Hello, world!";
+  fmsg->wasskipped = 0;
   pack (CK_MSG_FAIL, &buf, (CheckMsg *) fmsg);
 
   fmsg->msg = NULL;
+  fmsg->wasskipped = 0;
   upack (buf, (CheckMsg *) fmsg, &type);
 
   ck_assert_msg (type == CK_MSG_FAIL,
@@ -191,8 +193,10 @@ START_TEST(test_pack_fail_limit)
   enum ck_msg_type type;
 
   fmsg.msg = (char *) "";
+  fmsg.wasskipped = 0;
   pack (CK_MSG_FAIL, &buf, (CheckMsg *) &fmsg);
   fmsg.msg = NULL;
+  fmsg.wasskipped = 0;
   upack (buf, (CheckMsg *) &fmsg, &type);
   free (buf);
   ck_assert_msg (fmsg.msg != NULL,
@@ -202,6 +206,7 @@ START_TEST(test_pack_fail_limit)
 
   free (fmsg.msg);
   fmsg.msg = NULL;
+  fmsg.wasskipped = 0;
 
   pack (CK_MSG_FAIL, &buf, (CheckMsg *) &fmsg);
   pack (CK_MSG_FAIL, &buf, (CheckMsg *) fmsgp);
@@ -247,6 +252,7 @@ START_TEST(test_ppack)
   lmsg.file = (char *) "abc123.c";
   lmsg.line = 10;
   fmsg.msg = (char *) "oops";
+  fmsg.wasskipped = 0;
   result_file = open_tmp_file(&result_file_name);
   free(result_file_name);
   ppack (result_file, CK_MSG_CTX, (CheckMsg *) &cmsg);
@@ -287,6 +293,7 @@ START_TEST(test_ppack_noctx)
   lmsg.file = (char *) "abc123.c";
   lmsg.line = 10;
   fmsg.msg = (char *) "oops";
+  fmsg.wasskipped = 0;
   result_file = open_tmp_file(&result_file_name);
   free(result_file_name);
   ppack (result_file, CK_MSG_LOC, (CheckMsg *) &lmsg);
@@ -408,6 +415,7 @@ START_TEST(test_ppack_big)
   lmsg.file[BIG_MSG_LEN - 1] = '\0';
   lmsg.line = 10;
   fmsg.msg = (char *)emalloc (BIG_MSG_LEN);
+  fmsg.wasskipped = 0;
   memset (fmsg.msg, 'a', BIG_MSG_LEN - 1);
   fmsg.msg[BIG_MSG_LEN - 1] = '\0';
   result_file = open_tmp_file(&result_file_name);

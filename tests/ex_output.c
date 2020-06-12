@@ -79,6 +79,12 @@ START_TEST(test_xml_esc_fail_msg)
 }
 END_TEST
 
+START_TEST(test_skip)
+{
+    ck_skip_msg("Skip Message");
+}
+END_TEST
+
 static Suite *make_log1_suite(void)
 {
     Suite *s;
@@ -89,6 +95,7 @@ static Suite *make_log1_suite(void)
     suite_add_tcase(s, tc);
     tcase_add_test(tc, test_pass);
     tcase_add_test(tc, test_fail);
+    tcase_add_test(tc, test_skip);
 #if defined(HAVE_FORK) && HAVE_FORK==1
     tcase_add_test(tc, test_exit);
 #endif /* HAVE_FORK */

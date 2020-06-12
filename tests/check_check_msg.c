@@ -39,7 +39,7 @@ START_TEST(test_send)
   send_ctx_info(CK_CTX_TEST);
   send_loc_info("abc124.c", 22);
   send_loc_info("abc125.c", 25);
-  send_failure_info("Oops");
+  send_failure_info("Oops", 0);
   tr = receive_test_result(0);
   teardown_messaging();
 

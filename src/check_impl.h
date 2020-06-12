@@ -72,6 +72,7 @@ typedef struct TestStats
     int n_checked;
     int n_failed;
     int n_errors;
+    int n_skipped;
 } TestStats;
 
 struct TestResult
@@ -85,6 +86,7 @@ struct TestResult
     const char *tcname;         /* Test case that generated the result */
     const char *tname;          /* Test that generated the result */
     char *msg;                  /* Failure message */
+    int wasskipped;             /* Whether the test was skipped */
 };
 
 TestResult *tr_create(void);

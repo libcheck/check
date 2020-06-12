@@ -284,6 +284,8 @@ static void srunner_add_failure(SRunner * sr, TestResult * tr)
         sr->stats->n_failed++;
     else if(tr->rtype == CK_ERROR)
         sr->stats->n_errors++;
+    if(tr->rtype == CK_SKIP)
+        sr->stats->n_skipped++;
 
 }
 
@@ -460,7 +462,7 @@ static void set_nofork_info(TestResult * tr)
     }
     else
     {
-        tr->rtype = CK_FAILURE;
+        tr->rtype = tr->wasskipped ? CK_SKIP : CK_FAILURE;
     }
 }
 
@@ -639,7 +641,7 @@ static void set_fork_info(TestResult * tr, int status, int signal_expected,
             }
             else
             {
-                tr->rtype = CK_FAILURE;
+                tr->rtype = tr->wasskipped ? CK_SKIP : CK_FAILURE;
             }
         }
     }
@@ -654,11 +656,11 @@ static void set_fork_info(TestResult * tr, int status, int signal_expected,
             tr->msg = exit_msg(exit_status);
             if(exit_status == allowed_exit_value)
             {
-                tr->rtype = CK_FAILURE; /* normal exit status */
+                tr->rtype = tr->wasskipped ? CK_SKIP : CK_FAILURE; /* normal exit status */
             }
             else
             {
-                tr->rtype = CK_FAILURE; /* early exit */
+                tr->rtype = tr->wasskipped ? CK_SKIP : CK_FAILURE; /* early exit */
             }
         }
     }

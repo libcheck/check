@@ -362,7 +362,10 @@ void _mark_point(const char *file, int line)
     send_loc_info(file, line);
 }
 
-void _ck_assert_failed(const char *file, int line, const char *expr, ...)
+#if HAVE_FORK
+CK_ATTRIBUTE_NORETURN
+#endif
+static void _assert_failed(const char *file, int line, int wasskipped, const char *expr, va_list apo)
 {
     const char *msg;
     va_list ap;
@@ -371,7 +374,11 @@ void _ck_assert_failed(const char *file, int line, const char *expr, ...)
 
     send_loc_info(file, line);
 
-    va_start(ap, expr);
+#if defined(va_copy)
+    va_copy(ap, apo);
+#else
+    ap = apo;
+#endif
     msg = (const char *)va_arg(ap, char *);
 
     /*
@@ -389,7 +396,7 @@ void _ck_assert_failed(const char *file, int line, const char *expr, ...)
     }
 
     va_end(ap);
-    send_failure_info(to_send);
+    send_failure_info(to_send, wasskipped);
     if(cur_fork_status() == CK_FORK)
     {
 #if defined(HAVE_FORK) && HAVE_FORK==1
@@ -402,6 +409,22 @@ void _ck_assert_failed(const char *file, int line, const char *expr, ...)
     }
 }
 
+void _ck_assert_failed(const char *file, int line, const char *expr, ...)
+{
+    va_list ap;
+    va_start(ap, expr);
+    _assert_failed(file, line, 0, expr, ap);
+    va_end(ap);
+}
+
+void _ck_skip(const char *file, int line, const char *expr, ...)
+{
+    va_list ap;
+    va_start(ap, expr);
+    _assert_failed(file, line, 1, expr, ap);
+    va_end(ap);
+}
+
 SRunner *srunner_create(Suite * s)
 {
     SRunner *sr = (SRunner *)emalloc(sizeof(SRunner));     /* freed in srunner_free */
@@ -410,7 +433,7 @@ SRunner *srunner_create(Suite * s)
     if(s != NULL)
         check_list_add_end(sr->slst, s);
     sr->stats = (TestStats *)emalloc(sizeof(TestStats));     /* freed in srunner_free */
-    sr->stats->n_checked = sr->stats->n_failed = sr->stats->n_errors = 0;
+    sr->stats->n_checked = sr->stats->n_failed = sr->stats->n_errors = sr->stats->n_skipped = 0;
     sr->resultlst = check_list_create();
     sr->log_fname = NULL;
     sr->xml_fname = NULL;
@@ -514,7 +537,7 @@ TestResult **srunner_results(SRunner * sr)
 
 static int non_pass(int val)
 {
-    return val != CK_PASS;
+    return val != CK_PASS && val != CK_SKIP;
 }
 
 TestResult *tr_create(void)
@@ -536,6 +559,7 @@ static void tr_init(TestResult * tr)
     tr->tcname = NULL;
     tr->tname = NULL;
     tr->duration = -1;
+    tr->wasskipped = 0;
 }
 
 void tr_free(TestResult * tr)

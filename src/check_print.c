@@ -184,6 +184,9 @@ void tr_xmlprint(FILE * file, TestResult * tr,
         case CK_ERROR:
             snprintf(result, sizeof(result), "%s", "error");
             break;
+        case CK_SKIP:
+            snprintf(result, sizeof(result), "%s", "skipped");
+            break;
         case CK_TEST_RESULT_INVALID:
         default:
             abort();

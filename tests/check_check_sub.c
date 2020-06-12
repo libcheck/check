@@ -2502,6 +2502,26 @@ START_TEST(test_ck_assert_mem_eq_longer)
 }
 END_TEST
 
+START_TEST(test_ck_skip)
+{
+  record_test_name(tcase_name());
+
+  record_failure_line_num(__LINE__);
+  ck_skip();
+  ck_abort_msg("should not reach");
+}
+END_TEST
+
+START_TEST(test_ck_skip_msg)
+{
+  record_test_name(tcase_name());
+
+  record_failure_line_num(__LINE__);
+  ck_skip_msg("this is why we skipped: %d", 0);
+  ck_abort_msg("should not reach");
+}
+END_TEST
+
 #if defined(HAVE_FORK) && HAVE_FORK == 1
 START_TEST(test_segv_pass)
 {
@@ -3220,6 +3240,8 @@ Suite *make_sub_suite(void)
   tcase_add_test (tc_simple, test_ck_assert_mem_zerolen);
   tcase_add_test (tc_simple, test_ck_assert_mem_eq_exact);
   tcase_add_test (tc_simple, test_ck_assert_mem_eq_longer);
+  tcase_add_test (tc_simple, test_ck_skip);
+  tcase_add_test (tc_simple, test_ck_skip_msg);
 
 #if defined(HAVE_FORK) && HAVE_FORK==1
   tcase_add_test (tc_signal, test_segv);

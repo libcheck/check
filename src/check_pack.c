@@ -328,10 +328,11 @@ static size_t pack_fail(char **buf, FailMsg * fmsg)
     char *ptr;
     size_t len;
 
-    len = 4 + 4 + (fmsg->msg ? strlen(fmsg->msg) : 0);
+    len = 4 + 4 + 4 + (fmsg->msg ? strlen(fmsg->msg) : 0);
     *buf = ptr = (char *)emalloc(len);
 
     pack_type(&ptr, CK_MSG_FAIL);
+    pack_int(&ptr, fmsg->wasskipped);
     pack_str(&ptr, fmsg->msg);
 
     return len;
@@ -339,6 +340,7 @@ static size_t pack_fail(char **buf, FailMsg * fmsg)
 
 static void upack_fail(char **buf, FailMsg * fmsg)
 {
+    fmsg->wasskipped = upack_int(buf);
     fmsg->msg = upack_str(buf);
 }
 
@@ -431,6 +433,7 @@ static size_t get_result(char *buf, RcvMsg * rmsg)
         {
             rmsg->msg = strdup(fmsg->msg);
             rmsg->failctx = rmsg->lastctx;
+            rmsg->wasskipped = fmsg->wasskipped;
         }
         else
         {
@@ -471,6 +474,7 @@ static RcvMsg *rcvmsg_create(void)
     rmsg->failctx = CK_CTX_INVALID;
     rmsg->msg = NULL;
     rmsg->duration = -1;
+    rmsg->wasskipped = 0;
     reset_rcv_test(rmsg);
     reset_rcv_fixture(rmsg);
     return rmsg;
