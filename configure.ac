@@ -4,9 +4,9 @@
 # Prelude.
 AC_PREREQ([2.59])
 
-AC_INIT([Check], [0.14.0], [check-devel at lists dot sourceforge dot net])
+AC_INIT([Check], [0.15.0], [check-devel at lists dot sourceforge dot net])
 CHECK_MAJOR_VERSION=0
-CHECK_MINOR_VERSION=14
+CHECK_MINOR_VERSION=15
 CHECK_MICRO_VERSION=0
 CHECK_VERSION=$CHECK_MAJOR_VERSION.$CHECK_MINOR_VERSION.$CHECK_MICRO_VERSION
 
@@ -270,6 +270,16 @@ AM_CONDITIONAL(SUBUNIT, test x"$enable_subunit" != "xfalse")
 
 # Check for POSIX regular expressions support.
 AC_CHECK_HEADERS([regex.h], HAVE_REGEX_H=1, HAVE_REGEX_H=0)
+
+# Check if we have the windows headers for Init Once API
+AC_CHECK_HEADERS([windows.h], HAVE_WINDOWS_H=1, HAVE_WINDOWS_H=0)
+AC_SUBST(HAVE_WINDOWS_H)
+
+# Check if we have the One-Time Initialization API
+AC_CHECK_FUNCS([InitOnceBeginInitialize], HAVE_INIT_ONCE_BEGIN_INITIALIZE=1, HAVE_INIT_ONCE_BEGIN_INITIALIZE=0)
+AC_CHECK_FUNCS([InitOnceComplete], HAVE_INIT_ONCE_COMPLETE=1, HAVE_INIT_ONCE_COMPLETE=0)
+AC_SUBST(HAVE_INIT_ONCE_BEGIN_INITIALIZE)
+AC_SUBST(HAVE_INIT_ONCE_COMPLETE)
 
 if test "x$HAVE_REGEX_H" = "x1"; then
     AC_CHECK_FUNCS([regcomp regexec], HAVE_REGEX=1, HAVE_REGEX=0)

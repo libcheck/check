@@ -3,6 +3,7 @@
 #
 # Copyright (C) 2011 Mateusz Loskot
 # Copyright (C) 2001, 2002 Arien Malec
+# Copyright (C) 2020 Mikko Koivunalho
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -21,11 +22,15 @@
 #
 cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
 
+include(CheckCCompilerFlag)
+
 # Detect if Check is being used in another build as a subproject
 # probably with command FetchContent*().
-set(THIS_IS_MAIN_PROJECT TRUE)
+set(THIS_IS_SUBPROJECT FALSE)
 if(DEFINED PROJECT_NAME)
-    set(THIS_IS_MAIN_PROJECT FALSE)
+  set(THIS_IS_SUBPROJECT TRUE)
+  message(STATUS "Turned off installing because Check is a subproject.")
+  message(STATUS "Turned off building tests because Check is a subproject.")
 endif()
 
 if(POLICY CMP0090)
@@ -96,13 +101,20 @@ endif (CHECK_ENABLE_GCOV AND NOT ${CMAKE_C_COMPILER_ID} MATCHES "GNU")
 option(ENABLE_MEMORY_LEAKING_TESTS
   "Enable certain memory leaking tests only if valgrind is not used in testing" ON)
 
+option(CHECK_ENABLE_TIMEOUT_TESTS
+  "Enable Check's timeout related unit tests" ON)
+if(CHECK_ENABLE_TIMEOUT_TESTS)
+  add_definitions(-DTIMEOUT_TESTS_ENABLED=1)
+else(CHECK_ENABLE_TIMEOUT_TESTS)
+  add_definitions(-DTIMEOUT_TESTS_ENABLED=0)
+endif(CHECK_ENABLE_TIMEOUT_TESTS)
 ###############################################################################
 # Check system and architecture
 if(WIN32)
   if(MSVC60)
   set(WINVER 0x0400)
   else()
-  set(WINVER 0x0500)
+  set(WINVER 0x0600)
   endif()
   set(_WIN32_WINNT ${WINVER})
 endif(WIN32)
@@ -152,6 +164,10 @@ ck_check_include_file("strings.h" HAVE_STRINGS_H)
 ck_check_include_file("sys/time.h" HAVE_SYS_TIME_H)
 ck_check_include_file("time.h" HAVE_TIME_H)
 ck_check_include_file("unistd.h" HAVE_UNISTD_H)
+ck_check_include_file("pthread.h" HAVE_PTHREAD)
+
+# check if we have windows.h on native windows environments
+ck_check_include_file("windows.h" HAVE_WINDOWS_H)
 
 ###############################################################################
 # Check functions
@@ -170,6 +186,10 @@ check_function_exists(strsignal HAVE_DECL_STRSIGNAL)
 check_function_exists(_getpid HAVE__GETPID)
 check_function_exists(_strdup HAVE__STRDUP)
 check_function_exists(alarm HAVE_DECL_ALARM)
+if (HAVE_WINDOWS_H)
+  check_function_exists(InitOnceBeginInitialize HAVE_INIT_ONCE_BEGIN_INITIALIZE)
+  check_function_exists(InitOnceComplete HAVE_INIT_ONCE_COMPLETE)
+endif()
 if (HAVE_REGEX_H)
   check_function_exists(regcomp HAVE_REGCOMP)
   check_function_exists(regexec HAVE_REGEXEC)
@@ -222,6 +242,14 @@ if(HAVE_REGEX_H AND HAVE_REGCOMP AND HAVE_REGEXEC)
   set(HAVE_REGEX 1)
   add_definitions(-DENABLE_REGEX=1)
   set(ENABLE_REGEX 1)
+endif()
+
+if (HAVE_PTHREAD)
+  check_c_compiler_flag("-pthread" HAVE_PTHREADS_FLAG)
+  if (HAVE_PTHREADS_FLAG)
+    add_definitions("-pthread")
+    add_link_options("-pthread")
+  endif()
 endif()
 
 
@@ -399,62 +427,65 @@ set(CONFIG_HEADER ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 #
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_stdint.h.in
   ${CMAKE_CURRENT_BINARY_DIR}/check_stdint.h @ONLY)
-install(
-  FILES ${CMAKE_CURRENT_BINARY_DIR}/check_stdint.h
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
+if(NOT THIS_IS_SUBPROJECT)
+  install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/check_stdint.h
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+endif()
 
 ###############################################################################
 # Generate "check.pc", the package config (pkgconfig) file for libtool
-set(prefix_save "${PREFIX}")
-set(prefix "${CMAKE_INSTALL_PREFIX}")
-set(exec_prefix "\${prefix}")
-set(libdir "\${exec_prefix}/lib")
-set(includedir "\${prefix}/include")
-set(VERSION "${PROJECT_VERSION}")
+if(NOT THIS_IS_SUBPROJECT)
+  set(prefix_save "${PREFIX}")
+  set(prefix "${CMAKE_INSTALL_PREFIX}")
+  set(exec_prefix "\${prefix}")
+  set(libdir "\${exec_prefix}/lib")
+  set(includedir "\${prefix}/include")
+  set(VERSION "${PROJECT_VERSION}")
 
-if (HAVE_SUBUNIT)
-  set(LIBSUBUNIT_PC "libsubunit")
-else (HAVE_SUBINIT)
-  set(LIBSUBUNIT_PC "")
-endif (HAVE_SUBUNIT)
+  if (HAVE_SUBUNIT)
+    set(LIBSUBUNIT_PC "libsubunit")
+  else (HAVE_SUBINIT)
+    set(LIBSUBUNIT_PC "")
+  endif (HAVE_SUBUNIT)
 
-if (CHECK_ENABLE_GCOV)
-  set(GCOV_LIBS "-lgcov")
-else (CHECK_ENABLE_GCOV)
-  set(GCOV_LIBS "")
-endif (CHECK_ENABLE_GCOV)
+  if (CHECK_ENABLE_GCOV)
+    set(GCOV_LIBS "-lgcov")
+  else (CHECK_ENABLE_GCOV)
+    set(GCOV_LIBS "")
+  endif (CHECK_ENABLE_GCOV)
 
-set(PTHREAD_LIBS "")
-set(LIBS "")
+  set(PTHREAD_LIBS "-pthread")
+  set(LIBS "")
 
-if (HAVE_LIBM)
-  set(LIBS "${LIBS} -lm")
-endif (HAVE_LIBM)
+  if (HAVE_LIBM)
+    set(LIBS "${LIBS} -lm")
+  endif (HAVE_LIBM)
 
-if (HAVE_LIBRT)
-  set(LIBS "${LIBS} -lrt")
-endif (HAVE_LIBRT)
+  if (HAVE_LIBRT)
+    set(LIBS "${LIBS} -lrt")
+  endif (HAVE_LIBRT)
 
-set(PTHREAD_CFLAGS "-pthread")
+  set(PTHREAD_CFLAGS "-pthread")
 
-configure_file(check.pc.in check.pc @ONLY)
+  configure_file(check.pc.in check.pc @ONLY)
 
-unset(PTHREAD_CFLAGS)
-unset(LIBS)
-unset(PTHREAD_LIBS)
-unset(GCOV_LIBS)
-unset(LIBSUBUNIT_PC)
-unset(VERSION)
-unset(includedir)
-unset(libdir)
-unset(exec_prefix)
-set(PREFIX "${prefix_save}")
+  unset(PTHREAD_CFLAGS)
+  unset(LIBS)
+  unset(PTHREAD_LIBS)
+  unset(GCOV_LIBS)
+  unset(LIBSUBUNIT_PC)
+  unset(VERSION)
+  unset(includedir)
+  unset(libdir)
+  unset(exec_prefix)
+  set(PREFIX "${prefix_save}")
 
-install(
-  FILES ${CMAKE_CURRENT_BINARY_DIR}/check.pc
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
-)
+  install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/check.pc
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+  )
+endif()
 
 ###############################################################################
 # Subdirectories
@@ -464,7 +495,7 @@ add_subdirectory(checkmk)
 
 ###############################################################################
 # Unit tests
-if (BUILD_TESTING AND THIS_IS_MAIN_PROJECT)
+if(BUILD_TESTING AND NOT THIS_IS_SUBPROJECT)
   add_subdirectory(tests)
   add_test(NAME check_check COMMAND check_check)
   add_test(NAME check_check_export COMMAND check_check_export)
@@ -493,39 +524,41 @@ if (BUILD_TESTING AND THIS_IS_MAIN_PROJECT)
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
       COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_set_max_msg_size.sh)
   endif(UNIX OR MINGW OR MSYS)
-endif (BUILD_TESTING AND THIS_IS_MAIN_PROJECT)
+endif()
 
 ###############################################################################
 # Export project, prepare a config and config-version files
-string(TOLOWER ${PROJECT_NAME} EXPORT_NAME)
-include(CMakePackageConfigHelpers)
-configure_package_config_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${EXPORT_NAME}-config.cmake.in
-  ${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-config.cmake
-  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/${EXPORT_NAME}/cmake
-)
-write_basic_package_version_file(
-  ${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-config-version.cmake
-  VERSION ${PROJECT_VERSION}
-  COMPATIBILITY AnyNewerVersion
-)
+if(NOT THIS_IS_SUBPROJECT)
+  string(TOLOWER ${PROJECT_NAME} EXPORT_NAME)
+  include(CMakePackageConfigHelpers)
+  configure_package_config_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${EXPORT_NAME}-config.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-config.cmake
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/${EXPORT_NAME}/cmake
+  )
+  write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-config-version.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY AnyNewerVersion
+  )
 
-export(EXPORT check-targets
-  FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-targets.cmake"
-  NAMESPACE "${PROJECT_NAME}::"
-)
+  export(EXPORT check-targets
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-targets.cmake"
+    NAMESPACE "${PROJECT_NAME}::"
+  )
 
-install(EXPORT check-targets
-  NAMESPACE "${PROJECT_NAME}::"
-  FILE "${EXPORT_NAME}-targets.cmake"
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${EXPORT_NAME}
-)
-install(
-  FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-config.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-config-version.cmake"
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${EXPORT_NAME}
-)
+  install(EXPORT check-targets
+    NAMESPACE "${PROJECT_NAME}::"
+    FILE "${EXPORT_NAME}-targets.cmake"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${EXPORT_NAME}
+  )
+  install(
+    FILES
+      "${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-config.cmake"
+      "${CMAKE_CURRENT_BINARY_DIR}/cmake/${EXPORT_NAME}-config-version.cmake"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${EXPORT_NAME}
+  )
+endif()
 
 # Store the current build directory in the CMake user package registry.
 # This helps dependent projects use a package from the current
@@ -539,5 +572,9 @@ install(
 # this side effect should not be enabled by default.
 # Therefore CMake 3.15 and above prefer that export(PACKAGE) does nothing
 # unless an explicit CMAKE_EXPORT_PACKAGE_REGISTRY variable is set.
-export(PACKAGE "${PROJECT_NAME}")
+if(NOT THIS_IS_SUBPROJECT)
+  export(PACKAGE "${PROJECT_NAME}")
+endif()
+
+# vim: shiftwidth=2:softtabstop=2:tabstop=2:expandtab:autoindent
 

@@ -658,7 +658,7 @@ START_TEST(include_w_spaces)
 
 Suite *make_tag_suite(void)
 {
-    TCase *set_get_tags, *no_filters;
+    TCase *no_filters;
     TCase *include_filters, *exclude_filters;
 #if HAVE_DECL_SETENV
     TCase *include_filters_env, *exclude_filters_env;

@@ -1,6 +1,7 @@
 #
 # Check: a unit test framework for C
 # Copyright (C) 2011 Mateusz Loskot
+# Copyright (C) 2020 Mikko Koivunalho
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -66,7 +67,13 @@ if(NOT HAVE_DECL_ALARM)
   set(SOURCES ${SOURCES} alarm.c)
 endif(NOT HAVE_DECL_ALARM)
 
+if (NOT HAVE_PTHREAD)
+  set(SOURCES ${SOURCES} pthread_mutex.c)
+endif()
+
 set(HEADERS libcompat.h)
 
 add_library(compat STATIC ${SOURCES} ${HEADERS})
+
+# vim: shiftwidth=2:softtabstop=2:tabstop=2:expandtab:autoindent
 

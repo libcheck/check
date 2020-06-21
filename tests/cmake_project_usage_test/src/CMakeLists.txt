@@ -19,6 +19,14 @@ elseif($ENV{INCLUDE_CHECK_WITH} STREQUAL "find_package_config")
 else()
     message(FATAL_ERROR "Variable INCLUDE_CHECK_WITH not properly set!")
 endif()
+
+include(CheckCCompilerFlag)
+check_c_compiler_flag("-pthread" HAVE_PTHREAD)
+if (HAVE_PTHREAD)
+    add_definitions("-pthread")
+    add_link_options("-pthread")
+endif()
+
 add_library(test_suite test_suite.c)
 target_link_libraries(test_suite PUBLIC Check::check)
 

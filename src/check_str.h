@@ -21,6 +21,8 @@
 #ifndef CHECK_STR_H
 #define CHECK_STR_H
 
+#include "../lib/libcompat.h"
+
 /* Return a string representation of the given TestResult.  Return
    value has been malloc'd, and must be freed by the caller */
 char *tr_str(TestResult * tr);
@@ -37,6 +39,6 @@ char *tr_short_str(TestResult * tr);
 */
 char *sr_stat_str(SRunner * sr);
 
-char *ck_strdup_printf(const char *fmt, ...);
+char *ck_strdup_printf(const char *fmt, ...) CK_ATTRIBUTE_FORMAT(gnu_printf, 1, 2);
 
 #endif /* CHECK_STR_H */

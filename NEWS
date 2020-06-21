@@ -1,5 +1,18 @@
-In Development:
-# Mentioning Check 0.14.0 for now, to fix distcheck target until next release
+Sun June 21, 2020: Released Check 0.15.0
+  based on hash 18d83fb9bab41b7bfb6535ed44c131004d01d5ad
+
+* Define CK_ATTRIBUTE_FORMAT for GCC >= 2.95.3, to make use of
+  ‘gnu_printf’ format attribute
+  Issue #249
+
+* Refactor tests to fix signed - unsigned conversions
+  Issue #249
+  
+* Refactor some Check internals to use proper interger types
+  Issue #250
+
+* Implement missing mutual exclusion for Windows hosts
+  Issue #257
 
 
 Sun Jan 26, 2020: Released Check 0.14.0

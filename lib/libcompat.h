@@ -48,8 +48,10 @@
 
 #if GCC_VERSION_AT_LEAST(2,95,3)
 #define CK_ATTRIBUTE_UNUSED __attribute__ ((unused))
+#define CK_ATTRIBUTE_FORMAT(a, b, c) __attribute__ ((format (a, b, c)))
 #else
 #define CK_ATTRIBUTE_UNUSED
+#define CK_ATTRIBUTE_FORMAT(a, b, c)
 #endif /* GCC 2.95 */
 
 #if GCC_VERSION_AT_LEAST(2,5,0)
@@ -57,6 +59,20 @@
 #else
 #define CK_ATTRIBUTE_NORETURN
 #endif /* GCC 2.5 */
+
+#if GCC_VERSION_AT_LEAST(4,7,4) && (__STDC_VERSION__ >= 199901L)
+/* Operator _Pragma introduced in C99 */
+#define CK_DIAGNOSTIC_STRINGIFY(x) #x
+#define CK_DIAGNOSTIC_HELPER1(y) CK_DIAGNOSTIC_STRINGIFY(GCC diagnostic ignored y)
+#define CK_DIAGNOSTIC_HELPER2(z) CK_DIAGNOSTIC_HELPER1(#z)
+#define CK_DIAGNOSTIC_PUSH_IGNORE(w) \
+    _Pragma("GCC diagnostic push") \
+    _Pragma(CK_DIAGNOSTIC_HELPER2(w))
+#define CK_DIAGNOSTIC_POP(w) _Pragma ("GCC diagnostic pop")
+#else
+#define CK_DIAGNOSTIC_PUSH_IGNORE(w)
+#define CK_DIAGNOSTIC_POP(w)
+#endif /* GCC 4.7.4 */
 
 /*
  * Used for MSVC to create the export attribute
@@ -126,9 +142,31 @@ extern int fpclassify(double d);
 #include <sys/wait.h>
 #endif
 
+#if defined(HAVE_INIT_ONCE_BEGIN_INITIALIZE) && defined(HAVE_INIT_ONCE_COMPLETE)
+#define HAVE_WIN32_INIT_ONCE 1
+#endif
+
 /* declares pthread_create and friends */
-#ifdef HAVE_PTHREAD
+#if defined HAVE_PTHREAD
 #include <pthread.h>
+#elif defined HAVE_WIN32_INIT_ONCE
+typedef void pthread_mutexattr_t;
+
+typedef struct
+{
+    INIT_ONCE init;
+    HANDLE mutex;
+} pthread_mutex_t;
+
+#define PTHREAD_MUTEX_INITIALIZER { \
+    INIT_ONCE_STATIC_INIT, \
+    NULL, \
+}
+
+int pthread_mutex_init(pthread_mutex_t *mutex, pthread_mutexattr_t *attr);
+int pthread_mutex_destroy(pthread_mutex_t *mutex);
+int pthread_mutex_lock(pthread_mutex_t *mutex);
+int pthread_mutex_unlock(pthread_mutex_t *mutex);
 #endif
 
 #ifdef HAVE_STDINT_H
