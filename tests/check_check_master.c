@@ -561,7 +561,7 @@ END_TEST
 START_TEST(test_check_failure_lnos)
 {
   int i;
-  int line_no;
+  long line_no;
   int passed = 0;
   int number_failed;
   TestResult *tr;
@@ -652,10 +652,6 @@ END_TEST
 START_TEST(test_check_test_names)
 {
   int i;
-  int line_no;
-  int passed = 0;
-  int number_failed;
-  TestResult *tr;
 
   rewind(test_names_file);
 
@@ -936,9 +932,9 @@ char* get_next_test_name(FILE * file)
 
 void record_failure_line_num(int linenum)
 {
-  int to_write;
-  ssize_t written;
-  int result;
+  size_t to_write;
+  size_t written;
+  int result, chars_printed;
   char string[16];
 
   /*
@@ -947,12 +943,13 @@ void record_failure_line_num(int linenum)
    */
    linenum += 1;
 
-  to_write = snprintf(string, sizeof(string), "%d\n", linenum);
-  if(to_write <= 0)
+  chars_printed = snprintf(string, sizeof(string), "%d\n", linenum);
+  if(chars_printed <= 0 || (size_t) chars_printed >= sizeof(string))
   {
     fprintf(stderr, "%s:%d: Error in call to snprintf:", __FILE__, __LINE__);
     exit(1);
   }
+  to_write = (size_t) chars_printed;
 
   if(line_num_failures == NULL)
   {
@@ -969,7 +966,7 @@ void record_failure_line_num(int linenum)
   written = fwrite(string, 1, to_write, line_num_failures);
   if(written != to_write)
   {
-    fprintf(stderr, "%s:%d: Error in call to fwrite, wrote %zd instead of %d:", __FILE__, __LINE__, written, to_write);
+    fprintf(stderr, "%s:%d: Error in call to fwrite, wrote %zd instead of %zu:", __FILE__, __LINE__, written, to_write);
     exit(1);
   }
 
@@ -981,13 +978,13 @@ void record_failure_line_num(int linenum)
   }
 }
 
-int get_next_failure_line_num(FILE * file)
+long get_next_failure_line_num(FILE * file)
 {
   char * line = NULL;
   char * end = NULL;
   size_t length;
   ssize_t written;
-  int value = -1;
+  long value = -1;
 
   written = getline(&line, &length, file);
 

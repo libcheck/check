@@ -64,8 +64,10 @@ CK_CPPSTART
 
 #if GCC_VERSION_AT_LEAST(2,95,3)
 #define CK_ATTRIBUTE_UNUSED __attribute__ ((unused))
+#define CK_ATTRIBUTE_FORMAT(a, b, c) __attribute__ ((format (a, b, c)))
 #else
 #define CK_ATTRIBUTE_UNUSED
+#define CK_ATTRIBUTE_FORMAT(a, b, c)
 #endif /* GCC 2.95 */
 
 #if GCC_VERSION_AT_LEAST(2,5,0)
@@ -499,10 +501,10 @@ static void __testname ## _fn (int _i CK_ATTRIBUTE_UNUSED)
 #if @HAVE_FORK@
 CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
                                             const char *expr,
-                                            ...) CK_ATTRIBUTE_NORETURN;
+                                            ...) CK_ATTRIBUTE_NORETURN CK_ATTRIBUTE_FORMAT(gnu_printf, 3, 4);
 #else
 CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
-                                            const char *expr, ...);
+                                            const char *expr, ...) CK_ATTRIBUTE_FORMAT(gnu_printf, 3, 4);
 #endif
 
 /**

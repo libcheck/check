@@ -96,6 +96,6 @@ void record_failure_line_num(const int line);
  *
  * If there are no more lines to read, -1 is returned.
  */
-int get_next_failure_line_num(FILE * file);
+long get_next_failure_line_num(FILE * file);
 
 #endif /* CHECK_CHECK_H */

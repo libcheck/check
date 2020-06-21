@@ -54,7 +54,7 @@ int check_micro_version = CHECK_MICRO_VERSION;
 
 const char* current_test_name = NULL;
 
-static int non_pass(int val);
+static int non_pass(enum test_result);
 static Fixture *fixture_create(SFun fun, int ischecked);
 static void tcase_add_fixture(TCase * tc, SFun setup, SFun teardown,
                               int ischecked);
@@ -512,7 +512,7 @@ TestResult **srunner_results(SRunner * sr)
     return trarray;
 }
 
-static int non_pass(int val)
+static int non_pass(enum test_result val)
 {
     return val != CK_PASS;
 }

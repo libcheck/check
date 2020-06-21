@@ -1092,7 +1092,7 @@ END_TEST
 
 START_TEST(test_ck_assert_double_eq_with_promotion)
 {
-  float x = 0.1;
+  float x = 0.1F;
   double y = x;
 
   record_test_name(tcase_name());
@@ -1103,7 +1103,7 @@ END_TEST
 
 START_TEST(test_ck_assert_double_eq_with_conv)
 {
-  float x = 0.1;
+  float x = 0.1F;
 
   record_test_name(tcase_name());
 
@@ -1608,7 +1608,7 @@ END_TEST
 
 START_TEST(test_ck_assert_ldouble_eq_with_promotion)
 {
-  float x = 1.1;
+  float x = 1.1F;
   long double y = x;
 
   record_test_name(tcase_name());
@@ -1619,7 +1619,7 @@ END_TEST
 
 START_TEST(test_ck_assert_ldouble_eq_with_conv)
 {
-  float x = 1.1;
+  float x = 1.1F;
   long double y = x;
 
   record_test_name(tcase_name());
