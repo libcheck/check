@@ -123,6 +123,11 @@ if(NOT HAVE_DECL_ALARM)
   target_sources(checkShared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/alarm.c)
 endif(NOT HAVE_DECL_ALARM)
 
+if(NOT HAVE_PTHREAD)
+  target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/pthread_mutex.c)
+  target_sources(checkShared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/pthread_mutex.c)
+endif()
+
 # Include libraries if available
 if (HAVE_LIBM)
   target_link_libraries(check PUBLIC m)

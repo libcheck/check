@@ -303,6 +303,18 @@ typedef uint64_t uintmax_t;
 /* Define to 1 if you have the <unistd.h> header file. */
 #cmakedefine HAVE_UNISTD_H 1
 
+/* Define to 1 if you have <windows.h> header file. */
+#cmakedefine HAVE_WINDOWS_H 1
+
+/* Define to 1 if you have <synchapi.h> header file. */
+#cmakedefine HAVE_SYNCHAPI_H 1
+
+/* Define to 1 if you have the 'InitOnceBeginInitialize' function. */
+#cmakedefine HAVE_INIT_ONCE_BEGIN_INITIALIZE 1
+
+/* Define to 1 if you have the 'InitOnceComplete' function. */
+#cmakedefine HAVE_INIT_ONCE_COMPLETE 1
+
 /* Define to 1 if the system has the type `unsigned long long'. */
 #cmakedefine HAVE_UNSIGNED_LONG_LONG 1
 
@@ -320,6 +332,9 @@ typedef uint64_t uintmax_t;
 
 /* Define to 1 if you have the `_strdup' function. */
 #cmakedefine HAVE__STRDUP 1
+
+/* Define 1 if you have pthread support. */
+#cmakedefine HAVE_PTHREAD 1
 
 /* Version number of Check */
 #cmakedefine CHECK_VERSION "${CHECK_MAJOR_VERSION}.${CHECK_MINOR_VERSION}.${CHECK_MICRO_VERSION}"

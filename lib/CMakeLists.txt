@@ -67,6 +67,10 @@ if(NOT HAVE_DECL_ALARM)
   set(SOURCES ${SOURCES} alarm.c)
 endif(NOT HAVE_DECL_ALARM)
 
+if (NOT HAVE_PTHREAD)
+  set(SOURCES ${SOURCES} pthread_mutex.c)
+endif()
+
 set(HEADERS libcompat.h)
 
 add_library(compat STATIC ${SOURCES} ${HEADERS})
