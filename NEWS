@@ -1,5 +1,5 @@
-In Development:
-# Mentioning Check 0.14.0 for now, to fix distcheck target until next release
+Sun June 21, 2020: Released Check 0.15.0
+  based on hash 18d83fb9bab41b7bfb6535ed44c131004d01d5ad
 
 * Define CK_ATTRIBUTE_FORMAT for GCC >= 2.95.3, to make use of
   ‘gnu_printf’ format attribute
