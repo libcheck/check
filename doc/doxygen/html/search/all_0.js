@@ -84,6 +84,8 @@ var searchData=
   ['ck_5fctx_5fsetup',['CK_CTX_SETUP',['../check_8h.html#a23387ecaa4928d15accf141686c3ebc0a89644119b123ea2e9d800ffbcbcab136',1,'check.h']]],
   ['ck_5fctx_5fteardown',['CK_CTX_TEARDOWN',['../check_8h.html#a23387ecaa4928d15accf141686c3ebc0a48fe82a0b173419f4f4459548478c4e8',1,'check.h']]],
   ['ck_5fctx_5ftest',['CK_CTX_TEST',['../check_8h.html#a23387ecaa4928d15accf141686c3ebc0a3ce1bf44950d146d4ae760115e7e264a',1,'check.h']]],
+  ['ck_5fdiagnostic_5fpop',['CK_DIAGNOSTIC_POP',['../check_8h.html#a99b009cfd0b79a562915b41575113674',1,'check.h']]],
+  ['ck_5fdiagnostic_5fpush_5fignore',['CK_DIAGNOSTIC_PUSH_IGNORE',['../check_8h.html#af5911ab42cf648329499de61c5988d97',1,'check.h']]],
   ['ck_5fenv',['CK_ENV',['../check_8h.html#a483595b0741edd787b8b65a0c169fd41ac8ef9a16d69810ff0e8d3793b1cff0fc',1,'check.h']]],
   ['ck_5ferror',['CK_ERROR',['../check_8h.html#aa191f9e1301fe9e569eb04b6173c9ec7aa333bc0a0d9f97d47a1e86b99062f660',1,'check.h']]],
   ['ck_5ffailure',['CK_FAILURE',['../check_8h.html#aa191f9e1301fe9e569eb04b6173c9ec7a346737927f9281d7a38490eb4919d75c',1,'check.h']]],

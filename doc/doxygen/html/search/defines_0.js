@@ -76,6 +76,8 @@ var searchData=
   ['ck_5fassert_5fuint_5fle',['ck_assert_uint_le',['../check_8h.html#aeb29894ce0ad87f4e13e0f6c53921073',1,'check.h']]],
   ['ck_5fassert_5fuint_5flt',['ck_assert_uint_lt',['../check_8h.html#a114e71b135384f7d4836484889151132',1,'check.h']]],
   ['ck_5fassert_5fuint_5fne',['ck_assert_uint_ne',['../check_8h.html#a5b3d1486f902efa37852aa0e6b980552',1,'check.h']]],
+  ['ck_5fdiagnostic_5fpop',['CK_DIAGNOSTIC_POP',['../check_8h.html#a99b009cfd0b79a562915b41575113674',1,'check.h']]],
+  ['ck_5fdiagnostic_5fpush_5fignore',['CK_DIAGNOSTIC_PUSH_IGNORE',['../check_8h.html#af5911ab42cf648329499de61c5988d97',1,'check.h']]],
   ['ck_5ffloating_5fdig',['CK_FLOATING_DIG',['../check_8h.html#a5c052ae01136fb8aea36e4cd2051a595',1,'check.h']]],
   ['ck_5fmax_5fassert_5fmem_5fprint_5fsize',['CK_MAX_ASSERT_MEM_PRINT_SIZE',['../check_8h.html#acaea5dfc45864af3075b502f4cff3a29',1,'check.h']]]
 ];

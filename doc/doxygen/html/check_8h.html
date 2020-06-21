@@ -89,6 +89,10 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
+<tr class="memitem:af5911ab42cf648329499de61c5988d97"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#af5911ab42cf648329499de61c5988d97">CK_DIAGNOSTIC_PUSH_IGNORE</a>(w)</td></tr>
+<tr class="separator:af5911ab42cf648329499de61c5988d97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99b009cfd0b79a562915b41575113674"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#a99b009cfd0b79a562915b41575113674">CK_DIAGNOSTIC_POP</a>(w)</td></tr>
+<tr class="separator:a99b009cfd0b79a562915b41575113674"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd859ab25e64e8227bdc8ef27be81784"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#acd859ab25e64e8227bdc8ef27be81784">tcase_add_test</a>(tc,  tf)&#160;&#160;&#160;<a class="el" href="check_8h.html#a17e3616cb6353f2298a27786a660c94b">tcase_add_test_raise_signal</a>(tc,tf,0)</td></tr>
 <tr class="separator:acd859ab25e64e8227bdc8ef27be81784"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a17e3616cb6353f2298a27786a660c94b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#a17e3616cb6353f2298a27786a660c94b">tcase_add_test_raise_signal</a>(tc,  ttest,  signal)&#160;&#160;&#160;_tcase_add_test((tc),(ttest),(signal), 0, 0, 1)</td></tr>
@@ -3289,6 +3293,42 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a99b009cfd0b79a562915b41575113674"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a99b009cfd0b79a562915b41575113674">&sect;&nbsp;</a></span>CK_DIAGNOSTIC_POP</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CK_DIAGNOSTIC_POP</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">w</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af5911ab42cf648329499de61c5988d97"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5911ab42cf648329499de61c5988d97">&sect;&nbsp;</a></span>CK_DIAGNOSTIC_PUSH_IGNORE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CK_DIAGNOSTIC_PUSH_IGNORE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">w</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a5c052ae01136fb8aea36e4cd2051a595"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5c052ae01136fb8aea36e4cd2051a595">&sect;&nbsp;</a></span>CK_FLOATING_DIG</h2>
 
@@ -3368,7 +3408,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> __testname ## _fn (<span class="keywordtype">int</span> _i CK_ATTRIBUTE_UNUSED);\</div><div class="line">static <span class="keyword">const</span> <a class="code" href="structTTest.html">TTest</a> __testname ## _ttest = {<span class="stringliteral">&quot;&quot;</span># __testname, __testname ## _fn, __FILE__, __LINE__};\</div><div class="line">static <span class="keyword">const</span> <a class="code" href="structTTest.html">TTest</a> * __testname = &amp; __testname ## _ttest;\</div><div class="line">static <span class="keywordtype">void</span> __testname ## _fn (<span class="keywordtype">int</span> _i CK_ATTRIBUTE_UNUSED)</div><div class="ttc" id="structTTest_html"><div class="ttname"><a href="structTTest.html">TTest</a></div><div class="ttdef"><b>Definition:</b> check.h:151</div></div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> __testname ## _fn (<span class="keywordtype">int</span> _i CK_ATTRIBUTE_UNUSED);\</div><div class="line">static <span class="keyword">const</span> <a class="code" href="structTTest.html">TTest</a> __testname ## _ttest = {<span class="stringliteral">&quot;&quot;</span># __testname, __testname ## _fn, __FILE__, __LINE__};\</div><div class="line">static <span class="keyword">const</span> <a class="code" href="structTTest.html">TTest</a> * __testname = &amp; __testname ## _ttest;\</div><div class="line">static <span class="keywordtype">void</span> __testname ## _fn (<span class="keywordtype">int</span> _i CK_ATTRIBUTE_UNUSED)</div><div class="ttc" id="structTTest_html"><div class="ttname"><a href="structTTest.html">TTest</a></div><div class="ttdef"><b>Definition:</b> check.h:167</div></div>
 </div><!-- fragment --><p>Start a unit test with <a class="el" href="check_8h.html#ada970b54a25120448a9a685fa92ce462">START_TEST(unit_name)</a>, end with END_TEST.</p>
 <p>One must use braces within a START_/END_ pair to declare new variables</p>
 <dl class="section since"><dt>Since</dt><dd>0.6.0 </dd></dl>
@@ -5199,7 +5239,7 @@ case". </td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Jan 26 2020 18:30:59 for Check by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Jun 21 2020 13:46:53 for Check by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.12
 </small></address>
