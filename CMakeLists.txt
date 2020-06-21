@@ -22,6 +22,8 @@
 #
 cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
 
+include(CheckCCompilerFlag)
+
 # Detect if Check is being used in another build as a subproject
 # probably with command FetchContent*().
 set(THIS_IS_SUBPROJECT FALSE)
@@ -112,7 +114,7 @@ if(WIN32)
   if(MSVC60)
   set(WINVER 0x0400)
   else()
-  set(WINVER 0x0500)
+  set(WINVER 0x0600)
   endif()
   set(_WIN32_WINNT ${WINVER})
 endif(WIN32)
@@ -162,6 +164,10 @@ ck_check_include_file("strings.h" HAVE_STRINGS_H)
 ck_check_include_file("sys/time.h" HAVE_SYS_TIME_H)
 ck_check_include_file("time.h" HAVE_TIME_H)
 ck_check_include_file("unistd.h" HAVE_UNISTD_H)
+ck_check_include_file("pthread.h" HAVE_PTHREAD)
+
+# check if we have windows.h on native windows environments
+ck_check_include_file("windows.h" HAVE_WINDOWS_H)
 
 ###############################################################################
 # Check functions
@@ -180,6 +186,10 @@ check_function_exists(strsignal HAVE_DECL_STRSIGNAL)
 check_function_exists(_getpid HAVE__GETPID)
 check_function_exists(_strdup HAVE__STRDUP)
 check_function_exists(alarm HAVE_DECL_ALARM)
+if (HAVE_WINDOWS_H)
+  check_function_exists(InitOnceBeginInitialize HAVE_INIT_ONCE_BEGIN_INITIALIZE)
+  check_function_exists(InitOnceComplete HAVE_INIT_ONCE_COMPLETE)
+endif()
 if (HAVE_REGEX_H)
   check_function_exists(regcomp HAVE_REGCOMP)
   check_function_exists(regexec HAVE_REGEXEC)
@@ -232,6 +242,14 @@ if(HAVE_REGEX_H AND HAVE_REGCOMP AND HAVE_REGEXEC)
   set(HAVE_REGEX 1)
   add_definitions(-DENABLE_REGEX=1)
   set(ENABLE_REGEX 1)
+endif()
+
+if (HAVE_PTHREAD)
+  check_c_compiler_flag("-pthread" HAVE_PTHREADS_FLAG)
+  if (HAVE_PTHREADS_FLAG)
+    add_definitions("-pthread")
+    add_link_options("-pthread")
+  endif()
 endif()
 
 
@@ -437,7 +455,7 @@ if(NOT THIS_IS_SUBPROJECT)
     set(GCOV_LIBS "")
   endif (CHECK_ENABLE_GCOV)
 
-  set(PTHREAD_LIBS "")
+  set(PTHREAD_LIBS "-pthread")
   set(LIBS "")
 
   if (HAVE_LIBM)
