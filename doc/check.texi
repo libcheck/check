@@ -28,7 +28,7 @@ entitled ``@acronym{GNU} Free Documentation License.''
 
 @dircategory Software development
 @direntry
-* Check: (check)Introduction.
+* Check: (check).               A unit testing framework for C.
 @end direntry
 
 @titlepage
