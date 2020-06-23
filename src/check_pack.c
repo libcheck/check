@@ -136,7 +136,7 @@ int pack(enum ck_msg_type type, char **buf, CheckMsg * msg)
 
     len = pftab[type] (buf, msg);
     if(len > (size_t) INT_MAX)
-        eprintf("Value of len (%d) too big, max allowed %u\n",
+        eprintf("Value of len (%zu) too big, max allowed %u\n",
                 __FILE__, __LINE__ - 3, len, INT_MAX);
     return (int) len;
 }
@@ -159,10 +159,10 @@ int upack(char *buf, CheckMsg * msg, enum ck_msg_type *type)
 
     diff = buf - obuf;
     if(diff > (ptrdiff_t) INT_MAX)
-        eprintf("Value of diff (%t) too big, max allowed %u\n",
+        eprintf("Value of diff (%td) too big, max allowed %d\n",
                 __FILE__, __LINE__ - 3, diff, INT_MAX);
     if(diff > (ptrdiff_t) INT_MAX || diff < (ptrdiff_t) INT_MIN)
-        eprintf("Value of diff (%t) too small, min allowed %u\n",
+        eprintf("Value of diff (%td) too small, min allowed %d\n",
                 __FILE__, __LINE__ - 6, diff, INT_MIN);
     return (int) diff;
 }
