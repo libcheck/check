@@ -41,6 +41,30 @@ jobs:
     - name: make install
       run: sudo make install
 
+  build_linux_autotools_gcc:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: create configure 
+      run: autoreconf -i
+    - name: configure gcc
+      run: ./configure CC=gcc --enable-snprintf-replacement --enable-timer-replacement --disable-build-docs --disable-timeout-tests
+    - name: make
+      run: make
+    - name: make check
+      run: make check
+
+  build_linux_autotools_clang:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: create configure
+      run: autoreconf -i
+    - name: configure clang
+      run: ./configure CC=clang --enable-snprintf-replacement --enable-timer-replacement --disable-build-docs --disable-timeout-tests
+    - name: make
+      run: make
+
   build_linux_autotools_prereleasecheck:
     runs-on: ubuntu-latest
     steps:
