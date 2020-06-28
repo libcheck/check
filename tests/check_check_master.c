@@ -589,7 +589,7 @@ START_TEST(test_check_failure_lnos)
     }
 
     if (line_no > 0 && tr_lno(tr) != line_no) {
-      ck_abort_msg("For test %d (failure %d): Expected lno %d, got %d for suite %s, msg %s",
+      ck_abort_msg("For test %d (failure %d): Expected lno %ld, got %d for suite %s, msg %s",
                i, number_failed, line_no, tr_lno(tr), tr_tcname(tr), tr_msg(tr));
     }    
   }
@@ -597,7 +597,7 @@ START_TEST(test_check_failure_lnos)
   /* At this point, there should be no remaining failures */
   line_no = get_next_failure_line_num(line_num_failures);
   ck_assert_msg(line_no == -1,
-    "No more failure line numbers expected, but found %d", line_no);
+    "No more failure line numbers expected, but found %ld", line_no);
 }
 END_TEST
 
