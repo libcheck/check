@@ -39,6 +39,6 @@ char *tr_short_str(TestResult * tr);
 */
 char *sr_stat_str(SRunner * sr);
 
-char *ck_strdup_printf(const char *fmt, ...) CK_ATTRIBUTE_FORMAT(gnu_printf, 1, 2);
+char *ck_strdup_printf(const char *fmt, ...) CK_ATTRIBUTE_FORMAT(printf, 1, 2);
 
 #endif /* CHECK_STR_H */
