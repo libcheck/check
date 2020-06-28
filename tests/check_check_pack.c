@@ -57,7 +57,7 @@ START_TEST(test_pack_fmsg)
     snprintf (errm, sizeof(errm),
 	      "Unpacked string is %s, should be Hello, World!",
 	      fmsg->msg);
-    fail (errm);
+    fail("%s", errm);
   }
 
   free (fmsg->msg);
@@ -88,14 +88,14 @@ START_TEST(test_pack_loc)
     snprintf (errm, sizeof (errm),
 	     "LocMsg line was %d, should be %d",
 	     lmsg->line, 125);
-    fail (errm);
+    fail("%s", errm);
   }
   
   if (strcmp (lmsg->file, "abc123.c") != 0) {
     snprintf (errm, sizeof (errm),
               "LocMsg file was %s, should be abc123.c",
               lmsg->file);
-    fail (errm);
+    fail("%s", errm);
   }
 
   free (lmsg->file);
@@ -123,7 +123,7 @@ START_TEST(test_pack_ctx)
     snprintf (errm, sizeof (errm),
 	     "CtxMsg ctx got %d, expected %d",
 	     cmsg.ctx, CK_CTX_SETUP);
-    fail (errm);
+    fail("%s", errm);
   }
 
   free (buf);
@@ -147,7 +147,7 @@ START_TEST(test_pack_len)
   n = upack (buf, (CheckMsg *) &cmsg, &type);
   if (n != 8) {
     snprintf (errm, sizeof (errm), "%d bytes read from upack, should be 8", n);
-    fail (errm);
+    fail("%s", errm);
   }
   
   free (buf);
