@@ -65,6 +65,20 @@ jobs:
     - name: make
       run: make
 
+  build_linux_autotools_crosscompile_mingw32:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install doc packages
+      run: sudo apt-get install -y gcc-mingw-w64
+    - name: create configure
+      run: autoreconf -i
+    - name: configure clang
+      run: ./configure --disable-build-docs --host=x86_64-w64-mingw32 --disable-static --disable-subunit
+    - name: make
+      run: make
+
+
   build_linux_autotools_prereleasecheck:
     runs-on: ubuntu-latest
     steps:
