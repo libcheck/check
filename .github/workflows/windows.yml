@@ -98,6 +98,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: cmake
       run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "cmake ."
+    - name: print dir
+      run: dir .
     - name: make
       run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "make"
     - name: test
