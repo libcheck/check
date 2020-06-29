@@ -98,11 +98,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: cmake
       run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "cmake -G 'MSYS Makefiles' ."
-    - name: print dir
-      run: dir .
     - name: make
       run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "make"
     - name: test
       run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "tests/check_check"
-    - name: test
-      run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "ctest -V"
