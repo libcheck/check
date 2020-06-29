@@ -78,3 +78,18 @@ jobs:
       run: bash -c "make"
     - name: test
       run: bash -c "tests/check_check"
+
+  build_windows_msys2_autotools:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: add msys2 to path
+      run: echo "::add-path::C:\msys64\usr\bin"
+    - name: autoreconf
+      run: msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "autoreconf -i"
+    - name: configure
+      run: msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "./configure"
+    - name: make
+      run: msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "make"
+    - name: test
+      run: msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "tests/check_check"
