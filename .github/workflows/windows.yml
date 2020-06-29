@@ -83,12 +83,6 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - name: add msys2 to path
-      run: echo "::add-path::C:\msys64\usr\bin"
-    - name: dir msys64
-      run: dir C:\msys64\
-    - name: dir msys64 bin
-      run: dir C:\msys64\usr\bin
     - name: autoreconf
       run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "autoreconf -i"
     - name: configure
@@ -97,5 +91,3 @@ jobs:
       run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "make"
     - name: test
       run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "tests/check_check"
-    - name: make check
-      run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "make check"
