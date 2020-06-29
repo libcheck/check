@@ -1725,7 +1725,7 @@ do { \
 #define _ck_assert_ptr(X, OP, Y) do { \
   const void* _ck_x = (X); \
   const void* _ck_y = (Y); \
-  ck_assert_msg(_ck_x OP _ck_y, "Assertion '%s' failed: %s == %#lx, %s == %#lx", #X" "#OP" "#Y, #X, (unsigned long)_ck_x, #Y, (unsigned long)_ck_y); \
+  ck_assert_msg(_ck_x OP _ck_y, "Assertion '%s' failed: %s == %#lx, %s == %#lx", #X" "#OP" "#Y, #X, (unsigned long)(uintptr_t)_ck_x, #Y, (unsigned long)(uintptr_t)_ck_y); \
 } while (0)
 
 /* Pointer against NULL comparison macros with improved output
@@ -1736,7 +1736,7 @@ do { \
   ck_assert_msg(_ck_x OP NULL, \
   "Assertion '%s' failed: %s == %#lx", \
   #X" "#OP" NULL", \
-  #X, (unsigned long)_ck_x); \
+  #X, (unsigned long)(uintptr_t)_ck_x); \
 } while (0)
 
 /**
