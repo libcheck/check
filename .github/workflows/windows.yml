@@ -78,3 +78,27 @@ jobs:
       run: bash -c "make"
     - name: test
       run: bash -c "tests/check_check"
+
+  build_windows_msys2_autotools:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: autoreconf
+      run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "autoreconf -i"
+    - name: configure
+      run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "./configure"
+    - name: make
+      run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "make"
+    - name: test
+      run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "tests/check_check"
+
+  build_windows_msys2_cmake:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: cmake
+      run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "cmake -G 'MSYS Makefiles' ."
+    - name: make
+      run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "make"
+    - name: test
+      run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "tests/check_check"
