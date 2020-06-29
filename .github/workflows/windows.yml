@@ -91,3 +91,14 @@ jobs:
       run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "make"
     - name: test
       run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "tests/check_check"
+
+  build_windows_msys2_cmake:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: cmake
+      run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "cmake ."
+    - name: make
+      run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "make"
+    - name: test
+      run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "tests/check_check"
