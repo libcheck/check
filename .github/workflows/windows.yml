@@ -104,3 +104,5 @@ jobs:
       run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "make"
     - name: test
       run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "tests/check_check"
+    - name: test
+      run: C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -full-path -here -c "ctest -V"
