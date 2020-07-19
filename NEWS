@@ -1,6 +1,21 @@
 In Development:
 # Mentioning Check 0.15.0 for now, to fix distcheck target until next release
 
+* Fix warning in ptr macros with pointer to integer cast
+  Issue #284
+
+* Fix various warnings in Check's unit tests
+  Issue #283
+
+* Replace gnu_printf with printf in format __attribute__
+  Issue #282
+
+* Fix warnings from Check's macros: "warning: too many arguments for format"
+  Issue #274
+
+* Fix format specifiers that do not match the argument types
+  Issue #271
+
 
 Sun June 21, 2020: Released Check 0.15.0
   based on hash 18d83fb9bab41b7bfb6535ed44c131004d01d5ad
