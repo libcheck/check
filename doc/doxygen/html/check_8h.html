@@ -115,7 +115,7 @@ Macros</h2></td></tr>
 <tr class="separator:a09cf259baeb2284c386e50b3eedb8d4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43b80dcf908a786243e4d52673db709f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#a43b80dcf908a786243e4d52673db709f">ck_abort</a>()&#160;&#160;&#160;<a class="el" href="check_8h.html#af203fbe4d7052a9c78824068b16e9dfa">ck_abort_msg</a>(NULL)</td></tr>
 <tr class="separator:a43b80dcf908a786243e4d52673db709f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af203fbe4d7052a9c78824068b16e9dfa"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#af203fbe4d7052a9c78824068b16e9dfa">ck_abort_msg</a>(...)&#160;&#160;&#160;_ck_assert_failed(__FILE__, __LINE__, &quot;Failed&quot; , ## __VA_ARGS__, NULL)</td></tr>
+<tr class="memitem:af203fbe4d7052a9c78824068b16e9dfa"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#af203fbe4d7052a9c78824068b16e9dfa">ck_abort_msg</a>(...)&#160;&#160;&#160;_ck_assert_failed(__FILE__, __LINE__, &quot;Failed&quot; , ## __VA_ARGS__)</td></tr>
 <tr class="separator:af203fbe4d7052a9c78824068b16e9dfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86b46c786b86a57bdb098e21939a52e8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="check_8h.html#a86b46c786b86a57bdb098e21939a52e8">ck_assert_int_eq</a>(X,  Y)&#160;&#160;&#160;_ck_assert_int(X, ==, Y)</td></tr>
 <tr class="separator:a86b46c786b86a57bdb098e21939a52e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -433,7 +433,7 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname"><em>...</em></td><td>)</td>
-          <td>&#160;&#160;&#160;_ck_assert_failed(__FILE__, __LINE__, &quot;Failed&quot; , ## __VA_ARGS__, NULL)</td>
+          <td>&#160;&#160;&#160;_ck_assert_failed(__FILE__, __LINE__, &quot;Failed&quot; , ## __VA_ARGS__)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -2601,7 +2601,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">(expr) ? \</div><div class="line">     _mark_point(__FILE__, __LINE__) : \</div><div class="line">     _ck_assert_failed(__FILE__, __LINE__, <span class="stringliteral">&quot;Assertion &#39;&quot;</span>#expr<span class="stringliteral">&quot;&#39; failed&quot;</span> , ## __VA_ARGS__, NULL)</div></div><!-- fragment --><p>Fail the test if the expression is false; print message on failure</p>
+<b>Value:</b><div class="fragment"><div class="line">(expr) ? \</div><div class="line">     _mark_point(__FILE__, __LINE__) : \</div><div class="line">     _ck_assert_failed(__FILE__, __LINE__, <span class="stringliteral">&quot;Assertion &#39;&quot;</span>#expr<span class="stringliteral">&quot;&#39; failed&quot;</span> , ## __VA_ARGS__)</div></div><!-- fragment --><p>Fail the test if the expression is false; print message on failure</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">expr</td><td>expression to evaluate </td></tr>
@@ -5239,7 +5239,7 @@ case". </td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Jun 21 2020 13:46:53 for Check by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Jul 24 2020 13:03:25 for Check by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.12
 </small></address>
