@@ -1,3 +1,7 @@
+In Development:
+# Mentioning Check 0.15.1 for now, to fix distcheck target until next release
+
+
 Sun July 19, 2020: Released Check 0.15.1
   based on hash db3ef470271e6e011f2cd1f5231a50375568bb46
 
