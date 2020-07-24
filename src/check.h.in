@@ -480,7 +480,7 @@ static void __testname ## _fn (int _i CK_ATTRIBUTE_UNUSED)
  */
 #define fail_if(expr, ...)\
   (expr) ? \
-     _ck_assert_failed(__FILE__, __LINE__, "Failure '"#expr"' occurred" , ## __VA_ARGS__, NULL) \
+     _ck_assert_failed(__FILE__, __LINE__, "Failure '"#expr"' occurred" , ## __VA_ARGS__) \
      : _mark_point(__FILE__, __LINE__)
 
 /*
@@ -500,11 +500,12 @@ static void __testname ## _fn (int _i CK_ATTRIBUTE_UNUSED)
  */
 #if @HAVE_FORK@
 CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
-                                            const char *expr,
-                                            ...) CK_ATTRIBUTE_NORETURN CK_ATTRIBUTE_FORMAT(gnu_printf, 3, 4);
+                                            const char *expr, const char *msg,
+                                            ...) CK_ATTRIBUTE_NORETURN CK_ATTRIBUTE_FORMAT(printf, 4, 5);
 #else
 CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
-                                            const char *expr, ...) CK_ATTRIBUTE_FORMAT(gnu_printf, 3, 4);
+                                            const char *expr, const char *msg,
+                                            ...) CK_ATTRIBUTE_FORMAT(printf, 4, 5);
 #endif
 
 /**
@@ -534,7 +535,7 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
 #define ck_assert_msg(expr, ...) \
   (expr) ? \
      _mark_point(__FILE__, __LINE__) : \
-     _ck_assert_failed(__FILE__, __LINE__, "Assertion '"#expr"' failed" , ## __VA_ARGS__, NULL)
+     _ck_assert_failed(__FILE__, __LINE__, "Assertion '"#expr"' failed" , ## __VA_ARGS__)
 
 /**
  * Unconditionally fail the test
@@ -553,7 +554,7 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
  *
  * @since 0.9.6
  */
-#define ck_abort_msg(...) _ck_assert_failed(__FILE__, __LINE__, "Failed" , ## __VA_ARGS__, NULL)
+#define ck_abort_msg(...) _ck_assert_failed(__FILE__, __LINE__, "Failed" , ## __VA_ARGS__)
 
 /* Signed and unsigned integer comparison macros with improved output compared to ck_assert(). */
 /* OP may be any comparison operator. */
@@ -1724,7 +1725,7 @@ do { \
 #define _ck_assert_ptr(X, OP, Y) do { \
   const void* _ck_x = (X); \
   const void* _ck_y = (Y); \
-  ck_assert_msg(_ck_x OP _ck_y, "Assertion '%s' failed: %s == %#x, %s == %#x", #X" "#OP" "#Y, #X, _ck_x, #Y, _ck_y); \
+  ck_assert_msg(_ck_x OP _ck_y, "Assertion '%s' failed: %s == %#lx, %s == %#lx", #X" "#OP" "#Y, #X, (unsigned long)(uintptr_t)_ck_x, #Y, (unsigned long)(uintptr_t)_ck_y); \
 } while (0)
 
 /* Pointer against NULL comparison macros with improved output
@@ -1733,9 +1734,9 @@ do { \
 #define _ck_assert_ptr_null(X, OP) do { \
   const void* _ck_x = (X); \
   ck_assert_msg(_ck_x OP NULL, \
-  "Assertion '%s' failed: %s == %#x", \
+  "Assertion '%s' failed: %s == %#lx", \
   #X" "#OP" NULL", \
-  #X, _ck_x); \
+  #X, (unsigned long)(uintptr_t)_ck_x); \
 } while (0)
 
 /**

@@ -436,36 +436,6 @@ START_TEST(test_check_ntests_run)
 }
 END_TEST
 
-/**
- * Given a string, return a new string that is a copy
- * of the original exception that every occurance of
- * % is replaced with %%. This escapes the %
- * symbol for passing to printf.
- *
- * The passed in string is not modified. Note though
- * that the returned string is allocated memory that
- * must be freed by the caller.
- */
-char * escape_percent(const char *original, size_t original_size);
-char * escape_percent(const char *original, size_t original_size)
-{
-  /* In the worst case every character is a %*/
-  char *result = (char*)malloc(original_size*2);
-
-  size_t read_index;
-  size_t write_index;
-  for(read_index = write_index = 0; read_index < original_size; read_index++, write_index++)
-  {
-    result[write_index] = original[read_index];
-    if(result[write_index] == '%')
-    {
-      /* Place a duplicate % next to the one just read, to escape it */
-      result[++write_index] = '%';
-    }
-  }
-
-  return result;
-}
 
 START_TEST(test_check_failure_msgs)
 {
@@ -474,9 +444,7 @@ START_TEST(test_check_failure_msgs)
   const char *got_msg;
   const char *expected_msg;
   unsigned char not_equal = 0;
-  char emsg[MAXSTR];
   const char *msg_type_str;
-  char *emsg_escaped;
   int reg_err;
   char err_text[256];
   TestResult *tr;
@@ -538,21 +506,9 @@ START_TEST(test_check_failure_msgs)
         msg_type_str = "";
       }
 
-      snprintf(emsg, MAXSTR - 1,"For test %d:%s:%s Expected%s '%s', got '%s'",
+      ck_abort_msg("For test %d:%s:%s Expected%s '%s', got '%s'",
                i, master_test->tcname, master_test->test_name, msg_type_str,
                expected_msg, got_msg);
-      emsg[MAXSTR - 1] = '\0';
-
-      /*
-       * NOTE: ck_abort_msg() will take the passed string
-       * and feed it to printf. We need to escape any
-       * '%' found, else they will result in odd formatting
-       * in ck_abort_msg().
-       */
-      emsg_escaped = escape_percent(emsg, MAXSTR);
-
-      ck_abort_msg(emsg_escaped);
-      free(emsg_escaped);
     }
   }
 }
@@ -589,7 +545,7 @@ START_TEST(test_check_failure_lnos)
     }
 
     if (line_no > 0 && tr_lno(tr) != line_no) {
-      ck_abort_msg("For test %d (failure %d): Expected lno %d, got %d for suite %s, msg %s",
+      ck_abort_msg("For test %d (failure %d): Expected lno %ld, got %d for suite %s, msg %s",
                i, number_failed, line_no, tr_lno(tr), tr_tcname(tr), tr_msg(tr));
     }    
   }
@@ -597,7 +553,7 @@ START_TEST(test_check_failure_lnos)
   /* At this point, there should be no remaining failures */
   line_no = get_next_failure_line_num(line_num_failures);
   ck_assert_msg(line_no == -1,
-    "No more failure line numbers expected, but found %d", line_no);
+    "No more failure line numbers expected, but found %ld", line_no);
 }
 END_TEST
 
@@ -714,8 +670,6 @@ START_TEST(test_check_all_msgs)
 
   if (not_equal) {    
     const char *msg_type_str;
-    char emsg[MAXSTR];
-    char *emsg_escaped;
     switch(master_test->msg_type) {
 #if ENABLE_REGEX
     case CK_MSG_REGEXP:
@@ -726,21 +680,9 @@ START_TEST(test_check_all_msgs)
       msg_type_str = "";
     }
 
-    snprintf(emsg, MAXSTR - 1, "For test %i:%s:%s expected%s '%s', got '%s'",
-             _i, master_test->tcname, master_test->test_name, msg_type_str,
-             expected_msg, got_msg);
-    emsg[MAXSTR - 1] = '\0';
-
-   /*
-    * NOTE: ck_abort_msg() will take the passed string
-    * and feed it to printf. We need to escape any
-    * '%' found, else they will result in odd formatting
-    * in ck_abort_msg().
-    */
-    emsg_escaped = escape_percent(emsg, MAXSTR);
-
-    ck_abort_msg(emsg_escaped);
-    free(emsg_escaped);
+    ck_abort_msg("For test %i:%s:%s expected%s '%s', got '%s'",
+       _i, master_test->tcname, master_test->test_name, msg_type_str,
+       expected_msg, got_msg);
   }
 }
 END_TEST  

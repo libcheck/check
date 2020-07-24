@@ -93,7 +93,7 @@ START_TEST(test_setup_failure_msg)
     snprintf(errm, sizeof(errm),
 	     "Bad setup tr msg (%s)", trm);
     
-    ck_abort_msg (errm);
+    ck_abort_msg("%s", errm);
   }
   free(trm);
 }
@@ -217,7 +217,7 @@ START_TEST(test_ch_setup_fail)
     snprintf(errm, sizeof(errm),
 	     "Bad failed checked setup tr msg (%s)", trm);
     
-    ck_abort_msg (errm);
+    ck_abort_msg("%s", errm);
   }
   free(trm);
   free(tr);
@@ -348,7 +348,7 @@ START_TEST(test_ch_setup_sig)
     snprintf(errm, sizeof(errm),
 	     "Msg was (%s)", trm);
     
-    ck_abort_msg (errm);
+    ck_abort_msg("%s", errm);
   }
   free(trm);
   srunner_free(sr);
@@ -440,7 +440,7 @@ START_TEST(test_ch_teardown_fail)
     snprintf(errm, sizeof(errm),
 	     "Bad failed checked teardown tr msg (%s)", trm);
     
-    ck_abort_msg (errm);
+    ck_abort_msg("%s", errm);
   }
   free(trm);
   free(tr);
@@ -486,7 +486,7 @@ START_TEST(test_ch_teardown_fail_nofork)
     snprintf(errm, sizeof(errm),
 	     "Bad failed checked teardown tr msg (%s)", trm);
     
-    ck_abort_msg (errm);
+    ck_abort_msg("%s", errm);
   }
   free(trm);
   free(tr);
@@ -542,7 +542,7 @@ START_TEST(test_ch_teardown_sig)
     snprintf(errm, sizeof(errm),
 	     "Bad msg (%s)", trm);
     
-    ck_abort_msg (errm);
+    ck_abort_msg("%s", errm);
   }
   free(trm);
   srunner_free(sr);

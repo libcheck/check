@@ -362,17 +362,13 @@ void _mark_point(const char *file, int line)
     send_loc_info(file, line);
 }
 
-void _ck_assert_failed(const char *file, int line, const char *expr, ...)
+void _ck_assert_failed(const char *file, int line, const char *expr,
+                       const char *msg, ...)
 {
-    const char *msg;
-    va_list ap;
     char buf[BUFSIZ];
     const char *to_send;
 
     send_loc_info(file, line);
-
-    va_start(ap, expr);
-    msg = (const char *)va_arg(ap, char *);
 
     /*
      * If a message was passed, format it with vsnprintf.
@@ -380,7 +376,10 @@ void _ck_assert_failed(const char *file, int line, const char *expr, ...)
      */
     if(msg != NULL)
     {
+        va_list ap;
+        va_start(ap, msg);
         vsnprintf(buf, BUFSIZ, msg, ap);
+        va_end(ap);
         to_send = buf;
     }
     else
@@ -388,7 +387,6 @@ void _ck_assert_failed(const char *file, int line, const char *expr, ...)
         to_send = expr;
     }
 
-    va_end(ap);
     send_failure_info(to_send);
     if(cur_fork_status() == CK_FORK)
     {
