@@ -498,7 +498,7 @@ static TestResult *tcase_run_tfun_fork(SRunner * sr, TCase * tc, TF * tfun,
         clock_gettime(check_get_clockid(), &ts_end);
         tcase_run_checked_teardown(tc);
         send_duration_info(DIFF_IN_USEC(ts_start, ts_end));
-        exit(EXIT_SUCCESS);
+        return NULL;
     }
     else
     {
