@@ -362,43 +362,58 @@ void _mark_point(const char *file, int line)
     send_loc_info(file, line);
 }
 
+
+#if defined(HAVE_FORK) && HAVE_FORK==1
+#  define EXIT_IN_FAILURE() _exit(1)
+#else
+#  define EXIT_IN_FAILURE()
+#endif
+
+#define _ck_assert_failed_inner()\
+    char buf[BUFSIZ];\
+    const char *to_send;\
+\
+    send_loc_info(file, line);\
+\
+    /*\
+     * If a message was passed, format it with vsnprintf.\
+     * Otherwise, print the expression as is.\
+     */\
+    if(msg != NULL)\
+    {\
+        va_list ap;\
+        va_start(ap, msg);\
+        vsnprintf(buf, BUFSIZ, msg, ap);\
+        va_end(ap);\
+        to_send = buf;\
+    }\
+    else\
+    {\
+        to_send = expr;\
+    }\
+\
+    send_failure_info(to_send);\
+    if(cur_fork_status() == CK_FORK)\
+    {\
+      EXIT_IN_FAILURE();\
+    }\
+    else\
+    {\
+        longjmp(error_jmp_buffer, 1);\
+    }
+
 void _ck_assert_failed(const char *file, int line, const char *expr,
                        const char *msg, ...)
 {
-    char buf[BUFSIZ];
-    const char *to_send;
-
-    send_loc_info(file, line);
-
-    /*
-     * If a message was passed, format it with vsnprintf.
-     * Otherwise, print the expression as is.
-     */
-    if(msg != NULL)
-    {
-        va_list ap;
-        va_start(ap, msg);
-        vsnprintf(buf, BUFSIZ, msg, ap);
-        va_end(ap);
-        to_send = buf;
-    }
-    else
-    {
-        to_send = expr;
-    }
-
-    send_failure_info(to_send);
-    if(cur_fork_status() == CK_FORK)
-    {
-#if defined(HAVE_FORK) && HAVE_FORK==1
-        _exit(1);
-#endif /* HAVE_FORK */
-    }
-    else
-    {
-        longjmp(error_jmp_buffer, 1);
-    }
+   _ck_assert_failed_inner();
 }
+void _ck_assert_failed_ignore_printf_validation(const char *file, int line, const char *expr,
+                       const char *msg, ...)
+{
+   _ck_assert_failed_inner();
+}
+
+#undef EXIT_IN_FAILURE
 
 SRunner *srunner_create(Suite * s)
 {
