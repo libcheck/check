@@ -14,7 +14,7 @@ jobs:
     - name: install maxtex
       run: brew cask install mactex
     - name: install doc programs
-      run: brew install texi2html texinfo doxygen
+      run: brew install texi2html doxygen
     - name: install automake
       run: brew install automake
     - name: install pkg-config
@@ -37,7 +37,7 @@ jobs:
     - name: install maxtex
       run: brew cask install mactex
     - name: install doc programs
-      run: brew install texi2html texinfo doxygen
+      run: brew install texi2html doxygen
     - name: install automake
       run: brew install automake
     - name: install pkg-config
@@ -94,7 +94,7 @@ jobs:
     - name: install maxtex
       run: brew cask install mactex
     - name: install doc programs
-      run: brew install texi2html texinfo doxygen
+      run: brew install texi2html doxygen
     - name: install automake
       run: brew install automake
     - name: install pkg-config
@@ -115,7 +115,7 @@ jobs:
     - name: install maxtex
       run: brew cask install mactex
     - name: install doc programs
-      run: brew install texi2html texinfo doxygen
+      run: brew install texi2html doxygen
     - name: install automake
       run: brew install automake
     - name: install pkg-config
