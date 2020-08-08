@@ -11,6 +11,9 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
+    # Brew may not have permission to install its packages
+    - name: change brew install folder permissions
+      run: chmod a+rwx /usr/local/share/ || mkdir -p /usr/local/share/ -m a+rwx
     - name: install maxtex
       run: brew cask install mactex
     - name: install doc programs
@@ -34,6 +37,9 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
+    # Brew may not have permission to install its packages
+    - name: change brew install folder permissions
+      run: chmod a+rwx /usr/local/share/ || mkdir -p /usr/local/share/ -m a+rwx
     - name: install maxtex
       run: brew cask install mactex
     - name: install doc programs
@@ -57,6 +63,9 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
+    # Brew may not have permission to install its packages
+    - name: change brew install folder permissions
+      run: chmod a+rwx /usr/local/share/ || mkdir -p /usr/local/share/ -m a+rwx
     - name: install automake
       run: brew install automake
     - name: install pkg-config
@@ -74,6 +83,9 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
+    # Brew may not have permission to install its packages
+    - name: change brew install folder permissions
+      run: chmod a+rwx /usr/local/share/ || mkdir -p /usr/local/share/ -m a+rwx
     - name: install automake
       run: brew install automake
     - name: install pkg-config
@@ -91,6 +103,9 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
+    # Brew may not have permission to install its packages
+    - name: change brew install folder permissions
+      run: chmod a+rwx /usr/local/share/ || mkdir -p /usr/local/share/ -m a+rwx
     - name: install maxtex
       run: brew cask install mactex
     - name: install doc programs
@@ -112,6 +127,9 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
+    # Brew may not have permission to install its packages
+    - name: change brew install folder permissions
+      run: chmod a+rwx /usr/local/share/ || mkdir -p /usr/local/share/ -m a+rwx
     - name: install maxtex
       run: brew cask install mactex
     - name: install doc programs
