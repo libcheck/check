@@ -4,10 +4,10 @@
 # Prelude.
 AC_PREREQ([2.59])
 
-AC_INIT([Check], [0.15.1], [check-devel at lists dot sourceforge dot net])
+AC_INIT([Check], [0.15.2], [check-devel at lists dot sourceforge dot net])
 CHECK_MAJOR_VERSION=0
 CHECK_MINOR_VERSION=15
-CHECK_MICRO_VERSION=1
+CHECK_MICRO_VERSION=2
 CHECK_VERSION=$CHECK_MAJOR_VERSION.$CHECK_MINOR_VERSION.$CHECK_MICRO_VERSION
 
 # unique source file --- primitive safety check 

@@ -1,5 +1,8 @@
-In Development:
-# Mentioning Check 0.15.1 for now, to fix distcheck target until next release
+Fri Aug 7, 2020: Released Check 0.15.2
+  based on hash 4ed1ae13fdfd3033a83c06a6abd9276128944074
+
+* Fix fail* APIs, regression from 0.15.1
+  Issue #298
 
 
 Sun July 19, 2020: Released Check 0.15.1
