@@ -67,9 +67,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: add mingw to path
-      run: echo "C:\msys64\mingw64\bin" >> $GITHUB_PATH
+      run: echo "C:\msys64\mingw64\bin" >> %GITHUB_PATH%
     - name: add mingw to path
-      run: echo "C:\msys64\usr\bin" >> $GITHUB_PATH
+      run: echo "C:\msys64\usr\bin" >> %GITHUB_PATH%
     - name: autoreconf
       run: bash -c "autoreconf -i"
     - name: configure
