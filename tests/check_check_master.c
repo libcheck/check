@@ -908,7 +908,7 @@ void record_failure_line_num(int linenum)
   written = fwrite(string, 1, to_write, line_num_failures);
   if(written != to_write)
   {
-    fprintf(stderr, "%s:%d: Error in call to fwrite, wrote %zd instead of %zu:", __FILE__, __LINE__, written, to_write);
+    fprintf(stderr, "%s:%d: Error in call to fwrite, wrote " CK_FMT_ZD " instead of " CK_FMT_ZU ":", __FILE__, __LINE__, written, to_write);
     exit(1);
   }
 

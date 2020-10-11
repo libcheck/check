@@ -89,6 +89,16 @@
 #include <process.h>            /* getpid */
 #endif /* _MSC_VER */
 
+#ifdef _WIN32
+#define CK_FMT_ZU "%Iu"
+#define CK_FMT_ZD "%Id"
+#define CK_FMT_TD "%Id"
+#else
+#define CK_FMT_ZU "%zu"
+#define CK_FMT_ZD "%zd"
+#define CK_FMT_TD "%td"
+#endif
+
 /* defines size_t */
 #include <sys/types.h>
 
