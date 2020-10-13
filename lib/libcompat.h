@@ -89,6 +89,23 @@
 #include <process.h>            /* getpid */
 #endif /* _MSC_VER */
 
+/*
+ * On some not so old version of Visual Studio (< 2015), or with mingw-w64 not
+ * supporting POSIX printf family function, use the size prefix specifiers
+ * in msvcrt.dll. See the following link for the list of the size prefix
+ * specifiers:
+ * https://docs.microsoft.com/en-us/cpp/c-runtime-library/format-specification-syntax-printf-and-wprintf-functions?view=vs-2019
+ */
+#ifdef _WIN32
+#define CK_FMT_ZU "%Iu"
+#define CK_FMT_ZD "%Id"
+#define CK_FMT_TD "%Id"
+#else
+#define CK_FMT_ZU "%zu"
+#define CK_FMT_ZD "%zd"
+#define CK_FMT_TD "%td"
+#endif
+
 /* defines size_t */
 #include <sys/types.h>
 
