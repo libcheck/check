@@ -75,5 +75,8 @@ nice to eliminate these macros.
 
 Check is available packaged for the following operating systems:
 
+<div align="center">
+
 [![Packaging status](https://repology.org/badge/vertical-allrepos/check.svg)](https://repology.org/project/check/versions)
 
+</div>
