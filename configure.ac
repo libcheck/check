@@ -390,6 +390,8 @@ AC_CONFIG_FILES([check.pc
                  Makefile
                  checkmk/Makefile
 		 doc/Makefile
+    doc/man/Makefile
+    doc/man/man3/Makefile
 		 lib/Makefile
                  src/check.h
                  src/Makefile

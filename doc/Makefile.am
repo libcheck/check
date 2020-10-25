@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+SUBDIRS = man
+
 info_TEXINFOS = check.texi
 check_TEXINFOS = fdl.texi
 
