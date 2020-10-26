@@ -59,7 +59,7 @@ ENDFOREACH()
 #
 INSTALL(
     FILES
-        ${MAN3_PAGES}
+        ${CMAKE_CURRENT_BINARY_DIR}/suite_create.3
     DESTINATION
         ${CMAKE_INSTALL_MANDIR}/man3
     PERMISSIONS
