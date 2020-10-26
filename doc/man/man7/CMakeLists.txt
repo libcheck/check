@@ -26,6 +26,15 @@ SET(MAN7_PAGES
     libcheck.7
 )
 
+# Configure all of the section 7 man pages defined above.
+#
+# This command will process each of the man pages, setting
+# the project version and build date automatically.
+#
+FOREACH(MAN7_PAGE ${MAN7_PAGES})
+    CONFIGURE_FILE(${MAN7_PAGE}.in ${MAN7_PAGE} @ONLY)
+ENDFOREACH()
+
 # Install Section 7 Man Pages (Overview, Conventions, ...)
 #
 # This directive describes what, where, how, and when the

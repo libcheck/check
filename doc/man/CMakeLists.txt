@@ -20,5 +20,22 @@
 # Fifth Floor, Boston, MA  02110-1301  USA
 #
 
+# Define CMake variable for the current date.
+#
+# This command is a cross platform way of constructing a
+# string usable by the CONFIGURE_FILE CMake command, and
+# while limited beyond the simple functionality which it
+# provides here, it is exactly what we need.
+#
+# The LIBCHECK_BUILD_DATE variable is defined to be the
+# current (locale-dependent, not UTC) date formatted as an
+# ISO date string.
+#
+STRING(TIMESTAMP LIBCHECK_BUILD_DATE "%Y-%m-%d")
+
+# Process each of the following man page directories once we
+# have successfully configured the necessary variable(s)
+# defined above.
+#
 ADD_SUBDIRECTORY(man3)
 ADD_SUBDIRECTORY(man7)

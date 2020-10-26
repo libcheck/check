@@ -8,29 +8,19 @@
 .\" Back-Cover Texts.  A copy of the license is included in
 .\" the section entitled "GNU Free Documentation License".
 .\"
-.TH "suite_create" "3" "October 25, 2020" "0.15.2" "LibCheck"
+.TH "libcheck" "7" "@LIBCHECK_BUILD_DATE@" "@PROJECT_VERSION@" "LibCheck"
 .SH "PROLOG"
 This manual page is part of the Check Programmer's Manual.
 Additional information may be found at the Check Library
 home page, at https://libcheck.github.io/check/.
 .SH "NAME"
-suite_create
-\(em create test case container object
-.SH "SYNOPSIS"
-.LP
-.nf
-#include <check.h>
-.P
-Suite* suite_create(const char *name);
+libcheck
+\(em unit testing framework for C
 .SH "DESCRIPTION"
-The
-\fIsuite_create\fR()
-function returns a pointer to a heap-allocated test suite
-object.
-.SH "RETURN VALUE"
-Upon successful completion, the
-\fIsuite_create\fR()
-function returns a pointer containing the address of the
-heap-allocated test suite object. Otherwise, the function
-prints an error message to standard error indicating that
-something went wrong, and then returns a NULL pointer.
+Check is a unit testing framework for C. It features a
+simple interface for defining unit tests, putting little in
+the way of the developer. Tests are run in a separate
+address space, so Check can catch both assertion failures
+and code errors that cause segmentation faults or other
+signals. The output from unit tests can be used within
+source code editors and IDEs.

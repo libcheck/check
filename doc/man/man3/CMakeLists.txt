@@ -26,6 +26,15 @@ SET(MAN3_PAGES
     suite_create.3
 )
 
+# Configure all of the section 3 man pages defined above.
+#
+# This command will process each of the man pages, setting
+# the project version and build date automatically.
+#
+FOREACH(MAN3_PAGE ${MAN3_PAGES})
+    CONFIGURE_FILE(${MAN3_PAGE}.in ${MAN3_PAGE} @ONLY)
+ENDFOREACH()
+
 # Install Section 3 Man Pages (Library Calls)
 #
 # This directive describes what, where, how, and when the
