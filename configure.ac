@@ -386,18 +386,20 @@ AS_IF([test "x$AWK_PATH" = 'x*NO AWK*'],
 # Output files
 AC_CONFIG_HEADERS([config.h])
 
-AC_CONFIG_FILES([check.pc
-                 Makefile
-                 checkmk/Makefile
-		 doc/Makefile
+AC_CONFIG_FILES([
+    check.pc
+    Makefile
+    checkmk/Makefile
+    doc/Makefile
     doc/man/Makefile
     doc/man/man3/Makefile
     doc/man/man7/Makefile
-		 lib/Makefile
-                 src/check.h
-                 src/Makefile
-                 tests/Makefile
-		 tests/test_vars])
+    lib/Makefile
+    src/check.h
+    src/Makefile
+    tests/Makefile
+    tests/test_vars
+])
 
 AC_OUTPUT
 
