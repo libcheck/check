@@ -33,6 +33,11 @@ AC_SUBST(CHECK_MINOR_VERSION)
 AC_SUBST(CHECK_MICRO_VERSION)
 AC_SUBST(CHECK_VERSION)
 
+# The PROJECT_VERSION variable definition is required for
+# compatibility with the CMake configuration interface.
+#
+AC_SUBST([PROJECT_VERSION], $CHECK_VERSION)
+
 # Configure options.
 # allow `./configure --enable-silent-rules' and `make V=0'
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([no])])
@@ -386,15 +391,22 @@ AS_IF([test "x$AWK_PATH" = 'x*NO AWK*'],
 # Output files
 AC_CONFIG_HEADERS([config.h])
 
-AC_CONFIG_FILES([check.pc
-                 Makefile
-                 checkmk/Makefile
-		 doc/Makefile
-		 lib/Makefile
-                 src/check.h
-                 src/Makefile
-                 tests/Makefile
-		 tests/test_vars])
+AC_CONFIG_FILES([
+    check.pc
+    Makefile
+    checkmk/Makefile
+    doc/Makefile
+    doc/man/Makefile
+    doc/man/man3/Makefile
+    doc/man/man3/suite_create.3
+    doc/man/man7/Makefile
+    doc/man/man7/libcheck.7
+    lib/Makefile
+    src/check.h
+    src/Makefile
+    tests/Makefile
+    tests/test_vars
+])
 
 AC_OUTPUT
 
