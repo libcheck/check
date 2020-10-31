@@ -32,45 +32,51 @@ SET(MAN7_PAGES
 # the project version and build date automatically.
 #
 FOREACH(MAN7_PAGE ${MAN7_PAGES})
+    # Configure the man pages.
+    #
+    # The configuration of each man page involves only the
+    # addition of the library version number defined in the
+    # configure.ac file to each man page.
+    #
     CONFIGURE_FILE(${MAN7_PAGE}.in ${MAN7_PAGE} @ONLY)
-ENDFOREACH()
 
-# Install Section 7 Man Pages (Overview, Conventions, ...)
-#
-# This directive describes what, where, how, and when the
-# section 7 man pages should be installed. Specifically, the
-# ${CMAKE_INSTALL_MANDIR} variable provided by the
-# GNUInstallDirs module specifies the system-specific man
-# page installation directory, the permissions set the
-# desired installed file(s) permissions, the configurations
-# directive specifies that this directive applies for both
-# Debug and Release configurations, and the component
-# directive allows for the installation of only those items
-# belonging to the docs component.
-#
-# For example, to install only the 'docs' component, the
-# following command can be used after generating the project
-# build files.
-#
-#   $ cmake --install . --component docs
-#
-# This example assumes the project build files were
-# generated in the current working directory.
-#
-INSTALL(
-    FILES
-        ${CMAKE_CURRENT_BINARY_DIR}/libcheck.7
-    DESTINATION
-        ${CMAKE_INSTALL_MANDIR}/man7
-    PERMISSIONS
-        OWNER_READ
-        OWNER_WRITE
-        GROUP_READ
-        WORLD_READ
-    CONFIGURATIONS
-        Debug
-        Release
-    COMPONENT
-        docs
-    OPTIONAL
-)
+    # Install Section 7 Man Pages (Overview, Conventions, ...)
+    #
+    # This directive describes what, where, how, and when the
+    # section 7 man pages should be installed. Specifically, the
+    # ${CMAKE_INSTALL_MANDIR} variable provided by the
+    # GNUInstallDirs module specifies the system-specific man
+    # page installation directory, the permissions set the
+    # desired installed file(s) permissions, the configurations
+    # directive specifies that this directive applies for both
+    # Debug and Release configurations, and the component
+    # directive allows for the installation of only those items
+    # belonging to the docs component.
+    #
+    # For example, to install only the 'docs' component, the
+    # following command can be used after generating the project
+    # build files.
+    #
+    #   $ cmake --install . --component docs
+    #
+    # This example assumes the project build files were
+    # generated in the current working directory.
+    #
+    INSTALL(
+        FILES
+            ${CMAKE_CURRENT_BINARY_DIR}/${MAN7_PAGE}
+        DESTINATION
+            ${CMAKE_INSTALL_MANDIR}/man7
+        PERMISSIONS
+            OWNER_READ
+            OWNER_WRITE
+            GROUP_READ
+            WORLD_READ
+        CONFIGURATIONS
+            Debug
+            Release
+        COMPONENT
+            docs
+        OPTIONAL
+    )
+ENDFOREACH()

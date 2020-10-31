@@ -38,19 +38,6 @@ AC_SUBST(CHECK_VERSION)
 #
 AC_SUBST([PROJECT_VERSION], $CHECK_VERSION)
 
-# Perform the system dependent wizardry required to get a
-# string representation of the current date in ISO format,
-# i.e... YYYY-MM-DD.
-#
-AX_BUILD_DATE_EPOCH([LIBCHECK_BUILD_DATE_], [%F], AC_MSG_ERROR([Could not set @LIBCHECK_BUILD_DATE_@]))
-
-# Define the substitution variable to use for configuring
-# the library man pages. The date on the library man page
-# headers is now automatically updated to reflect when the
-# library was built.
-#
-AC_SUBST([LIBCHECK_BUILD_DATE], $LIBCHECK_BUILD_DATE_)
-
 # Configure options.
 # allow `./configure --enable-silent-rules' and `make V=0'
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([no])])

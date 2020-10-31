@@ -8,7 +8,7 @@
 .\" Back-Cover Texts.  A copy of the license is included in
 .\" the section entitled "GNU Free Documentation License".
 .\"
-.TH "libcheck" "7" "@LIBCHECK_BUILD_DATE@" "@PROJECT_VERSION@" "LibCheck"
+.TH "libcheck" "7" "" "@PROJECT_VERSION@" "LibCheck"
 .SH "PROLOG"
 This manual page is part of the Check Programmer's Manual.
 Additional information may be found at the Check Library
