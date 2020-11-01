@@ -78,12 +78,6 @@ set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT
 include(GNUInstallDirs)
 
 ###############################################################################
-# Follow ISO C99 standard
-# set(CMAKE_C_STANDARD 99)
-# set(CMAKE_C_STANDARD_REQUIRED ON)
-# set(CMAKE_C_EXTENSIONS ON)          # Use GNU extensions and POSIX standard
-
-###############################################################################
 # Option
 option(CHECK_ENABLE_TESTS
   "Deprecated: Enable the compilation and running of Check's unit tests" ON)
@@ -108,22 +102,6 @@ if(CHECK_ENABLE_TIMEOUT_TESTS)
 else(CHECK_ENABLE_TIMEOUT_TESTS)
   add_definitions(-DTIMEOUT_TESTS_ENABLED=0)
 endif(CHECK_ENABLE_TIMEOUT_TESTS)
-###############################################################################
-# Check system and architecture
-# if(WIN32)
-#   if(MSVC60)
-#   set(WINVER 0x0400)
-#   else()
-#   set(WINVER 0x0600)
-#   endif()
-#   set(_WIN32_WINNT ${WINVER})
-# endif(WIN32)
-
-# if(MSVC)
-#   add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
-#   add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-#   add_definitions(-D_CRT_NONSTDC_NO_WARNINGS)
-# endif(MSVC)
 
 ###############################################################################
 include(CheckCSourceCompiles)
@@ -245,14 +223,6 @@ if(HAVE_REGEX_H AND HAVE_REGCOMP AND HAVE_REGEXEC)
   add_definitions(-DENABLE_REGEX=1)
   set(ENABLE_REGEX 1)
 endif()
-
-# if (HAVE_PTHREAD)
-#   check_c_compiler_flag("-pthread" HAVE_PTHREADS_FLAG)
-#   if (HAVE_PTHREADS_FLAG)
-#     add_definitions("-pthread")
-#     add_link_options("-pthread")
-#   endif()
-# endif()
 
 INCLUDE(FindThreads)
 
