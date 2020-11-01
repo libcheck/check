@@ -167,7 +167,9 @@ ck_check_include_file("unistd.h" HAVE_UNISTD_H)
 ck_check_include_file("pthread.h" HAVE_PTHREAD)
 
 # check if we have windows.h on native windows environments
-ck_check_include_file("windows.h" HAVE_WINDOWS_H)
+IF(WIN32)
+    ck_check_include_file("windows.h" HAVE_WINDOWS_H)
+ENDIF()
 
 ###############################################################################
 # Check functions
@@ -263,9 +265,6 @@ FIND_PACKAGE(Threads
 
 IF(Threads_FOUND AND CMAKE_USE_PTHREADS_INIT)
     SET(HAVE_PTHREAD 1)
-    
-    # add_definitions("-pthread")
-    # add_link_options("-pthread")
 ENDIF()
 
 MESSAGE(STATUS "Threads library found: ${Threads_FOUND}")
@@ -534,7 +533,7 @@ add_subdirectory(checkmk)
 if(BUILD_TESTING AND NOT THIS_IS_SUBPROJECT)
   add_subdirectory(tests)
   add_test(NAME check_check COMMAND check_check)
-  #add_test(NAME check_check_export COMMAND check_check_export)
+  add_test(NAME check_check_export COMMAND check_check_export)
 
   # Only offer to run shell scripts if we may have a working interpreter
   if(UNIX OR MINGW OR MSYS)

@@ -39,8 +39,37 @@ ADD_EXECUTABLE(check_check
     check_list.c
 )
 
+ADD_EXECUTABLE(check_check_export
+    check_check_sub.c
+    check_check_master.c
+    check_check_log.c
+    check_check_fork.c
+    check_check_export_main.c
+)
+
+ADD_EXECUTABLE(ex_output
+    ex_output.c
+)
+
+ADD_EXECUTABLE(check_nofork
+    check_nofork.c
+)
+
+ADD_EXECUTABLE(check_nofork_teardown
+    check_nofork_teardown.c
+)
+
+ADD_EXECUTABLE(check_set_max_msg_size
+    check_set_max_msg_size.c
+)
+
 SET(CHECK_TESTS
     check_check
+    check_check_export
+    ex_output
+    check_nofork
+    check_nofork_teardown
+    check_set_max_msg_size
 )
 
 SET_TARGET_PROPERTIES(${CHECK_TESTS}
