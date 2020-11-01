@@ -79,9 +79,9 @@ include(GNUInstallDirs)
 
 ###############################################################################
 # Follow ISO C99 standard
-set(CMAKE_C_STANDARD 99)
-set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_C_EXTENSIONS ON)          # Use GNU extensions and POSIX standard
+# set(CMAKE_C_STANDARD 99)
+# set(CMAKE_C_STANDARD_REQUIRED ON)
+# set(CMAKE_C_EXTENSIONS ON)          # Use GNU extensions and POSIX standard
 
 ###############################################################################
 # Option
@@ -110,20 +110,20 @@ else(CHECK_ENABLE_TIMEOUT_TESTS)
 endif(CHECK_ENABLE_TIMEOUT_TESTS)
 ###############################################################################
 # Check system and architecture
-if(WIN32)
-  if(MSVC60)
-  set(WINVER 0x0400)
-  else()
-  set(WINVER 0x0600)
-  endif()
-  set(_WIN32_WINNT ${WINVER})
-endif(WIN32)
+# if(WIN32)
+#   if(MSVC60)
+#   set(WINVER 0x0400)
+#   else()
+#   set(WINVER 0x0600)
+#   endif()
+#   set(_WIN32_WINNT ${WINVER})
+# endif(WIN32)
 
-if(MSVC)
-  add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
-  add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-  add_definitions(-D_CRT_NONSTDC_NO_WARNINGS)
-endif(MSVC)
+# if(MSVC)
+#   add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
+#   add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+#   add_definitions(-D_CRT_NONSTDC_NO_WARNINGS)
+# endif(MSVC)
 
 ###############################################################################
 include(CheckCSourceCompiles)
@@ -244,14 +244,33 @@ if(HAVE_REGEX_H AND HAVE_REGCOMP AND HAVE_REGEXEC)
   set(ENABLE_REGEX 1)
 endif()
 
-if (HAVE_PTHREAD)
-  check_c_compiler_flag("-pthread" HAVE_PTHREADS_FLAG)
-  if (HAVE_PTHREADS_FLAG)
-    add_definitions("-pthread")
-    add_link_options("-pthread")
-  endif()
-endif()
+# if (HAVE_PTHREAD)
+#   check_c_compiler_flag("-pthread" HAVE_PTHREADS_FLAG)
+#   if (HAVE_PTHREADS_FLAG)
+#     add_definitions("-pthread")
+#     add_link_options("-pthread")
+#   endif()
+# endif()
 
+INCLUDE(FindThreads)
+
+SET(THREADS_PREFER_PTHREAD_FLAG ON)
+MESSAGE(STATUS "Prefer -pthread: ${THREADS_PREFER_PTHREAD_FLAG}")
+
+FIND_PACKAGE(Threads
+    REQUIRED
+)
+
+IF(Threads_FOUND AND CMAKE_USE_PTHREADS_INIT)
+    SET(HAVE_PTHREAD 1)
+    
+    # add_definitions("-pthread")
+    # add_link_options("-pthread")
+ENDIF()
+
+MESSAGE(STATUS "Threads library found: ${Threads_FOUND}")
+MESSAGE(STATUS "PThreads compatible: ${CMAKE_USE_PTHREADS_INIT}")
+MESSAGE(STATUS "Win32 Threads: ${CMAKE_USE_WIN32_THREADS_INIT}")
 
 ###############################################################################
 # Check defines
@@ -405,8 +424,11 @@ endif (HAVE_SUBUNIT)
 
 ###############################################################################
 # Generate "config.h" from "cmake/config.h.in"
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in
-  ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+# Param @ONLY not used on purpose!
+CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/cmake/config.h.in config.h)
+
+# configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in
+#   ${CMAKE_CURRENT_BINARY_DIR}/config.h)
   # Param @ONLY not used on purpose!
 include_directories(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
 add_definitions(-DHAVE_CONFIG_H)
@@ -425,13 +447,26 @@ set(CONFIG_HEADER ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 #
 # When converting to CMake we also want to abandon the m4 macros.
 #
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_stdint.h.in
-  ${CMAKE_CURRENT_BINARY_DIR}/check_stdint.h @ONLY)
-if(NOT THIS_IS_SUBPROJECT)
-  install(
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/check_stdint.h
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-endif()
+CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/cmake/check_stdint.h.in check_stdint.h @ONLY)
+
+IF(NOT THIS_IS_SUBPROJECT)
+    INSTALL(
+        FILES
+            check_stdint.h
+        DESTINATION
+            ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+ENDIF()
+
+# configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_stdint.h.in
+#   ${CMAKE_CURRENT_BINARY_DIR}/check_stdint.h @ONLY)
+
+
+# if(NOT THIS_IS_SUBPROJECT)
+#   install(
+#     FILES ${CMAKE_CURRENT_BINARY_DIR}/check_stdint.h
+#     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+# endif()
 
 ###############################################################################
 # Generate "check.pc", the package config (pkgconfig) file for libtool
@@ -499,7 +534,7 @@ add_subdirectory(checkmk)
 if(BUILD_TESTING AND NOT THIS_IS_SUBPROJECT)
   add_subdirectory(tests)
   add_test(NAME check_check COMMAND check_check)
-  add_test(NAME check_check_export COMMAND check_check_export)
+  #add_test(NAME check_check_export COMMAND check_check_export)
 
   # Only offer to run shell scripts if we may have a working interpreter
   if(UNIX OR MINGW OR MSYS)
@@ -579,3 +614,4 @@ endif()
 
 # vim: shiftwidth=2:softtabstop=2:tabstop=2:expandtab:autoindent
 
+MESSAGE(STATUS "CMake Version: ${CMAKE_VERSION}")
