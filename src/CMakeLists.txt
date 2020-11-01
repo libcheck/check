@@ -110,7 +110,7 @@ endif(NOT HAVE_SNPRINTF)
 
 if(NOT HAVE_DECL_STRDUP AND NOT HAVE__STRDUP)
   target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/strdup.c)
-  target_sources(checkShared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/snprintf.c)
+  target_sources(checkShared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/strdup.c)
 endif(NOT HAVE_DECL_STRDUP AND NOT HAVE__STRDUP)
 
 if(NOT HAVE_DECL_STRSIGNAL)
