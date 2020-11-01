@@ -309,6 +309,7 @@ ENDIF()
 #add_library(Check::checkShared ALIAS checkShared)
 
 # Add parts of libcompat as required
+
 # target_sources(check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/fpclassify.c)
 #target_sources(checkShared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/fpclassify.c)
 
