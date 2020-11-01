@@ -23,7 +23,7 @@ ADD_LIBRARY(compat STATIC
     libcompat.c
     $<$<NOT:$<BOOL:${HAVE_LIBRT}>>:clock_gettime.c timer_create.c timer_delete.c timer_settime.c>
     $<$<NOT:$<BOOL:${HAVE_GETLINE}>>:getline.c>
-    $<$<NOT:$<BOOL:${HAVE_GETTIMEOFDATE}>>:gettimeofday.c>
+    $<$<NOT:$<BOOL:${HAVE_GETTIMEOFDAY}>>:gettimeofday.c>
     $<$<NOT:$<BOOL:${HAVE_DECL_LOCALTIME_R}>>:localtime_r.c>
     $<$<NOT:$<BOOL:${HAVE_MALLOC}>>:malloc.c>
     $<$<NOT:$<BOOL:${HAVE_REALLOC}>>:realloc.c>
