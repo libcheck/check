@@ -295,9 +295,9 @@ CK_DLL_EXP int timer_delete(timer_t timerid);
  * snprintf (or its variants) should be replaced with
  * the C99 compliant version in libcompat.
  */
-#if HAVE_CONFIG_H
+//#if HAVE_CONFIG_H
 #include <config.h>
-#endif
+//#endif
 #if HAVE_STDARG_H
 #include <stdarg.h>
 
