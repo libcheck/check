@@ -2677,7 +2677,7 @@ END_TEST
 
 /*
  * The following test will leak memory because it is calling
- * APIs inproperly. The leaked memory cannot be free'd, as
+ * APIs improperly. The leaked memory cannot be free'd, as
  * the methods to do so are static. (No user of Check should
  * call them directly).
  */
