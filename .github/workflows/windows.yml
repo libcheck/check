@@ -12,6 +12,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: microsoft/setup-msbuild@v1.0.0
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
     - name: echo MSBuild
       run: msbuild -version
     - name: mkdir build
@@ -68,8 +70,12 @@ jobs:
     - uses: actions/checkout@v2
     - name: add mingw to path
       run: echo "::add-path::C:\msys64\mingw64\bin"
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
     - name: add mingw to path
       run: echo "::add-path::C:\msys64\usr\bin"
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
     - name: autoreconf
       run: bash -c "autoreconf -i"
     - name: configure
