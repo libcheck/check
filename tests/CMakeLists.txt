@@ -93,3 +93,18 @@ target_link_libraries(check_nofork_teardown check)
 set(CHECK_SET_MAX_MSG_SIZE_SOURCES check_set_max_msg_size.c)
 add_executable(check_set_max_msg_size ${CHECK_SET_MAX_MSG_SIZE_SOURCES})
 target_link_libraries(check_set_max_msg_size check)
+
+set(CHECK_MEM_LEAKS_SOURCES
+  check_mem_leaks.c
+  check_check_log.c
+  check_check_limit.c
+  check_check_fixture.c
+  check_check_fork.c
+  check_check_exit.c
+  check_check_selective.c
+  check_check_sub.c
+  check_check_master.c
+  check_check_tags.c
+)
+add_executable(check_mem_leaks ${CHECK_MEM_LEAKS_SOURCES})
+target_link_libraries(check_mem_leaks check)
