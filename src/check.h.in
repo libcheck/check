@@ -469,7 +469,7 @@ static void __testname ## _fn (int _i CK_ATTRIBUTE_UNUSED)
 #define fail_unless(expr, ...) \
   (expr) ? \
     _mark_point(__FILE__, __LINE__) : \
-    _ck_assert_failed(__FILE__, __LINE__, "Assertion '"#expr"' failed" , ## __VA_ARGS__, NULL)
+    _ck_assert_failed(__FILE__, __LINE__, "Assertion '"#expr"' failed" , ## __VA_ARGS__)
 
 /*
  * Fail the test case if expr is false
@@ -483,7 +483,7 @@ static void __testname ## _fn (int _i CK_ATTRIBUTE_UNUSED)
  */
 #define fail_if(expr, ...)\
   (expr) ? \
-     _ck_assert_failed(__FILE__, __LINE__, "Failure '"#expr"' occurred" , ## __VA_ARGS__, NULL) \
+     _ck_assert_failed(__FILE__, __LINE__, "Failure '"#expr"' occurred" , ## __VA_ARGS__) \
      : _mark_point(__FILE__, __LINE__)
 
 /*
@@ -491,7 +491,7 @@ static void __testname ## _fn (int _i CK_ATTRIBUTE_UNUSED)
  *
  * This call is deprecated.
  */
-#define fail(...) _ck_assert_failed(__FILE__, __LINE__, "Failed" , ## __VA_ARGS__, NULL)
+#define fail(...) _ck_assert_failed(__FILE__, __LINE__, "Failed" , ## __VA_ARGS__)
 
 /*
  * This is called whenever an assertion fails.
