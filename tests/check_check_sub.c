@@ -778,7 +778,7 @@ START_TEST(test_ck_assert_float_eq_tol)
   y*=10.0f;
   t*=10.0f;
   ck_assert_float_eq_tol(x, y, t);
-  t/=10.0f;
+  t/=10.1f;
   record_failure_line_num(__LINE__);
   ck_assert_float_eq_tol(x, y, t);
 }
@@ -1294,7 +1294,7 @@ START_TEST(test_ck_assert_double_eq_tol)
   y*=10;
   t*=10;
   ck_assert_double_eq_tol(x, y, t);
-  t/=10;
+  t/=10.1;
   record_failure_line_num(__LINE__);
   ck_assert_double_eq_tol(x, y, t);
 }
@@ -1812,7 +1812,7 @@ START_TEST(test_ck_assert_ldouble_eq_tol)
   y*=10.0l;
   t*=10.0l;
   ck_assert_ldouble_eq_tol(x, y, t);
-  t/=10.0l;
+  t/=10.1l;
   record_failure_line_num(__LINE__);
   ck_assert_ldouble_eq_tol(x, y, t);
 }
