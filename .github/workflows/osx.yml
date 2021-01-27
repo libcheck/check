@@ -15,7 +15,7 @@ jobs:
     - name: change brew install folder permissions
       run: sudo chmod -R a+rwx /usr/local/share/ || mkdir -p /usr/local/share/ -m a+rwx
     - name: install maxtex
-      run: brew cask install mactex
+      run: brew install --cask mactex
     - name: install doc programs
       run: brew install texi2html doxygen
     - name: install automake
@@ -41,7 +41,7 @@ jobs:
     - name: change brew install folder permissions
       run: sudo chmod -R a+rwx /usr/local/share/ || mkdir -p /usr/local/share/ -m a+rwx
     - name: install maxtex
-      run: brew cask install mactex
+      run: brew install --cask mactex
     - name: install doc programs
       run: brew install texi2html doxygen
     - name: install automake
@@ -107,7 +107,7 @@ jobs:
     - name: change brew install folder permissions
       run: sudo chmod -R a+rwx /usr/local/share/ || mkdir -p /usr/local/share/ -m a+rwx
     - name: install maxtex
-      run: brew cask install mactex
+      run: brew install --cask mactex
     - name: install doc programs
       run: brew install texi2html doxygen
     - name: install automake
@@ -131,7 +131,7 @@ jobs:
     - name: change brew install folder permissions
       run: sudo chmod -R a+rwx /usr/local/share/ || mkdir -p /usr/local/share/ -m a+rwx
     - name: install maxtex
-      run: brew cask install mactex
+      run: brew install --cask mactex
     - name: install doc programs
       run: brew install texi2html doxygen
     - name: install automake
