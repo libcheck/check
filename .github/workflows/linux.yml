@@ -158,7 +158,7 @@ jobs:
     - name: create configure
       run: autoreconf -i
     - name: configure
-      run: scan-build ./configure --enable-snprintf-replacement --enable-timer-replacement --disable-build-docs
+      run: scan-build ./configure --enable-timer-replacement --disable-build-docs
     - name: make
       run: scan-build -o clang make 
     - name: check for issues
