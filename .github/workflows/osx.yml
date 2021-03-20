@@ -98,30 +98,6 @@ jobs:
       run: make
     - name: make check
       run: make check
-
-  build_osx_autotools_docs:
-    runs-on: macos-latest
-    steps:
-    - uses: actions/checkout@v2
-    # Brew may not have permission to install its packages
-    - name: change brew install folder permissions
-      run: sudo chmod -R a+rwx /usr/local/share/ || mkdir -p /usr/local/share/ -m a+rwx
-    - name: install maxtex
-      run: brew install --cask mactex
-    - name: install doc programs
-      run: brew install texi2html doxygen
-    - name: install automake
-      run: brew install automake
-    - name: install pkg-config
-      run: brew install pkgconfig
-    - name: create configure
-      run: autoreconf -i
-    - name: configure
-      run: ./configure
-    - name: make docs
-      run: make doc/check_html
-    - name: make doxygen 
-      run: make doc/doxygen
       
   build_osx_autotools_example:
     runs-on: macos-latest
