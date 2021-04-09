@@ -47,6 +47,8 @@ struct Suite
 {
     const char *name;
     List *tclst;                /* List of test cases */
+    List *unch_sflst;
+    List *unch_tflst;
 };
 
 typedef struct Fixture
