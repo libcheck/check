@@ -223,7 +223,7 @@ void tr_xmlprint(FILE * file, TestResult * tr,
             tr->duration < 0 ? -1 : tr->duration / US_PER_SEC,
             tr->duration < 0 ? 0 : tr->duration % US_PER_SEC);
     fprintf(file, "      <description>");
-    fprint_xml_esc(file, tr->tcname);
+    fprint_xml_esc(file, tr->tc->name);
     fprintf(file, "</description>\n");
     fprintf(file, "      <message>");
     fprint_xml_esc(file, tr->msg);
@@ -231,6 +231,77 @@ void tr_xmlprint(FILE * file, TestResult * tr,
     fprintf(file, "    </test>\n");
 
     free(path_name);
+}
+
+void tr_junitprint(FILE * file, TestResult * tr,
+                 enum print_output print_mode CK_ATTRIBUTE_UNUSED)
+{
+    char status[10];
+    char type[10];
+    char *path_name = NULL;
+    char *file_name = NULL;
+    char *slash = NULL;
+    switch (tr->rtype)
+    {
+        case CK_PASS:
+            snprintf(status, sizeof(status), "%s", "success");
+            break;
+        case CK_FAILURE:
+            snprintf(status, sizeof(status), "%s", "failure");
+            break;
+        case CK_ERROR:
+            snprintf(status, sizeof(status), "%s", "error");
+            break;
+        case CK_TEST_RESULT_INVALID:
+        default:
+            abort();
+            break;
+    }
+
+    if(tr->file)
+    {
+        slash = strrchr(tr->file, '/');
+        if(slash == NULL)
+        {
+            slash = strrchr(tr->file, '\\');
+        }
+
+        if(slash == NULL)
+        {
+            path_name = strdup(".");
+            file_name = tr->file;
+        }
+        else
+        {
+            path_name = strdup(tr->file);
+            path_name[slash - tr->file] = 0;    /* Terminate the temporary string. */
+            file_name = slash + 1;
+        }
+    }
+
+    fprintf(file, "    <testcase"
+                  " classname=\"");
+    fprint_xml_esc(file, tr->tc->name);
+    fprintf(file,
+            "\""
+            " name=\"%s\""
+            ">\n",
+            tr->tname);
+
+    if (tr->rtype == CK_FAILURE || tr->rtype == CK_ERROR) {
+          fprintf(file, "      <%s message=\"", status);
+          fprint_xml_esc(file, tr->msg);
+          fprintf(file, "\">\n");
+          fprintf(file, "        ");
+          fprint_xml_esc(file, tr->tc->name);
+          fprintf(file, ":%s:%d\n", tr->tname, tr->iter);
+          fprintf(file, "        %s:%d\n", file_name, tr->line);
+          fprintf(file, "        ");
+          fprint_xml_esc(file, tr->msg);
+          fprintf(file, "\n");
+          fprintf(file, "      </%s>\n", status);
+    }
+    fprintf(file, "    </testcase>\n");
 }
 
 enum print_output get_env_printmode(void)

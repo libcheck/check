@@ -22,6 +22,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <check.h>
 #if ENABLE_SUBUNIT
 #include <subunit/child.h>
@@ -61,6 +62,27 @@ const char *srunner_log_fname(SRunner * sr)
         return sr->log_fname;
 
     return getenv("CK_LOG_FILE_NAME");
+}
+
+enum xml_format srunner_xml_format(SRunner * sr)
+{
+    // if the format as been explicitly set already via
+    // `srunner_set_xml_format`, then use that value
+    if (sr->xml_format != CK_XML_FORMAT_UNSPECIFIED) 
+        return sr->xml_format;
+
+    // junit is the only value of CK_XML_FORMAT_NAME that will
+    // return something other than CK_XML_FORMAT_DEFAULT
+    const char *format_name = getenv("CK_XML_FORMAT_NAME");
+    if (format_name && strcmp(format_name, "junit") == 0)
+        return CK_XML_FORMAT_JUNIT;
+
+    return CK_XML_FORMAT_DEFAULT;
+}
+
+void srunner_set_xml_format(SRunner * sr, enum xml_format format)
+{
+    sr->xml_format = format;  
 }
 
 
@@ -337,6 +359,65 @@ void xml_lfun(SRunner * sr CK_ATTRIBUTE_UNUSED, FILE * file,
 
 }
 
+void junit_lfun(SRunner * sr CK_ATTRIBUTE_UNUSED, FILE * file,
+              enum print_output printmode CK_ATTRIBUTE_UNUSED, void *obj,
+              enum cl_event evt)
+{
+    // we're only interested in the end of the full run.
+    if (evt != CLEND_SR) return;
+
+    TestResult *tr;
+    Suite *s;
+    TestStats stats;
+
+    fprintf(file, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+    fprintf(file,
+            "<testsuites"
+            " tests=\"%d\""
+            " errors=\"%d\""
+            " failures=\"%d\""
+            ">\n",
+            sr->stats->n_checked, sr->stats->n_errors, sr->stats->n_failed);
+
+    // iterate over the suites
+    for (check_list_front(sr->slst); !check_list_at_end(sr->slst); check_list_advance(sr->slst)) {
+        s = (Suite*) check_list_val(sr->slst);
+
+        // calculate the stats
+        stats.n_checked = stats.n_errors = stats.n_failed = 0;
+        for (check_list_front(sr->resultlst); !check_list_at_end(sr->resultlst);
+             check_list_advance(sr->resultlst)) {
+            tr = (TestResult *)check_list_val(sr->resultlst);
+            if (tr->tc->s != s)
+                continue;
+            stats.n_checked++;
+            if (tr->rtype == CK_FAILURE)
+                stats.n_failed++;
+            else if (tr->rtype == CK_ERROR)
+                stats.n_errors++;
+        }
+
+        fprintf(file, "  <testsuite name=\"");
+        fprint_xml_esc(file, s->name);
+        fprintf(file,
+                "\""
+                " tests=\"%d\""
+                " errors=\"%d\""
+                " failures=\"%d\""
+                ">\n",
+                stats.n_checked, stats.n_errors, stats.n_failed);
+        for (check_list_front(sr->resultlst); !check_list_at_end(sr->resultlst);
+             check_list_advance(sr->resultlst)) {
+          tr = (TestResult *)check_list_val(sr->resultlst);
+          if (tr->tc->s != s)
+            continue;
+          tr_junitprint(file, tr, CK_VERBOSE);
+        }
+        fprintf(file, "  </testsuite>\n");
+    }
+    fprintf(file, "</testsuites>\n");
+}
+
 void tap_lfun(SRunner * sr CK_ATTRIBUTE_UNUSED, FILE * file,
               enum print_output printmode CK_ATTRIBUTE_UNUSED, void *obj,
               enum cl_event evt)
@@ -372,7 +453,7 @@ void tap_lfun(SRunner * sr CK_ATTRIBUTE_UNUSED, FILE * file,
             tr = (TestResult *)obj;
             fprintf(file, "%s %d - %s:%s:%s: %s\n",
                     tr->rtype == CK_PASS ? "ok" : "not ok", num_tests_run,
-                    tr->file, tr->tcname, tr->tname, tr->msg);
+                    tr->file, tr->tc->name, tr->tname, tr->msg);
             fflush(file);
             break;
         default:
@@ -520,7 +601,10 @@ void srunner_init_logging(SRunner * sr, enum print_output print_mode)
     f = srunner_open_xmlfile(sr);
     if(f)
     {
-        srunner_register_lfun(sr, f, f != stdout, xml_lfun, print_mode);
+        if (srunner_xml_format(sr) == CK_XML_FORMAT_JUNIT) 
+            srunner_register_lfun(sr, f, f != stdout, junit_lfun, print_mode);
+        else
+            srunner_register_lfun(sr, f, f != stdout, xml_lfun, print_mode);
     }
     f = srunner_open_tapfile(sr);
     if(f)

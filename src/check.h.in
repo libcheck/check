@@ -2262,6 +2262,48 @@ CK_DLL_EXP int CK_EXPORT srunner_has_tap(SRunner * sr);
 CK_DLL_EXP const char *CK_EXPORT srunner_tap_fname(SRunner * sr);
 
 /**
+ * enum describing the specific XML format used for XML logging
+ */
+enum xml_format {
+    CK_XML_FORMAT_UNSPECIFIED,
+    CK_XML_FORMAT_DEFAULT,      // the default (original) format
+    CK_XML_FORMAT_JUNIT,        // output in JUnit compatible XML
+};
+
+/**
+ * Returns the XML format used if XML is to be logged.
+ *
+ * This value can be explicitly set via `srunner_set_xml_format` or can
+ * be set via the CK_XML_FORMAT_NAME environment variable.  
+ *
+ * @return CK_XML_FORMAT_DEFAULT unless the format is explicitly set via
+ *         `srunner_set_xml_format(sr, CK_XML_FORMAT_JUNIT)` or
+ *         `getenv("CK_XML_FORMAT_NAME")` returns "unit"
+ *
+ * @param sr suite runner to check
+ *
+ * @since 0.15.3.
+ */
+CK_DLL_EXP enum xml_format CK_EXPORT srunner_xml_format(SRunner * sr);
+
+/**
+ * Set the suite runner to output the result in an XML format compatible
+ * with JUnit's XML format.
+ *
+ * Note: XML format setting is an initialize only operation -- it should
+ * be done immediately after SRunner creation, and the XML format can't be
+ * changed after being set.
+ *
+ * This setting does not afffect the other log output types.
+ *
+ * @param sr suite runner to log results of in XML format
+ * @param format the xml_format to use
+ *
+ * @since 0.15.3
+*/
+CK_DLL_EXP void CK_EXPORT srunner_set_xml_format(SRunner * sr, enum xml_format format);
+
+/**
  * Enum describing the current fork usage.
  */
 enum fork_status

@@ -156,6 +156,7 @@ TCase *tcase_create(const char *name)
     tc->unch_tflst = check_list_create();
     tc->ch_tflst = check_list_create();
     tc->tags = check_list_create();
+    tc->s = NULL;
 
     return tc;
 }
@@ -246,6 +247,7 @@ void suite_add_tcase(Suite * s, TCase * tc)
     {
         return;
     }
+    tc->s = s;
 
     check_list_add_end(s->tclst, tc);
 }
@@ -531,7 +533,7 @@ static void tr_init(TestResult * tr)
     tr->rtype = CK_TEST_RESULT_INVALID;
     tr->msg = NULL;
     tr->file = NULL;
-    tr->tcname = NULL;
+    tr->tc = NULL;
     tr->tname = NULL;
     tr->duration = -1;
 }
@@ -571,7 +573,7 @@ enum ck_result_ctx tr_ctx(TestResult * tr)
 
 const char *tr_tcname(TestResult * tr)
 {
-    return tr->tcname;
+    return tr->tc->name;
 }
 
 static enum fork_status _fstat = CK_FORK;

@@ -1930,6 +1930,8 @@ of to a file.
 @findex srunner_set_xml
 @findex srunner_has_xml
 @findex srunner_xml_fname
+@findex srunner_xml_format
+@findex srunner_set_xml_format
 The log can also be written in XML.  The following functions define
 the interface for XML logs:
 @example
@@ -1937,6 +1939,8 @@ the interface for XML logs:
 void srunner_set_xml (SRunner *sr, const char *fname);
 int srunner_has_xml (SRunner *sr);
 const char *srunner_xml_fname (SRunner *sr);
+enum xml_format srunner_xml_format(SRunner * sr);
+void srunner_set_xml_format(SRunner * sr, enum xml_format format);
 @end verbatim
 @end example
 
@@ -2047,6 +2051,59 @@ of to a file.
 If both plain text and XML log files are specified, by any of above methods,
 then check will log to both files. In other words logging in plain text and XML
 format simultaneously is supported.
+
+JUnit Support is also available.  It is enabled  by a call to 
+@code{srunner_set_xml_format(CK_XML_FORMAT_JUNIT)} before the tests are run. 
+It can also be enabled by environment variable as well.  It is enabled by setting the
+@code{CK_XML_FORMAT_NAME} environment variable to @code{junit}.
+
+Here is an example of the JUnit xml format:
+@example
+@verbatim
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="8" errors="1" failures="4">
+  <testsuite name="S1" tests="3" errors="1" failures="1">
+    <testcase classname="Core" name="test_pass">
+    </testcase>
+    <testcase classname="Core" name="test_fail">
+      <failure message="Failure">
+        Core:test_fail:0
+        ex_output.c:37
+        Failure
+      </failure>
+    </testcase>
+    <testcase classname="Core" name="test_exit">
+      <error message="Early exit with return value 1">
+        Core:test_exit:0
+        ex_output.c:46
+        Early exit with return value 1
+      </error>
+    </testcase>
+  </testsuite>
+  <testsuite name="S2" tests="4" errors="0" failures="2">
+    <testcase classname="Core" name="test_pass2">
+    </testcase>
+    <testcase classname="Core" name="test_loop">
+      <failure message="Iteration 0 failed">
+        Core:test_loop:0
+        ex_output.c:72
+        Iteration 0 failed
+      </failure>
+    </testcase>
+    <testcase classname="Core" name="test_loop">
+    </testcase>
+    <testcase classname="Core" name="test_loop">
+      <failure message="Iteration 2 failed">
+        Core:test_loop:2
+        ex_output.c:72
+        Iteration 2 failed
+      </failure>
+    </testcase>
+  </testsuite>
+</testsuites>
+@end verbatim
+@end example
+
 
 @node TAP Logging,  , Test Logging, Test Logging
 @subsection TAP Logging

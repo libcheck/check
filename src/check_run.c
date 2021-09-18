@@ -70,7 +70,7 @@ static void srunner_iterate_suites(SRunner * sr,
 static void srunner_iterate_tcase_tfuns(SRunner * sr, TCase * tc);
 static void srunner_add_failure(SRunner * sr, TestResult * tf);
 static TestResult * srunner_run_setup(List * func_list,
-    enum fork_status fork_usage, const char * test_name,
+    enum fork_status fork_usage, struct TCase *tc,
     const char * setup_name);
 static int srunner_run_unchecked_setup(SRunner * sr, TCase * tc);
 static TestResult *tcase_run_checked_setup(SRunner * sr, TCase * tc);
@@ -80,7 +80,7 @@ static void tcase_run_checked_teardown(TCase * tc);
 static void srunner_run_tcase(SRunner * sr, TCase * tc);
 static TestResult *tcase_run_tfun_nofork(SRunner * sr, TCase * tc, TF * tf,
                                          int i);
-static TestResult *receive_result_info_nofork(const char *tcname,
+static TestResult *receive_result_info_nofork(struct TCase *tc,
                                               const char *tname, int iter,
                                               int duration);
 static void set_nofork_info(TestResult * tr);
@@ -89,7 +89,7 @@ static char *pass_msg(void);
 #if defined(HAVE_FORK) && HAVE_FORK==1
 static TestResult *tcase_run_tfun_fork(SRunner * sr, TCase * tc, TF * tf,
                                        int i);
-static TestResult *receive_result_info_fork(const char *tcname,
+static TestResult *receive_result_info_fork(struct TCase *tc,
                                             const char *tname, int iter,
                                             int status, int expected_signal,
                                             signed char allowed_exit_value);
@@ -288,7 +288,7 @@ static void srunner_add_failure(SRunner * sr, TestResult * tr)
 }
 
 static TestResult * srunner_run_setup(List * fixture_list, enum fork_status fork_usage,
-    const char * test_name, const char * setup_name)
+    struct TCase *tc, const char * setup_name)
 {
     TestResult *tr = NULL;
 
@@ -312,7 +312,7 @@ static TestResult * srunner_run_setup(List * fixture_list, enum fork_status fork
             }
 
             /* Stop the setup and return the failure in nofork mode. */
-            tr = receive_result_info_nofork(test_name, setup_name, 0, -1);
+            tr = receive_result_info_nofork(tc, setup_name, 0, -1);
             if(tr->rtype != CK_PASS)
             {
                 break;
@@ -338,7 +338,7 @@ static int srunner_run_unchecked_setup(SRunner * sr, TCase * tc)
     int rval = 1;
 
     set_fork_status(CK_NOFORK);
-    tr = srunner_run_setup(tc->unch_sflst, CK_NOFORK, tc->name, "unchecked_setup");
+    tr = srunner_run_setup(tc->unch_sflst, CK_NOFORK, tc, "unchecked_setup");
     set_fork_status(srunner_fork_status(sr));
 
     if(tr != NULL && tr->rtype != CK_PASS)
@@ -353,7 +353,7 @@ static int srunner_run_unchecked_setup(SRunner * sr, TCase * tc)
 static TestResult *tcase_run_checked_setup(SRunner * sr, TCase * tc)
 {
     TestResult *tr = srunner_run_setup(tc->ch_sflst, srunner_fork_status(sr),
-        tc->name, "checked_setup");
+        tc, "checked_setup");
 
     return tr;
 }
@@ -421,14 +421,14 @@ static TestResult *tcase_run_tfun_nofork(SRunner * sr, TCase * tc, TF * tfun,
         }
         clock_gettime(check_get_clockid(), &ts_end);
         tcase_run_checked_teardown(tc);
-        return receive_result_info_nofork(tc->name, tfun->ttest->name, i,
+        return receive_result_info_nofork(tc, tfun->ttest->name, i,
                                           DIFF_IN_USEC(ts_start, ts_end));
     }
 
     return tr;
 }
 
-static TestResult *receive_result_info_nofork(const char *tcname,
+static TestResult *receive_result_info_nofork(struct TCase *tc,
                                               const char *tname,
                                               int iter, int duration)
 {
@@ -441,7 +441,7 @@ static TestResult *receive_result_info_nofork(const char *tcname,
     }
     else
     {
-        tr->tcname = tcname;
+        tr->tc = tc;
         tr->tname = tname;
         tr->iter = iter;
         tr->duration = duration;
@@ -538,11 +538,11 @@ static TestResult *tcase_run_tfun_fork(SRunner * sr, TCase * tc, TF * tfun,
 
     killpg(pid, SIGKILL);       /* Kill remaining processes. */
 
-    return receive_result_info_fork(tc->name, tfun->ttest->name, i, status,
+    return receive_result_info_fork(tc, tfun->ttest->name, i, status,
                                     tfun->signal, tfun->allowed_exit_value);
 }
 
-static TestResult *receive_result_info_fork(const char *tcname,
+static TestResult *receive_result_info_fork(struct TCase* tc,
                                             const char *tname,
                                             int iter,
                                             int status, int expected_signal,
@@ -557,7 +557,7 @@ static TestResult *receive_result_info_fork(const char *tcname,
     }
     else
     {
-        tr->tcname = tcname;
+        tr->tc = tc;
         tr->tname = tname;
         tr->iter = iter;
         set_fork_info(tr, status, expected_signal, allowed_exit_value);
