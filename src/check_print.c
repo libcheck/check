@@ -237,7 +237,6 @@ void tr_junitprint(FILE * file, TestResult * tr,
                  enum print_output print_mode CK_ATTRIBUTE_UNUSED)
 {
     char status[10];
-    char type[10];
     char *path_name = NULL;
     char *file_name = NULL;
     char *slash = NULL;
@@ -302,6 +301,7 @@ void tr_junitprint(FILE * file, TestResult * tr,
           fprintf(file, "      </%s>\n", status);
     }
     fprintf(file, "    </testcase>\n");
+    free(path_name);
 }
 
 enum print_output get_env_printmode(void)
