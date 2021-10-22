@@ -108,6 +108,10 @@ if(CHECK_ENABLE_TIMEOUT_TESTS)
 else(CHECK_ENABLE_TIMEOUT_TESTS)
   add_definitions(-DTIMEOUT_TESTS_ENABLED=0)
 endif(CHECK_ENABLE_TIMEOUT_TESTS)
+
+option(CHECK_ENABLE_DOXYGEN_DOCS
+  "Enable building Doxygen documentation. (Requires Doxygen)" OFF)
+
 ###############################################################################
 # Check system and architecture
 if(WIN32)
@@ -575,6 +579,82 @@ endif()
 # unless an explicit CMAKE_EXPORT_PACKAGE_REGISTRY variable is set.
 if(NOT THIS_IS_SUBPROJECT)
   export(PACKAGE "${PROJECT_NAME}")
+endif()
+
+# Generate Doxygen Documentation
+#
+# The following code block contains all of the configuration
+# directives required to generate Doxygen docs. No separate
+# Doxyfile is required; CMake's FindDoxygen module (included
+# in the standard CMake installation) creates the Doxyfile
+# using the options set before the call to doxygen_add_docs.
+#
+if(CHECK_ENABLE_DOXYGEN_DOCS)
+  # Output a status message during the initial configuration
+  # acknowledging the user's selection.
+  #
+  message(STATUS "Doxygen documentation enabled.")
+
+  # Use the standard CMake FindDoxygen module to locate the
+  # system Doxygen installation.
+  #
+  # The dia and dot components generate additional (optional)
+  # functionality, such as automatically generating include
+  # dependency graphs. If no graphviz (dot) or dia install-
+  # ations can be found, Doxygen simply and silently does
+  # not enable the optional functionality these packages can
+  # provide.
+  #
+  # Official Documentation for FindDoxygen:
+  # https://cmake.org/cmake/help/latest/module/FindDoxygen.html
+  #
+  find_package(Doxygen
+    REQUIRED
+    OPTIONAL_COMPONENTS
+      dia
+      dot
+  )
+
+  # If the user requests that Doxygen documentation
+  # generation be enabled but FindDoxygen cannot locate
+  # Doxygen, treat this as a fatal error.
+  #
+  if(NOT DOXYGEN_FOUND)
+    message(FATAL_ERROR "Doxygen documentation requested, but Doxygen could not be found.")
+  endif()
+
+  # Set relevant Doxygen configuration variables that will
+  # be used by the doxygen_add_docs function once called.
+  #
+  set(DOXYGEN_EXTRACT_ALL YES)
+  set(DOXYGEN_GENERATE_HTML YES)
+  set(DOXYGEN_GENERATE_MAN NO)
+  set(DOXYGEN_GENERATE_LATEX NO)
+  set(DOXYGEN_HTML_DYNAMIC_MENUS YES)
+  set(DOXYGEN_HTML_DYNAMIC_SECTIONS YES)
+  set(DOXYGEN_OPTIMIZE_OUTPUT_FOR_C YES)
+  set(DOXYGEN_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/Doxygen/)
+  set(DOXYGEN_RECURSIVE YES)
+  set(DOXYGEN_USE_MDFILE_AS_MAINPAGE "README.md")
+
+  # Create a project build target for the project's Doxygen
+  # documentation.
+  #
+  # The documentation is not added to the default build
+  # target on purpose, as Doxygen represents an additional
+  # build dependency that some users may not want or need.
+  #
+  # As per issue #217, the documentation is therefore an
+  # optional build dependency.
+  #
+  doxygen_add_docs(check-doxygen-docs
+      ${CMAKE_CURRENT_SOURCE_DIR}/README.md
+      ${CMAKE_CURRENT_SOURCE_DIR}/src
+      ${CMAKE_CURRENT_SOURCE_DIR}/lib
+      ${CMAKE_CURRENT_BINARY_DIR}/src
+    COMMENT
+      "Generate Check library doxygen docs."
+  )
 endif()
 
 # vim: shiftwidth=2:softtabstop=2:tabstop=2:expandtab:autoindent
