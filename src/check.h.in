@@ -65,9 +65,20 @@ CK_CPPSTART
 #if GCC_VERSION_AT_LEAST(2,95,3)
 #define CK_ATTRIBUTE_UNUSED __attribute__ ((unused))
 #define CK_ATTRIBUTE_FORMAT(a, b, c) __attribute__ ((format (a, b, c)))
+
+/* We use a private snprintf implementation that does not support the Windows
+ * format strings of %I64u or similar and instead support the C99 and GNU format
+ * format strings like %llu and %zu.  Let the compiler know this. */
+#ifdef _WIN32
+#define CK_ATTRIBUTE_FORMAT_PRINTF gnu_printf
+#else
+#define CK_ATTRIBUTE_FORMAT_PRINTF printf
+#endif
+
 #else
 #define CK_ATTRIBUTE_UNUSED
 #define CK_ATTRIBUTE_FORMAT(a, b, c)
+#define CK_ATTRIBUTE_FORMAT_PRINTF printf
 #endif /* GCC 2.95 */
 
 #if GCC_VERSION_AT_LEAST(2,5,0)
@@ -504,11 +515,11 @@ static void __testname ## _fn (int _i CK_ATTRIBUTE_UNUSED)
 #if @HAVE_FORK@
 CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
                                             const char *expr, const char *msg,
-                                            ...) CK_ATTRIBUTE_NORETURN CK_ATTRIBUTE_FORMAT(printf, 4, 5);
+                                            ...) CK_ATTRIBUTE_NORETURN CK_ATTRIBUTE_FORMAT(CK_ATTRIBUTE_FORMAT_PRINTF, 4, 5);
 #else
 CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
                                             const char *expr, const char *msg,
-                                            ...) CK_ATTRIBUTE_FORMAT(printf, 4, 5);
+                                            ...) CK_ATTRIBUTE_FORMAT(CK_ATTRIBUTE_FORMAT_PRINTF, 4, 5);
 #endif
 
 /**
