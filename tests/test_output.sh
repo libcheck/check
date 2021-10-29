@@ -59,6 +59,8 @@ tap_stdout=`                             ./ex_output${EXEEXT} CK_SILENT TAP_STDO
 tap_env_stdout=`CK_TAP_LOG_FILE_NAME="-" ./ex_output${EXEEXT} CK_SILENT STDOUT NORMAL`
 xml_stdout=`                             ./ex_output${EXEEXT} CK_SILENT XML_STDOUT NORMAL  | tr -d "\r" | grep -v \<duration\> | grep -v \<datetime\> | grep -v \<path\>`
 xml_env_stdout=`CK_XML_LOG_FILE_NAME="-" ./ex_output${EXEEXT} CK_SILENT STDOUT NORMAL      | tr -d "\r" | grep -v \<duration\> | grep -v \<datetime\> | grep -v \<path\>`
+junit_xml_stdout=`                             ./ex_output${EXEEXT} CK_SILENT JUNIT_XML_STDOUT NORMAL  | tr -d "\r" | grep -v \<duration\> | grep -v \<datetime\> | grep -v \<path\>`
+junit_xml_env_stdout=`CK_XML_LOG_FILE_NAME="-" CK_XML_FORMAT_NAME="junit" ./ex_output${EXEEXT} CK_SILENT STDOUT NORMAL`
 
 test_output ( ) {
     if [ "x${1}" != "x${2}" ]; then
@@ -92,6 +94,8 @@ test_output "${expected_log_log}"    "${log_stdout}"     "CK_SILENT LOG_STDOUT N
 test_output "${expected_log_log}"    "${log_env_stdout}" "CK_SILENT STDOUT     NORMAL (with log env = '-')"
 test_output "${expected_xml}"        "${xml_stdout}"     "CK_SILENT XML_STDOUT NORMAL"
 test_output "${expected_xml}"        "${xml_env_stdout}" "CK_SILENT STDOUT     NORMAL (with xml env = '-')"
+test_output "${expected_junit_xml}"        "${junit_xml_stdout}"     "CK_SILENT JUNIT_XML_STDOUT NORMAL"
+test_output "${expected_junit_xml}"        "${junit_xml_env_stdout}" "CK_SILENT STDOUT     NORMAL (with junit_xml env = '-')"
 test_output "${expected_normal_tap}" "${tap_stdout}"     "CK_SILENT TAP_STDOUT NORMAL"
 test_output "${expected_normal_tap}" "${tap_env_stdout}" "CK_SILENT STDOUT     NORMAL (with tap env = '-')"
 
