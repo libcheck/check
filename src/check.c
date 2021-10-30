@@ -414,6 +414,7 @@ SRunner *srunner_create(Suite * s)
     sr->resultlst = check_list_create();
     sr->log_fname = NULL;
     sr->xml_fname = NULL;
+    sr->xml_format = CK_XML_FORMAT_UNSPECIFIED;
     sr->tap_fname = NULL;
     sr->loglst = NULL;
 
