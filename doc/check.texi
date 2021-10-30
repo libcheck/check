@@ -2052,12 +2052,11 @@ If both plain text and XML log files are specified, by any of above methods,
 then check will log to both files. In other words logging in plain text and XML
 format simultaneously is supported.
 
-JUnit Support is also available.  It is enabled  by a call to 
-@code{srunner_set_xml_format(CK_XML_FORMAT_JUNIT)} before the tests are run. 
-It can also be enabled by environment variable as well.  It is enabled by setting the
-@code{CK_XML_FORMAT_NAME} environment variable to @code{junit}.
+JUnit XML Support is also available.  It is enabled  by a call to
+@code{srunner_set_xml_format(CK_XML_FORMAT_JUNIT)} before the tests are run.
+It can also be enabled by setting the environment variable @code{CK_XML_FORMAT_NAME} to @code{junit}.
 
-Here is an example of the JUnit xml format:
+Here is an example of the JUnit XML format:
 @example
 @verbatim
 <?xml version="1.0" encoding="UTF-8"?>
@@ -2363,6 +2362,8 @@ CK_TIMEOUT_MULTIPLIER: A multiplier used against the default unit test timeout. 
 CK_LOG_FILE_NAME: Filename to write logs to.  See section @ref{Test Logging}.
 
 CK_XML_LOG_FILE_NAME: Filename to write XML log to. See section @ref{XML Logging}.
+
+CK_XML_FORMAT_NAME: Name of the XML format to use. ``junit'' will output in JUnit XML format, all other values will yield the default XML format. @ref{XML Logging}.
 
 CK_TAP_LOG_FILE_NAME: Filename to write TAP (Test Anything Protocol) output to.  See section @ref{TAP Logging}.
 

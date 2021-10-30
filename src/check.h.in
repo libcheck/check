@@ -2285,11 +2285,15 @@ enum xml_format {
  * Returns the XML format used if XML is to be logged.
  *
  * This value can be explicitly set via `srunner_set_xml_format` or can
- * be set via the CK_XML_FORMAT_NAME environment variable.  
+ * be set via the CK_XML_FORMAT_NAME environment variable.
  *
+ * This setting does not conflict with the other log output types;
+ * all logging types can occur concurrently if configured.
  * @return CK_XML_FORMAT_DEFAULT unless the format is explicitly set via
  *         `srunner_set_xml_format(sr, CK_XML_FORMAT_JUNIT)` or
- *         `getenv("CK_XML_FORMAT_NAME")` returns "unit"
+ *         `getenv("CK_XML_FORMAT_NAME")` is set to a known value.
+ *         Any value set explicitly via `srunner_set_xml_format` will take
+ *         precedence over the environment variable.
  *
  * @param sr suite runner to check
  *
