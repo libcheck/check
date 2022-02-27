@@ -302,12 +302,20 @@ CK_DLL_EXP int timer_delete(timer_t timerid);
 #include <stdarg.h>
 
 #if !HAVE_VSNPRINTF
-CK_DLL_EXP int rpl_vsnprintf(char *, size_t, const char *, va_list);
+CK_DLL_EXP int
+#if defined(__clang__)
+__attribute__((overloadable))
+#endif
+rpl_vsnprintf(char *, size_t, const char *, va_list);
 
 #define vsnprintf rpl_vsnprintf
 #endif
 #if !HAVE_SNPRINTF
-CK_DLL_EXP int rpl_snprintf(char *, size_t, const char *, ...);
+CK_DLL_EXP int
+#if defined(__clang__)
+__attribute__((overloadable))
+#endif
+rpl_snprintf(char *, size_t, const char *, ...);
 
 #define snprintf rpl_snprintf
 #endif
