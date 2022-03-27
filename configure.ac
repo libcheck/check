@@ -119,6 +119,25 @@ AC_HELP_STRING([--enable-timer-replacement],
   *)   AC_MSG_ERROR(bad value ${enableval} for --enable-timer-replacement) ;;
 esac], [enable_timer_replacement=autodetect ])
 
+AC_ARG_ENABLE(pcreposix,
+AC_HELP_STRING([--enable-pcreposix],
+	       [enable support for the pcreposix  regular expressions @<:@default=autodetect@:>@]),
+[case "${enableval}" in
+  yes)
+    with_pcreposix=1
+    echo "Enabled PCRE POSIX regular expressions"
+    ;;
+  no)
+    with_pcreposix=0
+    echo "Disabled PCRE POSIX regular expressions"
+    ;;
+  autodetect)
+    echo "PCRE POSIX regular expressions support will be enabled automatically."
+    ;;
+  *)   AC_MSG_ERROR(bad value ${enableval} for --enable-pcreposix) ;;
+esac],
+[echo "PCRE POSIX regular expressions support will be enabled automatically."
+ with_pcreposix=autodetect])
 
 # Checks for programs.
 AC_PROG_SED
@@ -257,11 +276,47 @@ fi
 AC_SUBST(HAVE_REGEX)
 AC_DEFINE_UNQUOTED(HAVE_REGEX, $HAVE_REGEX, "Regular expressions are supported")
 
-if test "x$HAVE_REGEX" = "x1"; then
+if test "x$HAVE_REGEX" = "x1" && test "x$with_pcreposix" != "x1"; then
     ENABLE_REGEX="1"
 else
     ENABLE_REGEX="0"
 fi
+
+if test "x$ENABLE_REGEX" = "x0"; then
+    # Check for PCRE POSIX regular expressions support.
+    AS_IF([test x"$with_pcreposix" != "x0" && test x"$with_pcreposix" != "x1"], [
+	    PKG_CHECK_EXISTS([libpcreposix], [:], [with_pcreposix=0])
+	    ])
+    AS_IF([test x"$with_pcreposix" != "x0"], [
+	    PKG_CHECK_MODULES([PCREPOSIX], [libpcreposix])
+	    ])
+
+    if test "x0" = x"$with_pcreposix"; then
+        ENABLE_PCREPOSIX="0"
+    else
+        ENABLE_PCREPOSIX="1"
+    fi
+    
+    if test "x$ENABLE_PCREPOSIX" = "x1"; then
+        ENABLE_REGEX="1"
+    fi
+else
+    ENABLE_PCREPOSIX="0"
+fi
+
+if test "x0" = x"$ENABLE_PCREPOSIX"; then
+    LIBPCREPOSIX_PC=""
+else
+    LIBPCREPOSIX_PC="libpcreposix"
+fi
+
+AC_SUBST(ENABLE_PCREPOSIX)
+AC_SUBST([LIBPCREPOSIX_PC])
+AC_DEFINE_UNQUOTED(ENABLE_PCREPOSIX, $ENABLE_PCREPOSIX, [PCRE POSIX regular expressions])
+
+AM_CONDITIONAL(PCREPOSIX, test x"$ENABLE_PCREPOSIX" != "x0")
+
+
 AC_SUBST(ENABLE_REGEX)
 AC_DEFINE_UNQUOTED(ENABLE_REGEX, $ENABLE_REGEX, "Regular expressions are supported and enabled")
 
@@ -369,7 +424,7 @@ AC_OUTPUT
 # Finally, print a summary of the Check's compile options
 
 echo
-echo "=========================================="
+echo "================================================"
 echo "Summary of Check $CHECK_MAJOR_VERSION.$CHECK_MINOR_VERSION.$CHECK_MICRO_VERSION options:"
 echo
 
@@ -423,8 +478,12 @@ echo "timeout unit tests ................... $result"
 if test "x0" = x"$ENABLE_REGEX"; then
     result="no"
 else
-    result="yes"
+    if test "x1" = x"$ENABLE_PCREPOSIX"; then
+        result="pcreposix"
+    else
+        result="yes"
+    fi
 fi
 echo "POSIX regular expressions ............ $result"
 
-echo "=========================================="
+echo "================================================"

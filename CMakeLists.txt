@@ -154,11 +154,17 @@ else(HAVE_MKSTEMP)
     set(HAVE_MKSTEMP 0)
 endif(HAVE_MKSTEMP)
 
+if (NOT DEFINED WITH_PCREPOSIX)
+    set(WITH_PCREPOSIX auto)
+endif()
+
 if(HAVE_REGEX_H AND HAVE_REGCOMP AND HAVE_REGEXEC)
     add_definitions(-DHAVE_REGEX=1)
     set(HAVE_REGEX 1)
-    add_definitions(-DENABLE_REGEX=1)
-    set(ENABLE_REGEX 1)
+    if ((NOT WITH_PCREPOSIX) OR (WITH_PCREPOSIX STREQUAL "auto"))
+        add_definitions(-DENABLE_REGEX=1)
+        set(ENABLE_REGEX 1)
+    endif()
 endif()
 
 
@@ -311,6 +317,24 @@ else(HAVE_SUBUNIT)
     set(ENABLE_SUBUNIT 0)
     add_definitions(-DENABLE_SUBUNIT=0)
 endif (HAVE_SUBUNIT)
+
+if (NOT ENABLE_REGEX AND WITH_PCREPOSIX)
+    # pcreposix functions are just wrappers for pcre functions
+    check_library_exists(pcreposix regcomp "" HAVE_LIBPCREPOSIX)
+    if (HAVE_LIBPCREPOSIX)
+        check_function_exists(regcomp HAVE_REGCOMP)
+        check_function_exists(regexec HAVE_REGEXEC)
+        if (HAVE_REGCOMP AND HAVE_REGEXEC)
+            set(PCREPOSIX "pcreposix")
+            set(ENABLE_PCREPOSIX 1)
+            add_definitions(-DENABLE_PCREPOSIX=1)
+        endif()
+    endif()
+    if (ENABLE_PCREPOSIX)
+        set(ENABLE_REGEX 1)
+        add_definitions(-DENABLE_REGEX=1)
+    endif()
+endif()
 
 ###############################################################################
 # Generate "config.h" from "cmake/config.h.cmake"
