@@ -216,7 +216,7 @@ AC_CHECK_PROGS(GRAPHVIZ, dot, false)
 AM_CONDITIONAL(USE_GRAPHVIZ, [test x"$GRAPHVIZ" = x"dot"])
 
 # Checks for pthread implementation.
-ACX_PTHREAD
+AX_PTHREAD
 CC="$PTHREAD_CC"
 
 # Check if floor is in the math library, and if so add -lm to LIBS
