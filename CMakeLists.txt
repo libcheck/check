@@ -393,7 +393,13 @@ if (HAVE_LIBRT)
   ADD_DEFINITIONS(-DHAVE_LIBRT=1)
 endif (HAVE_LIBRT)
 
-check_library_exists(subunit subunit_test_start "" HAVE_SUBUNIT)
+# Allow disabling subunit
+IF(ENABLE_SUBUNIT_EXT)
+  check_library_exists(subunit subunit_test_start "" HAVE_SUBUNIT)
+ELSE(ENABLE_SUBUNIT_EXT)
+  set(HAVE_SUBUNIT, false)
+ENDIF(ENABLE_SUBUNIT_EXT)
+
 if (HAVE_SUBUNIT)
   set(SUBUNIT "subunit")
   set(ENABLE_SUBUNIT 1)
