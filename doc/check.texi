@@ -2258,7 +2258,6 @@ cmake -Dcheck_ROOT=${INSTALL_PREFIX}
 
 Then use Check in your @file{CMakeLists.txt} like this:
 
-@verbatim
 find_package(check <check_version if wanted> REQUIRED CONFIG)
 
 add_executable(myproj.test myproj.test.c)
