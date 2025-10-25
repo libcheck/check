@@ -143,9 +143,18 @@ extern int fpclassify(double d);
 
 /* provides localtime and struct tm */
 #ifdef HAVE_SYS_TIME_H
+#ifdef __MINGW64__
+#include <_mingw.h>
+/* Version 13 and later of mingw-w64 provides an inline definition of
+   clock_gettime() in pthread_time.h, which conflicts with our version
+   from clock_gettime.c.  By defining WIN_PTHREADS_TIME_H here we prevent
+   the pthread_time.h header from being included. */
+#if __MINGW64_VERSION_MAJOR > 12
 #define WIN_PTHREADS_TIME_H 1
+#endif
+#endif /* __MINGW64__ */
 #include <sys/time.h>
-#endif /* !HAVE_SYS_TIME_H */
+#endif /* HAVE_SYS_TIME_H */
 #include <time.h>
 
 /* declares fork(), _POSIX_VERSION.  according to Autoconf.info,
