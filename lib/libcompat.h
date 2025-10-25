@@ -143,6 +143,7 @@ extern int fpclassify(double d);
 
 /* provides localtime and struct tm */
 #ifdef HAVE_SYS_TIME_H
+#define WIN_PTHREADS_TIME_H 1
 #include <sys/time.h>
 #endif /* !HAVE_SYS_TIME_H */
 #include <time.h>
