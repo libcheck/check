@@ -152,3 +152,11 @@ int check_list_contains(List * lp, void *val)
 
     return 0;
 }
+
+unsigned int check_list_length(List * lp)
+{
+    if(lp == NULL)
+        return 0;
+
+    return lp->n_elts;
+}
