@@ -436,6 +436,36 @@ void srunner_add_suite(SRunner * sr, Suite * s)
     check_list_add_end(sr->slst, s);
 }
 
+int srunner_nsuites(SRunner * sr)
+{
+    if(sr == NULL)
+        return 0;
+
+    return check_list_length(sr->slst);
+}
+
+Suite **srunner_suites(SRunner * sr)
+{
+    int i = 0;
+    Suite **sarray;
+    List *slst;
+
+    if (sr == NULL)
+        return NULL;
+
+    sarray = (Suite **)emalloc(sizeof(sarray[0]) * srunner_nsuites(sr));
+
+    slst = sr->slst;
+    for(check_list_front(slst); !check_list_at_end(slst);
+        check_list_advance(slst))
+    {
+        Suite *s = (Suite *)check_list_val(slst);
+        sarray[i++] = s;
+    }
+
+    return sarray;
+}
+
 void srunner_free(SRunner * sr)
 {
     List *l;
