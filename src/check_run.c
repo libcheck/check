@@ -416,7 +416,8 @@ static TestResult *tcase_run_tfun_nofork(SRunner * sr, TCase * tc, TF * tfun,
         clock_gettime(check_get_clockid(), &ts_start);
         if(0 == setjmp(error_jmp_buffer))
         {
-            tcase_fn_start(tfun->ttest->name, tfun->ttest->file, tfun->ttest->line);
+            _tcase_fn_start(tc, tfun->ttest->name, tfun->ttest->file,
+                            tfun->ttest->line);
             tfun->ttest->fn(i);
         }
         clock_gettime(check_get_clockid(), &ts_end);
@@ -493,7 +494,8 @@ static TestResult *tcase_run_tfun_fork(SRunner * sr, TCase * tc, TF * tfun,
         tr = tcase_run_checked_setup(sr, tc);
         free(tr);
         clock_gettime(check_get_clockid(), &ts_start);
-        tcase_fn_start(tfun->ttest->name, tfun->ttest->file, tfun->ttest->line);
+        _tcase_fn_start(tc, tfun->ttest->name, tfun->ttest->file,
+                        tfun->ttest->line);
         tfun->ttest->fn(i);
         clock_gettime(check_get_clockid(), &ts_end);
         tcase_run_checked_teardown(tc);

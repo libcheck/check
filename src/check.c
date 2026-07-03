@@ -52,7 +52,7 @@ int check_major_version = CHECK_MAJOR_VERSION;
 int check_minor_version = CHECK_MINOR_VERSION;
 int check_micro_version = CHECK_MICRO_VERSION;
 
-const char* current_test_name = NULL;
+static TCase *current_test_case = NULL;
 
 static int non_pass(enum test_result);
 static Fixture *fixture_create(SFun fun, int ischecked);
@@ -410,18 +410,26 @@ void tcase_set_timeout(TCase * tc, double timeout)
 #endif /* HAVE_FORK */
 }
 
-void tcase_fn_start(const char *fname, const char *file,
-                    int line)
+void _tcase_fn_start(TCase * tc, const char *fname,
+                     const char *file, int line)
 {
     send_ctx_info(CK_CTX_TEST);
     send_loc_info(file, line);
 
-    current_test_name = fname;
+    current_test_case = tc;
 }
 
-const char* tcase_name(void)
+TCase *tcase_current(void)
 {
-    return current_test_name;
+    return current_test_case;
+}
+
+const char *tcase_name(TCase * tc)
+{
+    if(tc == NULL)
+        return NULL;
+
+    return tc->name;
 }
 
 void _mark_point(const char *file, int line)

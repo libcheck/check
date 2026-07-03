@@ -509,18 +509,29 @@ CK_DLL_EXP void CK_EXPORT tcase_add_checked_fixture(TCase * tc, SFun setup,
 CK_DLL_EXP void CK_EXPORT tcase_set_timeout(TCase * tc, double timeout);
 
 /* Internal function to mark the start of a test function */
-CK_DLL_EXP void CK_EXPORT tcase_fn_start(const char *fname, const char *file,
-                                         int line);
+CK_DLL_EXP void CK_EXPORT _tcase_fn_start(TCase * tc, const char *fname,
+                                          const char *file, int line);
 
 /**
- * Retreive the name of the current running test. This is the name
- * of the test passed to START_TEST. This is only valid when called
- * from a running test. The value return outside of a running test is
- * undefined.
+ * Retrieve the current running test case.
  *
- * @since 0.11.0
+ * This is only valid when called from a running test. The value
+ * returned outside of a running test is undefined.
+ *
+ * @since 0.15.3
  */
-CK_DLL_EXP const char* CK_EXPORT tcase_name(void);
+CK_DLL_EXP TCase * CK_EXPORT tcase_current(void);
+
+/**
+ * Retreive the name of a test case.
+ *
+ * @param tc test case to get the name of
+ *
+ * @return the name of the test case
+ *
+ * @since 0.15.3
+ */
+CK_DLL_EXP const char * CK_EXPORT tcase_name(TCase * tc);
 
 CK_DLL_EXP int CK_EXPORT tcase_ntests(TCase * tc);
 CK_DLL_EXP TTest ** CK_EXPORT tcase_tests(TCase * tc);
