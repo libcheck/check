@@ -183,6 +183,11 @@ typedef struct TTest {
 } TTest;
 
 /**
+ * Type for a test fixture, which wraps a test.
+ */
+typedef struct TF TF;
+
+/**
  * Creates a test suite with the given name.
  *
  * Create a suite, which will contain test cases. Once
@@ -523,7 +528,13 @@ CK_DLL_EXP void CK_EXPORT tcase_fn_start(const char *fname, const char *file,
 CK_DLL_EXP const char* CK_EXPORT tcase_name(void);
 
 CK_DLL_EXP int CK_EXPORT tcase_ntests(TCase * tc);
-CK_DLL_EXP TTest ** CK_EXPORT tcase_tests(TCase * tc);
+CK_DLL_EXP TF ** CK_EXPORT tcase_tests(TCase * tc);
+
+CK_DLL_EXP const TTest * CK_EXPORT tf_test(TF * tf);
+CK_DLL_EXP int CK_EXPORT tf_loop_start(TF * tf);
+CK_DLL_EXP int CK_EXPORT tf_loop_end(TF * tf);
+CK_DLL_EXP int CK_EXPORT tf_signal(TF * tf);
+CK_DLL_EXP int CK_EXPORT tf_allowed_exit_value(TF * tf);
 
 /**
  * Start a unit test with START_TEST(unit_name), end with END_TEST.

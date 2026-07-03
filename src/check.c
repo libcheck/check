@@ -424,6 +424,76 @@ const char* tcase_name(void)
     return current_test_name;
 }
 
+int tcase_ntests(TCase * tc)
+{
+    if(tc == NULL)
+        return 0;
+    
+    return check_list_length(tc->tflst);
+}
+
+TF **tcase_tests(TCase * tc)
+{
+    int i = 0;
+    List *tflst;
+    TF **tfarray;
+    
+    if(tc == NULL)
+        return NULL;
+
+    tfarray = (TF **)emalloc(sizeof(tfarray[0]) * tcase_ntests(tc));
+    
+    tflst = tc->tflst;
+    for(check_list_front(tflst); !check_list_at_end(tflst);
+        check_list_advance(tflst))
+    {
+        TF *tf = (TF *)check_list_val(tflst);
+        tfarray[i++] = tf;
+    }
+    
+    return tfarray;
+}
+
+const TTest *tf_test(TF * tf)
+{
+    if(tf == NULL)
+        return NULL;
+
+    return tf->ttest;
+}
+
+int tf_loop_start(TF * tf)
+{
+    if(tf == NULL)
+        return 0;
+
+    return tf->loop_start;
+}
+
+int tf_loop_end(TF * tf)
+{
+    if(tf == NULL)
+        return 0;
+
+    return tf->loop_end;
+}
+
+int tf_signal(TF * tf)
+{
+    if(tf == NULL)
+        return 0;
+
+    return tf->signal;
+}
+
+int tf_allowed_exit_value(TF * tf)
+{
+    if(tf == NULL)
+        return 0;
+
+    return tf->allowed_exit_value;
+}
+
 void _mark_point(const char *file, int line)
 {
     send_loc_info(file, line);
