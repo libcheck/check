@@ -213,6 +213,50 @@ CK_DLL_EXP Suite *CK_EXPORT suite_create(const char *name);
 CK_DLL_EXP int CK_EXPORT suite_tcase(Suite * s, const char *tcname);
 
 /**
+ * Get the name of a suite.
+ *
+ * @param s suite to get the name of
+ *
+ * @return the name of the suite
+ *
+ * @since 0.15.3
+ */
+CK_DLL_EXP const char * CK_EXPORT suite_name(Suite * s);
+
+/**
+ * Get the number of test cases in a suite.
+ *
+ * This call returns the number of test cases currently in the
+ * suite.
+ *
+ * @param s suite to get the number of test cases from
+ *
+ * @return the number of test cases in the suite
+ *
+ * @since 0.15.3
+ */
+CK_DLL_EXP int CK_EXPORT suite_ntcases(Suite * s);
+
+/**
+ * Get the test cases from the suite.
+ *
+ * Number of test cases is equal to srunner_ntcases().
+ *
+ * Information about individual test cases can be queried using:
+ * tcase_name(), tcase_ntags(), tcase_tags().
+ *
+ * Memory is malloc'd and must be freed; however, free the entire
+ * structure instead of individual test cases.
+ *
+ * @param s suite to get the test cases from
+ *
+ * @return array of test case objects
+ *
+ * @since 0.15.3
+ */
+CK_DLL_EXP TCase ** CK_EXPORT suite_tcases(Suite * s);
+
+/**
  * Add a test case to a suite.
  *
  * Note that if the TCase has already been added attempting
@@ -224,10 +268,6 @@ CK_DLL_EXP int CK_EXPORT suite_tcase(Suite * s, const char *tcname);
  * @since 0.6.0
  */
 CK_DLL_EXP void CK_EXPORT suite_add_tcase(Suite * s, TCase * tc);
-
-CK_DLL_EXP const char * CK_EXPORT suite_name(Suite * s);
-CK_DLL_EXP int CK_EXPORT suite_ntcases(Suite * s);
-CK_DLL_EXP TCase ** CK_EXPORT suite_tcases(Suite * s);
 
 /**
  * Create a test case.

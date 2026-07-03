@@ -75,6 +75,43 @@ Suite *suite_create(const char *name)
     return s;
 }
 
+const char *suite_name(Suite * s)
+{
+    if(s == NULL)
+        return NULL;
+
+    return s->name;
+}
+
+int suite_ntcases(Suite * s)
+{
+    if(s == NULL)
+        return 0;
+
+    return check_list_length(s->tclst);
+}
+
+TCase **suite_tcases(Suite * s)
+{
+    int i = 0;
+    TCase **tcarray;
+    List *l;
+
+    if(s == NULL)
+        return NULL;
+
+    tcarray = (TCase **)emalloc(sizeof(tcarray[0]) * suite_ntcases(s));
+
+    l = s->tclst;
+    for(check_list_front(l); !check_list_at_end(l); check_list_advance(l))
+    {
+        TCase *tc = (TCase *)check_list_val(l);
+        tcarray[i++] = tc;
+    }
+
+    return tcarray;
+}
+
 int suite_tcase(Suite * s, const char *tcname)
 {
     List *l;
@@ -249,6 +286,7 @@ void suite_add_tcase(Suite * s, TCase * tc)
 
     check_list_add_end(s->tclst, tc);
 }
+
 
 void _tcase_add_test(TCase * tc, const TTest * ttest,
                      int _signal, int allowed_exit_value,
