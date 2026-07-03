@@ -160,3 +160,24 @@ unsigned int check_list_length(List * lp)
 
     return lp->n_elts;
 }
+
+void **check_list_as_array(List * lp)
+{
+    void **ap;
+    List *l;
+    int i = 0;
+
+    if(lp == NULL)
+        return NULL;
+
+    ap = emalloc(sizeof(void *) * check_list_length(lp));
+
+    l = lp;
+    for(check_list_front(l); !check_list_at_end(l); check_list_advance(l))
+    {
+        void *val = check_list_val(l);
+        ap[i++] = val;
+    }
+
+    return ap;
+}
