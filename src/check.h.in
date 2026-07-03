@@ -298,7 +298,29 @@ CK_DLL_EXP TCase *CK_EXPORT tcase_create(const char *name);
 CK_DLL_EXP void CK_EXPORT tcase_set_tags(TCase * tc,
 					 const char *tags);
 
+/**
+ * Get the number of tags associated with a test case.
+ *
+ * @param tc the test case
+ *
+ * @return the number of tags associated with the test case
+ *
+ * @since 0.15.3
+ */
 CK_DLL_EXP int CK_EXPORT tcase_ntags(TCase * tc);
+
+/**
+ * Get the tags associated with the test case.
+ *
+ * Memory is malloc'd and must be freed; however, free the entire
+ * structure instead of individual tags.
+ *
+ * @param tc the test case
+ *
+ * @return the array of string tags associated with the test case
+ *
+ * @since 0.15.3
+ */
 CK_DLL_EXP const char ** CK_EXPORT tcase_tags(TCase * tc);
 
 /**

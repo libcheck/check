@@ -236,6 +236,35 @@ void tcase_set_tags(TCase * tc, const char *tags_orig)
     tc->tags = tag_string_to_list(tags_orig);
 }
 
+int tcase_ntags(TCase * tc)
+{
+    if(tc == NULL)
+        return 0;
+
+    return check_list_length(tc->tags);
+}
+
+const char **tcase_tags(TCase * tc)
+{
+    int i = 0;
+    List *l;
+    const char **tarray;
+    
+    if(tc == NULL)
+        return NULL;
+    
+    tarray = emalloc(sizeof(tarray[0]) * tcase_ntags(tc));
+    
+    l = tc->tags;
+    for(check_list_front(l); !check_list_at_end(l); check_list_advance(l))
+    {
+        const char *tag = (const char *)check_list_val(l);
+        tarray[i++] = tag;
+    }
+    
+    return tarray;
+}
+
 static void tcase_free(TCase * tc)
 {
     check_list_apply(tc->tflst, free);
