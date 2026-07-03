@@ -93,23 +93,10 @@ int suite_ntcases(Suite * s)
 
 TCase **suite_tcases(Suite * s)
 {
-    int i = 0;
-    TCase **tcarray;
-    List *l;
-
     if(s == NULL)
         return NULL;
 
-    tcarray = (TCase **)emalloc(sizeof(tcarray[0]) * suite_ntcases(s));
-
-    l = s->tclst;
-    for(check_list_front(l); !check_list_at_end(l); check_list_advance(l))
-    {
-        TCase *tc = (TCase *)check_list_val(l);
-        tcarray[i++] = tc;
-    }
-
-    return tcarray;
+    return (TCase **)check_list_as_array(s->tclst);
 }
 
 int suite_tcase(Suite * s, const char *tcname)
@@ -246,23 +233,10 @@ int tcase_ntags(TCase * tc)
 
 const char **tcase_tags(TCase * tc)
 {
-    int i = 0;
-    List *l;
-    const char **tarray;
-    
     if(tc == NULL)
         return NULL;
-    
-    tarray = emalloc(sizeof(tarray[0]) * tcase_ntags(tc));
-    
-    l = tc->tags;
-    for(check_list_front(l); !check_list_at_end(l); check_list_advance(l))
-    {
-        const char *tag = (const char *)check_list_val(l);
-        tarray[i++] = tag;
-    }
-    
-    return tarray;
+        
+    return (const char **)check_list_as_array(tc->tags);
 }
 
 static void tcase_free(TCase * tc)
@@ -434,24 +408,10 @@ int tcase_ntests(TCase * tc)
 
 TF **tcase_tests(TCase * tc)
 {
-    int i = 0;
-    List *tflst;
-    TF **tfarray;
-    
     if(tc == NULL)
         return NULL;
-
-    tfarray = (TF **)emalloc(sizeof(tfarray[0]) * tcase_ntests(tc));
-    
-    tflst = tc->tflst;
-    for(check_list_front(tflst); !check_list_at_end(tflst);
-        check_list_advance(tflst))
-    {
-        TF *tf = (TF *)check_list_val(tflst);
-        tfarray[i++] = tf;
-    }
-    
-    return tfarray;
+        
+    return (TF **)check_list_as_array(tc->tflst);
 }
 
 const TTest *tf_test(TF * tf)
@@ -583,24 +543,10 @@ int srunner_nsuites(SRunner * sr)
 
 Suite **srunner_suites(SRunner * sr)
 {
-    int i = 0;
-    Suite **sarray;
-    List *slst;
-
     if (sr == NULL)
         return NULL;
 
-    sarray = (Suite **)emalloc(sizeof(sarray[0]) * srunner_nsuites(sr));
-
-    slst = sr->slst;
-    for(check_list_front(slst); !check_list_at_end(slst);
-        check_list_advance(slst))
-    {
-        Suite *s = (Suite *)check_list_val(slst);
-        sarray[i++] = s;
-    }
-
-    return sarray;
+    return (Suite **)check_list_as_array(sr->slst);
 }
 
 void srunner_free(SRunner * sr)
@@ -662,19 +608,10 @@ TestResult **srunner_failures(SRunner * sr)
 
 TestResult **srunner_results(SRunner * sr)
 {
-    int i = 0;
-    TestResult **trarray;
-    List *rlst;
+    if(sr == NULL)
+        return NULL;
 
-    trarray =(TestResult **) emalloc(sizeof(trarray[0]) * srunner_ntests_run(sr));
-
-    rlst = sr->resultlst;
-    for(check_list_front(rlst); !check_list_at_end(rlst);
-        check_list_advance(rlst))
-    {
-        trarray[i++] = (TestResult *)check_list_val(rlst);
-    }
-    return trarray;
+    return (TestResult **)check_list_as_array(sr->resultlst);
 }
 
 static int non_pass(enum test_result val)
