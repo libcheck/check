@@ -514,8 +514,8 @@ CK_DLL_EXP void CK_EXPORT tcase_add_checked_fixture(TCase * tc, SFun setup,
 CK_DLL_EXP void CK_EXPORT tcase_set_timeout(TCase * tc, double timeout);
 
 /* Internal function to mark the start of a test function */
-CK_DLL_EXP void CK_EXPORT tcase_fn_start(const char *fname, const char *file,
-                                         int line);
+CK_DLL_EXP void CK_EXPORT _tcase_fn_start(const char *fname, const char *file,
+                                          int line);
 
 /**
  * Retreive the name of the current running test. This is the name

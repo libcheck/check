@@ -384,8 +384,8 @@ void tcase_set_timeout(TCase * tc, double timeout)
 #endif /* HAVE_FORK */
 }
 
-void tcase_fn_start(const char *fname, const char *file,
-                    int line)
+void _tcase_fn_start(const char *fname, const char *file,
+                     int line)
 {
     send_ctx_info(CK_CTX_TEST);
     send_loc_info(file, line);
