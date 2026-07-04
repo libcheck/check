@@ -393,9 +393,17 @@ void tcase_fn_start(const char *fname, const char *file,
     current_test_name = fname;
 }
 
-const char* tcase_name(void)
+const char* tcase_current_name(void)
 {
     return current_test_name;
+}
+
+const char *tcase_name(TCase * tc)
+{
+    if(tc == NULL)
+        return NULL;
+
+    return tc->name;
 }
 
 int tcase_ntests(TCase * tc)
