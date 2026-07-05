@@ -374,7 +374,7 @@ CK_DLL_EXP void CK_EXPORT _tcase_add_test(TCase * tc, const TTest * ttest,
  *
  * Note that if a setup function fails, the remaining setup functions
  * will be omitted, as will the test case and the teardown functions.
- * If a teardown function fails the remaining teardown functins will be
+ * If a teardown function fails the remaining teardown functions will be
  * omitted.
  *
  * @param tc test case to add unchecked fixture setup/teardown to
@@ -402,7 +402,7 @@ CK_DLL_EXP void CK_EXPORT tcase_add_unchecked_fixture(TCase * tc, SFun setup,
  *
  * Note that if a setup function fails, the remaining setup functions
  * will be omitted, as will the test and the teardown functions. If a
- * teardown function fails the remaining teardown functins will be
+ * teardown function fails the remaining teardown functions will be
  * omitted.
  *
  * @param tc test case to add checked fixture setup/teardown to
@@ -443,7 +443,7 @@ CK_DLL_EXP void CK_EXPORT tcase_fn_start(const char *fname, const char *file,
                                          int line);
 
 /**
- * Retreive the name of the current running test. This is the name
+ * Retrieve the name of the current running test. This is the name
  * of the test passed to START_TEST. This is only valid when called
  * from a running test. The value return outside of a running test is
  * undefined.
@@ -759,7 +759,7 @@ CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
   #Y, (int)CK_FLOATING_DIG, _ck_y); \
 } while (0)
 
-/* Check floating point number is finise. */
+/* Check floating point number is finite. */
 /* TP is type, TM is type modifier. */
 #define _ck_assert_floating_finite(X, TP, TM) \
 do { \
@@ -770,7 +770,7 @@ do { \
     #X, (int)CK_FLOATING_DIG, _ck_x); \
 } while (0)
 
-/* Check floating point number is infinise. */
+/* Check floating point number is infinite. */
 /* TP is type, TM is type modifier. */
 #define _ck_assert_floating_infinite(X, TP, TM) \
 do { \
@@ -1457,7 +1457,7 @@ do { \
 
 /* String comparison macros with improved output compared to ck_assert() */
 /* OP might be any operator that can be used in '0 OP strcmp(X,Y)' comparison. */
-/* String pointer could be compared againts NULL with == (NULLEQ = 1) and != (NULLNE = 1) operators. */
+/* String pointer could be compared against NULL with == (NULLEQ = 1) and != (NULLNE = 1) operators. */
 /* The x and y parameter swap in strcmp() is needed to handle >, >=, <, <= operators. */
 /* If the x or y parameter is NULL its value will be printed without quotes. */
 #define _ck_assert_str(X, OP, Y, NULLEQ, NULLNE) do { \
