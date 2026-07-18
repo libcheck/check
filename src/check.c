@@ -75,6 +75,30 @@ Suite *suite_create(const char *name)
     return s;
 }
 
+const char *suite_name(Suite * s)
+{
+    if(s == NULL)
+        return NULL;
+
+    return s->name;
+}
+
+int suite_ntcases(Suite * s)
+{
+    if(s == NULL)
+        return 0;
+
+    return check_list_length(s->tclst);
+}
+
+TCase **suite_tcases(Suite * s)
+{
+    if(s == NULL)
+        return NULL;
+
+    return (TCase **)check_list_as_array(s->tclst);
+}
+
 int suite_tcase(Suite * s, const char *tcname)
 {
     List *l;
@@ -199,6 +223,22 @@ void tcase_set_tags(TCase * tc, const char *tags_orig)
     tc->tags = tag_string_to_list(tags_orig);
 }
 
+int tcase_ntags(TCase * tc)
+{
+    if(tc == NULL)
+        return 0;
+
+    return check_list_length(tc->tags);
+}
+
+const char **tcase_tags(TCase * tc)
+{
+    if(tc == NULL)
+        return NULL;
+        
+    return (const char **)check_list_as_array(tc->tags);
+}
+
 static void tcase_free(TCase * tc)
 {
     check_list_apply(tc->tflst, free);
@@ -249,6 +289,7 @@ void suite_add_tcase(Suite * s, TCase * tc)
 
     check_list_add_end(s->tclst, tc);
 }
+
 
 void _tcase_add_test(TCase * tc, const TTest * ttest,
                      int _signal, int allowed_exit_value,
@@ -343,8 +384,8 @@ void tcase_set_timeout(TCase * tc, double timeout)
 #endif /* HAVE_FORK */
 }
 
-void tcase_fn_start(const char *fname, const char *file,
-                    int line)
+void _tcase_fn_start(const char *fname, const char *file,
+                     int line)
 {
     send_ctx_info(CK_CTX_TEST);
     send_loc_info(file, line);
@@ -352,9 +393,73 @@ void tcase_fn_start(const char *fname, const char *file,
     current_test_name = fname;
 }
 
-const char* tcase_name(void)
+const char* tcase_current_name(void)
 {
     return current_test_name;
+}
+
+const char *tcase_name(TCase * tc)
+{
+    if(tc == NULL)
+        return NULL;
+
+    return tc->name;
+}
+
+int tcase_ntests(TCase * tc)
+{
+    if(tc == NULL)
+        return 0;
+    
+    return check_list_length(tc->tflst);
+}
+
+TF **tcase_tests(TCase * tc)
+{
+    if(tc == NULL)
+        return NULL;
+        
+    return (TF **)check_list_as_array(tc->tflst);
+}
+
+const TTest *tf_test(TF * tf)
+{
+    if(tf == NULL)
+        return NULL;
+
+    return tf->ttest;
+}
+
+int tf_loop_start(TF * tf)
+{
+    if(tf == NULL)
+        return 0;
+
+    return tf->loop_start;
+}
+
+int tf_loop_end(TF * tf)
+{
+    if(tf == NULL)
+        return 0;
+
+    return tf->loop_end;
+}
+
+int tf_signal(TF * tf)
+{
+    if(tf == NULL)
+        return 0;
+
+    return tf->signal;
+}
+
+int tf_allowed_exit_value(TF * tf)
+{
+    if(tf == NULL)
+        return 0;
+
+    return tf->allowed_exit_value;
 }
 
 void _mark_point(const char *file, int line)
@@ -436,6 +541,22 @@ void srunner_add_suite(SRunner * sr, Suite * s)
     check_list_add_end(sr->slst, s);
 }
 
+int srunner_nsuites(SRunner * sr)
+{
+    if(sr == NULL)
+        return 0;
+
+    return check_list_length(sr->slst);
+}
+
+Suite **srunner_suites(SRunner * sr)
+{
+    if (sr == NULL)
+        return NULL;
+
+    return (Suite **)check_list_as_array(sr->slst);
+}
+
 void srunner_free(SRunner * sr)
 {
     List *l;
@@ -495,19 +616,10 @@ TestResult **srunner_failures(SRunner * sr)
 
 TestResult **srunner_results(SRunner * sr)
 {
-    int i = 0;
-    TestResult **trarray;
-    List *rlst;
+    if(sr == NULL)
+        return NULL;
 
-    trarray =(TestResult **) emalloc(sizeof(trarray[0]) * srunner_ntests_run(sr));
-
-    rlst = sr->resultlst;
-    for(check_list_front(rlst); !check_list_at_end(rlst);
-        check_list_advance(rlst))
-    {
-        trarray[i++] = (TestResult *)check_list_val(rlst);
-    }
-    return trarray;
+    return (TestResult **)check_list_as_array(sr->resultlst);
 }
 
 static int non_pass(enum test_result val)

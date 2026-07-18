@@ -55,5 +55,10 @@ void check_list_apply(List * lp, void (*fp) (void *));
 /* Return true if the list contains the value, false otherwise */
 int check_list_contains(List * lp, void *val);
 
+/* Return the number of elements in the list */
+unsigned int check_list_length(List * lp);
+
+/* Return a new array with a snapshot of the list's contents. */
+void **check_list_as_array(List * lp);
 
 #endif /* CHECK_LIST_H */

@@ -34,14 +34,14 @@
   ( (((end).tv_sec - (begin).tv_sec) * US_PER_SEC) + \
     ((end).tv_nsec/1000) - ((begin).tv_nsec/1000) )
 
-typedef struct TF
+struct TF
 {
     const TTest * ttest;
     int loop_start;
     int loop_end;
     int signal;
     signed char allowed_exit_value;
-} TF;
+};
 
 struct Suite
 {
