@@ -37,6 +37,9 @@ void lfile_lfun(SRunner * sr, FILE * file, enum print_output,
 void xml_lfun(SRunner * sr, FILE * file, enum print_output,
               void *obj, enum cl_event evt);
 
+void junit_lfun(SRunner * sr, FILE * file, enum print_output,
+              void *obj, enum cl_event evt);
+
 void tap_lfun(SRunner * sr, FILE * file, enum print_output,
               void *obj, enum cl_event evt);
 

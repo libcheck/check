@@ -59,6 +59,7 @@ struct TCase
 {
     const char *name;
     struct timespec timeout;
+    struct Suite *s;
     List *tflst;                /* list of test functions */
     List *unch_sflst;
     List *unch_tflst;
@@ -82,7 +83,7 @@ struct TestResult
     int line;                   /* Line number where the test occurred */
     int iter;                   /* The iteration value for looping tests */
     int duration;               /* duration of this test in microseconds */
-    const char *tcname;         /* Test case that generated the result */
+    TCase *tc;                  /* Test case that generated the result */
     const char *tname;          /* Test that generated the result */
     char *msg;                  /* Failure message */
 };
@@ -121,6 +122,7 @@ struct SRunner
     List *resultlst;            /* List of unit test results */
     const char *log_fname;      /* name of log file */
     const char *xml_fname;      /* name of xml output file */
+    enum xml_format xml_format; /* the xml format to use */
     const char *tap_fname;      /* name of tap output file */
     List *loglst;               /* list of Log objects */
     enum fork_status fstat;     /* controls if suites are forked or not

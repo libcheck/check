@@ -136,7 +136,7 @@ static void print_usage(void)
     printf(" | CK_SUBUNIT");
 #endif
     printf(")\n");
-    printf("                 (STDOUT | STDOUT_DUMP | LOG | LOG_STDOUT | TAP | TAP_STDOUT | XML | XML_STDOUT)\n");
+    printf("                 (STDOUT | STDOUT_DUMP | LOG | LOG_STDOUT | TAP | TAP_STDOUT | XML | XML_STDOUT | JUNIT_XML | JUNIT_XML_STDOUT )\n");
     printf("                 (NORMAL | EXIT_TEST)\n");
     printf("   If CK_ENV is used, the environment variable CK_VERBOSITY can be set to\n");
     printf("   one of these: silent, minimal, or verbose. If it is not set to these, or\n");
@@ -189,6 +189,16 @@ static void run_tests(enum print_output printmode, char *log_type, int include_e
     else if(strcmp(log_type, "XML_STDOUT") == 0)
     {
         srunner_set_xml(sr, "-");
+    }
+    else if(strcmp(log_type, "JUNIT_XML") == 0)
+    {
+        srunner_set_xml(sr, "junit_test.xml");
+        srunner_set_xml_format(sr, CK_XML_FORMAT_JUNIT);
+    }
+    else if(strcmp(log_type, "JUNIT_XML_STDOUT") == 0)
+    {
+        srunner_set_xml(sr, "-");
+        srunner_set_xml_format(sr, CK_XML_FORMAT_JUNIT);
     }
     else
     {

@@ -294,6 +294,60 @@ expected_duration_count=8
 fi
 
 ##################
+# junit xml output
+##################
+expected_junit_xml="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<testsuites tests=\"8\" errors=\"1\" failures=\"4\">
+  <testsuite name=\"S1\" tests=\"3\" errors=\"1\" failures=\"1\">
+    <testcase classname=\"Core\" name=\"test_pass\">
+    </testcase>
+    <testcase classname=\"Core\" name=\"test_fail\">
+      <failure message=\"Failure\">
+        Core:test_fail:0
+        ex_output.c:37
+        Failure
+      </failure>
+    </testcase>
+    <testcase classname=\"Core\" name=\"test_exit\">
+      <error message=\"Early exit with return value 1\">
+        Core:test_exit:0
+        ex_output.c:46
+        Early exit with return value 1
+      </error>
+    </testcase>
+  </testsuite>
+  <testsuite name=\"S2\" tests=\"4\" errors=\"0\" failures=\"2\">
+    <testcase classname=\"Core\" name=\"test_pass2\">
+    </testcase>
+    <testcase classname=\"Core\" name=\"test_loop\">
+      <failure message=\"Iteration 0 failed\">
+        Core:test_loop:0
+        ex_output.c:72
+        Iteration 0 failed
+      </failure>
+    </testcase>
+    <testcase classname=\"Core\" name=\"test_loop\">
+    </testcase>
+    <testcase classname=\"Core\" name=\"test_loop\">
+      <failure message=\"Iteration 2 failed\">
+        Core:test_loop:2
+        ex_output.c:72
+        Iteration 2 failed
+      </failure>
+    </testcase>
+  </testsuite>
+  <testsuite name=\"XML escape &quot; &apos; &lt; &gt; &amp; &#x9; &#xA;X tests\" tests=\"1\" errors=\"0\" failures=\"1\">
+    <testcase classname=\"description &quot; &apos; &lt; &gt; &amp; &#x9; &#xA;X end\" name=\"test_xml_esc_fail_msg\">
+      <failure message=\"fail &quot; &apos; &lt; &gt; &amp; &#x9; &#xA;X message\">
+        description &quot; &apos; &lt; &gt; &amp; &#x9; &#xA;X end:test_xml_esc_fail_msg:0
+        ex_output.c:78
+        fail &quot; &apos; &lt; &gt; &amp; &#x9; &#xA;X message
+      </failure>
+    </testcase>
+  </testsuite>
+</testsuites>"
+
+##################
 # tap output
 ##################
 if [ $HAVE_FORK -eq 1 ]; then

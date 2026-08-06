@@ -200,6 +200,55 @@ START_TEST(test_double_set_xml)
 }
 END_TEST
 
+START_TEST(test_default_xml_format) {
+  Suite *s = suite_create("Suite");
+  SRunner *sr = srunner_create(s);
+  ck_assert_msg(srunner_xml_format(sr) == CK_XML_FORMAT_DEFAULT,
+                "XML format is not default");
+  srunner_free(sr);
+}
+END_TEST
+
+START_TEST(test_set_xml_format) {
+  Suite *s = suite_create("Suite");
+  SRunner *sr = srunner_create(s);
+  srunner_set_xml_format(sr, CK_XML_FORMAT_JUNIT);
+  ck_assert_msg(srunner_xml_format(sr) == CK_XML_FORMAT_JUNIT,
+                "XML format is not Junit");
+  srunner_free(sr);
+}
+END_TEST
+
+#if HAVE_DECL_SETENV
+/* Test enabling JUnit XML format logging via environment variable */
+START_TEST(test_set_xml_format_env)
+{
+  const char *old_val;
+  Suite *s = suite_create("Suite");
+  SRunner *sr = srunner_create(s);
+
+  /* check that setting XML format via environment variable works */
+  ck_assert_msg(save_set_env("CK_XML_FORMAT_NAME", "junit", &old_val) == 0,
+              "Failed to set environment variable");
+
+  ck_assert_msg(srunner_xml_format(sr) == CK_XML_FORMAT_JUNIT,
+                "SRunner not set to use Junit");
+
+  /* check that explicit call to srunner_set_xml_format() overrides environment
+   * variable */
+  srunner_set_xml_format(sr, CK_XML_FORMAT_DEFAULT);
+  ck_assert_msg(srunner_xml_format(sr) == CK_XML_FORMAT_DEFAULT,
+                "SRunner not using explicitly set XML format");
+
+  /* restore old environment */
+  ck_assert_msg(restore_env("CK_XML_FORMAT_NAME", old_val) == 0,
+              "Failed to restore environment variable");
+  
+  srunner_free(sr);
+}
+END_TEST
+#endif /* HAVE_DECL_SETENV */
+
 START_TEST(test_set_tap)
 {
   Suite *s = suite_create("Suite");
@@ -301,6 +350,12 @@ Suite *make_log_suite(void)
 #endif /* HAVE_DECL_SETENV */
   tcase_add_test(tc_core_xml, test_no_set_xml);
   tcase_add_test(tc_core_xml, test_double_set_xml);
+
+  tcase_add_test(tc_core_xml, test_default_xml_format);
+  tcase_add_test(tc_core_xml, test_set_xml_format);
+#if HAVE_DECL_SETENV
+  tcase_add_test(tc_core_xml, test_set_xml_format_env);
+#endif
 
   suite_add_tcase(s, tc_core_tap);
   tcase_add_test(tc_core_tap, test_set_tap);
