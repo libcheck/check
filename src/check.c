@@ -72,6 +72,8 @@ Suite *suite_create(const char *name)
     else
         s->name = name;
     s->tclst = check_list_create();
+    s->unch_sflst = check_list_create();
+    s->unch_tflst = check_list_create();
     return s;
 }
 
@@ -105,6 +107,8 @@ static void suite_free(Suite * s)
         tcase_free((TCase *)check_list_val(l));
     }
     check_list_free(s->tclst);
+    check_list_apply(s->unch_sflst, free);
+    check_list_apply(s->unch_tflst, free);
     free(s);
 }
 
@@ -277,6 +281,22 @@ static Fixture *fixture_create(SFun fun, int ischecked)
     f->ischecked = ischecked;
 
     return f;
+}
+
+void suite_add_unchecked_fixture(Suite * s, SFun setup, SFun teardown)
+{
+    if(setup)
+    {
+        check_list_add_end(s->unch_sflst,
+                           fixture_create(setup, 0));
+    }
+
+    /* Add teardowns at front so they are run in reverse order. */
+    if(teardown)
+    {
+        check_list_add_front(s->unch_tflst,
+                             fixture_create(teardown, 0));
+    }
 }
 
 void tcase_add_unchecked_fixture(TCase * tc, SFun setup, SFun teardown)
