@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>
+   ax_pthread (Autoconf Archive)
+  </title>
+  <meta name="description" content="ax_pthread (Autoconf Archive)">
+  <meta name="keywords" content="ax_pthread (Autoconf Archive)">
+  <meta name="resource-type" content="document">
+  <meta name="distribution" content="global">
+  <meta name="Generator" content="makeinfo">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://www.gnu.org/software/autoconf-archive/index.html" rel="start" title="Top">
+  <link href="https://www.gnu.org/software/autoconf-archive/The-Macros.html" rel="up" title="The Macros">
+  <link href="https://www.gnu.org/software/autoconf-archive/ax_python.html" rel="next" title="ax_python">
+  <link href="https://www.gnu.org/software/autoconf-archive/ax_prototype_setsockopt.html" rel="prev" title="ax_prototype_setsockopt">
+  <style type="text/css">
+  <!--
+  a.copiable-anchor {visibility: hidden; text-decoration: none; line-height: 0em}
+  a.summary-letter {text-decoration: none}
+  blockquote.indentedblock {margin-right: 0em}
+  div.display {margin-left: 3.2em}
+  div.example {margin-left: 3.2em}
+  kbd {font-style: oblique}
+  pre.display {font-family: inherit}
+  pre.format {font-family: inherit}
+  pre.menu-comment {font-family: serif}
+  pre.menu-preformatted {font-family: serif}
+  span.nolinebreak {white-space: nowrap}
+  span.roman {font-family: initial; font-weight: normal}
+  span.sansserif {font-family: sans-serif; font-weight: normal}
+  span:hover a.copiable-anchor {visibility: visible}
+  ul.no-bullet {list-style: none}
+  -->
+  </style>
+  <link rel="stylesheet" type="text/css" href="autoconf-archive.css">
+ <body lang="en">
+  <div class="unnumberedsec" id="ax_pthread">
+   <div class="header">
+    <p>
+     Next: <a href="https://www.gnu.org/software/autoconf-archive/ax_python.html" accesskey="n" rel="next">ax_python</a>,
+     Previous: <a href="https://www.gnu.org/software/autoconf-archive/ax_prototype_setsockopt.html" accesskey="p" rel="prev">ax_prototype_setsockopt</a>, Up: <a href="https://www.gnu.org/software/autoconf-archive/The-Macros.html" accesskey="u" rel="up">The Macros</a> &nbsp;
+    </p>
+   </div>
+   <hr>
+   <span id="ax_pthread-1"></span>
+   <h3 class="unnumberedsec">
+    ax_pthread
+   </h3><span id="Synopsis-503"></span>
+   <h2 class="majorheading">
+    Synopsis
+   </h2>
+   <div class="example">
+    <pre class="example">AX_PTHREAD([ACTION-IF-FOUND[, ACTION-IF-NOT-FOUND]])
+</pre>
+   </div><span id="Description-503"></span>
+   <h2 class="majorheading">
+    Description
+   </h2>
+   <p>
+    This macro figures out how to build C programs using POSIX threads. It sets
+    the PTHREAD_LIBS output variable to the threads library and linker flags,
+    and the PTHREAD_CFLAGS output variable to any special C compiler flags that
+    are needed. (The user can also force certain compiler flags/libs to be
+    tested by setting these environment variables.)
+   </p>
+   <p>
+    Also sets PTHREAD_CC and PTHREAD_CXX to any special C compiler that is
+    needed for multi-threaded programs (defaults to the value of CC
+    respectively CXX otherwise). (This is necessary on e.g. AIX to use the
+    special cc_r/CC_r compiler alias.)
+   </p>
+   <p>
+    NOTE: You are assumed to not only compile your program with these flags,
+    but also to link with them as well. For example, you might link with
+    $PTHREAD_CC $CFLAGS $PTHREAD_CFLAGS $LDFLAGS ... $PTHREAD_LIBS $LIBS
+    $PTHREAD_CXX $CXXFLAGS $PTHREAD_CFLAGS $LDFLAGS ... $PTHREAD_LIBS $LIBS
+   </p>
+   <p>
+    If you are only building threaded programs, you may wish to use these
+    variables in your default LIBS, CFLAGS, and CC:
+   </p>
+   <div class="example">
+    <pre class="example">  LIBS="$PTHREAD_LIBS $LIBS"
+  CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+  CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
+  CC="$PTHREAD_CC"
+  CXX="$PTHREAD_CXX"
+</pre>
+   </div>
+   <p>
+    In addition, if the PTHREAD_CREATE_JOINABLE thread-attribute constant has a
+    nonstandard name, this macro defines PTHREAD_CREATE_JOINABLE to that name
+    (e.g. PTHREAD_CREATE_UNDETACHED on AIX).
+   </p>
+   <p>
+    Also HAVE_PTHREAD_PRIO_INHERIT is defined if pthread is found and the
+    PTHREAD_PRIO_INHERIT symbol is defined when compiling with PTHREAD_CFLAGS.
+   </p>
+   <p>
+    ACTION-IF-FOUND is a list of shell commands to run if a threads library is
+    found, and ACTION-IF-NOT-FOUND is a list of commands to run it if it is not
+    found. If ACTION-IF-FOUND is not specified, the default action will define
+    HAVE_PTHREAD.
+   </p>
+   <p>
+    Please let the authors know if this macro fails on any platform, or if you
+    have any other suggestions or comments. This macro was based on work by SGJ
+    on autoconf scripts for FFTW (http://www.fftw.org/) (with help from M.
+    Frigo), as well as ac_pthread and hb_pthread macros posted by Alejandro
+    Forero Cuervo to the autoconf macro repository. We are also grateful for
+    the helpful feedback of numerous users.
+   </p>
+   <p>
+    Updated for Autoconf 2.68 by Daniel Richard G.
+   </p><span id="Source-Code-503"></span>
+   <h2 class="majorheading">
+    Source Code
+   </h2>
+   <p>
+    Download the <a href="http://git.savannah.gnu.org/gitweb/?p=autoconf-archive.git;a=blob_plain;f=m4/ax_pthread.m4">
+    latest version of <samp>ax_pthread.m4</samp></a> or browse <a href="http://git.savannah.gnu.org/gitweb/?p=autoconf-archive.git;a=history;f=m4/ax_pthread.m4">
+    the macro’s revision history</a>.
+   </p><span id="License-503"></span>
+   <h2 class="majorheading">
+    License
+   </h2>
+   <p>
+    Copyright&nbsp;©&nbsp;2008&nbsp;Steven&nbsp;G.&nbsp;Johnson&nbsp;<a href="mailto:stevenj@alum.mit.edu">stevenj@alum.mit.edu</a><br>
+    Copyright&nbsp;©&nbsp;2011&nbsp;Daniel&nbsp;Richard&nbsp;G.&nbsp;<a href="mailto:skunk@iSKUNK.ORG">skunk@iSKUNK.ORG</a><br>
+    Copyright&nbsp;©&nbsp;2019&nbsp;Marc&nbsp;Stevens&nbsp;<a href="mailto:marc.stevens@cwi.nl">marc.stevens@cwi.nl</a>
+   </p>
+   <p>
+    This program is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the Free
+    Software Foundation, either version 3 of the License, or (at your option)
+    any later version.
+   </p>
+   <p>
+    This program is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+    more details.
+   </p>
+   <p>
+    You should have received a copy of the GNU General Public License along
+    with this program. If not, see &lt;https://www.gnu.org/licenses/&gt;.
+   </p>
+   <p>
+    As a special exception, the respective Autoconf Macro’s copyright owner
+    gives unlimited permission to copy, distribute and modify the configure
+    scripts that are the output of Autoconf when processing the Macro. You need
+    not follow the terms of the GNU General Public License when using or
+    distributing such scripts, even though portions of the text of the Macro
+    appear in them. The GNU General Public License (GPL) does govern all other
+    use of the material that constitutes the Autoconf Macro.
+   </p>
+   <p>
+    This special exception to the GPL applies to versions of the Autoconf Macro
+    released by the Autoconf Archive. When you make and distribute a modified
+    version of the Autoconf Macro, you may extend this special exception to the
+    GPL to apply to your modified version as well.
+   </p>
+  </div>
+  <hr>
+  <div class="header">
+   <p>
+    Next: <a href="https://www.gnu.org/software/autoconf-archive/ax_python.html">ax_python</a>, Previous: <a href="https://www.gnu.org/software/autoconf-archive/ax_prototype_setsockopt.html">ax_prototype_setsockopt</a>, Up: <a href="https://www.gnu.org/software/autoconf-archive/The-Macros.html">The Macros</a> &nbsp;
+   </p>
+  </div>
+ 
+
+</body></html>
