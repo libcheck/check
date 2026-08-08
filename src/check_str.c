@@ -78,6 +78,7 @@ char *ck_strdup_printf(const char *fmt, ...)
 {
     /* Guess we need no more than 100 bytes. */
     size_t size = 100;
+    size_t new_size;
     char *p;
     va_list ap;
 
@@ -96,11 +97,12 @@ char *ck_strdup_printf(const char *fmt, ...)
 
         /* Else try again with more space. */
         if(n > -1)              /* C99 conform vsnprintf() */
-            size = (size_t) n + 1;      /* precisely what is needed */
+            new_size = (size_t) n + 1;      /* precisely what is needed */
         else                    /* glibc 2.0 */
-            size *= 2;          /* twice the old size */
+            new_size *= 2;          /* twice the old size */
 
-        p = (char *)erealloc(p, size);
+        p = (char *)erealloc(p, size, new_size);
+        size = new_size;
     }
 }
 

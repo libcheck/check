@@ -46,8 +46,8 @@ static void maybe_grow(List * lp)
 {
     if(lp->n_elts >= lp->max_elts)
     {
+        lp->data = (void **)erealloc(lp->data, lp->max_elts * sizeof(lp->data[0]), lp->max_elts * LGROW * sizeof(lp->data[0]));
         lp->max_elts *= LGROW;
-        lp->data = (void **)erealloc(lp->data, lp->max_elts * sizeof(lp->data[0]));
     }
 }
 

@@ -62,15 +62,18 @@ void *emalloc(size_t n)
     p = malloc(n);
     if(p == NULL)
         eprintf("malloc of " CK_FMT_ZU " bytes failed:", __FILE__, __LINE__ - 2, n);
+    memset(p, 0xAA, n);
     return p;
 }
 
-void *erealloc(void *ptr, size_t n)
+void *erealloc(void *ptr, size_t old_n, size_t n)
 {
     void *p;
 
     p = realloc(ptr, n);
     if(p == NULL)
         eprintf("realloc of " CK_FMT_ZU " bytes failed:", __FILE__, __LINE__ - 2, n);
+    if(n > old_n)
+      memset(p+old_n, 0xAA, n-old_n);
     return p;
 }
