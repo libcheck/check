@@ -136,8 +136,13 @@ jobs:
     
   build_linux_cmake:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: check with spaces
     steps:
     - uses: actions/checkout@v7
+      with:
+        path: check with spaces
     - name: cmake cversion
       run: cmake --version
     - name: create configs
