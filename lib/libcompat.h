@@ -74,6 +74,19 @@
 #define CK_DIAGNOSTIC_POP(w)
 #endif /* GCC 4.7.4 */
 
+/* Jump-target ownership checks are optional. Platforms without compiler TLS
+ * retain the legacy assertion path. CK_NO_THREAD_LOCAL also allows builds to
+ * disable TLS when the compiler syntax exists but the target lacks support. */
+#if !defined(CK_NO_THREAD_LOCAL)
+#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L
+#define CK_THREAD_LOCAL _Thread_local
+#elif defined(_MSC_VER)
+#define CK_THREAD_LOCAL __declspec(thread)
+#elif defined(__GNUC__) || defined(__clang__)
+#define CK_THREAD_LOCAL __thread
+#endif
+#endif
+
 /*
  * Used for MSVC to create the export attribute
  * CK_DLL_EXP is defined during the compilation of the library

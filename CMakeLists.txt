@@ -518,6 +518,10 @@ if(BUILD_TESTING AND NOT THIS_IS_SUBPROJECT)
     add_test(NAME test_tap_output.sh
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
       COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_tap_output.sh)
+    add_test(NAME test_check_foreign_thread.sh
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+      COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_foreign_thread.sh)
+    set_tests_properties(test_check_foreign_thread.sh PROPERTIES SKIP_RETURN_CODE 77)
     add_test(NAME test_check_nofork.sh
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
       COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_check_nofork.sh)

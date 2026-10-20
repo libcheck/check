@@ -24,6 +24,7 @@
 
 /* Functions implementing messaging during test runs */
 
+void print_failure_info(const char *file, int line, const char *msg);
 void send_failure_info(const char *msg);
 void send_loc_info(const char *file, int line);
 void send_ctx_info(enum ck_result_ctx ctx);

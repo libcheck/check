@@ -306,10 +306,12 @@ static TestResult * srunner_run_setup(List * fixture_list, enum fork_status fork
         {
             send_ctx_info(CK_CTX_SETUP);
 
+            check_error_jmp_set_active(1);
             if(0 == setjmp(error_jmp_buffer))
             {
                 setup_fixture->fun();
             }
+            check_error_jmp_set_active(0);
 
             /* Stop the setup and return the failure in nofork mode. */
             tr = receive_result_info_nofork(test_name, setup_name, 0, -1);
@@ -368,6 +370,7 @@ static void srunner_run_teardown(List * fixture_list, enum fork_status fork_usag
 
         if(fork_usage == CK_NOFORK)
         {
+            check_error_jmp_set_active(1);
             if(0 == setjmp(error_jmp_buffer))
             {
                 fixture->fun();
@@ -375,8 +378,10 @@ static void srunner_run_teardown(List * fixture_list, enum fork_status fork_usag
             else
             {
                 /* Abort the remaining teardowns */
+                check_error_jmp_set_active(0);
                 break;
             }
+            check_error_jmp_set_active(0);
         }
         else
         {
@@ -414,11 +419,13 @@ static TestResult *tcase_run_tfun_nofork(SRunner * sr, TCase * tc, TF * tfun,
     if(tr == NULL)
     {
         clock_gettime(check_get_clockid(), &ts_start);
+        check_error_jmp_set_active(1);
         if(0 == setjmp(error_jmp_buffer))
         {
             tcase_fn_start(tfun->ttest->name, tfun->ttest->file, tfun->ttest->line);
             tfun->ttest->fn(i);
         }
+        check_error_jmp_set_active(0);
         clock_gettime(check_get_clockid(), &ts_end);
         tcase_run_checked_teardown(tc);
         return receive_result_info_nofork(tc->name, tfun->ttest->name, i,

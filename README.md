@@ -40,6 +40,13 @@ Check has the following dependencies:
 
 The versions specified may be higher than those actually needed.
 
+Check targets C99; C11 is not required. Where supported, compiler
+thread-local storage enables diagnostics for assertion failures outside
+the test runner's thread. Without it, Check retains its previous
+assertion behavior. To disable this detection, add
+`-DCK_NO_THREAD_LOCAL` to the compiler flags when building Check. This
+is a build-time definition, not a runtime environment variable.
+
 ### autoconf
 
     $ autoreconf --install

@@ -1357,6 +1357,19 @@ assume the following values: @code{CK_FORK} and @code{CK_NOFORK}.  An
 explicit call to @code{srunner_set_fork_status()} overrides the
 @code{CK_FORK} environment variable.
 
+Without fork, a failed assertion normally uses @code{longjmp()} to
+return control to the test runner.  Doing this from another thread is
+undefined behavior and may crash the test program.
+
+When compiler thread-local storage is available, Check detects failures
+without an active jump target on the calling thread, including failures
+on threads other than the one running the test.  It makes a best-effort
+attempt to print the failure to standard error, then terminates the
+entire process with status 1.  No cleanup or exit handlers run, remaining
+tests are not executed, and result logs may be incomplete.  Without
+thread-local storage, Check retains the previous behavior.  This does
+not make no-fork tests thread-safe or allow recovery from such failures.
+
 @node Test Fixtures, Multiple Suites in one SRunner, No Fork Mode, Advanced Features
 @section Test Fixtures
 

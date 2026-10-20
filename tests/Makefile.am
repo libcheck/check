@@ -100,3 +100,10 @@ ex_output_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.
 AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src
 
 CLEANFILES = *~ *.log *.xml *.tap test_logfile
+
+noinst_PROGRAMS += check_foreign_thread
+TESTS += test_check_foreign_thread.sh
+EXTRA_DIST += test_check_foreign_thread.sh
+check_foreign_thread_SOURCES = check_foreign_thread.c
+check_foreign_thread_LDADD = $(top_builddir)/src/libcheck.la $(top_builddir)/lib/libcompat.la @PTHREAD_LIBS@
+check_foreign_thread_CFLAGS = @PTHREAD_CFLAGS@

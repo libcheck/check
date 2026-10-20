@@ -34,6 +34,23 @@
  */
 jmp_buf error_jmp_buffer;
 
+#ifdef CK_THREAD_LOCAL
+static CK_THREAD_LOCAL int error_jmp_active;
+
+int check_error_jmp_is_active(void)
+{
+    return error_jmp_active;
+}
+#endif
+
+void check_error_jmp_set_active(int active)
+{
+#ifdef CK_THREAD_LOCAL
+    error_jmp_active = active;
+#else
+    (void)active;
+#endif
+}
 
 /* FIXME: including a colon at the end is a bad way to indicate an error */
 void eprintf(const char *fmt, const char *file, int line, ...)
