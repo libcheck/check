@@ -23,7 +23,12 @@
 #include <sys/types.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include <errno.h>
+#include <string.h>
 #include <stdio.h>
+#ifdef _WIN32
+#include <io.h>
+#endif
 
 #include "check_error.h"
 #include "check.h"
@@ -80,6 +85,38 @@ static FILE *get_pipe(void)
     eprintf("Unable to report test progress or a failure; was an ck_assert or ck_abort function called while not running tests?", __FILE__, __LINE__);
 
     return NULL;
+}
+
+/* Best-effort fatal diagnostic: bypass the runner's message file, stdio
+ * buffering, and application-installed logging handlers. */
+void print_failure_info(const char *file, int line, const char *msg)
+{
+    char diagnostic[2 * BUFSIZ];
+    const char *p = diagnostic;
+    size_t remaining;
+#ifdef _WIN32
+    int written;
+#else
+    ssize_t written;
+#endif
+
+    snprintf(diagnostic, sizeof(diagnostic),
+             "Check: assertion without an active test jump target on this thread; "
+             "terminating process\n%s:%d: %s\n", file, line, msg);
+    for(remaining = strlen(diagnostic); remaining > 0;
+        p += written, remaining -= written)
+    {
+        do
+        {
+#ifdef _WIN32
+            written = _write(2, p, (unsigned int)remaining);
+#else
+            written = write(2, p, remaining);
+#endif
+        } while(written < 0 && errno == EINTR);
+        if(written <= 0)
+            break;
+    }
 }
 
 void send_failure_info(const char *msg)

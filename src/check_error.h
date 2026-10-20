@@ -25,6 +25,10 @@
 #include <setjmp.h>
 
 extern jmp_buf error_jmp_buffer;
+#ifdef CK_THREAD_LOCAL
+int check_error_jmp_is_active(void);
+#endif
+void check_error_jmp_set_active(int active);
 
 /* Include stdlib.h beforehand */
 

@@ -368,8 +368,6 @@ void _ck_assert_failed(const char *file, int line, const char *expr,
     char buf[BUFSIZ];
     const char *to_send;
 
-    send_loc_info(file, line);
-
     /*
      * If a message was passed, format it with vsnprintf.
      * Otherwise, print the expression as is.
@@ -387,17 +385,27 @@ void _ck_assert_failed(const char *file, int line, const char *expr,
         to_send = expr;
     }
 
+#ifdef CK_THREAD_LOCAL
+#if defined(HAVE_FORK) && HAVE_FORK==1
+    if(cur_fork_status() != CK_FORK)
+#endif
+    {
+        if(!check_error_jmp_is_active())
+        {
+            print_failure_info(file, line, to_send);
+            _exit(1);
+        }
+    }
+#endif /* CK_THREAD_LOCAL */
+    send_loc_info(file, line);
     send_failure_info(to_send);
+#if defined(HAVE_FORK) && HAVE_FORK==1
     if(cur_fork_status() == CK_FORK)
     {
-#if defined(HAVE_FORK) && HAVE_FORK==1
         _exit(1);
+    }
 #endif /* HAVE_FORK */
-    }
-    else
-    {
-        longjmp(error_jmp_buffer, 1);
-    }
+    longjmp(error_jmp_buffer, 1);
 }
 
 SRunner *srunner_create(Suite * s)

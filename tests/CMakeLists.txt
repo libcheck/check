@@ -108,3 +108,6 @@ set(CHECK_MEM_LEAKS_SOURCES
 )
 add_executable(check_mem_leaks ${CHECK_MEM_LEAKS_SOURCES})
 target_link_libraries(check_mem_leaks check)
+
+add_executable(check_foreign_thread check_foreign_thread.c)
+target_link_libraries(check_foreign_thread check)

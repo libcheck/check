@@ -505,12 +505,10 @@ static void __testname ## _fn (int _i CK_ATTRIBUTE_UNUSED)
 #define fail(...) _ck_assert_failed(__FILE__, __LINE__, "Failed" , ## __VA_ARGS__, NULL)
 
 /*
- * This is called whenever an assertion fails.
- * Note that it only has the noreturn modifier when
- * using fork. If fork is unavailable, the function
- * calls longjmp() when a test assertion fails. Marking
- * the function as noreturn causes gcc to make assumptions
- * which are not valid, as longjmp() is like a return.
+ * Assertion failures exit the forked process or use longjmp() in no-fork
+ * mode. With compiler TLS, no-fork failures without an active jump target
+ * on the calling thread print a diagnostic and exit the entire process.
+ * Neither exit nor longjmp returns to the caller.
  */
 #if @HAVE_FORK@
 CK_DLL_EXP void CK_EXPORT _ck_assert_failed(const char *file, int line,
@@ -2316,6 +2314,14 @@ CK_DLL_EXP enum fork_status CK_EXPORT srunner_fork_status(SRunner * sr);
  *
  * If Check is compiled without support for fork(), attempting
  * to set the status to CK_FORK is ignored.
+ *
+ * Without fork(), failures without an active jump target on the calling
+ * thread terminate the entire process with status 1 after a best-effort
+ * diagnostic to stderr, if compiler thread-local storage is available.
+ * No cleanup or exit handlers run, and result logs may be incomplete.
+ * Without thread-local storage, the previous behavior is retained;
+ * assertions on threads other than the one running the test may crash
+ * the program.
  *
  * @param sr suite runner to assign the fork status to
  * @param fstat fork status to assign
