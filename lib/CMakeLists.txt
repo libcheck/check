@@ -24,7 +24,7 @@ set(SOURCES libcompat.c)
 
 set(SOURCES ${SOURCES} fpclassify.c)
 
-if (NOT HAVE_LIBRT)
+if (NOT HAVE_LIBRT AND NOT HAVE_LIBC_TIMERS)
   set(SOURCES ${SOURCES} timer_create.c)
   set(SOURCES ${SOURCES} timer_delete.c)
   set(SOURCES ${SOURCES} timer_settime.c)

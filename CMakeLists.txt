@@ -396,6 +396,19 @@ if (HAVE_LIBRT)
   ADD_DEFINITIONS(-DHAVE_LIBRT=1)
 endif (HAVE_LIBRT)
 
+# Some systems, such as QNX, have the POSIX timers in libc and no librt. Use
+# those instead of the replacements in lib/, which would otherwise replace
+# them in every program linked with Check.
+if (NOT HAVE_LIBRT)
+  check_function_exists(timer_create HAVE_TIMER_CREATE)
+  check_function_exists(timer_settime HAVE_TIMER_SETTIME)
+  check_function_exists(timer_delete HAVE_TIMER_DELETE)
+  if (HAVE_TIMER_CREATE AND HAVE_TIMER_SETTIME AND HAVE_TIMER_DELETE)
+    set(HAVE_LIBC_TIMERS 1)
+    ADD_DEFINITIONS(-DHAVE_LIBRT=1)
+  endif ()
+endif (NOT HAVE_LIBRT)
+
 check_library_exists(subunit subunit_test_start "" HAVE_SUBUNIT)
 if (HAVE_SUBUNIT)
   set(SUBUNIT "subunit")
